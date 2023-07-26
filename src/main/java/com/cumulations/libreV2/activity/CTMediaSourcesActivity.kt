@@ -255,7 +255,7 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
         binding.ivAlexaSettings.setOnClickListener {
             val mNode = LSSDPNodeDB.getInstance().getTheNodeBasedOnTheIpAddress(currentIpAddress)
 
-            if (!mNode.getmDeviceCap().getmSource().isAlexaAvsSource) {
+            if (mNode.getmDeviceCap().getmSource().isAlexaAvsSource) {
                 if (mNode.alexaRefreshToken == null || mNode.alexaRefreshToken.isEmpty()
                     || mNode.alexaRefreshToken == "0"
                 ) {
