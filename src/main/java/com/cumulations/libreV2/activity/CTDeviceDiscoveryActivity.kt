@@ -4,6 +4,7 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.app.Activity
+import kotlinx.coroutines.GlobalScope
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.*
