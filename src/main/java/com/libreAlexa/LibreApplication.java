@@ -248,9 +248,9 @@ public class LibreApplication extends Application implements
 
   public boolean initLUCIServices() {
     try {
-      LibreLogger.d(TAG,
+    /*  LibreLogger.d(TAG,
           "initLUCIServices Running:- " + mLuciThreadInitiated + " isKeyAliasGenerated:- "
-              + isKeyAliasGenerated);
+              + isKeyAliasGenerated);*/
       if (!LibreApplication.mLuciThreadInitiated) {
         wt = ScanThread.getInstance();
         scanThread = new Thread(wt);
@@ -258,7 +258,6 @@ public class LibreApplication extends Application implements
         micTcpStart();
         if (!isKeyAliasGenerated) {
           boolean isFirsTime = AppLaunchChecker.hasStartedFromLauncher(this);
-          Log.d(TAG_SECUREROOM, "IsFirstTime called " + isFirsTime);
           if (!isFirsTime) {
             generateKeyForDataStore();
           }
@@ -291,7 +290,6 @@ public class LibreApplication extends Application implements
     } catch (NoSuchAlgorithmException e) {
       throw new RuntimeException(e);
     }
-    LibreLogger.d(TAG_SECUREROOM, "Created Encoded key is " + encodedKey);
     //Storing the key into Secure Shared pref
     AppUtils.INSTANCE.providesSharedPreference(this).edit().putString("", encodedKey).apply();
     isKeyAliasGenerated = true;

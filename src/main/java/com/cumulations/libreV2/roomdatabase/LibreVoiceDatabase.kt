@@ -33,14 +33,12 @@ abstract class LibreVoiceDatabase : RoomDatabase() {
                     INSTANCE = buildDatabase(context)
                 }
             }
-            LibreLogger.d(TAG_SECUREROOM, "DATA already created:- " + LibreEntryPoint().getKey())
             // Return database.
             return INSTANCE!!
         }
 
         private fun buildDatabase(context: Context): LibreVoiceDatabase {
             /** SECURING THE DATABASE STARTS */
-            LibreLogger.d(TAG_SECUREROOM, "buildDatabase called " + LibreEntryPoint().getKey())
             val key = LibreEntryPoint().getKey()
             val factory = SupportFactory(SQLiteDatabase.getBytes(key!!.toCharArray()))
             val builder = Room.databaseBuilder(context.applicationContext, LibreVoiceDatabase::class.java, "libre_voice_database")

@@ -148,7 +148,6 @@ object AppUtils {
         }else{
             oldSceneObject.album_art
         }
-        //Have to check with suma
         if (window.has("PlayState")) {
             oldSceneObject.playstatus = window.getInt("PlayState")
         }

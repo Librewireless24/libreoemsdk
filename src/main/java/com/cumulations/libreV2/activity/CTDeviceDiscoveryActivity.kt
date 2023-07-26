@@ -1737,13 +1737,6 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
             LSSDPNodeDB.getInstance().clearDB()
             ensureDMRPlaybackStopped()
             LibreEntryPoint.getInstance().clearApplicationCollections()
-            //Commented for now have to check with suma, If crash happend need to return "    if
-            // (application == null) return have to discuss later
-           /* if(application!=null) {
-                application.micTcpClose()
-            }else{
-                showToast("Application is null ")
-            }*/
             LibreApplication().micTcpClose()
 
             if (upnpBinder == null) return
@@ -2187,9 +2180,8 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
             delay(5000)
             try {
                 val id= libreVoiceDatabaseDao.addDeviceUUID(addDeviceDate)
-                LibreLogger.d(TAG_SECUREROOM, "insertDeviceIntoDb: success status  $id")
             }catch (e:NullPointerException){
-                LibreLogger.d(TAG_SECUREROOM, "insertDeviceIntoDb: Exception ${e.printStackTrace()}")
+                e.printStackTrace()
             }
         }
     }
@@ -2198,7 +2190,6 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
      * Created By Shaik Mansoor
      */
     private fun removeUUIDFromDB(deviceIpAddress: String?) {
-        LibreLogger.d(TAG_SECUREROOM, "removeUUIDFromDB: $deviceIpAddress")
         lifecycleScope.launch(Dispatchers.IO) {
             libreVoiceDatabaseDao.deleteDeviceUUID(deviceIpAddress.toString())
         }
@@ -2208,21 +2199,12 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
      * Created By Shaik Mansoor
      */
     private fun doSharedOperations() {
-        LibreLogger.d(TAG_SECUREROOM, "doSharedOperations $isKeyStored and key is ${LibreEntryPoint().getKey()}")
         lifecycleScope.launch {
             delay(1000)
             val sharedPrefKey = providesSharedPreference(this@CTDeviceDiscoveryActivity).getString("", null)
-            LibreLogger.d(TAG_SECUREROOM, "Retrieved Encoded key is $sharedPrefKey")
             if(sharedPrefKey!=null) {
                 LibreEntryPoint().setKey(sharedPrefKey)
             }else{
-                /**
-                 *  A very worst case have to check with SUMA and for the calling Splash Screen or
-                 *  Store some static key
-                 *  Some static dummy key would give good user experience because
-                 *  calling splash screen cause crash again due to generate the key and fetch and
-                 *  store before this much process we are inserting the device into DB
-                 */
                 LibreEntryPoint().setKey("LibreVoice")
             }
             isKeyStored = true

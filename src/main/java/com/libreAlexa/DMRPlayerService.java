@@ -250,7 +250,6 @@ private final static String TAG ="APP_FORGROUND";
 
     if (notificationManager != null) {
       NotificationChannel notificationChannel;
-      //Have to check with suma
       if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
         notificationChannel = notificationManager.getNotificationChannel(id);
         if (notificationChannel == null) {
