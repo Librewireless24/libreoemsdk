@@ -1,0 +1,462 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    xmlns:tools="http://schemas.android.com/tools"
+4    package="com.libreAlexa" >
+5
+6    <uses-sdk
+7        android:minSdkVersion="21"
+7-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml
+8        android:targetSdkVersion="33" />
+8-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml
+9
+10    <queries>
+10-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:197:3-199:13
+11        <package android:name="com.google.android.apps.chromecast.app" />
+11-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:198:5-70
+11-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:198:14-67
+12    </queries>
+13
+14    <uses-feature
+14-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:201:3-203:31
+15        android:name="android.hardware.bluetooth_le"
+15-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:202:5-49
+16        android:required="true" />
+16-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:203:5-28
+17    <uses-feature
+17-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:205:3-207:32
+18        android:name="android.hardware.touchscreen"
+18-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:206:5-48
+19        android:required="false" />
+19-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:207:5-29
+20
+21    <uses-permission android:name="android.permission.BLUETOOTH" />
+21-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:208:3-66
+21-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:208:20-63
+22    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+22-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:209:3-72
+22-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:209:20-69
+23    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+23-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:210:3-74
+23-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:210:20-71
+24    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+24-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:211:3-71
+24-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:211:20-68
+25    <uses-permission android:name="android.permission.INTERNET" />
+25-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:212:3-65
+25-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:212:20-62
+26    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+26-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:213:3-83
+26-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:213:20-80
+27    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+27-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:214:3-77
+27-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:214:20-74
+28    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+28-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:215:3-77
+28-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:215:20-74
+29    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+29-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:216:3-74
+29-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:216:20-71
+30    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+30-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:217:3-74
+30-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:217:20-71
+31    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+31-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:218:3-84
+31-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:218:20-81
+32    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+32-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:219:3-77
+32-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:219:20-74
+33    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+33-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:220:3-79
+33-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:220:20-76
+34    <uses-permission android:name="android.permission.WAKE_LOCK" />
+34-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:221:3-66
+34-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:221:20-63
+35    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+35-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:222:3-78
+35-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:222:20-75
+36    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+36-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:223:3-79
+36-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:223:20-76
+37    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+37-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:224:3-69
+37-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:224:20-66
+38    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+38-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:225:3-75
+38-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:225:20-72
+39
+40    <application
+40-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:6:3-196:17
+41        android:name="com.libreAlexa.LibreApplication"
+41-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:7:5-37
+42        android:allowBackup="false"
+42-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:8:5-32
+43        android:configChanges="keyboardHidden|orientation|screenSize"
+43-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:9:5-66
+44        android:hardwareAccelerated="false"
+44-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:10:5-40
+45        android:largeHeap="true" >
+45-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:11:5-29
+46        <activity
+46-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:12:5-15:45
+47            android:name="com.cumulations.libreV2.activity.oem.SetUpDeviceActivity"
+47-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:14:7-78
+48            android:exported="false"
+48-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:13:7-31
+49            android:screenOrientation="portrait" />
+49-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:15:7-43
+50        <activity
+50-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:16:5-19:45
+51            android:name="com.cumulations.libreV2.activity.oem.OpenGHomeAppActivity"
+51-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:18:7-79
+52            android:exported="false"
+52-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:17:7-31
+53            android:screenOrientation="portrait" />
+53-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:19:7-43
+54        <activity
+54-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:20:5-23:45
+55            android:name="com.cumulations.libreV2.activity.oem.HelpImproveChromeCastActivity"
+55-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:22:7-88
+56            android:exported="false"
+56-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:21:7-31
+57            android:screenOrientation="portrait" />
+57-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:23:7-43
+58        <activity
+58-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:24:5-27:45
+59            android:name="com.cumulations.libreV2.activity.oem.ActivateCastActivity"
+59-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:26:7-79
+60            android:exported="false"
+60-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:25:7-31
+61            android:screenOrientation="portrait" />
+61-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:27:7-43
+62        <activity
+62-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:28:5-31:45
+63            android:name="com.cumulations.libreV2.activity.oem.CastToSActivity"
+63-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:30:7-74
+64            android:exported="false"
+64-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:29:7-31
+65            android:screenOrientation="portrait" />
+65-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:31:7-43
+66        <activity
+66-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:32:5-35:45
+67            android:name="com.cumulations.libreV2.activity.CTBluetoothHearSoundQtn"
+67-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:34:7-78
+68            android:exported="true"
+68-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:33:7-30
+69            android:screenOrientation="portrait" />
+69-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:35:7-43
+70        <activity
+70-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:36:5-40:46
+71            android:name="com.cumulations.libreV2.activity.CTBluetoothPassCredentials"
+71-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:39:7-81
+72            android:exported="true"
+72-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:37:7-30
+73            android:launchMode="singleTask"
+73-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:38:7-38
+74            android:screenOrientation="portrait" />
+74-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:40:7-43
+75        <activity
+75-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:41:5-45:46
+76            android:name="com.cumulations.libreV2.activity.CTBluetoothDeviceListActivity"
+76-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:44:7-84
+77            android:exported="true"
+77-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:42:7-30
+78            android:launchMode="singleTask"
+78-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:43:7-38
+79            android:screenOrientation="portrait" />
+79-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:45:7-43
+80        <activity
+80-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:46:5-51:46
+81            android:name="com.cumulations.libreV2.activity.CTBluetoothSetupInstructionsActivity"
+81-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:50:7-91
+82            android:exported="true"
+82-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:47:7-30
+83            android:label="@string/title_activity_ctbluetooth_setup_instructions"
+83-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:48:7-76
+84            android:launchMode="singleTask"
+84-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:49:7-38
+85            android:screenOrientation="portrait" />
+85-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:51:7-43
+86        <activity
+86-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:52:5-55:45
+87            android:name="com.libreAlexa.util.spotifyInstructions"
+87-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:54:7-61
+88            android:exported="true"
+88-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:53:7-30
+89            android:screenOrientation="portrait" />
+89-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:55:7-43
+90        <activity
+90-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:56:5-61:46
+91            android:name="com.libreAlexa.Ls9Sac.GoogleCastUpdateAfterSac"
+91-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:60:7-68
+92            android:exported="true"
+92-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:57:7-30
+93            android:label="@string/title_activity_google_cast_update_after_sac"
+93-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:58:7-74
+94            android:launchMode="singleTask"
+94-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:59:7-38
+95            android:screenOrientation="portrait" />
+95-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:61:7-43
+96        <activity
+96-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:62:5-67:46
+97            android:name="com.libreAlexa.Ls9Sac.GcastUpdateStatusAvailableListView"
+97-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:66:7-78
+98            android:exported="true"
+98-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:63:7-30
+99            android:label="@string/title_activity_gcast_update_status_available"
+99-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:64:7-75
+100            android:launchMode="singleTask"
+100-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:65:7-38
+101            android:screenOrientation="portrait" />
+101-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:67:7-43
+102        <activity
+102-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:68:5-73:16
+103            android:name="com.cumulations.libreV2.activity.CTSplashScreenActivityV2"
+103-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:71:7-79
+104            android:exported="true"
+104-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:69:7-30
+105            android:label="@string/title_activity_welcome"
+105-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:70:7-53
+106            android:screenOrientation="portrait" >
+106-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:72:7-43
+107        </activity>
+108        <activity
+108-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:74:5-78:46
+109            android:name="com.cumulations.libreV2.activity.CTConnectToWifiActivity"
+109-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:77:7-78
+110            android:exported="true"
+110-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:75:7-30
+111            android:launchMode="singleTask"
+111-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:76:7-38
+112            android:screenOrientation="portrait" />
+112-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:78:7-43
+113        <activity
+113-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:79:5-83:46
+114            android:name="com.cumulations.libreV2.activity.CTWifiListActivity"
+114-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:82:7-73
+115            android:exported="true"
+115-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:80:7-30
+116            android:launchMode="singleTask"
+116-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:81:7-38
+117            android:screenOrientation="portrait" />
+117-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:83:7-43
+118        <activity
+118-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:84:5-88:46
+119            android:name="com.cumulations.libreV2.activity.CTConnectingToMainNetwork"
+119-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:87:7-80
+120            android:exported="true"
+120-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:85:7-30
+121            android:launchMode="singleTask"
+121-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:86:7-38
+122            android:screenOrientation="portrait" />
+122-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:88:7-43
+123        <activity
+123-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:89:5-93:46
+124            android:name="com.cumulations.libreV2.activity.CTAmazonInfoActivity"
+124-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:92:7-75
+125            android:exported="true"
+125-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:90:7-30
+126            android:launchMode="singleTask"
+126-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:91:7-38
+127            android:screenOrientation="portrait" />
+127-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:93:7-43
+128        <activity
+128-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:94:5-98:46
+129            android:name="com.cumulations.libreV2.activity.CTAmazonLoginActivity"
+129-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:97:7-76
+130            android:exported="true"
+130-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:95:7-30
+131            android:launchMode="singleTask"
+131-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:96:7-38
+132            android:screenOrientation="portrait" />
+132-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:98:7-43
+133        <activity
+133-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:100:5-116:16
+134            android:name="com.amazon.identity.auth.device.authorization.AuthorizationActivity"
+134-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:101:9-91
+135            android:allowTaskReparenting="true"
+135-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:102:9-44
+136            android:exported="true"
+136-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:104:9-32
+137            android:launchMode="singleTask"
+137-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:103:9-40
+138            android:theme="@android:style/Theme.NoDisplay" >
+138-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:105:9-55
+139            <intent-filter>
+139-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:106:7-115:23
+140                <action android:name="android.intent.action.VIEW" />
+140-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:107:9-61
+140-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:107:17-58
+141
+142                <category android:name="android.intent.category.DEFAULT" />
+142-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:109:9-68
+142-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:109:19-65
+143                <category android:name="android.intent.category.BROWSABLE" />
+143-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:110:9-70
+143-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:110:19-67
+144
+145                <data
+145-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:112:9-114:37
+146                    android:host="${applicationId}"
+146-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:113:13-44
+147                    android:scheme="amzn" />
+147-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:114:13-34
+148            </intent-filter>
+149        </activity>
+150        <activity
+150-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:117:5-121:46
+151            android:name="com.cumulations.libreV2.activity.CTAlexaThingsToTryActivity"
+151-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:120:7-81
+152            android:exported="true"
+152-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:118:7-30
+153            android:launchMode="singleTask"
+153-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:119:7-38
+154            android:screenOrientation="portrait" />
+154-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:121:7-43
+155
+156        <service
+156-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:122:5-124:83
+157            android:name="com.libreAlexa.app.dlna.dmc.processor.upnp.CoreUpnpService"
+157-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:124:7-80
+158            android:exported="false" />
+158-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:123:7-31
+159        <service
+159-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:125:5-127:91
+160            android:name="com.libreAlexa.app.dlna.dmc.processor.upnp.LoadLocalContentService"
+160-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:127:7-88
+161            android:exported="false" />
+161-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:126:7-31
+162        <service
+162-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:128:5-130:56
+163            android:name="com.libreAlexa.DMRPlayerService"
+163-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:130:7-53
+164            android:exported="false" />
+164-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:129:7-31
+165        <service
+165-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:131:5-133:78
+166            android:name="com.cumulations.libreV2.activity.BluetoothLeService"
+166-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:133:9-75
+167            android:exported="false" />
+167-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:132:9-33
+168
+169        <activity
+169-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:134:5-139:49
+170            android:name="com.cumulations.libreV2.activity.CTDeviceSettingsActivity"
+170-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:137:7-79
+171            android:exported="true"
+171-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:135:7-30
+172            android:launchMode="singleTask"
+172-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:136:7-38
+173            android:screenOrientation="portrait"
+173-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:138:7-43
+174            android:windowSoftInputMode="adjustPan" />
+174-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:139:7-46
+175        <activity
+175-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:140:5-144:46
+176            android:name="com.cumulations.libreV2.activity.CTSetupFailedActivity"
+176-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:143:7-76
+177            android:exported="true"
+177-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:141:7-30
+178            android:launchMode="singleTask"
+178-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:142:7-38
+179            android:screenOrientation="portrait" />
+179-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:144:7-43
+180        <activity
+180-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:145:5-149:46
+181            android:name="com.cumulations.libreV2.activity.CTHomeTabsActivity"
+181-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:148:7-73
+182            android:exported="true"
+182-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:146:7-30
+183            android:launchMode="singleTask"
+183-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:147:7-38
+184            android:screenOrientation="portrait" />
+184-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:149:7-43
+185        <activity
+185-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:150:5-154:46
+186            android:name="com.cumulations.libreV2.activity.CTMediaSourcesActivity"
+186-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:153:7-77
+187            android:exported="true"
+187-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:151:7-30
+188            android:launchMode="singleTask"
+188-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:152:7-38
+189            android:screenOrientation="portrait" />
+189-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:154:7-43
+190        <activity
+190-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:155:5-159:46
+191            android:name="com.cumulations.libreV2.activity.CTNowPlayingActivity"
+191-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:158:7-75
+192            android:exported="true"
+192-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:156:7-30
+193            android:launchMode="singleTask"
+193-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:157:7-38
+194            android:screenOrientation="portrait" />
+194-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:159:7-43
+195        <activity
+195-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:160:5-164:46
+196            android:name="com.cumulations.libreV2.activity.CTDMSBrowserActivityV2"
+196-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:163:7-77
+197            android:exported="true"
+197-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:161:7-30
+198            android:launchMode="singleTask"
+198-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:162:7-38
+199            android:screenOrientation="portrait" />
+199-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:164:7-43
+200        <activity
+200-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:165:5-169:46
+201            android:name="com.cumulations.libreV2.activity.CTLocalDMSActivity"
+201-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:168:7-73
+202            android:exported="true"
+202-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:166:7-30
+203            android:launchMode="singleTask"
+203-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:167:7-38
+204            android:screenOrientation="portrait" />
+204-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:169:7-43
+205        <activity
+205-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:170:5-174:46
+206            android:name="com.cumulations.libreV2.activity.CTUpnpFileBrowserActivity"
+206-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:173:7-80
+207            android:exported="true"
+207-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:171:7-30
+208            android:launchMode="singleTask"
+208-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:172:7-38
+209            android:screenOrientation="portrait" />
+209-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:174:7-43
+210        <activity
+210-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:175:5-179:46
+211            android:name="com.cumulations.libreV2.activity.CTDeviceBrowserActivity"
+211-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:178:7-78
+212            android:exported="true"
+212-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:176:7-30
+213            android:launchMode="singleTask"
+213-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:177:7-38
+214            android:screenOrientation="portrait" />
+214-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:179:7-43
+215        <activity
+215-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:180:5-184:46
+216            android:name="com.cumulations.libreV2.activity.CTDMSDeviceListActivity"
+216-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:183:7-78
+217            android:exported="true"
+217-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:181:7-30
+218            android:launchMode="singleTask"
+218-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:182:7-38
+219            android:screenOrientation="portrait" />
+219-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:184:7-43
+220        <activity
+220-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:185:5-189:46
+221            android:name="com.cumulations.libreV2.activity.CTBluetoothSomethingWrong"
+221-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:188:7-80
+222            android:exported="true"
+222-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:186:7-30
+223            android:launchMode="singleTask"
+223-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:187:7-38
+224            android:screenOrientation="portrait" />
+224-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:189:7-43
+225
+226        <meta-data
+226-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:191:5-193:66
+227            android:name="io.fabric.ApiKey"
+227-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:192:7-38
+228            android:value="b0f91dc7a6f0d7ee35d247281ac32a618a418970" />
+228-->/Users/shaikmansoor/Libre Work/Newfolder/LibreAndroid Projects/OEM APP/Archive/oemsdk/src/main/AndroidManifest.xml:193:7-63
+229    </application>
+230
+231</manifest>

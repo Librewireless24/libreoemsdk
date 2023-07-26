@@ -1,0 +1,377 @@
+<resources>
+  <string name="app_name">LibreVoice</string>
+  <string name="title_activity_welcome">LibreVoice</string>
+  <string name="hello_world">Hello world!</string>
+  <string name="action_settings">Settings</string>
+  <string name="play_music">Play music from…</string>
+  <string name="favorite_button">Favorites</string>
+
+  <string name="notification_ticker_text">Multi Room Audio</string>
+
+  <string name="BtOnAlert">Turning On BT</string>
+  <string name="AuxOnAlert">Turning On AUX</string>
+
+  <string name="ok">OK</string>
+  <string name="requestTimeout">Speaker response timed out. Please try again</string>
+
+  <string name="pleaseWait">Please wait…</string>
+
+  <!-- Error messages -->
+
+  <string name="browseFailed">Browse content failed!</string>
+  <string name="deviceNotFound">Speaker not found</string>
+  <string name="noContent">No content</string>
+  <string name="loadingMusic">Loading the music contents.Please wait..</string>
+  <string name="deviceMissing">Oops! Speaker is missing! check if it is still connected</string>
+  <string name="cancel">Cancel</string>
+  <string name="retry">Retry</string>
+  <string name="cannotCreateDMS">Cannot create DMS Processor</string>
+  <string name="loadingLocalContent">Loading Local contents</string>
+  <string name="restartAppManually">Loading of Local content failed! Auto restarting is failed.Please restart the app manually!</string>
+  <string name="failed">FAILED</string>
+  <string name="deviceNameChanging">Speaker Name Changing</string>
+  <string name="deviceLength">Speaker Name cannot be more than 50</string>
+  <string name="Settings">Settings</string>
+  <string name="deviceNamecannotBeEmpty">Speaker Name Cannot Be an Empty</string>
+  <string name="deviceRebooting">Speaker is Rebooting…</string>
+  <string name="httpPostFailed">HTTP Post Got Failed , please Retry By Clicking Save</string>
+  <string name="done">Done</string>
+  <string name="dontShowAgain">Dont Show Again</string>
+  <string name="doubleTapToExit">Please double tap to exit</string>
+  <string name="wifiConnectivityStatus">Wifi Connectivity Status</string>
+  <string name="connectToWifi">Connect to Wi-Fi network</string>
+  <string name="restartTitle">Network Change Happened,App Will Restart</string>
+  <string name="deviceNotAvailable">Speaker Not Available </string>
+  <string name="removeDeviceMsg">Do You Want To Remove The Speaker   </string>
+  <string name="removeDeviceMsg2"> from the List ??</string>
+  <string name="searchTextPlaceHolder">Please enter text to search</string>
+  <string name="enterText">Please enter text</string>
+  <string name="searchText">Please enter text to search</string>
+  <string name="storagePermitToast">You need to allow read storage permission to stream local media</string>
+  <string name="enableLocationPermit">You need to allow location permission to detect speaker Wi-Fi, please goto settings and enable
+        \'location\' permission.</string>
+  <string name="noNetworkFound">No Network Found!</string>
+  <string name="audio_output">Audio Output</string>
+  <string name="next">Next</string>
+
+  <string name="sdcard">SD Card</string>
+  <string name="mediaserver">Media Server</string>
+  <string name="bluetooth">Bluetooth</string>
+  <string name="aux">Aux In</string>
+  <string name="spotify">Spotify</string>
+  <string name="noDeviceFound">No free speakers available</string>
+  <string name="title_error_sac_message">
+        Please connect to speaker ssid
+    </string>
+  <string name="ipAddress">IP Address </string>
+  <string name="sourceIndexWrong">Selected source index is worng</string>
+  <string name="lastSong">Last Song</string>
+  <string name="no_item_empty">No item-Empty</string>
+  <string name="closingTheApp">Closing the Grundig App</string>
+  <string name="btOn">BT On</string>
+  <string name="casting">Casting</string>
+  <string name="actionFailed">Action Failed</string>
+  <string name="NoRenderer">No Renderer</string>
+  <string name="Devicenotplaying">Speaker not playing</string>
+  <string name="seek_not_allowed">Seek not allowed</string>
+  <string name="no_active_playlist">No active playlist available.Please select a song</string>
+  <string name="mConnectingToMainNetwork">Connecting To </string>
+  <string name="mSearchingTheDevce">Searching speakers…</string>
+
+  <string name="mConfiguredSuccessfully">Configured successfully</string>
+  <string name="mTimeoutSearching">Configuration Failed,
+        \n Please Retry Setup  </string>
+  <string name="title_activity_google_cast_update_after_sac">Firmware Upgrade</string>
+  <string name="gcast_update_done">Firmware Upgrade Completed
+        \nSpeaker is now Restarting </string>
+  <string name="title_activity_gcast_update_status_available">Firmware Update Status</string>
+  <string name="fwUpdateFailed">Firmware Update Failed</string>
+  <string name="no_update_gcast">No Update Available</string>
+  <string name="downloadingtheFirmare">Downloading the firmware update</string>
+  <string name="noupdateAvailable">No update available, setup is completed</string>
+  <string name="upgrading">Upgrading</string>
+  <string name="noDeviceUpdating">No device under update. </string>
+  <string name="newrestartApp">Network auto changed to  \" %1$s \" in Wi-Fi Settings Menu \nPlease reconnect to  \" %2$s \" </string>
+  <string name="PLAY_PAUSE_NOT_ALLOWED">Play/Pause not available</string>
+
+
+  <string name="NEXT_PREVIOUS_NOT_ALLOWED">Next/Prev not available</string>
+
+
+  <!--strings that were in Constants.java -->
+  <string name="SEEK_FAILED">SeekFailed</string>
+  <string name="RENDERER_NOT_PRESENT">Renderer not found,please try selecting source again or reboot device</string>
+  <string name="AVTRANSPORT_NOT_FOUND">AVTransport service not found,please refresh or reboot device</string>
+  <string name="FAIL_ALERT_TEXT">Playback Failed</string>
+  <string name="NO_URL_ALERT_TEXT">No URL</string>
+  // This will come for DMR too
+  <string name="NO_NEXT_SONG_ALERT_TEXT">End of playlist</string>// This will come for DMR too
+  <string name="NO_PREV_SONG_ALERT_TEXT">No previous song</string>
+  <string name="SONG_NOT_SUPPORTED">Unsupported format</string>
+  <string name="noItems">No items available</string>
+  <string name="retrieving">Please wait we are Retrieving Speaker Information</string>
+
+  <string name="getting_scan_results">Getting Speaker ScanResults..</string>
+  <string name="password">Password</string>
+  <string name="open">OPEN</string>
+  <string name="left">Left</string>
+  <string name="right">Right</string>
+  <string name="skip">Skip</string>
+  <string name="things_try">Things to try out</string>
+  <string name="screen2_tv1">Here are some of the many things \n you can ask Alexa</string>
+
+  <string name="learn_more1">To learn more and access additional features,</string>
+  <string name="learn_more2">download the </string>
+  <string name="learn_more3"> Amazon Alexa App.</string>
+  <string name="ask_alexa1">Alexa, what\'s the weather?</string>
+  <string name="ask_alexa2">Alexa, play my Flash Briefing.</string>
+  <string name="ask_alexa3">Alexa, what are some top rated \nIndian restaurants?</string>
+  <string name="ask_alexa4">Alexa, set Timer for 20 mins.</string>
+  <string name="sign_in_az">Sign in to your Amazon account to enable Alexa Voice Service features.</string>
+  <string name="engUSLang">English (US)</string>
+
+  <!-- webView-->
+  <string name="engUKLang">English (UK)</string>
+
+  <string name="deutschLang">Deutsch</string>
+  <string name="frenchLang">French</string>
+  <string name="italyLang">Italy</string>
+  <string name="spainLang">Spain</string>
+  <string name="alexaText">amazon alexa</string>
+  <string name="somethingWentWrong">Something went wrong , please try again later.</string>
+
+
+  <string name="enableRecordPermit">Permission to record audio is required to instruct Alexa, please goto app settings and enable
+        \'Microphone\' permission</string>
+
+  <!--Alexa cognito-->
+  <string name="deviceMicOn">Speaker MIC is ON</string>
+  <string name="get_started">Get Started</string>
+  <string name="permission_location_rationale">You need to allow location permission to detect speaker Wi-Fi</string>
+
+  //location enable strings
+  <string name="discovery">Discovery</string>
+  <string name="add">Add</string>
+  <string name="tutorials">Tutorials</string>
+  <string name="no_device_found">No speaker found</string>
+  <string name="make_sure_devices_connected_to_wifi">Make sure all of your speakers are connected to the same Wi-Fi and refresh</string>
+  <string name="refresh">Refresh</string>
+  <string name="using_speaker_first_time">Using the speaker for the first time?</string>
+  <string name="setup_speaker">Setup New Speaker</string>
+  <string name="device_setup2">Speaker Setup</string>
+  <string name="setup_instructions">Setup Instructions</string>
+  <string name="one">1</string>
+  <string name="power_on_libre_device">Power on Libre speaker</string>
+  <string name="go_to_wifi_settings">Go to Wi-Fi settings and select \'RIVAACONCERT_xxxxxx\'/\'RIVAASTADIUM_xxxxxx\' from the Wi-Fi list</string>
+  <string name="two">2</string>
+  <string name="three">3</string>
+  <string name="after_connecting_to_libre_device"><![CDATA[After connecting to the Libre speaker, return to the LibreVoice app & click next]]></string>
+  <string name="wifi_settings">Wi-Fi Settings</string>
+  <string name="device_name">Speaker Name</string>
+  <string name="connect_device_to_wifi">Connect speaker to Wi-Fi network</string>
+  <string name="select_wifi">Select a Wi-Fi</string>
+  <string name="wifi_pwd">Wi-Fi Password</string>
+  <string name="hmmm">Hmmm…</string>
+  <string name="not_sure_device_setup_completed">We are not able to make sure whether the speaker setup has completed.</string>
+  <string name="device_light_white">If the speaker light is white.</string>
+  <string name="make_sure_connected_to_same_wifi">Make sure your phone is connected to the same Wi-Fi network*</string>
+  <string name="device_blinking_white">If the speaker light is blinking white.</string>
+  <string name="entered_incorrect_wifi_pwd">You might have entered incorrect Wi-Fi password*</string>
+  <string name="device_blinking_colors">If the speaker light is blinking colors.</string>
+  <string name="update_pending_wait">The updating is still going on, please wait a few minutes.</string>
+  <string name="start_setup_resetting_msg">*You can start the setup again by resetting your speaker.</string>
+  <string name="ok_got_it">OK, I got it</string>
+  <string name="login_with_amazon_msg"><![CDATA[To enable voice commands & Amazon services, please login with Amazon account.]]></string>
+  <string name="sign_in_with_amazon">Sign in with Amazon</string>
+  <string name="signin_later">I will sign in later</string>
+  <string name="device_setup_successfull">Your speaker has been set up successfully.</string>
+  <string name="congrats">Congrats!</string>
+  <string name="wifi_list_unavailable">No Wi-Fi results available</string>
+  <string name="amazon_login">Amazon Login</string>
+  <string name="login_with_amazon">Login with Amazon</string>
+  <string name="connect_amazon_account">Your speaker includes access to Alexa. Connect your Amazon account to access  personalized features.</string>
+  <string name="alexa_info">Alexa allows you to use your voice to play music and get news, sorts scores, weather and more- all hands-free. All you have to do is ask Alexa.</string>
+  <string name="amazon_alexa">amazon alexa</string>
+  <string name="password_empty_error">Password cannot be empty</string>
+  <string name="wifi_password_invalid">Invalid Wi-Fi password</string>
+  <string name="device_name_empty">Enter speaker name</string>
+  <string name="configuring_device">Configuring Speaker…</string>
+  <string name="setting_up_device"><![CDATA[Setting up speaker & looking for update]]></string>
+  <string name="connected_speakers">Connected Speakers</string>
+  <string name="speaker_ready_cmds">Speaker is ready for commands</string>
+  <string name="logout">Logout</string>
+  <string name="libre_voice">LibreVoice</string>
+  <string name="login_to_enable_cmds">Login to enable voice commands</string>
+  <string name="speaker_ready_for_cmds">Speaker is ready for commands</string>
+  <string name="speaker_ready_for_use">Speaker is ready to use</string>
+  <string name="listening">Listening …</string>
+  <string name="login_with_amazon_warn">You need to login to Amazon to enable speech commands</string>
+  <string name="riva_tutorial_url">https://rivaaudio.com/alexa-tutorial/en/index.html</string>
+  <string name="version_only">Version</string>
+  <string name="language">Language</string>
+  <string name="english">English</string>
+  <string name="bass">Bass</string>
+  <string name="treble">Treble</string>
+  <string name="system_firmware">System Firmware</string>
+  <string name="host_firmware">Host Firmware</string>
+  <string name="away_mode_info">Away Mode Info</string>
+  <string name="edit">Edit</string>
+  <string name="network_name">Network Name</string>
+  <string name="alexa_settings">Alexa settings</string>
+  <string name="logged_in">Logged In</string>
+  <string name="alexa_locale">Alexa Locale</string>
+  <string name="speech_volume_follow">Speech Volume Follow</string>
+  <string name="off">Off</string>
+  <string name="volume">Volume</string>
+  <string name="software_update">Software Update</string>
+  <string name="on">On</string>
+  <string name="select_locale">Select locale for Alexa</string>
+  <string name="logged_out">Logged Out</string>
+  <string name="mac_address">MAC Address</string>
+  <string name="general_settings">General settings</string>
+  <string name="connect_to_wifi">Please turn on WiFi to discover streaming speakers</string>
+  <string name="permission_record_rationale">You need to allow microphone permission to instruct Alexa</string>
+  <string name="enable_location">Location must be turned on to detect speaker Wi-Fi</string>
+  <string name="my_device">My Device</string>
+  <string name="usb_storage">USB Storage</string>
+  <string name="other_input_types">Other input types</string>
+  <string name="aux_label">Aux</string>
+  <string name="alexa_not_connected">Amazon Alexa account not connected</string>
+  <string name="music">Music</string>
+  <string name="lastSongPlayed">No next song. End of playlist</string>
+  <string name="onlyOneSong">No previous song available</string>
+
+  <string name="loading_next_items">Loading next items..</string>
+  <string name="loading_prev_items">Loading previous items…</string>
+  <string name="select_audio_output">Select audio output</string>
+  <string name="trillium">Trillium</string>
+  <string name="power">Power</string>
+  <string name="select_media_server">Please select the media server:</string>
+  <string name="mb223_update_started">Internet firmware update started…</string>
+  <string name="mb223_update_download">Firmware image downloading started</string>
+  <string name="mb223_update_image_available">Firmware image downloaded from server and ready to update speaker</string>
+  <string name="mb223_download_fail">Downloading of firmware image from server failed</string>
+  <string name="please_selecte_wifi">Please select Wi-Fi</string>
+  <string name="setting_up_speaker">Setting up speaker and looking for update</string>
+  <string name="now_rebooting">Now rebooting !</string>
+  <string name="indicating_light">Indicating light will breath in blue and turn white at the end …</string>
+  <string name="updating_your_speaker">Updating your speaker</string>
+  <string name="updating_in_progress">Firmware Update in progress...</string>
+  <string name="you_will_see_flashing">You will see flashing red, blue and green lights …</string>
+  <string name="your_device_is_currently">Your device is currently being upgraded which may take upto 5 minutes</string>
+  <string name="open_wifi_settings">Open Wi-Fi settings</string>
+  <string name="searching_renderer">Searching the renderer…</string>
+  <string name="notifications_channel_description">Displays a notification which tells service is running to discover DMR devices</string>
+  <string name="foreground_channel_id">riva_foreground_channel</string>
+  <string name="bluetooth_hd">Bluetooth</string>
+  <string name="bt_setup_instructions">We will make use of Bluetooth to ease your device setup</string>
+  <string name="bt_setup_instructions_on">Please turn bluetooth on</string>
+  <string name="other_opt">Other Option</string>
+  <string name="title_activity_ctbluetooth_setup_instructions">Bluetooth</string>
+  <string name="get_scan_results">Getting Scan Results</string>
+  <string name="get_connecting">Connecting</string>
+
+  <string name="credientials_invalid">Credentials are Wrong</string>
+  <string name="configuration_failed_hd">Configuration failed</string>
+  <string name="configuration_failed_msg">Incorrect Password</string>
+  <string name="configuration_timeout_msg">Timeout Happened , Retry </string>
+  <string name="scanning">Finding BLE devices</string>
+  <string name="choose_device">Choose the device you would like to setup</string>
+  <string name="looking_for_devices">Finding for devices...</string>
+  <string name="cred_received">Credentials received by the Speaker</string>
+  <string name="cred_success">Credentials are passed</string>
+  <string name="start_connecting">Speaker started connecting to Network</string>
+  <string name="speaker_connected">Speaker connected to Network</string>
+  <string name="ap_notfound">Speaker couldn\'t able to find AP</string>
+  <string name="play_tone">Play Tone</string>
+  <string name="play_tone_request">Requesting to Play Tone</string>
+  <string name="something_wrong">Something is wrong</string>
+
+  <string name="something_wrong_msg">If you are not hearing the sound , you may be attempting to setup the wrong device</string>
+  <string name="did_u_hear_sound">Did you hear the sound ?</string>
+  <string name="yes">Yes</string>
+  <string name="retry_hearsound">Retry</string>
+  <string name="setup_name">LibreVoice</string>
+  <string name="notification_content_text">Speaker playing locally</string>
+
+  <string name="localDmsNotReady">Oops! Local server not ready</string>
+  <string name="new_spotify_heading">Ask Alexa to play your favourite playlists , artists and genres.For example, just say, \"Alexa, play Today’s Top Hits”.</string>
+  <string name="new_spotify_heading2">Listen	on	your speakers or TV, using the Spotify app as a	remote.</string>
+  <string name="alexa_login_failed">Fetching Alexa Login Status Failed,Please try Again Later</string>
+  <string name="alexa_not_supported">Alexa Login not supported on this Device</string>
+
+  <string name="new_spotify_main_header">Use your voice to control Spotify.</string>
+  <string name="remote_control">Remote Control</string>
+  <string name="openspotifyapp">Open Spotify App</string>
+  <string name="spotifyConnect">Spotify Connect</string>
+  <string name="learnMore">Learn more</string>
+  <string name="SPOTIFY_NOT_AVAILABLE_FOR_FREE">This function is not allowed now.</string>
+  <string name="SPOTIFY_NOT_SUPPORTED_FOR_FREE">This function is not available.</string>
+  /*Spotify Errors Strings*/
+  <string name="SPOTIFY_SHUFFLE_OFF_NOT_SUPPORTED_FOR_FREE">This function is not available.</string>
+  <string name="SPOTIFY_ADS_PLAYING">This function is not allowed while playing Ads.</string>
+  <string name="SPOTIFY_ERROR">Ignore this error for now. Will check later.</string>
+
+  <string name="chromecast_settings">Chromecast Settings</string>
+  <string name="chromecast_builtin">Chromecast built-in</string>
+
+
+  <!--OME App  strings by Shaik 04/18/2023-->
+  <string name="open_spotify">Open Spotify</string>
+  <string name="accept">Accept</string>
+  <string name="tos_accept">Stream the music you love using your favorite apps on your phone, tablet, or laptop to this soundbar.\n\n\nBy clicking “Accept” below, you are indicating your agreement to the <u><b><font color='#FF3351F4'>Google Terms of Service</font></b></u> and <u><b><font color='#FF3351F4'>Google Privacy Policy</font></b></u>, which govern your use of Chromecast built-in.</string>
+  <string name="google_home"><u>Google Home App Deep Link Intent</u></string>
+  <string name="activate_cast">Activate Cast</string>
+  <string name="looking_cast_status">Looking for cast status</string>
+  <string name="cast_enabled">Cast is enabled</string>
+  <string name="send_device_usage">Send device usage and crash reports to Google</string>
+  <string name="google_account_controls">This selection does not affect your Google Account controls at &lt;my account&gt;.google.com</string>
+  <string name="set_up_voice_control">Set up voice control and multiroom in the <u><font color='#FF3351F4'>Google Home App</font></u></string>
+  <string name="set_up_voice_control_tab">Set up voice control and multiroom in the <u><font color='#FF3351F4'>\nGoogle Home App</font></u></string>
+  <string name="help_improve_chromecast">Help Improve\nChromecast built-in</string>
+  <string name="do_you_want_help_improve">Do you want to help improve everyone’s experience by sharing device stats and crash reports with Google?</string>
+  <string name="learn_more"><u>Learn More</u></string>
+  <string name="no_thanks">No, thanks</string>
+  <string name="yes_im_in">Yes, I’m in</string>
+  <string name="start_casting">You are ready to start casting. Look for the Cast button in hundreds of apps</string>
+  <string name="setup_voice_control">To setup voice control from a Google Assistant-enabled speaker and multiroom groups with Chromecast-enabled speakers, download the Google Home app</string>
+  <string name="open_home_app">Open Home app</string>
+  <string name="speaker">Speaker"&#x20;"</string>
+  <string name="successfully_setup">"&#x20;"has been successfully setup.</string>
+  <string name="optionally_you_can_set_up">Optionally, You can set up the below features now, or Skip to home. If you wish to setup later, you can find it in speaker settings.</string>
+  <string name="setup_chromecast">Setup Chromecast</string>
+  <string name="skip_to_home">Skip to Home</string>
+  <string name="setup_amazon_login">Setup Amazon Login</string>
+  <string name="setup_device">Setup Device</string>
+  <string name="amazon_login_caps">Amazon Login</string>
+  <string name="ip_null">Ip address is Null</string>
+  <string name="app_not_installed">App Not Installed Alert</string>
+  <string name="google_home_install">Google Home app is not installed in your phone. Would you like to install.</string>
+  <string name="ghome_link">https://play.google.com/store/apps/details?id=com.google.android.apps.chromecast.app</string>
+  <string name="yes_str">YES</string>
+  <string name="configuration_successful">Configuration Successful!</string>
+  <string name="no_bluetooth_device_found">No Bluetooth Device Found</string>
+  <string name="bluetooth_msg"> We will use of bluetooth to ease your device setup</string>
+  <string name="turn_on_ble">Please check if your device is in Setup mode and refresh </string>
+  <string name="splashscreen_maintext">Multiroom Audio Systems</string>
+  <string name="powered_text">Powered by DDMS technology</string>
+  <string name="brand_name">Libre Voice</string>
+  <string-array name="audio_output_array">
+    <item>Stereo (S)</item>
+    <item>Left Speaker (L)</item>
+    <item>Right Speaker (R)</item>
+    <!--
+        <item>Left Rear Subwoofer(LRSub)</item>
+        <item>Right Rear Subwoofer(RRSub)</item>
+        <item>Subwoofer(Sub)</item>-->
+  </string-array>
+  <string-array name="audio_preset_array">
+    <item>Normal</item>
+    <item>Flat</item>
+    <item>Vocal</item>
+    <item>Rock</item>
+    <item>DRC</item>
+  </string-array>
+
+
+</resources>
