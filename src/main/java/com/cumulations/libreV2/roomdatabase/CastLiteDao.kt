@@ -11,7 +11,7 @@ import androidx.room.Update
  */
 @Dao
 interface CastLiteDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert
     fun addDeviceUUID(castLiteData: CastLiteUUIDDataClass): Long
 
     @Query("SELECT * FROM uuidDataClass ORDER BY device_ip DESC")

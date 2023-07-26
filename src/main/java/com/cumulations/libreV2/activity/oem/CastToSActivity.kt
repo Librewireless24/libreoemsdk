@@ -246,7 +246,7 @@ class CastToSActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionListn
             } catch (e: NullPointerException) {
                 e.printStackTrace()
                 val uuid: String = UUID.randomUUID().toString()
-                val addDeviceDate = CastLiteUUIDDataClass(speakerIpAddress, speakerName!!, "", uuid)
+                val addDeviceDate = CastLiteUUIDDataClass(0,speakerIpAddress, speakerName!!, uuid)
                 libreVoiceDatabaseDao.addDeviceUUID(addDeviceDate)
                 delay(2000)
                 fetchUUIDFromDB(speakerIpAddress)

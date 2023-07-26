@@ -2182,9 +2182,9 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
     fun insertDeviceIntoDb(lsdNodes: LSSDPNodes, s: String) {
         val uuid: String = randomUUID().toString()
         LibreLogger.d(TAG_SECUREROOM, "insertDeviceIntoDb: " + s + " and " + lsdNodes.ip + " uuid" + " is:- " + uuid+" name is ${lsdNodes.friendlyname}")
-        val addDeviceDate = CastLiteUUIDDataClass(lsdNodes.ip, lsdNodes.friendlyname, "", uuid)
-        lifecycleScope.launch(Dispatchers.IO) {
-            delay(2000)
+        val addDeviceDate = CastLiteUUIDDataClass(0,lsdNodes.ip, lsdNodes.friendlyname,  uuid)
+        GlobalScope.launch(Dispatchers.IO) {
+            delay(5000)
             try {
                 val id= libreVoiceDatabaseDao.addDeviceUUID(addDeviceDate)
                 LibreLogger.d(TAG_SECUREROOM, "insertDeviceIntoDb: success status  $id")

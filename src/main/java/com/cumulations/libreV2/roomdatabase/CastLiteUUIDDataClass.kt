@@ -9,14 +9,10 @@ import androidx.room.PrimaryKey
  */
 @Entity(tableName = "uuidDataClass")
 data class CastLiteUUIDDataClass(
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name ="id") var id: Int,
     @NonNull
-    @ColumnInfo(name ="device_ip")
-    var deviceIP  : String ,
-    @ColumnInfo(name ="request_type")
-    var requestType : String,
-    @ColumnInfo(name ="id")
-    var id: String,
-    @ColumnInfo(name ="device_uuid")
-    var deviceUuid  : String
+    @ColumnInfo(name ="device_ip") var deviceIP: String ,
+    @ColumnInfo(name ="request_type") var requestType: String,
+    @ColumnInfo(name ="device_uuid") var deviceUuid: String
 )
