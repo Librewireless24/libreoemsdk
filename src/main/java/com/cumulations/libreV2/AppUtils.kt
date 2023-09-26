@@ -13,6 +13,7 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.util.Patterns
+import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -137,7 +138,6 @@ object AppUtils {
     
     fun updateSceneObjectWithPlayJsonWindow(window: JSONObject,
         oldSceneObject: SceneObject): SceneObject {
-        LibreLogger.d("AppUtil"," and window: $window")
         if (window.has("TrackName")) {
             oldSceneObject.trackName = window.getString("TrackName")
         } else {
@@ -208,7 +208,7 @@ object AppUtils {
             }else{
                 ""
             }
-            LibreLogger.d(TAG, "JSON recieved for control JSON " + controlJson)
+            LibreLogger.d(TAG, "JSON recieved for control JSON $controlJson")
 
             if (controlJson == null || controlJson.isEmpty() || controlJson.equals("null",true))
                 return
@@ -351,6 +351,23 @@ object AppUtils {
         editor.commit()
         isFirst = pref?.getBoolean("Libre_key", false) ?: false
         return isFirst
+    }
+    /**
+     * Shaik The Below Function is custom made function for the playPause icon with loader
+     * Discussed with Suma
+     */
+    fun setPlayPauseLoader(ivPlayPauseView: ProgressButtonImageView,
+        isEnabled: Boolean,
+        isLoader: Boolean,
+        image: Int) {
+        ivPlayPauseView.setLoading(isLoader)
+        ivPlayPauseView.isEnabled = isEnabled
+        if (image != 0 || isLoader) {
+            ivPlayPauseView.visibility = View.VISIBLE
+            ivPlayPauseView.setImageResource(image)
+        } else {
+            ivPlayPauseView.visibility = View.GONE
+        }
     }
 
 }

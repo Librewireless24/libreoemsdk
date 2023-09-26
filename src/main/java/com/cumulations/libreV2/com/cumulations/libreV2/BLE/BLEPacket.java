@@ -1,5 +1,7 @@
 package com.cumulations.libreV2.com.cumulations.libreV2.BLE;
 
+import com.libreAlexa.util.LibreLogger;
+
 /**
  * This class represents the message being exchanged between device and the application
  *
@@ -115,8 +117,10 @@ public class BLEPacket {
         mDataPacket.setmCompleteMessage(message);
         if((byte)(message[0] & 0xFF )== START_DELIMITER) {
             mDataPacket.command = (byte)( message[1] & 0xFF);
-
-            mDataPacket.dataLength = (short)(message[3] * 16 + message[2]& 0xFF);
+            //Shaik Old code receiving the 23 bytes of data
+           // mDataPacket.dataLength = (short)(message[3] * 16 + message[2]& 0xFF);
+            //Shaik new Code receiving the large amount of data tested in with FW with Sampath
+            mDataPacket.dataLength = (short)(((message[3]&0xFF) << 8) | message[2]& 0xFF);
             mDataPacket.message = new byte[mDataPacket.dataLength];
             for(int i =0 ;i < mDataPacket.dataLength ;i++) {
                 if(message[i+4] == END_DELIMITER) {

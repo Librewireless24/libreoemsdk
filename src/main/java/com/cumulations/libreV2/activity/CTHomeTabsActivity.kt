@@ -1,13 +1,12 @@
 package com.cumulations.libreV2.activity
 
-import android.annotation.SuppressLint
+import android.Manifest
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.cumulations.libreV2.AppUtils
@@ -41,8 +40,6 @@ class CTHomeTabsActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractionLis
     private val mTaskHandlerForSendingMSearch = Handler(Looper.getMainLooper())
     private val mMyTaskRunnableForMSearch = Runnable {
         showLoader(false)
-        //Change 1
-        // val application = application as LibreApplication?
         ScanThread.getInstance().UpdateNodes()
 
 
@@ -88,13 +85,10 @@ class CTHomeTabsActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractionLis
         openFragment(loadFragmentName!!,animate = false)
     }
 
-    @SuppressLint("HardwareIds")
+
     override fun onStart() {
         super.onStart()
         isActivityVisible = true
-        LibreLogger.d(TAG,"onStart, binding.bottomNavigation?.selectedItemId = ${binding.bottomNavigation.selectedItemId}")
-        LibreLogger.d(TAG,"onStart, tabSelected = $tabSelected")
-
         when {
             LibreApplication.isSacFlowStarted -> {
                 binding.bottomNavigation.selectedItemId = R.id.action_discover
@@ -108,7 +102,6 @@ class CTHomeTabsActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractionLis
             }
             tabSelected!=CTDeviceSetupInfoFragment::class.java.simpleName -> binding.bottomNavigation.selectedItemId = R.id.action_discover
         }
-        LibreLogger.d(TAG,"==mandateDialog==1 Home tab Activity ")
         checkLocationPermission()
     }
 
@@ -140,18 +133,25 @@ class CTHomeTabsActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractionLis
                 }
 
                 R.id.action_add -> {
-		   otherTabClicked = true
-                    val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager?
-                    val mBluetoothAdapter = bluetoothManager!!.adapter
-                    if (!BLEUtils.checkBluetooth(mBluetoothAdapter)) {
-                        val intent = Intent(this, CTBluetoothSetupInstructionsActivity::class.java)
-                        startActivity(intent)
-                        finish()
-                    }else {
-                        val intent = Intent(this,CTBluetoothDeviceListActivity::class.java)
-                        startActivity(intent)
-                        finish()
-                    }
+                    otherTabClicked = true
+                    //Checking Location Permission before going to Setup Screen
+                    val fineLocationPermission=AppUtils.isPermissionGranted(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                        if(fineLocationPermission) {
+                            val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager?
+                            val mBluetoothAdapter = bluetoothManager!!.adapter
+                            if (!BLEUtils.checkBluetooth(mBluetoothAdapter)) {
+                                val intent = Intent(this, CTBluetoothSetupInstructionsActivity::class.java)
+                                startActivity(intent)
+                                finish()
+                            } else {
+                                val intent = Intent(this, CTBluetoothDeviceListActivity::class.java)
+                                startActivity(intent)
+                                finish()
+                            }
+                        }else{
+                            checkLocationPermission()
+                        }
+
 
                 }
 
@@ -170,7 +170,6 @@ class CTHomeTabsActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractionLis
 
 
             mTaskHandlerForSendingMSearch.removeCallbacks(mMyTaskRunnableForMSearch)
-            LibreLogger.d(TAG,"bottom nav clicked clicked ${it.title}")
             if (fragmentToLoad == null){
                 false
             } else {
@@ -210,12 +209,9 @@ class CTHomeTabsActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractionLis
     }
 
     fun refreshDevices() {
-        LibreLogger.d(TAG, "Refresh Devices")
         showLoader(true)
         removeAllFragments()
         clearBatteryInfoForDevices()
-        //Change 2
-        //libreApplication.scanThread?.UpdateNodes()
         ScanThread.getInstance().UpdateNodes()
         /*Send m-search packet after 5 seconds*/
         mTaskHandlerForSendingMSearch.postDelayed(mMyTaskRunnableForMSearch, Constants.LOADING_TIMEOUT.toLong())
@@ -284,13 +280,11 @@ class CTHomeTabsActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractionLis
     private fun loadFragment(fragment: Fragment?,animate: Boolean): Boolean {
         //switching fragment
         if (fragment != null && isActivityVisible) {
-            LibreLogger.d(TAG,"loadFragment: "+fragment::class.java.simpleName)
             try {
                 supportFragmentManager
                         .beginTransaction()
                         .apply {
                             if (animate) setCustomAnimations(R.anim.slide_in_right,R.anim.slide_out_left)
-                           // replace(R.id.fl_container, fragment,fragment::class.java.simpleName)
                             replace(binding.flContainer.id, fragment,fragment::class.java.simpleName)
                             commit()
                         }
@@ -299,15 +293,12 @@ class CTHomeTabsActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractionLis
                 e.printStackTrace()
                 LibreLogger.d(TAG,"loadFragment exception ${e.message}")
             }
-
-//            fl_container.visibility = View.VISIBLE
             return true
         }
         return false
     }
 
     override fun wifiConnected(connected: Boolean) {
-        LibreLogger.d(TAG,"wifiConnected, home $connected")
         /*making method to be called in parent activity as well*/
         super.wifiConnected(connected)
         /*Avoid changing when activity is not visible i.e when user goes to wifi settings

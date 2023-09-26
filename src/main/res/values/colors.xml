@@ -45,6 +45,7 @@
     <color name="close_mark">#212122</color>
     <color name="close_mark_night_theme">#FFFFFFFF</color>
     <color name="help_close_mark">#212122</color>
+    <color name="spotify_color">#1DB954</color>
 
 
 </resources>

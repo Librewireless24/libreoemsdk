@@ -44,7 +44,7 @@ class OpenGHomeAppActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteraction
     private val from by lazy {
         intent.getStringExtra(Constants.FROM_ACTIVITY)
     }
-    var isHomeAppOpen: Boolean = false
+    private var isHomeAppOpen: Boolean = false
 
     private lateinit var binding: ActivityOpenHomeAppBinding
     override fun onCreate(savedInstanceState: Bundle?) {

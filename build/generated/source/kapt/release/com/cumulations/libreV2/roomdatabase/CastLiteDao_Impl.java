@@ -36,25 +36,21 @@ public final class CastLiteDao_Impl implements CastLiteDao {
     this.__insertionAdapterOfCastLiteUUIDDataClass = new EntityInsertionAdapter<CastLiteUUIDDataClass>(__db) {
       @Override
       public String createQuery() {
-        return "INSERT OR REPLACE INTO `uuidDataClass` (`device_ip`,`request_type`,`id`,`device_uuid`) VALUES (?,?,?,?)";
+        return "INSERT OR ABORT INTO `uuidDataClass` (`id`,`device_ip`,`request_type`,`device_uuid`) VALUES (nullif(?, 0),?,?,?)";
       }
 
       @Override
       public void bind(SupportSQLiteStatement stmt, CastLiteUUIDDataClass value) {
+        stmt.bindLong(1, value.getId());
         if (value.getDeviceIP() == null) {
-          stmt.bindNull(1);
-        } else {
-          stmt.bindString(1, value.getDeviceIP());
-        }
-        if (value.getRequestType() == null) {
           stmt.bindNull(2);
         } else {
-          stmt.bindString(2, value.getRequestType());
+          stmt.bindString(2, value.getDeviceIP());
         }
-        if (value.getId() == null) {
+        if (value.getRequestType() == null) {
           stmt.bindNull(3);
         } else {
-          stmt.bindString(3, value.getId());
+          stmt.bindString(3, value.getRequestType());
         }
         if (value.getDeviceUuid() == null) {
           stmt.bindNull(4);
@@ -66,51 +62,39 @@ public final class CastLiteDao_Impl implements CastLiteDao {
     this.__deletionAdapterOfCastLiteUUIDDataClass = new EntityDeletionOrUpdateAdapter<CastLiteUUIDDataClass>(__db) {
       @Override
       public String createQuery() {
-        return "DELETE FROM `uuidDataClass` WHERE `device_ip` = ?";
+        return "DELETE FROM `uuidDataClass` WHERE `id` = ?";
       }
 
       @Override
       public void bind(SupportSQLiteStatement stmt, CastLiteUUIDDataClass value) {
-        if (value.getDeviceIP() == null) {
-          stmt.bindNull(1);
-        } else {
-          stmt.bindString(1, value.getDeviceIP());
-        }
+        stmt.bindLong(1, value.getId());
       }
     };
     this.__updateAdapterOfCastLiteUUIDDataClass = new EntityDeletionOrUpdateAdapter<CastLiteUUIDDataClass>(__db) {
       @Override
       public String createQuery() {
-        return "UPDATE OR ABORT `uuidDataClass` SET `device_ip` = ?,`request_type` = ?,`id` = ?,`device_uuid` = ? WHERE `device_ip` = ?";
+        return "UPDATE OR ABORT `uuidDataClass` SET `id` = ?,`device_ip` = ?,`request_type` = ?,`device_uuid` = ? WHERE `id` = ?";
       }
 
       @Override
       public void bind(SupportSQLiteStatement stmt, CastLiteUUIDDataClass value) {
+        stmt.bindLong(1, value.getId());
         if (value.getDeviceIP() == null) {
-          stmt.bindNull(1);
-        } else {
-          stmt.bindString(1, value.getDeviceIP());
-        }
-        if (value.getRequestType() == null) {
           stmt.bindNull(2);
         } else {
-          stmt.bindString(2, value.getRequestType());
+          stmt.bindString(2, value.getDeviceIP());
         }
-        if (value.getId() == null) {
+        if (value.getRequestType() == null) {
           stmt.bindNull(3);
         } else {
-          stmt.bindString(3, value.getId());
+          stmt.bindString(3, value.getRequestType());
         }
         if (value.getDeviceUuid() == null) {
           stmt.bindNull(4);
         } else {
           stmt.bindString(4, value.getDeviceUuid());
         }
-        if (value.getDeviceIP() == null) {
-          stmt.bindNull(5);
-        } else {
-          stmt.bindString(5, value.getDeviceIP());
-        }
+        stmt.bindLong(5, value.getId());
       }
     };
     this.__preparedStmtOfDeleteDeviceUUID = new SharedSQLiteStatement(__db) {
@@ -186,13 +170,15 @@ public final class CastLiteDao_Impl implements CastLiteDao {
     __db.assertNotSuspendingTransaction();
     final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
     try {
+      final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
       final int _cursorIndexOfDeviceIP = CursorUtil.getColumnIndexOrThrow(_cursor, "device_ip");
       final int _cursorIndexOfRequestType = CursorUtil.getColumnIndexOrThrow(_cursor, "request_type");
-      final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
       final int _cursorIndexOfDeviceUuid = CursorUtil.getColumnIndexOrThrow(_cursor, "device_uuid");
       final List<CastLiteUUIDDataClass> _result = new ArrayList<CastLiteUUIDDataClass>(_cursor.getCount());
       while(_cursor.moveToNext()) {
         final CastLiteUUIDDataClass _item;
+        final int _tmpId;
+        _tmpId = _cursor.getInt(_cursorIndexOfId);
         final String _tmpDeviceIP;
         if (_cursor.isNull(_cursorIndexOfDeviceIP)) {
           _tmpDeviceIP = null;
@@ -205,19 +191,13 @@ public final class CastLiteDao_Impl implements CastLiteDao {
         } else {
           _tmpRequestType = _cursor.getString(_cursorIndexOfRequestType);
         }
-        final String _tmpId;
-        if (_cursor.isNull(_cursorIndexOfId)) {
-          _tmpId = null;
-        } else {
-          _tmpId = _cursor.getString(_cursorIndexOfId);
-        }
         final String _tmpDeviceUuid;
         if (_cursor.isNull(_cursorIndexOfDeviceUuid)) {
           _tmpDeviceUuid = null;
         } else {
           _tmpDeviceUuid = _cursor.getString(_cursorIndexOfDeviceUuid);
         }
-        _item = new CastLiteUUIDDataClass(_tmpDeviceIP,_tmpRequestType,_tmpId,_tmpDeviceUuid);
+        _item = new CastLiteUUIDDataClass(_tmpId,_tmpDeviceIP,_tmpRequestType,_tmpDeviceUuid);
         _result.add(_item);
       }
       return _result;
@@ -240,12 +220,14 @@ public final class CastLiteDao_Impl implements CastLiteDao {
     __db.assertNotSuspendingTransaction();
     final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
     try {
+      final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
       final int _cursorIndexOfDeviceIP = CursorUtil.getColumnIndexOrThrow(_cursor, "device_ip");
       final int _cursorIndexOfRequestType = CursorUtil.getColumnIndexOrThrow(_cursor, "request_type");
-      final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
       final int _cursorIndexOfDeviceUuid = CursorUtil.getColumnIndexOrThrow(_cursor, "device_uuid");
       final CastLiteUUIDDataClass _result;
       if(_cursor.moveToFirst()) {
+        final int _tmpId;
+        _tmpId = _cursor.getInt(_cursorIndexOfId);
         final String _tmpDeviceIP;
         if (_cursor.isNull(_cursorIndexOfDeviceIP)) {
           _tmpDeviceIP = null;
@@ -258,19 +240,13 @@ public final class CastLiteDao_Impl implements CastLiteDao {
         } else {
           _tmpRequestType = _cursor.getString(_cursorIndexOfRequestType);
         }
-        final String _tmpId;
-        if (_cursor.isNull(_cursorIndexOfId)) {
-          _tmpId = null;
-        } else {
-          _tmpId = _cursor.getString(_cursorIndexOfId);
-        }
         final String _tmpDeviceUuid;
         if (_cursor.isNull(_cursorIndexOfDeviceUuid)) {
           _tmpDeviceUuid = null;
         } else {
           _tmpDeviceUuid = _cursor.getString(_cursorIndexOfDeviceUuid);
         }
-        _result = new CastLiteUUIDDataClass(_tmpDeviceIP,_tmpRequestType,_tmpId,_tmpDeviceUuid);
+        _result = new CastLiteUUIDDataClass(_tmpId,_tmpDeviceIP,_tmpRequestType,_tmpDeviceUuid);
       } else {
         _result = null;
       }

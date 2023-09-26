@@ -142,4 +142,20 @@
       android:text="@string/device_setup_successfull"
       android:textColor="@color/app_text_color_disabled" />
   </LinearLayout>
+  <RelativeLayout
+    android:id="@+id/lay_Loader"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_loader"
+    android:visibility="gone">
+
+    <ProgressBar
+      android:id="@+id/progress_bar"
+      android:layout_width="100dp"
+      android:layout_height="100dp"
+      android:layout_centerInParent="true"
+      android:indeterminateTint="@color/brand_orange"
+      android:background="@color/transparent">
+    </ProgressBar>
+  </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

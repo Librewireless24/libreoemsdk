@@ -15,7 +15,6 @@ import android.os.Looper
 import android.text.Html
 import android.text.SpannableString
 import android.text.Spanned
-import android.util.Log
 import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
@@ -42,6 +41,8 @@ import com.libreAlexa.netty.LibreDeviceInteractionListner
 import com.libreAlexa.netty.NettyData
 import com.libreAlexa.util.LibreLogger
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
@@ -51,25 +52,24 @@ import java.util.TreeMap
 
 class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToApplicationInterface,
     View.OnClickListener, LibreDeviceInteractionListner {
-    var mIntentExtraScanResults = false
-    var mDeviceName: String? = null
-    var prev_Activity:String?=null
-    var isSacTimedOutCalled = false
-
+    private var mIntentExtraScanResults = false
+    private var mDeviceName: String? = null
+    private var prev_Activity: String? = null
+    private var isSacTimedOutCalled = false
     private var mBluetoothLeService: BluetoothLeService? = null
-    var configurationParameters = ConfigurationParameters.getInstance()
-    var passphrase: String? = null
+    private var configurationParameters = ConfigurationParameters.getInstance()
+    private var passphrase: String? = null
     private lateinit var savePwdList: List<PasswordRememberDataClass>
     private lateinit var libreVoicePasswordRememberDao: PasswordRememberDao
     private lateinit var binding: CtActivityConnectToWifiBinding
-    private var btCharacteristic: BluetoothGattCharacteristic? = null  /*  SHAIK CHANGES */
+    private var btCharacteristic: BluetoothGattCharacteristic? = null
+    private var taskJob: Job? = null
+    private var scanListLength: Int? = null
 
- override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = CtActivityConnectToWifiBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        LibreLogger.d(TAG, "onCreate: CTBluetoothPassCredentials")
-
         libreVoicePasswordRememberDao = LibreVoiceDatabase.getDatabase(this).passwordRememberDao()
         lifecycleScope.launch(Dispatchers.IO) {
             getAllSSIDWithPWD()
@@ -128,7 +128,7 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
         }
 
     override fun onBackPressed() {
-        if(mBluetoothLeService!=null) {
+        if (mBluetoothLeService != null) {
             mBluetoothLeService!!.close()
             mBluetoothLeService!!.disconnect()
         }
@@ -160,8 +160,7 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
                     val data = ByteArray(0)
                     val mBlePacketScanWIFI = BLEPacket(data, BLEUtils.BLE_SAC_APP2DEV_FRIENDLYNAME.toByte(), true)
                     BleCommunication.writeDataToBLEDevice(value, mBlePacketScanWIFI)
-                    //Log.d(TAG, "receivedBLEDataPacket: $value")
-                   // LibreLogger.d("SUMA_SCAN", "******** SUMA GET THE BLE PACKET INFO FriendlyNameBLEPASS")
+                    // LibreLogger.d("SUMA_SCAN", "******** SUMA GET THE BLE PACKET INFO FriendlyNameBLEPASS")
 
                     //  getFriendlyNameThroBLE();
                 }, timeout.toLong())
@@ -178,43 +177,40 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
 //  don remove dis block of code:SUMA              //  getFriendlyNameThroBLE();
 //            }, (timeout + 1000).toLong())
 
-           if(prev_Activity.equals("CTBluetoothHearSoundQtn")) {
-               LibreLogger.d("SUMA SCAN", "suma in get scan value BLE_PASS")
+            if (prev_Activity.equals("CTBluetoothHearSoundQtn")) {
+                LibreLogger.d("SUMA SCAN", "suma in get scan value BLE_PASS")
 //               LibreLogger.d(
 //                   "SUMA_SCAN",
 //                   "***** SCAN Suma in get the wifi scan sent BLEPASS" + LibreApplication.scanAlreadySent + "Scan_Results_Empty\n" + WifiConnection.getInstance().savedScanResults.isEmpty()
 //               )
-               LibreLogger.d(TAG, "Security check 27 writing SUMA GET THE BLE PACKET $isSacTimedOutCalled")
-               if (!isSacTimedOutCalled) {
-                   isSacTimedOutCalled = true
-                   handler.postDelayed({
-                       val data = ByteArray(0)
-                       val mBlePacketScanWIFI = BLEPacket(data, BLEUtils.BLE_SAC_APP2DEV_SECURITY_CHECK.toByte(), true)
-                       BleCommunication.writeDataToBLEDevice(value, mBlePacketScanWIFI)
-                       LibreLogger.d(TAG, "Security check 27 writing SUMA GET THE BLE PACKET " +
-                               "INFO" +
-                               " " + "SECURITYCHECK_BLEPASS")
+                LibreLogger.d(TAG, "Security check 27 writing SUMA GET THE BLE PACKET " + "$isSacTimedOutCalled")
+                if (!isSacTimedOutCalled) {
+                    isSacTimedOutCalled = true
+                    handler.postDelayed({
+                        val data = ByteArray(0)
+                        val mBlePacketScanWIFI = BLEPacket(data, BLEUtils.BLE_SAC_APP2DEV_SECURITY_CHECK.toByte(), true)
+                        BleCommunication.writeDataToBLEDevice(value, mBlePacketScanWIFI)
+                        LibreLogger.d(TAG, "Security check 27 writing SUMA GET THE BLE PACKET " + "INFO" + " " + "SECURITYCHECK_BLEPASS")
 
-                       //  getFriendlyNameThroBLE();
-                   }, (timeout + 1000).toLong())
+                        //  getFriendlyNameThroBLE();
+                    }, (timeout + 1000).toLong())
 
-                   LibreApplication.scanAlreadySent = true;
-                   showProgressDialog(getString(R.string.get_scan_results))
+                    LibreApplication.scanAlreadySent = true;
+                    showProgressDialog(getString(R.string.get_scan_results))
 
-                   handler.postDelayed({
-                       val data = ByteArray(0)
-                       val mBlePacketScanWIFI =
-                           BLEPacket(data, BLEUtils.BLE_SAC_APP2DEV_SCAN_WIFI.toByte(), true)
-                       BleCommunication.writeDataToBLEDevice(value, mBlePacketScanWIFI)
-                      // LibreLogger.d("SUMA_SCAN", "******** SUMA GET THE BLE PACKET INFO SCAN_WIFI_BLEPASS")
+                    handler.postDelayed({
+                        val data = ByteArray(0)
+                        val mBlePacketScanWIFI = BLEPacket(data, BLEUtils.BLE_SAC_APP2DEV_SCAN_WIFI.toByte(), true)
+                        BleCommunication.writeDataToBLEDevice(value, mBlePacketScanWIFI)
+                        // LibreLogger.d("SUMA_SCAN", "******** SUMA GET THE BLE PACKET INFO SCAN_WIFI_BLEPASS")
 
-                       //  getFriendlyNameThroBLE();
-                   }, (timeout + 1500).toLong())
+                        //  getFriendlyNameThroBLE();
+                    }, (timeout + 1500).toLong())
 
-                   handler.postDelayed(runnable, 12000)
-               }
-           }
-          // }
+                    handler.postDelayed(runnable, 12000)
+                }
+            }
+            // }
         }
     }
 
@@ -231,7 +227,6 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
      * public static final int BLE_SAC_DEV2APP_WIFI_DISCONNECTED = 28;
      */
     override fun receivedBLEDataPacket(packet: BLEDataPacket) {
-        //Log.d(TAG, "receivedBLEDataPacket: ${packet.command}")
         when (packet.command) {
             BLEUtils.BLE_SAC_APP2DEV_FRIENDLYNAME -> if (packet.getcompleteMessage().isNotEmpty()) {
                 val mDeviceNameArray = ByteArray(packet.dataLength.toInt())
@@ -241,9 +236,7 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
                     i++
                 }
                 mDeviceName = String(mDeviceNameArray)
-                //Log.d(TAG, "receivedBLEDataPacket: $mDeviceName")
                 runOnUiThread { binding.etDeviceName.setText(mDeviceName) }
-                //dismissDialog()//suma change
             }
 
             BLEUtils.BLE_SAC_DEV2APP_CRED_RECEIVED -> runOnUiThread { setMessageProgressDialog(getString(R.string.cred_received)) }
@@ -251,6 +244,10 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
             BLEUtils.BLE_SAC_DEV2APP_CRED_FAILURE -> runOnUiThread { showAlertMessageRegardingSAC(" ", getString(R.string.credientials_invalid)) }
             BLEUtils.BLE_SAC_DEV2APP_WIFI_CONNECTING -> runOnUiThread { setMessageProgressDialog(getString(R.string.start_connecting)) }
             BLEUtils.BLE_SAC_DEV2APP_WIFI_CONNECTED -> {
+                //Shaik for connected or not connected
+                lifecycleScope.launch {
+                    cancelJob()
+                }
                 runOnUiThread { setMessageProgressDialog(getString(R.string.speaker_connected)) }
                 val data1 = ByteArray(0)
                 val mBleStop = BLEPacket(data1, BLEUtils.BLE_SAC_APP2DEV_STOP_M.toByte())
@@ -260,9 +257,7 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
 
             BLEUtils.BLE_SAC_DEV2APP_WIFI_CONNECTING_FAILED -> {
                 val mMessageInt = packet.getcompleteMessage()
-                LibreLogger.d(TAG, "Bluetooth Received Message length  " + mMessageInt.size)
                 val message = mMessageInt[3].toInt()
-                LibreLogger.d(TAG, "Bluetooth Received Message $message")
                 if (message == 26) {
                     runOnUiThread { showAlertMessageRegardingSAC(getString(R.string.configuration_failed_hd), getString(R.string.configuration_failed_msg)) }
                 } else {
@@ -273,55 +268,69 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
             BLEUtils.BLE_SAC_DEV2APP_WIFI_AP_NOT_FOUND -> runOnUiThread { setMessageProgressDialog(getString(R.string.ap_notfound)) }
             BLEUtils.BLE_SAC_DEV2APP_WIFI_DISCONNECTED -> {}
             BLEUtils.BLE_SAC_DEV2APP_STARTED -> {}
-            BLEUtils.BLE_SAC_DEV2APP_SCAN_LIST_START -> constructJSonString = StringBuilder()
-            BLEUtils.BLE_SAC_DEV2APP_SCAN_LIST_DATA ->                // LibreLogger.d(TAG, new String (packet.getMessage()));
+            BLEUtils.BLE_SAC_DEV2APP_SCAN_LIST_START -> {
+                constructJSonString = StringBuilder()
+                //Shaik new change
+                scanListLength = String(packet.message).toInt()
+            }
+
+            BLEUtils.BLE_SAC_DEV2APP_SCAN_LIST_DATA -> {
                 constructJSonString.append(String(packet.message))
+            }
 
             BLEUtils.BLE_SAC_DEV2APP_SCAN_LIST_END -> {
-                populateScanlistMap(constructJSonString.toString())
+                /** Shaik New change, if size match then only show the scan list, according to
+                 * device team(Sampath),tested with development FW and working fine
+                 * Later Have to test in the newly released FW not in 3020
+                 * Note:-  Have to Add the same change in the @CTWifiListActivity Activity while
+                 * releasing this app
+                 */
+                if (scanListLength == constructJSonString.length) {
+                    populateScanListMap(constructJSonString.toString())
+                } else {
+                    showSomethingWentWrongAlert(this@CTBluetoothPassCredentials)
+                    LibreLogger.d(TAG, "Scan List size is not matching " + "${constructJSonString.length}")
+                }
                 dismissDialog()
-                LibreLogger.d(TAG_SCAN, "BLE_SAC_DEV2APP_SCAN_LIST_END CT BLEPASS")
-
             }
 
             BLEUtils.BLE_SAC_APP2DEV_SECURITY_CHECK -> {
-                LibreLogger.d(TAG, "KARUNAKARAN  " + packet.dataLength)
+                LibreLogger.d(TAG_SCAN, "KARUNAKARAN  " + packet.dataLength)
                 var security = 0
                 if (packet.dataLength > 0) {
                     val mMessageInt1 = packet.getcompleteMessage()
                     security = mMessageInt1[4].toInt() //Integer.parseInt(mMessageInt1[4])
-                    LibreLogger.d(TAG, "KARUNAKARAN  security$security") // ;
+                    LibreLogger.d(TAG_SCAN, "KARUNAKARAN  security$security") // ;
                 }
                 mSecurityCheckEnabled = security != 0
             }
         }
     }
 
-    var mSecurityCheckEnabled = false
-    var scanListMap: MutableMap<String, String> = TreeMap()
-    private fun populateScanlistMap(scanList: String?) {
+    private var mSecurityCheckEnabled = false
+    private var scanListMap: MutableMap<String, String> = TreeMap()
+    private fun populateScanListMap(scanList: String?) {
         scanListMap.clear()
         try {
-            val mainObj = JSONObject(scanList)
+            val mainObj = JSONObject(scanList!!)
             val scanListArray = mainObj.getJSONArray("Items")
             for (i in 0 until scanListArray.length()) {
                 val obj = scanListArray[i] as JSONObject
                 if (obj.getString("SSID") == null || obj.getString("SSID").isEmpty()) {
                     continue
                 }
-                scanListMap[fromHtml(obj.getString("SSID")).toString()] = fromHtml(obj.getString("Security")).toString()/* LibreLogger.d(TAG, "BLE" + scanListMap[obj.getString("SSID")] + " ssid: " + obj.getString("SSID"))*/
+                scanListMap[fromHtml(obj.getString("SSID")).toString()] = fromHtml(obj.getString("Security")).toString()
             }
         } catch (e: JSONException) {
             e.printStackTrace()
+            LibreLogger.d(TAG_SCAN, "populateScanListMap exception " + e.message)
         }
         for (str in scanListMap.keys) {
-            println(str)
-            // LibreLogger.d(TAG,"suma in wifi scan list"+str);
             WifiConnection.getInstance().putWifiScanResultSecurity(str, scanListMap[str])
         }
     }
 
-    var constructJSonString = StringBuilder()
+    private var constructJSonString = StringBuilder()
     private fun showAlertMessageRegardingSAC(title: String?, message: String) {
         dismissDialog()
         if (!isFinishing) {
@@ -373,7 +382,8 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
 
             R.id.btn_cancel -> btnCancelClicked()
             R.id.ll_select_wifi, R.id.iv_right_arrow, R.id.tv_selected_wifi -> ivRightArrowClicked()
-            R.id.iv_back ->                 //mBluetoothLeService.disconnect();
+            R.id.iv_back ->
+                //mBluetoothLeService.disconnect();
                 //mBluetoothLeService.close();
                 //mBluetoothLeService.removelistener(this);
                 callBluetoothDeviceListActivity()
@@ -389,117 +399,112 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
      * PASSPHRASE_LEN         : 1Byte 	 			-> Length of the Password ( 8 to 63 Bytes)
      * PASSPHRASE         	: >=8 && <=63           -> Password
      */
-    @Throws(Exception::class)
     fun btnNextClicked() {
-        LibreLogger.d(TAG, "btnNextClicked: ")
         val mSelectedSSID = String(WifiConnection.getInstance().getMainSSID().toByteArray(), StandardCharsets.UTF_8)
         val mSelectedPass = String(binding.etWifiPassword.text.toString().toByteArray(), StandardCharsets.UTF_8)
         val mSelectedSecurity = String(WifiConnection.getInstance().getMainSSIDSec().toByteArray(), StandardCharsets.UTF_8)
         val mSelectedCountryCode = String(configurationParameters.getDeviceCountryCode(this@CTBluetoothPassCredentials).toByteArray(), StandardCharsets.UTF_8).uppercase(Locale.getDefault())
         mDeviceName = String(binding.etDeviceName.text.toString().toByteArray(), StandardCharsets.UTF_8)
-        LibreLogger.d(TAG, "btnNextClicked: mDeviceName: $mDeviceName")
         WifiConnection.getInstance().setMainSSIDPwd(mSelectedPass)
         LibreLogger.d(TAG, "btnNextClicked: Security check is enabled or Not 0(Disabled)/1(Enabled) " + mSecurityCheckEnabled + "Countrycode " + mSelectedCountryCode)
-        if (!mSecurityCheckEnabled) {
-            val data = ByteArray(mSelectedPass.length + mSelectedSSID.length + 5 + mSelectedSecurity.length + binding.etDeviceName.text!!.length + mSelectedCountryCode.length)
-            LibreLogger.d(TAG, "btnNextClicked: mSecurityCheckEnabled if $data")
-            var i = 0
-            data[i++] = mSelectedSSID.length.toByte()
-            for (b in mSelectedSSID.toByteArray()) {
-                data[i++] = b
-            }
-            data[i++] = mSelectedPass.length.toByte()
-            for (b in mSelectedPass.toByteArray()) {
-                data[i++] = b
-            }
-            data[i++] = mSelectedSecurity.length.toByte()
-            for (b in mSelectedSecurity.toByteArray()) {
-                data[i++] = b
-            }
-            data[i++] = binding.etDeviceName.text!!.length.toByte()
-            for (b in binding.etDeviceName.text.toString().toByteArray()) {
-                data[i++] = b
-            }
-            data[i++] = mSelectedCountryCode.length.toByte()
-            for (b in mSelectedCountryCode.toByteArray()) {
-                data[i++] = b
-            }
-            LibreLogger.d(TAG, "btnNextClicked: mSecurityCheckEnabled IF writing data  $data")
-            val mBlePacketScanWIFI = BLEPacket(data, BLEUtils.BLE_SAC_APP2DEV_CONNECT_WIFI.toByte(), true)
-            BleCommunication.writeDataToBLEDevice(mBlePacketScanWIFI)
-        } else {
-            LibreLogger.d(TAG, "btnNextClicked: mSecurityCheckEnabled ELSE ")/*Code we are sending ssid password*/
-            val mConfigPacket = ConfigurationParameters.getInstance().getEncryptedDataAndKey(mSelectedSSID, mSelectedPass, mSelectedSecurity, mDeviceName, mSelectedCountryCode)
-            //ConfigurationParameters.getInstance().createSacPackets(false, mConfigPacket.getEncodedData(),mConfigPacket.getIv());
-            /*byte[] ThreeTimesOfEncodedData = new byte[mConfigPacket.getEncodedData().length * 3];
-    int i =0;
-    for(byte b : mConfigPacket.getEncodedData()) {
-        ThreeTimesOfEncodedData[i++] =  b;
-    }
-    for(byte b : mConfigPacket.getEncodedData()) {
-        ThreeTimesOfEncodedData[i++] =  b;
-    }
-    for(byte b : mConfigPacket.getEncodedData()) {
-        ThreeTimesOfEncodedData[i++] =  b;
-    }*/
-            val encodedData = mConfigPacket.encodedData //ThreeTimesOfEncodedData ;//mConfigPacket.getEncodedData();
-            val ivData = mConfigPacket.iv
-            var NumberOfPacketsToSplitted = encodedData.size / 150 // MTCU_SIZE - header just to make it as whole number
-            if (encodedData.size % 150 != 0) {
-                NumberOfPacketsToSplitted += 1
-            }
-            var offset = 0
-            var lengthTocopy = 150
-            if (encodedData.size < 150) {
-                lengthTocopy = encodedData.size
-            }
-            while (NumberOfPacketsToSplitted > 0) {
-                LibreLogger.d(TAG, " KARUNAKARAN " + " NumberofPacketstoBeSplitted " + NumberOfPacketsToSplitted + " Offset " + offset + " LengthToCopy " + lengthTocopy + " EncodedData Length " + encodedData.size)
-                NumberOfPacketsToSplitted--
-                val offsetEncodedData = configurationParameters.getByteArrayFromOffset(offset, lengthTocopy, encodedData)
-                val dataToSendToDevice = configurationParameters.createSacPackets(NumberOfPacketsToSplitted, offsetEncodedData, ivData)
-                BleCommunication.writeDataToBLEDevice(dataToSendToDevice)
-                offset += 150
-                if (NumberOfPacketsToSplitted == 1) {
-                    lengthTocopy = encodedData.size - offset
+        /**
+         * SHAIK Added the 2 Sec Delay after user click on Next Button
+         */
+        lifecycleScope.launch {
+            delay(2000)
+            if (!mSecurityCheckEnabled) {
+                val data = ByteArray(mSelectedPass.length + mSelectedSSID.length + 5 + mSelectedSecurity.length + binding.etDeviceName.text!!.length + mSelectedCountryCode.length)
+                LibreLogger.d(TAG, "btnNextClicked: mSecurityCheckEnabled if $data")
+                var i = 0
+                data[i++] = mSelectedSSID.length.toByte()
+                for (b in mSelectedSSID.toByteArray()) {
+                    data[i++] = b
+                }
+                data[i++] = mSelectedPass.length.toByte()
+                for (b in mSelectedPass.toByteArray()) {
+                    data[i++] = b
+                }
+                data[i++] = mSelectedSecurity.length.toByte()
+                for (b in mSelectedSecurity.toByteArray()) {
+                    data[i++] = b
+                }
+                data[i++] = binding.etDeviceName.text!!.length.toByte()
+                for (b in binding.etDeviceName.text.toString().toByteArray()) {
+                    data[i++] = b
+                }
+                data[i++] = mSelectedCountryCode.length.toByte()
+                for (b in mSelectedCountryCode.toByteArray()) {
+                    data[i++] = b
+                }
+                LibreLogger.d(TAG, "btnNextClicked: mSecurityCheckEnabled IF writing data  $data")
+                val mBlePacketScanWIFI = BLEPacket(data, BLEUtils.BLE_SAC_APP2DEV_CONNECT_WIFI.toByte(), true)
+                BleCommunication.writeDataToBLEDevice(mBlePacketScanWIFI)
+            } else {
+                /*Code we are sending ssid password*/
+                val mConfigPacket = ConfigurationParameters.getInstance().getEncryptedDataAndKey(mSelectedSSID, mSelectedPass, mSelectedSecurity, mDeviceName, mSelectedCountryCode)
+                //ConfigurationParameters.getInstance().createSacPackets(false, mConfigPacket.getEncodedData(),mConfigPacket.getIv());
+                /*byte[] ThreeTimesOfEncodedData = new byte[mConfigPacket.getEncodedData().length * 3];
+        int i =0;
+        for(byte b : mConfigPacket.getEncodedData()) {
+            ThreeTimesOfEncodedData[i++] =  b;
+        }
+        for(byte b : mConfigPacket.getEncodedData()) {
+            ThreeTimesOfEncodedData[i++] =  b;
+        }
+        for(byte b : mConfigPacket.getEncodedData()) {
+            ThreeTimesOfEncodedData[i++] =  b;
+        }*/
+                val encodedData = mConfigPacket.encodedData //ThreeTimesOfEncodedData ;//mConfigPacket.getEncodedData();
+                val ivData = mConfigPacket.iv
+                var NumberOfPacketsToSplitted = encodedData.size / 150 // MTCU_SIZE - header just to make it as whole number
+                if (encodedData.size % 150 != 0) {
+                    NumberOfPacketsToSplitted += 1
+                }
+                var offset = 0
+                var lengthTocopy = 150
+                if (encodedData.size < 150) {
+                    lengthTocopy = encodedData.size
+                }
+                while (NumberOfPacketsToSplitted > 0) {
+                    LibreLogger.d(TAG, " KARUNAKARAN " + " NumberofPacketstoBeSplitted " + NumberOfPacketsToSplitted + " Offset " + offset + " LengthToCopy " + lengthTocopy + " EncodedData Length " + encodedData.size)
+                    NumberOfPacketsToSplitted--
+                    val offsetEncodedData = configurationParameters.getByteArrayFromOffset(offset, lengthTocopy, encodedData)
+                    val dataToSendToDevice = configurationParameters.createSacPackets(NumberOfPacketsToSplitted, offsetEncodedData, ivData)
+                    BleCommunication.writeDataToBLEDevice(dataToSendToDevice)
+                    offset += 150
+                    if (NumberOfPacketsToSplitted == 1) {
+                        lengthTocopy = encodedData.size - offset
+                    }
                 }
             }
         }
         LibreLogger.d(TAG, "btnNextClicked: Before Posting credentials " + binding.etDeviceName.text.toString())
         mDeviceName = binding.etDeviceName.text.toString()
-        setMessageProgressDialog("Posting credentials ....")
-        if (binding.rememCheckBox.isChecked) {
-            /*storeSSIDInfoToSharedPreferences(this@CTBluetoothPassCredentials, WifiConnection.getInstance().getMainSSID(), WifiConnection.getInstance().getMainSSIDPwd())*/
+        setMessageProgressDialog(getString(R.string.posting_cred))
+        /**
+         * Shaik initiateJob is for,If we didn't get the response from device we are going to
+         * home screen for the re initiating the setup mode
+         */
+        lifecycleScope.launch {
+            initiateJob()
+        }
+        if (binding.rememCheckBox.isChecked) {/*storeSSIDInfoToSharedPreferences(this@CTBluetoothPassCredentials, WifiConnection.getInstance().getMainSSID(), WifiConnection.getInstance().getMainSSIDPwd())*/
             val passwordRememberDataClass = PasswordRememberDataClass(0, WifiConnection.getInstance().getMainSSID(), WifiConnection.getInstance().getMainSSIDPwd())
             insertDeviceSSIDPWD(passwordRememberDataClass)
-        }else if(!binding.rememCheckBox.isChecked){
+        } else if (!binding.rememCheckBox.isChecked) {
             deleteWifiPassword(binding.tvSelectedWifi.text.toString())
         }
     }
 
     private fun btnCancelClicked() {
-        //mBluetoothLeService.disconnect();
-        //mBluetoothLeService.close();
-        if(mBluetoothLeService!=null) {
+        if (mBluetoothLeService != null) {
             mBluetoothLeService!!.removelistener(this)
         }
-        // unbindService(mServiceConnection);
         callBluetoothDeviceListActivity()
-        //  finish();
     }
 
 
     private fun ivRightArrowClicked() {
-    /***  SHAIK CHANGES STARTS
-     * COMMENTED FOR DEBUG
-     *
-     * ***/
-        /* if (WifiConnection.getInstance().savedScanResults.isEmpty()) {
-            showAlertMessageRegardingSAC("Alert Message !! ", " Scan List is Empty")
-            return
-        }*/
-
-        /***  SHAIK CHANGES ENDS ***/
         val mIntent = Intent(this, CTWifiListActivity::class.java)
         mIntent.putExtra(Constants.CONFIG_THRO_BLE, mIntentExtraScanResults)
         mIntent.putExtra(AppConstants.DEVICE_IP, AppConstants.SAC_IP_ADDRESS)
@@ -546,6 +551,7 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
     }
 
     private fun goToConnectToMainNetwork() {
+        LibreLogger.d(TAG, "goToConnectToMainNetwork")
         WifiConnection.getInstance().setmSACDevicePostDone(true)
         LibreApplication.sacDeviceNameSetFromTheApp = binding.etDeviceName.text.toString()
         startActivity(Intent(this, CTConnectingToMainNetwork::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
@@ -553,6 +559,7 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
     }
 
     private fun goToConnectToMainNetwork(mNode: LSSDPNodes) {
+        LibreLogger.d(TAG, "goToConnectToMainNetwork with node")
         WifiConnection.getInstance().setmSACDevicePostDone(true)
         LibreApplication.sacDeviceNameSetFromTheApp = binding.etDeviceName.text.toString()
         startActivity(Intent(this, CTConnectingToMainNetwork::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK).putExtra(AppConstants.DEVICE_IP, mNode.ip))
@@ -561,23 +568,7 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
 
     override fun onDestroy() {
         super.onDestroy()
-        Log.d(TAG_SCAN, "onDestroy:BT called")
-        /***
-         * SHAIK CHANGES STARTS
-         * ***/
-       /* if (mBluetoothLeService != null) {
-            //  mBluetoothLeService.disconnect();
-            // mBluetoothLeService.close();
-            Log.d(TAG_SCAN, "onDestroy:BT Service Not null")
-            mBluetoothLeService!!.removelistener(this@CTBluetoothPassCredentials)
-        }
-        dismissDialog()
-        unbindService(mServiceConnection)
-        Log.d(TAG_SCAN, "onDestroy:BT unbid")
-        mBluetoothLeService = null*/
-        /***
-         * SHAIK CHANGES ENDS
-         * ***/
+
     }
 
     override fun deviceDiscoveryAfterClearingTheCacheStarted() {
@@ -600,7 +591,7 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
 
     companion object {
         const val TAG = "==CTBluetoothPass"
-        const val TAG_SCAN = "==SCAN"
+        const val TAG_SCAN = "TAG_SCAN"
         fun fromHtml(html: String?): Spanned {
             return if (html == null) {
                 // return an empty spannable if the html is null
@@ -618,7 +609,7 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
     private fun getPWDWithDeviceSSID(deviceSsid: String): String? {
         for (i in savePwdList.indices) {
             if (savePwdList[i].deviceSSID == deviceSsid) {
-                passphrase=savePwdList[i].password
+                passphrase = savePwdList[i].password
                 break
             } else {
                 passphrase = ""
@@ -628,7 +619,12 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
     }
 
     private fun getAllSSIDWithPWD() {
-        savePwdList = libreVoicePasswordRememberDao.getAllSSISandPWDS()
+        try {
+            savePwdList = libreVoicePasswordRememberDao.getAllSSISandPWDS()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            LibreLogger.d(TAG, "getAllSSIDWithPWD exception ${e.message}")
+        }
     }
 
     private fun insertDeviceSSIDPWD(passwordRememberDataClass: PasswordRememberDataClass) {
@@ -636,9 +632,24 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
             libreVoicePasswordRememberDao.addDeviceSSIDPWD(passwordRememberDataClass)
         }
     }
-    private fun deleteWifiPassword(ssid:String) {
+
+    private fun deleteWifiPassword(ssid: String) {
         lifecycleScope.launch(Dispatchers.IO) {
             libreVoicePasswordRememberDao.deletePassword(ssid)
         }
+    }
+
+    private fun initiateJob() {
+        taskJob = lifecycleScope.launch(Dispatchers.IO) {
+            delay(10 * 9000)
+            runOnUiThread {
+                dismissDialog()
+                showSomethingWentWrongAlert(this@CTBluetoothPassCredentials)
+            }
+        }
+    }
+
+    private fun cancelJob() {
+        taskJob?.cancel()
     }
 }

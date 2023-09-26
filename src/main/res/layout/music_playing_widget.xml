@@ -2,12 +2,12 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fl_music_play_widget"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/riva_logo_bg">
 
     <LinearLayout
+       android:id="@+id/fl_music_play_widget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -22,13 +22,10 @@
             android:paddingBottom="-1dp"
             android:max="100"
             android:maxHeight="1dp"
-            android:paddingLeft="-1px"
-            android:paddingRight="-1px"
-            android:progress="30"
+            android:paddingStart="0dp"
+            android:paddingEnd="0dp"
             android:progressDrawable="@drawable/gradient_progress_song_drawable"
-            android:thumb="@null"
-            android:visibility="visible"
-            tools:visibility="visible" />
+            android:thumb="@null" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -104,22 +101,42 @@
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_current_source"
-                    android:layout_width="wrap_content"
-                    android:layout_height="30dp"
-                    android:padding="1dp"
-                    android:visibility="visible"
-                    />
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/iv_play_pause"
+                    android:layout_width="40dp"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    tools:src="@mipmap/spotify"
+                    android:visibility="gone" />
+                <com.cumulations.libreV2.ProgressButtonImageView
+                  android:id="@+id/iv_play_pause"
+                  android:layout_width="50dp"
+                  android:layout_height="match_parent"
+                  android:layout_marginLeft="5dp"
+                  android:layout_marginRight="5dp"
+                  android:padding="16dp"
+                  android:background="?attr/selectableItemBackground"
+                  app:enabled="true"
+                  app:loading="false"
+                  app:imageButtonStyle="@null" />
+              <!--  Commented by shaik bcz added custom progressImageview-->
+             <!--   <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="50dp"
-                    android:layout_height="30dp"
+                    android:layout_height="match_parent"
                     android:layout_marginLeft="5dp"
                     android:layout_marginRight="5dp"
-                    android:padding="8dp"
+                    android:padding="16dp"
                     android:background="?attr/selectableItemBackground"
                     app:srcCompat="@drawable/pause_orange"
-                    tools:visibility="visible" />
+                    android:visibility="gone" />-->
+
+                <ProgressBar
+                  android:layout_width="50dp"
+                  android:layout_height="match_parent"
+                  android:visibility="gone"
+                  android:layout_centerInParent="true"
+                  android:indeterminateTint="@color/brand_orange"
+                  android:background="@color/transparent">
+                </ProgressBar>
+
             </LinearLayout>
 
 

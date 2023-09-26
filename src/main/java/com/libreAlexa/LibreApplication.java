@@ -90,6 +90,7 @@ public class LibreApplication extends Application implements
   public static HashMap<String, Integer> INDIVIDUAL_VOLUME_MAP = new HashMap<>();
 
   public static HashMap<String, GoogleTOSTimeZone> GOOGLE_TIMEZONE_MAP = new HashMap<>();
+  public static HashMap<String, String> secureIp = new HashMap<>();
 
   public static LinkedHashMap<String, FwUpgradeData> FW_UPDATE_AVAILABLE_LIST = new LinkedHashMap<>();
 
@@ -127,6 +128,8 @@ public class LibreApplication extends Application implements
   private static boolean scanListAlreadtSent = false;
   static BluetoothGattCharacteristic btCharacteristic;
   private static String key = null;
+  public static boolean isSecure=false;
+  public static boolean isForgetNetworkCalled=false;
 
   @Override
   public void onCreate() {
@@ -134,8 +137,7 @@ public class LibreApplication extends Application implements
     MultiDex.install(this);
    // LibreEntryPoint.Companion.getInstance().init(this);
     AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
-    LibreApplication.openRawandroidp12 = getApplicationContext().getResources()
-        .openRawResource(R.raw.android);
+    LibreApplication.openRawandroidp12 = getApplicationContext().getResources().openRawResource(R.raw.android);
 
     if (BuildConfig.DEBUG) {
       LibreLogger.d(TAG, "DEBUG mode called");
@@ -271,7 +273,7 @@ public class LibreApplication extends Application implements
     return false;
   }
 
-  private void generateKeyForDataStore() {
+  public void generateKeyForDataStore() {
     String encodedKey;
     try {
       // "AES" is the key generation algorithm, you might want to use a different one.

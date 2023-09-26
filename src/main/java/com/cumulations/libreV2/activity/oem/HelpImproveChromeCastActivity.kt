@@ -82,8 +82,7 @@ class HelpImproveChromeCastActivity : CTDeviceDiscoveryActivity(), LibreDeviceIn
             showToast(getString(R.string.somethingWentWrong))
             intentToHome(this)
         }
-        LibreLogger.d(TAG, "onCreate:speakerIpAddress $currentIpAddress\n and DeviceName: " +
-                "$speakerName\n from $from\n and uuid $deviceUUID currentDeviceUUID $currentDeviceUUID")
+        LibreLogger.d(TAG, "onCreate:speakerIpAddress $currentIpAddress\n and DeviceName: " + "$speakerName\n from $from\n and uuid $deviceUUID currentDeviceUUID $currentDeviceUUID")
         binding.txtLearnMore.setOnClickListener {
             binding.webView.visibility = View.VISIBLE
             binding.parentLayout.visibility = View.GONE
@@ -155,19 +154,19 @@ class HelpImproveChromeCastActivity : CTDeviceDiscoveryActivity(), LibreDeviceIn
 
     override fun messageRecieved(nettyData: NettyData?) {
         val remoteDeviceIp = nettyData!!.getRemotedeviceIp()
-        val packet = LUCIPacket(nettyData.getMessage())
-        LibreLogger.d(TAG_MESSAGE, "messageRecieved: " + remoteDeviceIp + ", command is " + packet.command + "msg is\n" + String(packet.payload))
+        val packet = LUCIPacket(nettyData.getMessage())/* LibreLogger.d(TAG_NETWORK, "messageRecieved:Help " + remoteDeviceIp + ", command is " +
+                packet.command + "msg is\n" + String(packet.payload))*/
         if (packet.command == MIDCONST.CAST_ACCEPT_STATUS || packet.command == MIDCONST.CAST_ACCEPT_STATUS_572) {
             val message = String(packet.getpayload())
             val root = JSONObject(message)
-            val action = root.getString("action")
-            val uuid = root.getString("device_uuid")
-            val id = root.getString("id")
             val status = root.getString("status")
-            val statusMessage = root.getString("status_msg")
+            lateinit var statusMessage: String
+            if (root.has("status_msg")) {
+                statusMessage = root.getString("status_msg")
+            }
             if (status == SUCCESS) {
                 goToOpenHomeAppActivity()
-            } else if (status == FAILURE ) {
+            } else if (status == FAILURE) {
                 showToast(statusMessage)
                 goToOpenHomeAppActivity()
             }

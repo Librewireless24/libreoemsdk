@@ -1,21 +1,31 @@
 package com.cumulations.libreV2.activity
 
+
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.Editable
+import android.text.TextWatcher
+import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.ProgressBar
 import android.widget.SeekBar
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.lifecycleScope
 import com.cumulations.libreV2.AppUtils
+import com.cumulations.libreV2.SendDataFragmentToActivity
 import com.cumulations.libreV2.activity.oem.ActivateCastActivity
 import com.cumulations.libreV2.closeKeyboard
 import com.cumulations.libreV2.fragments.CTAlexaLocaleDialogFragment
 import com.cumulations.libreV2.fragments.CTAudioOutputDialogFragment
+import com.cumulations.libreV2.fragments.TimeZoneFragment
 import com.cumulations.libreV2.isConnectedToSAMode
+import com.cumulations.libreV2.roomdatabase.CastLiteUUIDDataClass
 import com.cumulations.libreV2.roomdatabase.LibreVoiceDatabase
 import com.cumulations.libreV2.tcp_tunneling.TCPTunnelPacket
 import com.cumulations.libreV2.tcp_tunneling.TunnelingControl
@@ -23,7 +33,10 @@ import com.cumulations.libreV2.tcp_tunneling.TunnelingData
 import com.cumulations.libreV2.tcp_tunneling.enums.AQModeSelect
 import com.cumulations.libreV2.tcp_tunneling.enums.PayloadType
 import com.cumulations.libreV2.writeAwayModeSettingsToDevice
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.libreAlexa.LibreApplication.isForgetNetworkCalled
 import com.libreAlexa.R
+import com.libreAlexa.Scanning.ScanningHandler
 import com.libreAlexa.alexa.AlexaUtils
 import com.libreAlexa.constants.Constants
 import com.libreAlexa.constants.LSSDPCONST
@@ -46,11 +59,13 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.util.Locale
 
+
 /**
  * Added ChromeCast Settings by SHAIK
  * 18/04/2023
  */
-class CTDeviceSettingsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionListner {
+class CTDeviceSettingsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionListner,
+    SendDataFragmentToActivity {
     private var currentLocale: String? = null
     private var currentDeviceNode: LSSDPNodes? = null
     private lateinit var luciControl: LUCIControl
@@ -66,20 +81,21 @@ class CTDeviceSettingsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInterac
     private var deviceUUID: String? = null
     private var tosStatus: String? = null
     private var crashReport: Boolean? = null
+    private var mDeviceNameChanged: Boolean = false
+    private lateinit var savedDeviceUUIDList: List<CastLiteUUIDDataClass>
+    private var deviceName: String? = null
 
     companion object {
         private val TAG = CTDeviceSettingsActivity::class.java.simpleName
-        private val TAG_CHROME = "CAST STATUS"
     }
 
+    var mScanHandler: ScanningHandler = ScanningHandler.getInstance()
     private val libreVoiceDatabaseDao by lazy { LibreVoiceDatabase.getDatabase(this).castLiteDao() }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = CtDeviceSettingsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         fetchUUIDFromDB(currentDeviceIp!!)
-        LibreLogger.d(TAG_CHROME, "onCreate: ")
-
     }
 
     override fun onStart() {
@@ -91,7 +107,6 @@ class CTDeviceSettingsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInterac
             delay(2000)
             checkCastActivateStatus(currentDeviceIp)
         }
-        LibreLogger.d(TAG_CHROME, "onStart: ")
     }
 
     private fun initViews() {
@@ -121,7 +136,9 @@ class CTDeviceSettingsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInterac
         currentDeviceNode = LSSDPNodeDB.getInstance().getTheNodeBasedOnTheIpAddress(currentDeviceIp)
 
         binding.tvToolbarTitle.text = currentDeviceNode?.friendlyname
-        binding.tvDeviceName.text = currentDeviceNode?.friendlyname
+        deviceName=currentDeviceNode?.friendlyname
+        binding.tvDeviceName.setText(deviceName)
+
 
         if (currentDeviceNode != null && !currentDeviceNode?.version.isNullOrEmpty()) {
             var dutExistingFirmware = currentDeviceNode?.version
@@ -162,7 +179,7 @@ class CTDeviceSettingsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInterac
                 binding.llAlexaSettings.visibility = View.VISIBLE
             } else {
                 closeLoader(binding.loginProgressBar.id)
-                closeLoader(binding.loginProgressBar.id)
+                closeLoader(binding.localeProgressBar.id)
                 binding.llAlexaSettings.visibility = View.GONE
             }
             if (currentDeviceNode?.getmDeviceCap()?.getmSource()?.isGoogleCast!! && ssid != null && !isConnectedToSAMode(ssid)) {
@@ -170,9 +187,7 @@ class CTDeviceSettingsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInterac
             } else {
                 binding.llTopChromecastSettings.visibility = View.GONE
             }
-        } //        if (TunnelingControl.isTunnelingClientPresent(currentDeviceIp)){
-        //            toggleTunnelingVisibility(show = true)
-        //        } else toggleTunnelingVisibility(show = false)
+        }
         toggleTunnelingVisibility(show = TunnelingControl.isTunnelingClientPresent(currentDeviceIp))
     }
 
@@ -255,6 +270,10 @@ class CTDeviceSettingsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInterac
                     .max)
             }
         })
+        binding.btnForgetNetwork.setOnClickListener {
+            isForgetNetworkCalled=true
+            showAwayModeAlert(resources.getString(R.string.forget_network) , resources.getString(R.string.forget_network_confirmation),true)
+        }
 
         binding.seekBarBass.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {/*LibreLogger.d(TAG, "seek_bar_bass " + seekBar.progress + "  " + seekBar.max)
@@ -289,7 +308,7 @@ class CTDeviceSettingsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInterac
         })
 
         binding.tvEditAwayMode.setOnClickListener {
-            showAwayModeAlert(binding.tvNetworkName.text.toString(), binding.tvWifiPwd.text.toString())
+            showAwayModeAlert(binding.tvNetworkName.text.toString(), binding.tvWifiPwd.text.toString(),false)
         }
 
         binding.ivBack.setOnClickListener {
@@ -305,7 +324,6 @@ class CTDeviceSettingsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInterac
                 arguments = Bundle().apply {
                     putString(Constants.AUDIO_OUTPUT, audioOutput)
                 }
-
                 show(supportFragmentManager, this::class.java.simpleName)
             }
         }
@@ -319,8 +337,63 @@ class CTDeviceSettingsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInterac
             if (binding.tvChromecastStatus.text.toString().isEmpty()) return@setOnClickListener
             callActivateCastActivity()
         }
-    }
+        //SHAIK Edit Device and Time Zone New Changes
+        binding.btnEditSpeakerName.setOnClickListener {
+            editDeviceName()
+        }
+        binding.txtTimeZone.setOnClickListener {
+            if (binding.txtTimeZone.text?.toString().isNullOrEmpty()) return@setOnClickListener
+            val timeZoneFragment: TimeZoneFragment = TimeZoneFragment.newInstance(currentDeviceIp)
+            val fragmentManager = supportFragmentManager
+            val fragmentTransaction = fragmentManager.beginTransaction()
+            fragmentTransaction.add(R.id.lay_timeZone, timeZoneFragment).addToBackStack("tag")
+                .commit()
+        }
+        val mTextWatching = arrayOfNulls<String>(1)
+        binding.tvDeviceName.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable) {
+                if (binding.tvDeviceName.text.toString().toByteArray().size == 50 && binding.tvDeviceName.isEnabled) {
+                    Toast.makeText(this@CTDeviceSettingsActivity, getString(R.string.deviceLengthReached), Toast.LENGTH_SHORT).show()
+                }
+                if (binding.tvDeviceName.text.toString().toByteArray().size > 50) {
+                    if (mTextWatching[0]!!.isEmpty() || mTextWatching[0] == null) {
+                        binding.tvDeviceName.setText(utf8truncate(binding.tvDeviceName.text.toString(), 50))
+                        binding.tvDeviceName.setSelection(mTextWatching[0]!!.length)
+                    } else {
+                        binding.tvDeviceName.setText(mTextWatching[0])
+                        binding.tvDeviceName.setSelection(mTextWatching[0]!!.length)
+                    }
+                    Toast.makeText(this@CTDeviceSettingsActivity, getString(R.string.deviceLength), Toast.LENGTH_SHORT).show()
+                } else {
+                    mTextWatching[0] = binding.tvDeviceName.text.toString()
+                }
+            }
 
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+            }
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                mDeviceNameChanged = true
+            }
+        })
+        binding.tvDeviceName.setOnTouchListener(object : View.OnTouchListener {
+            override fun onTouch(v: View, event: MotionEvent): Boolean {
+                val DRAWABLE_RIGHT = 2
+                if (event.action == MotionEvent.ACTION_UP) {
+                    try {
+                        if (event.rawX >= binding.tvDeviceName.right - binding.tvDeviceName.compoundDrawables[DRAWABLE_RIGHT].bounds.width()) {
+                            // your action here
+                            binding.tvDeviceName.setText("")
+                            return true
+                        }
+                    } catch (e: Exception) {
+                        LibreLogger.d(TAG, "ignore this log")
+                    }
+                }
+                return false
+            }
+        })
+    }
     private fun callActivateCastActivity() {
         val goToActivateCastActivity =
             Intent(this@CTDeviceSettingsActivity, ActivateCastActivity::class.java)
@@ -339,7 +412,7 @@ class CTDeviceSettingsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInterac
         requestLuciUpdates()
         TunnelingControl(currentDeviceIp).sendDataModeCommand()
         AlexaUtils.sendAlexaRefreshTokenRequest(currentDeviceIp)
-        LibreLogger.d(TAG_CHROME, "onResume: ")
+        binding.tvChromecastStatus.text=""
 
     }
 
@@ -440,17 +513,13 @@ class CTDeviceSettingsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInterac
                                             when {
                                                 switchStatus!!.equals("-1", ignoreCase = true) -> {
                                                     switchStatus = "0"
-                                                    binding.tvSwitchStatus.text =
-                                                        getText(R.string.off).toString()
-                                                            .toUpperCase()
+                                                    binding.tvSwitchStatus.text = getText(R.string.off).toString().uppercase(Locale.getDefault())
                                                 }
 
                                                 switchStatus!!.equals("0", ignoreCase = true) -> {
                                                     binding.switchSpeechVolumeFollow.isChecked =
                                                         false
-                                                    binding.tvSwitchStatus.text =
-                                                        getText(R.string.off).toString()
-                                                            .toUpperCase()
+                                                    binding.tvSwitchStatus.text = getText(R.string.off).toString().uppercase(Locale.getDefault())
                                                     LibreLogger.d(TAG, "suma in ct device setting on switch status")
 
                                                 }
@@ -458,9 +527,7 @@ class CTDeviceSettingsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInterac
                                                 switchStatus!!.equals("1", ignoreCase = true) -> {
                                                     binding.switchSpeechVolumeFollow.isChecked =
                                                         true
-                                                    binding.tvSwitchStatus.text =
-                                                        getText(R.string.on).toString()
-                                                            .toUpperCase()
+                                                    binding.tvSwitchStatus.text = getText(R.string.on).toString().uppercase(Locale.getDefault())
                                                     val luciControl = LUCIControl(currentDeviceIp)
                                                     LibreLogger.d(TAG, "suma in ct device setting off switch status")
 
@@ -500,7 +567,8 @@ class CTDeviceSettingsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInterac
 //                            getString(R.string.logged_out)
 //                        else binding.tvAmazonLogin.text = getString(R.string.logged_in)
 
-                        if (mNode.getmDeviceCap().getmSource().isAlexaAvsSource) {
+                        if (mNode.getmDeviceCap()!=null && mNode.getmDeviceCap().getmSource()
+                            .isAlexaAvsSource) {
                             if (mNode.alexaRefreshToken == null || mNode.alexaRefreshToken.isEmpty() || mNode.alexaRefreshToken == "0") {
                                 binding.tvAmazonLogin.text = getString(R.string.logged_out)
                             } else {
@@ -536,25 +604,41 @@ class CTDeviceSettingsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInterac
                     LibreLogger.d(TAG,"AudioPresetValue Received Data is - $audioMessage")
                 }
 
-                MIDCONST.CAST_ACCEPT_STATUS -> {
+                MIDCONST.CAST_ACCEPT_STATUS,
+                MIDCONST.CAST_ACCEPT_STATUS_572 -> {
                     val message = String(packet.getpayload())
-                    val root = JSONObject(message)
-                    crashReport = root.getBoolean("crash_report")
-                    val uuid = root.getString("device_uuid")
-                    val id = root.getString("id")
-                    //    val status = root.getString("status")
-                    tosStatus = root.getString("tos")
-                    val castStatus =
-                        tosStatus!!.substring(0, 1).uppercase(Locale.getDefault()) + tosStatus!!.substring(1)
-                            .lowercase(Locale.getDefault())
-                            .replace("_", " ")
-                    binding.tvChromecastStatus.text = castStatus
-                    closeLoader(binding.chromecastLoginProgressBar.id)/*LibreLogger.d(TAG,_CHROME, "MB : 92, msg = $root")
-                    LibreLogger.d(TAG,_CHROME, "MB : 92, msg = $action")
-                    LibreLogger.d(TAG,TAG_CHROME, "MB : 92, msg = $uuid")
-                    LibreLogger.d(TAG,TAG_CHROME, "MB : 92, msg = $id")
-                    //  LibreLogger.d(TAG,TAG_CHROME, "MB : 92, msg = $status")
-                    LibreLogger.d(TAG_CHROME, "MB : 92, msg = $tosStatus")*/
+                    if (message.isNotEmpty()) {
+                        val root = JSONObject(message)
+                        crashReport = if(root.has("crash_report")) {
+                            root.getBoolean("crash_report")
+                        }else{
+                            false
+                        }
+                        tosStatus = if(root.has("tos")){
+                            root.getString("tos")
+                        }else{
+                            ""
+                        }
+
+                        val castStatus = tosStatus!!.substring(0, 1).uppercase(Locale.getDefault()) + tosStatus!!.substring(1).lowercase(Locale.getDefault()).replace("_", " ")
+                        binding.tvChromecastStatus.text = castStatus
+                        closeLoader(binding.chromecastLoginProgressBar.id)
+                    }else{
+                        LibreLogger.d(TAG,"Message is Empty")
+                    }
+                }
+                MIDCONST.UPDATE_TIMEZONE_DUMMY,
+                MIDCONST.UPDATE_TIMEZONE, -> {
+                    val message = String(packet.getpayload())
+                    try {
+                        if (message.isNotEmpty()) {
+                            binding.txtTimeZone.text = message
+                        } else {
+                            binding.txtTimeZone.text = "Time Zone Not Available"
+                        }
+                    } catch (ex: Exception) {
+                        ex.printStackTrace()
+                    }
                 }
             }
 
@@ -578,10 +662,12 @@ class CTDeviceSettingsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInterac
         val readSpeechVolumePacket =
             LUCIPacket(LUCIMESSAGES.READ_SPEECH_VOLUME.toByteArray(), LUCIMESSAGES.READ_SPEECH_VOLUME.length.toShort(), MIDCONST.MID_ENV_READ.toShort(), LSSDPCONST.LUCI_GET.toByte())
 
+        val timeZone = LUCIPacket(null, 0.toShort(), MIDCONST.UPDATE_TIMEZONE.toShort(), LSSDPCONST.LUCI_GET.toByte())
 
         luciPackets.add(ddmsSSIDLUCIPacket)
         luciPackets.add(ddmsPwdLUCIPacket)
         luciPackets.add(readSpeechVolumePacket)
+        luciPackets.add(timeZone)
         if (currentDeviceNode != null) {
             if (currentDeviceNode?.getmDeviceCap()?.getmSource()?.isAlexaAvsSource!!) {
                 luciPackets.add(currentLocaleLUCIPacket)
@@ -589,7 +675,7 @@ class CTDeviceSettingsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInterac
             }
         }
         luciControl.SendCommand(luciPackets)
-        luciControl.SendCommand(MIDCONST.TEST_561, null, LSSDPCONST.LUCI_GET)
+        //luciControl.SendCommand(MIDCONST.TEST_561, null, LSSDPCONST.LUCI_GET)
     }
 
     private fun updateLang() {
@@ -633,46 +719,69 @@ class CTDeviceSettingsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInterac
         TunnelingControl(currentDeviceIp).sendCommand(PayloadType.AQ_MODE_SELECT, aqModeSelect.value.toByte())
     }
 
-    private fun showAwayModeAlert(ssid: String, pwd: String) {
+    private fun showAwayModeAlert(ssid: String, pwd: String, isForgetNetwork: Boolean) {
         if (awayModeSettingsDialog != null && awayModeSettingsDialog?.isShowing!!) awayModeSettingsDialog?.dismiss()
 
-        val builder =
-            AlertDialog.Builder(this) // val customView = layoutInflater.inflate(R.layout.ct_dlg_fragment_edit_away_mode, null)
+        val builder = AlertDialog.Builder(this)
         val binding = CtDlgFragmentEditAwayModeBinding.inflate(layoutInflater)
         builder.setView(binding.root)
         builder.setCancelable(false)
-
-        binding.etNetworkName.apply {
-            setText(ssid)
-            post {
-                setSelection(length())
+        if(!isForgetNetwork) {
+            binding.layEditText.visibility=View.VISIBLE
+            binding.etNetworkName.apply {
+                setText(ssid)
+                post {
+                    setSelection(length())
+                }
             }
-        }
 
-        binding.etPwd.apply {
-            setText(pwd)
-            post {
-                setSelection(length())
+            binding.etPwd.apply {
+                setText(pwd)
+                post {
+                    setSelection(length())
+                }
             }
+        }else{
+          binding.layTxtView.visibility=View.VISIBLE
+          binding.txtHeader.text=ssid
+          binding.txtMessage.text=pwd
+          binding.btnOk.text=this.resources.getText(R.string.confirm)
         }
 
         binding.btnOk.setOnClickListener {
+            if(!isForgetNetwork) {
+                if (binding.etNetworkName.text?.isEmpty()!!) {
+                    showToast("Enter network name")
+                    return@setOnClickListener
+                }
 
-            if (binding.etNetworkName.text?.isEmpty()!!) {
-                showToast("Enter network name")
-                return@setOnClickListener
-            }
+                if (binding.etPwd.text?.isEmpty()!!) {
+                    showToast("Enter password")
+                    return@setOnClickListener
+                }
 
-            if (binding.etPwd.text?.isEmpty()!!) {
-                showToast("Enter password")
-                return@setOnClickListener
-            }
-
-            if (binding.etNetworkName.text.toString() != ssid || binding.etPwd.text.toString() != pwd) {
-                closeKeyboard(this, it)/*Write env items to device*/
-                writeAwayModeSettingsToDevice(binding.etNetworkName.text.toString()
-                    .trim(), binding.etPwd.text.toString().trim(), currentDeviceIp!!)
-                awayModeSettingsDialog?.dismiss()
+                if (binding.etNetworkName.text.toString() != ssid || binding.etPwd.text.toString() != pwd) {
+                    closeKeyboard(this, it)/*Write env items to device*/
+                    writeAwayModeSettingsToDevice(binding.etNetworkName.text.toString().trim(), binding.etPwd.text.toString().trim(), currentDeviceIp!!)
+                    awayModeSettingsDialog?.dismiss()
+                }
+            }else{
+                if(currentDeviceIp!=null) {
+                    LUCIControl.SendCommandWithIp(MIDCONST.FORGET_NETWORK, "0", LSSDPCONST.LUCI_SET, currentDeviceIp)
+                  if(awayModeSettingsDialog!=null) {
+                      awayModeSettingsDialog!!.dismiss()
+                  }
+                    runOnUiThread {
+                        showProgressDialog("Please Wait")
+                    }
+                    lifecycleScope.launch(Dispatchers.IO) {
+                        delay(10000)
+                        removeTheDeviceFromRepo(currentDeviceIp)
+                        intentToHome(this@CTDeviceSettingsActivity)
+                    }
+                }else{
+                    LibreLogger.d(TAG,"Ip address null while rebooting the device")
+                }
             }
         }
 
@@ -723,20 +832,133 @@ class CTDeviceSettingsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInterac
     }
 
     private fun fetchUUIDFromDB(speakerIpAddress: String) {
-        LibreLogger.d(TAG_CHROME, "fetchUUIDFromDB: $speakerIpAddress")
         lifecycleScope.launch(Dispatchers.IO) {
-            deviceUUID = libreVoiceDatabaseDao.getDeviceUUID(speakerIpAddress).deviceUuid
-            //  LibreLogger.d(TAG_CHROME, "fetchUUIDFromDB:UUID $deviceUUID")
+            savedDeviceUUIDList = libreVoiceDatabaseDao.getAllDeviceUUID()
+            LibreLogger.d(TAG, "fetchUUIDFromDB:uuid size ${savedDeviceUUIDList.size}")
         }
     }
 
     private fun checkCastActivateStatus(currentDeviceIp: String?) {
-        LibreLogger.d(TAG_CHROME, "SendCommand:UUID $deviceUUID")
+        deviceUUID = getUUIDWithIP(currentDeviceIp)
+        LibreLogger.d(TAG, "SendCommand:UUID $deviceUUID and $currentDeviceIp")
         val postData = JSONObject()
         postData.put(LUCIMESSAGES.REQUEST_TYPE, "get")
         postData.put(LUCIMESSAGES.ID, "status")
         postData.put(LUCIMESSAGES.DEVICE_UUID, deviceUUID)
         val control = LUCIControl(currentDeviceIp)
         control.SendCommand(MIDCONST.TOS_ACCEPT_REQUEST, postData.toString(), LSSDPCONST.LUCI_SET)
+    }
+
+    private fun getUUIDWithIP(currentDeviceIp: String?): String? {
+        if (::savedDeviceUUIDList.isInitialized) {
+            for (i in savedDeviceUUIDList.indices) {
+                if (savedDeviceUUIDList[i].deviceIP == currentDeviceIp) {
+                    deviceUUID = savedDeviceUUIDList[i].deviceUuid
+                    break
+                } else {
+                    deviceUUID = ""
+                }
+            }
+            return deviceUUID
+        }
+        return deviceUUID
+    }
+    private fun editDeviceName() {
+        val nodes = LSSDPNodeDB.getInstance().getTheNodeBasedOnTheIpAddress(currentDeviceIp)
+        if (!binding.tvDeviceName.isEnabled) {
+            binding.btnEditSpeakerName.setImageResource(R.drawable.check)
+            binding.tvDeviceName.isClickable = true
+            binding.tvDeviceName.isEnabled = true
+            binding.tvDeviceName.isFocusableInTouchMode = true
+            binding.tvDeviceName.isFocusable = true
+            binding.tvDeviceName.requestFocus()
+            binding.tvDeviceName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.cancwel, 0)
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.showSoftInput(binding.tvDeviceName, InputMethodManager.SHOW_IMPLICIT)
+        } else {
+            binding.btnEditSpeakerName.setImageResource(R.drawable.baseline_edit_24)
+            binding.tvDeviceName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+            if (nodes != null && nodes.friendlyname.equals(binding.tvDeviceName.text.toString())) {
+                LibreLogger.d(TAG, "No need to update since both names are same")
+                binding.tvDeviceName.isClickable = false
+                binding.tvDeviceName.isEnabled = false
+                mDeviceNameChanged = false
+                return
+            }
+            if (mDeviceNameChanged) {
+                if (binding.tvDeviceName.text.toString() != "" && !binding.tvDeviceName.text.toString().trim { it <= ' ' }.equals("NULL", ignoreCase = true)) {
+                    if (binding.tvDeviceName.text.toString().toByteArray().size > 50) {
+                        android.app.AlertDialog.Builder(this@CTDeviceSettingsActivity)
+                            .setTitle(getString(R.string.deviceNameChanging))
+                            .setMessage(getString(R.string.deviceLength))
+                            .setPositiveButton(R.string.yes) { dialog, which -> dialog.cancel()
+                            }.setIcon(android.R.drawable.ic_dialog_alert)
+                            .show()
+                        return
+                    } else {
+                        val mLuci = LUCIControl(currentDeviceIp)
+                        mLuci.SendCommand(MIDCONST.MID_DEVNAME, binding.tvDeviceName.text.toString(), LSSDPCONST.LUCI_SET)
+                        UpdateLSSDPNodeDeviceName(currentDeviceIp, binding.tvDeviceName.text.toString())
+                        binding.tvDeviceName.isClickable = false
+                        binding.tvDeviceName.isEnabled = false
+                    }
+                } else {
+                    if (!this@CTDeviceSettingsActivity.isFinishing) {
+                        if (binding.tvDeviceName.text.toString() == "") {
+                            android.app.AlertDialog.Builder(this@CTDeviceSettingsActivity)
+                                .setTitle(getString(R.string.deviceNameChanging))
+                                .setMessage(getString(R.string.deviceNameEmpty))
+                                .setPositiveButton(R.string.yes) { dialog, which -> dialog.cancel() }.setIcon(android.R.drawable.ic_dialog_alert)
+                                .show()
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+
+    private fun UpdateLSSDPNodeDeviceName(ipaddress: String?, mDeviceName: String) {
+        val mToBeUpdateNode: LSSDPNodes = mScanHandler.getLSSDPNodeFromCentralDB(ipaddress)
+        val mNodeDB = LSSDPNodeDB.getInstance()
+        if (mToBeUpdateNode != null) {
+            mToBeUpdateNode.friendlyname = mDeviceName
+            mNodeDB.renewLSSDPNodeDataWithNewNode(mToBeUpdateNode)
+        }else{
+            LibreLogger.d(TAG,"else condition")
+        }
+    }
+    fun utf8truncate(input: String, length: Int): String {
+        val result = StringBuffer(length)
+        var resultlen = 0
+        for (i in 0 until input.length) {
+            val c = input[i]
+            var charlen = 0
+            if (c.code <= 0x7f) {
+                charlen = 1
+            } else if (c.code <= 0x7ff) {
+                charlen = 2
+            } else if (c.code <= 0xd7ff) {
+                charlen = 3
+            } else if (c.code <= 0xdbff) {
+                charlen = 4
+            } else if (c.code <= 0xdfff) {
+                charlen = 0
+            } else if (c.code <= 0xffff) {
+                charlen = 3
+            }
+            if (resultlen + charlen > length) {
+                break
+            }
+            result.append(c)
+            resultlen += charlen
+        }
+        return result.toString()
+    }
+
+    override fun communicate(comm: String?) {
+        LibreLogger.d(TIMEZONE_UPDATE,"Got the data from Activity $comm")
+        binding.txtTimeZone.text=comm
     }
 }

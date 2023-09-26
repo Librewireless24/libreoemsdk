@@ -41,10 +41,10 @@ public final class LibreVoiceDatabase_Impl extends LibreVoiceDatabase {
     final SupportSQLiteOpenHelper.Callback _openCallback = new RoomOpenHelper(configuration, new RoomOpenHelper.Delegate(12) {
       @Override
       public void createAllTables(SupportSQLiteDatabase _db) {
-        _db.execSQL("CREATE TABLE IF NOT EXISTS `uuidDataClass` (`device_ip` TEXT NOT NULL, `request_type` TEXT NOT NULL, `id` TEXT NOT NULL, `device_uuid` TEXT NOT NULL, PRIMARY KEY(`device_ip`))");
+        _db.execSQL("CREATE TABLE IF NOT EXISTS `uuidDataClass` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `device_ip` TEXT NOT NULL, `request_type` TEXT NOT NULL, `device_uuid` TEXT NOT NULL)");
         _db.execSQL("CREATE TABLE IF NOT EXISTS `passwordRememberDataClass` (`Id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `device_ssid` TEXT NOT NULL, `password` TEXT NOT NULL)");
         _db.execSQL("CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)");
-        _db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '1fdd290b045e9254c1e80a69dcf2b645')");
+        _db.execSQL("INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'cd78ecc4103237d264efe9cfecb0262a')");
       }
 
       @Override
@@ -90,9 +90,9 @@ public final class LibreVoiceDatabase_Impl extends LibreVoiceDatabase {
       @Override
       protected RoomOpenHelper.ValidationResult onValidateSchema(SupportSQLiteDatabase _db) {
         final HashMap<String, TableInfo.Column> _columnsUuidDataClass = new HashMap<String, TableInfo.Column>(4);
-        _columnsUuidDataClass.put("device_ip", new TableInfo.Column("device_ip", "TEXT", true, 1, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsUuidDataClass.put("id", new TableInfo.Column("id", "INTEGER", true, 1, null, TableInfo.CREATED_FROM_ENTITY));
+        _columnsUuidDataClass.put("device_ip", new TableInfo.Column("device_ip", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsUuidDataClass.put("request_type", new TableInfo.Column("request_type", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
-        _columnsUuidDataClass.put("id", new TableInfo.Column("id", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         _columnsUuidDataClass.put("device_uuid", new TableInfo.Column("device_uuid", "TEXT", true, 0, null, TableInfo.CREATED_FROM_ENTITY));
         final HashSet<TableInfo.ForeignKey> _foreignKeysUuidDataClass = new HashSet<TableInfo.ForeignKey>(0);
         final HashSet<TableInfo.Index> _indicesUuidDataClass = new HashSet<TableInfo.Index>(0);
@@ -118,7 +118,7 @@ public final class LibreVoiceDatabase_Impl extends LibreVoiceDatabase {
         }
         return new RoomOpenHelper.ValidationResult(true, null);
       }
-    }, "1fdd290b045e9254c1e80a69dcf2b645", "9edb7cae4e56c066d4e2a449b2506720");
+    }, "cd78ecc4103237d264efe9cfecb0262a", "fd0ac760784e7ac7c93f25cb180e23b6");
     final SupportSQLiteOpenHelper.Configuration _sqliteConfig = SupportSQLiteOpenHelper.Configuration.builder(configuration.context)
         .name(configuration.name)
         .callback(_openCallback)

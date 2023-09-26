@@ -120,6 +120,8 @@ public class LSSDPNodes {
     }
 
     private DeviceCap mDeviceCap;
+    private String secureIpaddress;
+
 
     public int getCurrentSource() {
         return currentSource;
@@ -370,4 +372,12 @@ public class LSSDPNodes {
     public void setCastModel(String castModel) {
         this.castModel = castModel;
     }
+
+  public String getSecureIpaddress() {
+    return secureIpaddress;
+  }
+
+  public void setSecureIpaddress(String secureIpaddress) {
+    this.secureIpaddress = secureIpaddress;
+  }
 }

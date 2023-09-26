@@ -75,15 +75,6 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
     private val mScanHandler = ScanningHandler.getInstance()
 
     private val myDevice = "My Device"
-    private val usbStorage = "USB Storage"
-    private val mediaServer = "Media Server"
-    //    private static String deezer = "Deezer";
-    //    private static String tidal = "TIDAL";
-    //    private static String favourite = "Favourites";
-    //    private static String vtuner = "vTuner";
-    private val spotify = "Spotify"
-    //    private static String tuneIn = "TuneIn";
-    //    private static String qmusic = "QQ Music";
 
     private var currentIpAddress: String? = null
     private var currentSource: String? = null
@@ -144,7 +135,7 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
             currentSceneObject = ScanningHandler.getInstance().getSceneObjectFromCentralRepo(currentIpAddress) // ActiveSceneAdapter.mMasterSpecificSlaveAndFreeDeviceMap.get(currentIpAddress);
             if (currentSceneObject == null) {
                 LibreLogger.d(TAG,"NetworkChanged NowPlayingFragment onCreateView")
-                // showToast(R.string.deviceNotFound)
+
             }
         }
     }
@@ -242,6 +233,7 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
                 val sceneObject = mScanHandler.getSceneObjectFromCentralRepo(currentIpAddress)
                 LUCIControl.SendCommandWithIp(MIDCONST.VOLUME_CONTROL, "" + seekBar.progress, LSSDPCONST.LUCI_SET, sceneObject?.ipAddress)
                 sceneObject?.volumeValueInPercentage = seekBar.progress
+                sceneObject.mute_status=LUCIMESSAGES.UNMUTE
                 mScanHandler.putSceneObjectToCentralRepo(sceneObject?.ipAddress, sceneObject)
 
 //                TunnelingControl(currentIpAddress).sendCommand(PayloadType.DEVICE_VOLUME,(seekBar.progress/5).toByte())
@@ -293,30 +285,39 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
                 putExtra(Constants.FROM_ACTIVITY, CTMediaSourcesActivity::class.java.simpleName)
             })
         }
+        binding.ivVolumeMute.setOnClickListener {
+            val sceneObject = mScanHandler.getSceneObjectFromCentralRepo(currentIpAddress)
+            if (sceneObject != null && sceneObject?.mute_status != null) {
+                if (sceneObject.mute_status == LUCIMESSAGES.UNMUTE) {
+                    LUCIControl.SendCommandWithIp(MIDCONST.MID_PLAYCONTROL.toInt(), LUCIMESSAGES.MUTE, LSSDPCONST.LUCI_SET, sceneObject!!.ipAddress)
+                } else {
+                    LUCIControl.SendCommandWithIp(MIDCONST.MID_PLAYCONTROL.toInt(), LUCIMESSAGES.UNMUTE, LSSDPCONST.LUCI_SET, sceneObject!!.ipAddress)
+                }
+            } else {
+                LibreLogger.d(TAG, "currentSceneObject or mute status null")
+            }
+        }
     }
 
     private fun initViews() {
         val lssdpNodes = LSSDPNodeDB.getInstance().getTheNodeBasedOnTheIpAddress(currentIpAddress)
-
         binding.tvDeviceName.text = lssdpNodes?.friendlyname
-
+        mediaSourcesList.clear()
+        //Shaik Dynamic source list
+        if (lssdpNodes?.getmDeviceCap() != null && lssdpNodes.getmDeviceCap().getmSource() != null) {
+            for (i in lssdpNodes.getmDeviceCap().getmSource().capitalCities) {
+                if (i.value == true) {
+                    mediaSourcesList.add(i.key)
+                } else {
+                    LibreLogger.d(TAG, "Source list:else")
+                }
+            }
+        } else {
+            LibreLogger.d(TAG, "Source device cap null or source null")
+        }
         adapter = CTSourcesListAdapter(this, mediaSourcesList)
         binding.rvMediaSourcesList.layoutManager = LinearLayoutManager(this)
         binding.rvMediaSourcesList.adapter = adapter
-
-        if (lssdpNodes?.getgCastVerision() != null && !lssdpNodes.networkMode.contains("P2P")) {
-            mediaSourcesList.clear()
-            mediaSourcesList.add(spotify)
-          //  mediaSourcesList.add(myDevice) //Added for testing
-            adapter.notifyDataSetChanged()
-        } else {
-            mediaSourcesList.clear()
-            mediaSourcesList.add(myDevice)
-            mediaSourcesList.add(usbStorage)
-            mediaSourcesList.add(mediaServer)
-            mediaSourcesList.add(spotify)
-            adapter.notifyDataSetChanged()
-        }
 
         if (currentSource != null) {
             val currentSource = Integer.valueOf(currentSource)
@@ -473,17 +474,16 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
                         val cmd_id = root.getInt(LUCIMESSAGES.TAG_CMD_ID)
                         LibreLogger.d(TAG, "Handle Play Json UI" + sceneObject.trackName)
                         val window = root.getJSONObject(LUCIMESSAGES.ALEXA_KEY_WINDOW_CONTENT)
-                        currentSceneObject = ScanningHandler.getInstance().getSceneObjectFromCentralRepo(currentIpAddress) // ActiveSceneAdapter.mMasterSpecificSlaveAndFreeDeviceMap.get(currentIpAddress);
+                        currentSceneObject = ScanningHandler.getInstance().getSceneObjectFromCentralRepo(currentIpAddress)
+                        // ActiveSceneAdapter.mMasterSpecificSlaveAndFreeDeviceMap.get(currentIpAddress);
                         currentSceneObject = AppUtils.updateSceneObjectWithPlayJsonWindow(window, currentSceneObject!!)
                         if(currentSceneObject!=null) {
                             updateMusicPlayViews(currentSceneObject)
                         }
-                       // LibreLogger.d(TAG, " message 42 recieved PLAY JSON media sources activity"+ currentSceneObject!!.playUrl)
                         if (cmd_id == 3) {
                              if(sceneObject!=null) {
                                  LibreLogger.d(TAG, "Handle Play Json UI" + sceneObject.trackName)
-                                 sceneObject.playUrl = window.getString("PlayUrl")
-                                     .lowercase(Locale.getDefault())
+                                 sceneObject.playUrl = window.getString("PlayUrl").lowercase(Locale.getDefault())
                                  sceneObject.album_art = window.getString("CoverArtUrl")
                                  sceneObject.artist_name = window.getString("Artist")
                                  sceneObject.totalTimeOfTheTrack = window.getLong("TotalTime")
@@ -710,7 +710,24 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
                         e.printStackTrace()
                     }
                 }
-
+                MIDCONST.MUTE_UNMUTE_STATUS -> {
+                    val msg=String(luciPacket.getpayload())
+                    LibreLogger.d(TAG, "MB : 63, msg = $msg")
+                    try {
+                        if(msg.isNotEmpty()) {
+                            sceneObject.mute_status = msg
+                            mScanHandler.putSceneObjectToCentralRepo(nettyData.getRemotedeviceIp(), sceneObject)
+                            //Setting the Mute and UnMute status
+                            if (sceneObject.mute_status == LUCIMESSAGES.MUTE) {
+                                binding.ivVolumeMute.setImageResource(R.drawable.ic_volume_mute)
+                            } else {
+                                binding.ivVolumeMute.setImageResource(R.drawable.volume_low_enabled)
+                            }
+                        }
+                    } catch (ex: Exception) {
+                        ex.printStackTrace()
+                    }
+                }
             }
 
         }
@@ -734,15 +751,14 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
                 val Browser = window.getString(TAG_BROWSER)
                 if (Browser.equals("HOME", ignoreCase = true)) {
                     /* Now we have successfully got the stack intialiized to home */
-                    timeOutHandler!!.removeMessages(NETWORK_TIMEOUT)
+                    timeOutHandler.removeMessages(NETWORK_TIMEOUT)
                     unRegisterForDeviceEvents()
-                        //Commented for now
-                  /*  val intent = Intent(this@CTMediaSourcesActivity, CTDeviceBrowserActivity::class.java)
+                    val intent = Intent(this@CTMediaSourcesActivity, CTDeviceBrowserActivity::class.java)
                     intent.putExtra(Constants.CURRENT_DEVICE_IP, currentIpAddress)
                     intent.putExtra(Constants.CURRENT_SOURCE_INDEX_SELECTED, currentSourceIndexSelected)
                     LibreLogger.d(TAG, "removing handler message")
                     startActivity(intent)
-                    finish()*/
+                    finish()
                 }
             }
             if (cmd_id == 3) {
@@ -754,7 +770,7 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
                     currentSceneObject!!.artist_name = window.getString("Artist")
                     currentSceneObject!!.totalTimeOfTheTrack = window.getLong("TotalTime")
                     currentSceneObject!!.trackName = window.getString("TrackName")
-                    currentSceneObject!!.trackName = window.getString("Album")
+                    currentSceneObject!!.album_name = window.getString("Album")
                     updateMusicPlayViews(currentSceneObject)
                 }
             }
@@ -777,6 +793,7 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
         AlexaUtils.sendAlexaRefreshTokenRequest(currentIpAddress)
         LUCIControl(currentIpAddress).SendCommand(MIDCONST.MID_CURRENT_SOURCE.toInt(), null, LSSDPCONST.LUCI_GET)
         LUCIControl(currentIpAddress).SendCommand(MIDCONST.MID_BLUETOOTH_STATUS, null, LSSDPCONST.LUCI_GET)
+        LUCIControl(currentIpAddress).SendCommand( MIDCONST.MUTE_UNMUTE_STATUS,null,LSSDPCONST.LUCI_GET)
 //        val luciControl = LUCIControl(currentIpAddress)
 //        luciControl.SendCommand(MIDCONST.MID_BLUETOOTH, BLUETOOTH_OFF, LSSDPCONST.LUCI_SET)
 
@@ -852,15 +869,11 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
         }
     }
 
-    internal inner class CTSourcesListAdapter(val context: Context,
-                                              var sourcesList: MutableList<String>?) : RecyclerView.Adapter<CTSourcesListAdapter.SourceItemViewHolder>() {
+    internal inner class CTSourcesListAdapter(val context: Context, private var sourcesList: MutableList<String>?) : RecyclerView.Adapter<CTSourcesListAdapter.SourceItemViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, i: Int): SourceItemViewHolder {
             val itemBinding = CtListItemMediaSourcesBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             return SourceItemViewHolder(itemBinding)
-           /* val view = LayoutInflater.from(parent.context).inflate(R.layout.ct_list_item_media_sources, parent, false)
-            return SourceItemViewHolder(view)*/
-
         }
 
 
@@ -874,17 +887,35 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
             return sourcesList?.size!!
         }
 
-        inner class SourceItemViewHolder(val itemBinding: CtListItemMediaSourcesBinding) : RecyclerView.ViewHolder(itemBinding.root) {
+        inner class SourceItemViewHolder(private val itemBinding: CtListItemMediaSourcesBinding) : RecyclerView.ViewHolder(itemBinding.root) {
 
             fun bindSourceItem(source: String?, position: Int) {
                 itemBinding.tvSourceType.text = source
-                when(source){
-                    context.getString(R.string.my_device) -> itemBinding.ivSourceIcon.setImageResource(R.drawable.my_device_enabled)
-                    context.getString(R.string.usb_storage) -> itemBinding.ivSourceIcon.setImageResource(R.drawable.usb_storage_enabled)
-                    context.getString(R.string.mediaserver) -> itemBinding.ivSourceIcon.setImageResource(R.drawable.media_servers_enabled)
+                when(source) {
+                    //Shaik Dynamic list some icons are not available for now
+                    context.getString(R.string.airplay) -> itemBinding.ivSourceIcon.setImageResource(R.drawable.add_device_selected)
+                    context.getString(R.string.dmr) -> itemBinding.ivSourceIcon.setImageResource(R.drawable.add_device_selected)
+                    context.getString(R.string.dmp) -> itemBinding.ivSourceIcon.setImageResource(R.drawable.add_device_selected)
                     context.getString(R.string.spotify) -> itemBinding.ivSourceIcon.setImageResource(R.mipmap.spotify)
+                    context.getString(R.string.usb) -> itemBinding.ivSourceIcon.setImageResource(R.drawable.usb_storage_enabled)
+                    context.getString(R.string.sdcard) -> itemBinding.ivSourceIcon.setImageResource(R.mipmap.sdcard)
+                    context.getString(R.string.melon) -> itemBinding.ivSourceIcon.setImageResource(R.drawable.add_device_selected)
+                    context.getString(R.string.v_tuner) -> itemBinding.ivSourceIcon.setImageResource(R.mipmap.vtuner_logo_remotesources_title)
+                    context.getString(R.string.tune_in) -> itemBinding.ivSourceIcon.setImageResource(R.mipmap.tunein_logo1)
+                    context.getString(R.string.miracast) -> itemBinding.ivSourceIcon.setImageResource(R.drawable.add_device_selected)
+                    context.getString(R.string.ddms_salve) -> itemBinding.ivSourceIcon.setImageResource(R.drawable.add_device_selected)
+                    context.getString(R.string.aux_in) -> itemBinding.ivSourceIcon.setImageResource(R.drawable.aux_enabled)
+                    context.getString(R.string.apple_device) -> itemBinding.ivSourceIcon.setImageResource(R.drawable.add_device_selected)
+                    context.getString(R.string.direct_url) -> itemBinding.ivSourceIcon.setImageResource(R.drawable.add_device_selected)
+                    context.getString(R.string.bluetooth) -> itemBinding.ivSourceIcon.setImageResource(R.drawable.bluetooth_icon)
+                    context.getString(R.string.deezer) -> itemBinding.ivSourceIcon.setImageResource(R.mipmap.deezer_logo)
+                    context.getString(R.string.tidal) -> itemBinding.ivSourceIcon.setImageResource(R.mipmap.tidal_white_logo)
+                    context.getString(R.string.favourites) -> itemBinding.ivSourceIcon.setImageResource(R.mipmap.ic_remote_favorite)
+                    context.getString(R.string.google_cast) -> itemBinding.ivSourceIcon.setImageResource(R.drawable.chromecast_built_in_logo_primary)
+                    context.getString(R.string.external_source) -> itemBinding.ivSourceIcon.setImageResource(R.drawable.add_device_selected)
+                    context.getString(R.string.alexa_source) -> itemBinding.ivSourceIcon.setImageResource(R.drawable.airable_amazon_music)
                 }
-
+                //Shaik We have to add the Listeners also waiting for Device team
                 itemBinding.llMediaSource.setOnClickListener {
                     if (this@CTMediaSourcesActivity.isFinishing)
                         return@setOnClickListener

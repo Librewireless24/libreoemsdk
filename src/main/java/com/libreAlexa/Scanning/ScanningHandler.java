@@ -33,6 +33,7 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 import org.fourthline.cling.model.meta.RemoteDevice;
@@ -47,6 +48,7 @@ public class ScanningHandler {
     private static ScanningHandler instance = new ScanningHandler();
     private ConcurrentHashMap<String, SceneObject> centralSceneObjectRepo = new ConcurrentHashMap<>();
     public Handler mSACHandler = null;
+    public String secureIP ;
     public LSSDPNodeDB lssdpNodeDB = LSSDPNodeDB.getInstance();
     public static final int HN_MODE = 0;
     public static final int SA_MODE = 1;
@@ -241,6 +243,8 @@ public class ScanningHandler {
         String mHexString = hexString;
         LibreLogger.d(TAG, "getSource hexSrtring to String " + mHexString); //f7ffffff
         Sources mNewSources = new Sources();
+        //Shaik Source List class
+        HashMap<String, Boolean> sourceList= new HashMap<>();
         BigInteger value;
         if (mHexString.startsWith("0x")) {
             value = new BigInteger(mHexString.substring(2), 16);
@@ -277,67 +281,109 @@ public class ScanningHandler {
                 switch (position + 1) {
                     case Constants.AIRPLAY_SOURCE:
                         mNewSources.setAirplay(mResult);
+                        sourceList.put("Airplay",mResult);
+                        mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.DMR_SOURCE:
                         mNewSources.setDmr(mResult);
+                        sourceList.put("Dmr",mResult);
+                        mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.DMP_SOURCE:
                         mNewSources.setDmp(mResult);
+                        sourceList.put("DMP",mResult);
+                        mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.SPOTIFY_SOURCE:
                         mNewSources.setSpotify(mResult);
+                        sourceList.put("Spotify",mResult);
+                        mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.USB_SOURCE:
                         mNewSources.setUsb(mResult);
+                        sourceList.put("USB",mResult);
+                        mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.SDCARD_SOURCE:
                         mNewSources.setSDcard(mResult);
+                        sourceList.put("SDCard",mResult);
+                        mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.MELON_SOURCE:
                         mNewSources.setMelon(mResult);
+                        sourceList.put("Melon",mResult);
+                        mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.VTUNER_SOURCE:
                         mNewSources.setvTuner(mResult);
+                        sourceList.put("VTuner",mResult);
+                        mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.TUNEIN_SOURCE:
                         mNewSources.setTuneIn(mResult);
+                        sourceList.put("TuneIn",mResult);
+                        mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.MIRACAST_SOURCE:
                         mNewSources.setMiracast(mResult);
+                        sourceList.put("Miracast",mResult);
+                        mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.DDMSSLAVE_SOURCE:
                         mNewSources.setDDMS_Slave(mResult);
+                        sourceList.put("DDMS SLAVE",mResult);
+                        mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.AUX_SOURCE:
 //                    case Constants.EXTERNAL_SOURCE:
+                        //DOUBT 13 in the excel sheet
                         mNewSources.setAuxIn(mResult);
+                        sourceList.put("AuxIn",mResult);
+                        mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.APPLEDEVICE_SOURCE:
                         mNewSources.setAppleDevice(mResult);
+                        sourceList.put("AppleDevice",mResult);
+                        mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.DIRECTURL_SOURCE:
                         mNewSources.setDirect_URL(mResult);
+                        sourceList.put("Direct URL",mResult);
+                        mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.BT_SOURCE:
                         mNewSources.setBluetooth(mResult);
+                        sourceList.put("Bluetooth",mResult);
+                        mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.DEEZER_SOURCE:
                         mNewSources.setDeezer(mResult);
+                        sourceList.put("Deezer",mResult);
+                        mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.TIDAL_SOURCE:
                         mNewSources.setTidal(mResult);
+                        sourceList.put("Tidal",mResult);
+                        mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.FAVOURITES_SOURCE:
                         mNewSources.setFavourites(mResult);
+                        sourceList.put("Favourites",mResult);
+                        mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.GCAST_SOURCE:
                         mNewSources.setGoogleCast(mResult);
+                        sourceList.put("Google Cast",mResult);
+                        mNewSources.setCapitalCities(sourceList);
                         break;
                     /*case Constants.EXTERNAL_SOURCE:
                         mNewSources.setExternalSource(mResult);
                         break;*/
                     case Constants.ALEXA_SOURCE:
+                        LibreLogger.d(TAG, "getSource FOR:-Alexa " + position+ " and position+1 "+(position+1) +" result "+mResult);
                         mNewSources.setAlexaAvsSource(mResult);
+                        sourceList.put("Alexa Source",mResult);
+                        mNewSources.setCapitalCities(sourceList);
                         break;
 
                 }
@@ -502,6 +548,13 @@ public class ScanningHandler {
             }
         }
         return true;
+    }
+
+    public void  setSecureIpaddress(String s) {
+        this.secureIP=s;
+    }
+    public String  getSecureIP() {
+        return secureIP;
     }
 
 }

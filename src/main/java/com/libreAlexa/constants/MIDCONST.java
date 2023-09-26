@@ -45,6 +45,7 @@ public class MIDCONST {
 
 
     public static final int VOLUME_CONTROL = 64;
+    public static final int MUTE_UNMUTE_STATUS = 63;
     public static final int ZONE_VOLUME = 219;
     /*this source we will get before 50*/
     public static final int NEW_SOURCE = 10;
@@ -98,5 +99,8 @@ public class MIDCONST {
     public static final int CAST_ACCEPT_STATUS_572 = 572;
     public static final int CAST_ACCEPT_STATUS = 92;
     public static final int TEST_561 = 561;
+    public static final int FORGET_NETWORK = 142;
+    public static final int UPDATE_TIMEZONE = 573;
+    public static final int UPDATE_TIMEZONE_DUMMY = 93;
 
 }

@@ -22,8 +22,8 @@ import java.util.UUID;
  * This class includes a small subset of standard GATT attributes for demonstration purposes.
  */
 public class BLEGattAttributes {
-
-    public static final int MTU_SIZE = 180;
+    //Shaik Increased the MTU size
+    public static final int MTU_SIZE = 517;
     public static UUID RIVA_BLE_SERVICE = convertFromInteger(0xAAAA); //UUID.fromString("0000aaaa-0000-1000-8000-00805f9b34fb");
     public static UUID RIVA_BLE_CHARACTERISTICS = convertFromInteger(0x1111); //UUID.fromString("00001111-0000-1000-8000-00805f9b34fb");
     public static UUID RIVA_BLE_DESCRIPTOR = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");

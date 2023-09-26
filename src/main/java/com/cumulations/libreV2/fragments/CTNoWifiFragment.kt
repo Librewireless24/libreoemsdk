@@ -60,12 +60,6 @@ class CTNoWifiFragment:Fragment(),LibreDeviceInteractionListner,View.OnClickList
             R.id.tv_wifi_settings -> {
                 WifiConnection.getInstance().mPreviousSSID = AppUtils.getConnectedSSID(requireActivity())
                 LibreApplication.activeSSID = WifiConnection.getInstance().mPreviousSSID
-                /**
-                 * Added by Shaik - 11/05/2023
-                 * Tested on OnePlus 12 and Moto 8
-                 * Working Fine and discussed with Suma
-                 * removed startActivityForResult
-                 */
                 val openWifiSettingsIntent = Intent(Settings.ACTION_WIFI_SETTINGS)
                 openWifiSettingsIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 openWifiSettingsIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)

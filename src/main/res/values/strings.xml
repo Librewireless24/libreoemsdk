@@ -30,6 +30,7 @@
   <string name="restartAppManually">Loading of Local content failed! Auto restarting is failed.Please restart the app manually!</string>
   <string name="failed">FAILED</string>
   <string name="deviceNameChanging">Speaker Name Changing</string>
+  <string name="deviceNameEmpty">FAILED\nDevice Name Cannot Be an Empty</string>
   <string name="deviceLength">Speaker Name cannot be more than 50</string>
   <string name="Settings">Settings</string>
   <string name="deviceNamecannotBeEmpty">Speaker Name Cannot Be an Empty</string>
@@ -54,11 +55,8 @@
   <string name="audio_output">Audio Output</string>
   <string name="next">Next</string>
 
-  <string name="sdcard">SD Card</string>
   <string name="mediaserver">Media Server</string>
-  <string name="bluetooth">Bluetooth</string>
   <string name="aux">Aux In</string>
-  <string name="spotify">Spotify</string>
   <string name="noDeviceFound">No free speakers available</string>
   <string name="title_error_sac_message">
         Please connect to speaker ssid
@@ -129,7 +127,7 @@
   <string name="ask_alexa4">Alexa, set Timer for 20 mins.</string>
   <string name="sign_in_az">Sign in to your Amazon account to enable Alexa Voice Service features.</string>
   <string name="engUSLang">English (US)</string>
-
+  <string name="deviceLengthReached">Device Name Maximum length reached</string>
   <!-- webView-->
   <string name="engUKLang">English (UK)</string>
 
@@ -356,6 +354,49 @@
   <string name="splashscreen_maintext">Multiroom Audio Systems</string>
   <string name="powered_text">Powered by DDMS technology</string>
   <string name="brand_name">Libre Voice</string>
+  <string name="forget_network">Forget Network</string>
+  <string name="confirm">Confirm</string>
+  <string name="forget_network_confirmation">Are you sure, you want to forget current network ?
+By clicking Confirm, Device will be removed and you will be redirected to Home. Later you can configure network by clicking Add option.</string>
+  /*Spotify*/
+  <string name="ready_play_music">Ready to play some music?</string>
+  <string name="listen_speakers_using_remote">Listen on your speakers or TV,\n <b>using the Spotify app as a remote</b></string>
+  <string name="get_spotify_free">GET SPOTIFY FREE</string>
+  <string name="use_voice_control_spotify">Use your voice to\n control Spotify</string>
+  <string name="ask_alexa">Ask Alexa to play your\n favourite playlists, artists and genres.\n For example, just say, Alexa,\n play Today’s Top Hits.</string>
+  <string name="time_zone">Time Zone</string>
+  <string name="edit_speaker_name">Edit Speaker Name</string>
+  <string name="posting_cred">Posting credentials ....</string>
+
+  <string name="airplay">Airplay</string>
+  <string name="dmr">Dmr</string>
+  <string name="dmp">Dmp</string>
+  <string name="spotify">Spotify</string>
+  <string name="usb">USB</string>
+  <string name="sdcard">SDCard</string>
+  <string name="melon">Melon</string>
+  <string name="v_tuner">VTuner</string>
+  <string name="tune_in">TuneIn</string>
+  <string name="miracast">Miracast</string>
+  <string name="ddms_salve">DDMS SLAVE</string>
+  <string name="aux_in">AuxIn</string>
+  <string name="apple_device">AppleDevice</string>
+  <string name="direct_url">Direct URL</string>
+  <string name="bluetooth">Bluetooth</string>
+  <string name="deezer">Deezer</string>
+  <string name="tidal">Tidal</string>
+  <string name="favourites">Favourites</string>
+  <string name="google_cast">Google Cast</string>
+  <string name="external_source">External Source</string>
+  <string name="devices_are_available"> Devices are available to setup</string>
+  <string name="device_are_available"> Device are available to setup</string>
+  <string name="alexa_source">Alexa Source</string>
+  <string name="permission_required">Permission required</string>
+  <string name="permission_connect">Bluetooth scan and connect permissions are required to scan and connect to Bluetooth devices</string>
+  <string name="permission_denied">Permission Denied</string>
+  <string name="open_settings">Open Settings</string>
+
+  <string name="hello_blank_fragment">Hello blank fragment</string>
   <string-array name="audio_output_array">
     <item>Stereo (S)</item>
     <item>Left Speaker (L)</item>
@@ -365,6 +406,7 @@
         <item>Right Rear Subwoofer(RRSub)</item>
         <item>Subwoofer(Sub)</item>-->
   </string-array>
+  <!-- TODO: Remove or change this placeholder text -->
   <string-array name="audio_preset_array">
     <item>Normal</item>
     <item>Flat</item>
@@ -372,6 +414,5 @@
     <item>Rock</item>
     <item>DRC</item>
   </string-array>
-
 
 </resources>

@@ -14,38 +14,32 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:contentInsetLeft="0dp"
-            app:contentInsetStart="0dp">
+            android:layout_height="?android:attr/actionBarSize">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_marginLeft="?attr/actionBarSize"
-                    android:layout_marginRight="?attr/actionBarSize"
-                    android:text="@string/setup_name"
-                    android:textColor="@color/white"
-                    android:textSize="20sp" />
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_centerInParent="true"
+                  android:text="@string/setup_name"
+                  android:textColor="@color/white"
+                  android:textSize="20sp" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_back"
-                    android:layout_width="?attr/actionBarSize"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:padding="16dp"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:padding="10dp"
                     app:srcCompat="@drawable/ic_arrow_back_white" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_refresh"
-                    android:layout_width="?attr/actionBarSize"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:padding="16dp"
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"
+                    android:padding="10dp"
                     android:layout_alignParentRight="true"
                     app:srcCompat="@drawable/ic_refresh" />
 
@@ -54,11 +48,11 @@
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
     <LinearLayout
-        android:paddingBottom="?attr/actionBarSize"
-        android:layout_marginTop="?attr/actionBarSize"
+        android:paddingBottom="?android:attr/actionBarSize"
+        android:layout_marginTop="?android:attr/actionBarSize"
         android:gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical">
         <RelativeLayout
           android:id="@+id/lay_deviceCount"
@@ -101,10 +95,10 @@
         <LinearLayout
           android:id="@+id/no_ble_device_frame_layout"
           android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_centerInParent="true"
+          android:layout_height="match_parent"
+          android:layout_gravity="center"
+          android:gravity="center"
           android:clickable="false"
-          android:layout_marginTop="120dp"
           android:orientation="vertical"
           android:visibility="gone">
 

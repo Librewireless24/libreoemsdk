@@ -480,6 +480,18 @@ class CTActiveDevicesFragment:Fragment(),LibreDeviceInteractionListner,Tunneling
                     deviceListAdapter.addDeviceToList(sceneObject)
                 }
             }
+            MIDCONST.MUTE_UNMUTE_STATUS -> {
+                LibreLogger.d(TAG, "Volume Controls MB : 63, msg = $msg")
+                try {
+                    if(msg.isNotEmpty()) {
+                        sceneObject.mute_status = msg
+                        mScanHandler.putSceneObjectToCentralRepo(nettyData.getRemotedeviceIp(), sceneObject)
+                        deviceListAdapter.addDeviceToList(sceneObject)
+                    }
+                }catch (ex:Exception){
+                    ex.printStackTrace()
+                }
+            }
         }
     }
 

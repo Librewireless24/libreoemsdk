@@ -244,6 +244,7 @@ public class NettyClientHandler extends ChannelHandlerAdapter {
         /*
          * LatestDiscoveryChanges
          */
+        ScanningHandler.getInstance().setSecureIpaddress(remotedevice);
         if (LUCIControl.luciSocketMap.containsKey(remotedevice)) {
             if (isSocketToBeRemovedFromTheTCPMap(ctx, remotedevice)) {
                 BusProvider.getInstance().post(new RemovedLibreDevice(remotedevice));

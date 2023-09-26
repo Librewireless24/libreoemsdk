@@ -7,6 +7,8 @@ import static com.libreAlexa.constants.Constants.NO_UPDATE;
 import static com.libreAlexa.constants.Constants.UPDATE_DOWNLOAD;
 import static com.libreAlexa.constants.Constants.UPDATE_IMAGE_AVAILABLE;
 import static com.libreAlexa.constants.Constants.UPDATE_STARTED;
+import static com.libreAlexa.constants.LUCIMESSAGES.HOUR_FORMAT;
+import static com.libreAlexa.constants.LUCIMESSAGES.TIMEZONE_OEM;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -44,16 +46,19 @@ import com.libreAlexa.alexa.AlexaUtils;
 import com.libreAlexa.alexa.DeviceProvisioningInfo;
 import com.libreAlexa.constants.AppConstants;
 import com.libreAlexa.constants.Constants;
+import com.libreAlexa.constants.LSSDPCONST;
 import com.libreAlexa.constants.LUCIMESSAGES;
 import com.libreAlexa.constants.MIDCONST;
 import com.libreAlexa.luci.LSSDPNodeDB;
 import com.libreAlexa.luci.LSSDPNodes;
+import com.libreAlexa.luci.LUCIControl;
 import com.libreAlexa.luci.LUCIPacket;
 import com.libreAlexa.netty.BusProvider;
 import com.libreAlexa.netty.LibreDeviceInteractionListner;
 import com.libreAlexa.netty.NettyData;
 import com.libreAlexa.util.LibreLogger;
 import java.text.DateFormat;
+import java.util.TimeZone;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -165,7 +170,6 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
                 case Constants.SEARCHING_FOR_DEVICE:
                     LibreLogger.d(TAG,"mHandler SEARCHING_FOR_DEVICE, ssid = "+ssid);
                     sendMSearchInIntervalOfTime();
-                    LibreLogger.d(APP_FORGROUND,"TIMEOUT_FOR_SEARCHING_DEVICE= "+ssid);
                     mHandler.sendEmptyMessageDelayed(Constants.TIMEOUT_FOR_SEARCHING_DEVICE, OOPS_TIMEOUT);
                     LibreLogger.d(TAG, "Searching For The Device " + LibreApplication.sacDeviceNameSetFromTheApp);
                     setSetupInfoTexts(getString(R.string.setting_up_speaker),getString(R.string.pleaseWait));
@@ -266,18 +270,14 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
         if (node != null) {
             LibreLogger.d(TAG, "SAC Configured Device Found = " + node.getFriendlyname() +" and Node Ip "+node.getIP()+" at   "+ LibreApplication.sacDeviceNameSetFromTheApp);
             if (compareSacDeviceNameWithFriendlyName(node.getFriendlyname())) {
-                insertDeviceIntoDb(node,"CTE");
-                LibreLogger.d(TAG, "SAC Configured Device Found = IF " + node.getFriendlyname() + " at " + time);
-                LibreLogger.d(TAG_FW_UPDATE, "SAC newDeviceFound, fwInternetUpgradeMessage = " + fwInternetUpgradeMessage);
                 mHandler.removeMessages(Constants.TIMEOUT_FOR_SEARCHING_DEVICE);
-                LibreLogger.d(TAG, "SAC Configured Device Found = TIMEOUT_FOR_SEARCHING_DEVICE " + node.getIP());
+                LibreLogger.d(TAG_FW_UPDATE, "SAC Configured Device Found = TIMEOUT_FOR_SEARCHING_DEVICE " + node.getIP());
                 mSACConfiguredIpAddress = node.getIP();
-                readAlexaToken(mSACConfiguredIpAddress);
+                //readAlexaToken(mSACConfiguredIpAddress,2);
 
                 if (fwInternetUpgradeMessage == null || fwInternetUpgradeMessage.isEmpty()) {
                     LibreLogger.d(TAG_FW_UPDATE, "SAC Configured Device Found = Second IF " + node.getFriendlyname() + " at " + time);
-                    mHandler.sendEmptyMessageDelayed(Constants.WAITING_FOR_223_MB,
-                        Constants.INTERNET_PLAY_TIMEOUT);
+                    mHandler.sendEmptyMessageDelayed(Constants.WAITING_FOR_223_MB, Constants.INTERNET_PLAY_TIMEOUT);
                     mb223TimerRunning = true;
                     AlexaUtils.getDeviceUpdateStatus(mSACConfiguredIpAddress);
                     return;
@@ -406,16 +406,13 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
                     break;
 
                 case MIDCONST.FW_UPGRADE_INTERNET_LS9:
-                    LibreLogger.d(TAG_FW_UPDATE, "MB:- 223 fwInternetUpgradeMessage "+fwInternetUpgradeMessage);
                     if (message.isEmpty())
                         return;
                     fwInternetUpgradeMessage = message;
                     if (fwInternetUpgradeMessage != null && !fwInternetUpgradeMessage.isEmpty()) {
                         mHandler.removeMessages(Constants.WAITING_FOR_223_MB);
                         mb223TimerRunning = false;
-                       // LibreLogger.d(TAG,TAG_FW_UPDATE, "fwInternetUpgradeMessage "+fwInternetUpgradeMessage);
                         if(fwInternetUpgradeMessage!=null && fwInternetUpgradeMessage.matches("[0-9]+")){
-                         //   LibreLogger.d(TAG,TAG_FW_UPDATE, "fwInternetUpgradeMessage PROGRES:- "+fwInternetUpgradeMessage);
                             progressBar.setProgress(Integer.parseInt(fwInternetUpgradeMessage));
                         }
                         switch (fwInternetUpgradeMessage) {
@@ -423,7 +420,6 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
                                 readAlexaToken(mSACConfiguredIpAddress);
                                 break;
                             case UPDATE_STARTED:
-                                //LibreLogger.d(TAG,TAG_FW_UPDATE, "FW_UPGRADE_INTERNET UPDATE_STARTED "+fwInternetUpgradeMessage);
                                 break;
                             case UPDATE_DOWNLOAD:
                                 setSetupInfoTexts(getString(R.string.updating_your_speaker),getString(R.string.mb223_update_download));
@@ -457,7 +453,7 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
                         mb223TimerRunning = false;
                         if (fwInternetUpgradeMessage.equals(GCAST_COMPLETE)) {
                             setSetupInfoTexts(getString(R.string.now_rebooting), getString(R.string.indicating_light));
-                            Log.d(APP_FORGROUND, "messageRecieved: "+fwInternetUpgradeMessage);
+                            Log.d(TAG, "messageRecieved: "+fwInternetUpgradeMessage);
                             mHandler.sendEmptyMessageDelayed(Constants.FW_UPGRADE_REBOOT_TIMER, 3 * 60 * 1000);
                         }
                     }
@@ -473,7 +469,6 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
         if (alertDialogFWFailed == null) {
             alertDialogFWFailed = dialog.create();
             alertDialogFWFailed.show();
-            LibreLogger.d(TAG_FW_UPDATE, "FW_UPGRADE_INTERNET showAlertDialogForFWError IF ");
         }
         mHandler.sendEmptyMessageDelayed(FW_FAILED,5000);
     }
@@ -528,16 +523,15 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
             intentToHome(CTConnectingToMainNetwork.this);
             return;
         }
-        LibreLogger.d(TAG, "goToNextScreen Checking the Both the source:- " + mNode.getAlexaRefreshToken()
-            + "isAlexaSource:- " + mNode.getmDeviceCap().getmSource().isAlexaAvsSource()
-            + "isCastSource:- " + mNode.getmDeviceCap().getmSource().isGoogleCast());
+        //SHAIk New TimeZone Changes
+        updateTimeZone(mSACConfiguredIpAddress);
+        LibreLogger.d(TAG, "goToNextScreen Checking the Both the source:- " + mNode.getAlexaRefreshToken() + "isAlexaSource:- " + mNode.getmDeviceCap().getmSource().isAlexaAvsSource() + "isCastSource:- " + mNode.getmDeviceCap().getmSource().isGoogleCast());
 
         if (mNode.getmDeviceCap().getmSource().isAlexaAvsSource()) {
             LibreLogger.d(TAG, "goToNextScreen AVSSource " + mNode.getmDeviceCap().getmSource().isGoogleCast());
             if (mNode.getAlexaRefreshToken() == null || mNode.getAlexaRefreshToken().isEmpty()
                 || mNode.getAlexaRefreshToken().equals("0")) {
-                Intent newIntent = new Intent(CTConnectingToMainNetwork.this, CTAmazonInfoActivity.class)
-                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                Intent newIntent = new Intent(CTConnectingToMainNetwork.this, CTAmazonInfoActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 newIntent.putExtra(Constants.CURRENT_DEVICE_IP, mSACConfiguredIpAddress);
                 newIntent.putExtra(AppConstants.DEVICE_PROVISIONING_INFO, mNode.getMdeviceProvisioningInfo());
                 newIntent.putExtra(Constants.FROM_ACTIVITY, CTConnectingToMainNetwork.class.getSimpleName());
@@ -576,6 +570,27 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
         }
 
     }
+
+    //Shaik New Change Time Zone
+    private void updateTimeZone(String ipAddress) {
+        TimeZone timezone = TimeZone.getDefault();
+        LUCIControl control = new LUCIControl(ipAddress);
+        if (timezone.getID() != null) {
+            JSONObject postData = new JSONObject();
+            try {
+                postData.put(TIMEZONE_OEM, timezone.getID());
+                //Reserved for future
+                postData.put(HOUR_FORMAT, "");
+            } catch (JSONException ex) {
+                ex.printStackTrace();
+                LibreLogger.d(TIMEZONE_UPDATE, "CT updateTimeZone: Exception: " + ex.getMessage());
+            }
+            control.SendCommand(MIDCONST.UPDATE_TIMEZONE, postData.toString(), LSSDPCONST.LUCI_SET);
+        } else {
+            LibreLogger.d(TIMEZONE_UPDATE, "CT updateTimeZone: failed ");
+        }
+    }
+
     private void showAlertDialogForClickingWrongNetwork() {
         String ssid = getConnectedSSIDName(this);
         if (ssid.isEmpty()

@@ -9,4 +9,11 @@
     <dimen name="wifi_router_padding">32dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
   <dimen name="five">5</dimen>
+
+  <dimen name="font_size_16">16sp</dimen>
+  <dimen name="font_size_24">24sp</dimen>
+  <dimen name="dimen_0">0dp</dimen>
+  <dimen name="dimen_16">16dp</dimen>
+  <dimen name="dimen_32">32dp</dimen>
+  <dimen name="dimen_60">60dp</dimen>
 </resources>

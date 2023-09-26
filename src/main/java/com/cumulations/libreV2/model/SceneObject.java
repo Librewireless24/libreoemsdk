@@ -1,7 +1,6 @@
 package com.cumulations.libreV2.model;
 
 import com.cumulations.libreV2.tcp_tunneling.enums.BatteryType;
-import com.libreAlexa.Scanning.NettyServerClass;
 import com.libreAlexa.constants.ControlConstants;
 import com.libreAlexa.luci.LSSDPNodeDB;
 import com.libreAlexa.util.LibreLogger;
@@ -49,6 +48,8 @@ public class SceneObject {
     private boolean isBatteryCharging;
     private BatteryType batteryType;
     private int tunnelingCurrentSource;
+
+    private String mute_status;
 
     public SceneObject() {}
 
@@ -238,6 +239,7 @@ public class SceneObject {
     public static final int CURRENTLY_STOPPED = 1;
     public static final int CURRENTLY_PAUSED = 2;
     public static final int CURRENTLY_NOTPLAYING = 4;
+    public static final int CURRENTLY_BUFFERING = 5;
 
 
     public String getAlbum_name() {
@@ -427,5 +429,13 @@ public class SceneObject {
 
     public void setTunnelingCurrentSource(int tunnelingCurrentSource) {
         this.tunnelingCurrentSource = tunnelingCurrentSource;
+    }
+
+    public String getMute_status() {
+        return mute_status;
+    }
+
+    public void setMute_status(String mute_status) {
+        this.mute_status = mute_status;
     }
 }

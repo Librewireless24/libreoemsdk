@@ -49,6 +49,7 @@ public class LUCIMESSAGES {
     public static final String JOIN_ALL = "JOINALL";
     public static final String DROP_ALL = "DROPALL";
     public static final String MUTE = "MUTE";
+    public static final String UNMUTE = "UNMUTE";
     public static final String JOIN = "JOINNEXT";
     public static final String DROP = "DROPME";
     public static final String MAKE_GROUP = "MAKE_GROUP";
@@ -121,6 +122,8 @@ public class LUCIMESSAGES {
     public static final String FAILURE = "failure";
     public static final String CONFIGURATION_ALREADY_UPDATE = "Configuration already updated!";
     public static final String REQUEST_APPROVED = "Request approved successfully!";
+    public static final String TIMEZONE_OEM = "timezone_oem";
+    public static final String HOUR_FORMAT = "time_in_12_hour_format";
 
     /*response for cast client SET request is {"action":"accepted","device_uuid":"f1ae28a2-5b97-4443-8a9f-3b6eb94ee321","id":"tos","status":"success","status_msg":"Request approved successfully!"}*/
 }

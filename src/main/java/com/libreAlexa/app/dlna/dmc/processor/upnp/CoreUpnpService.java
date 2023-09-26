@@ -377,7 +377,7 @@ public class CoreUpnpService extends AndroidUpnpServiceImpl {
                         mSceneObj.setArtist_name(window.getString("Artist"));
                         mSceneObj.setTotalTimeOfTheTrack(window.getLong("TotalTime"));
                         mSceneObj.setTrackName(window.getString("TrackName"));
-                        mSceneObj.setTrackName(window.getString("Album"));
+                        mSceneObj.setAlbum_name(window.getString("Album"));
                         LibreLogger.d(TAG, "PLAY JSON ARTIST NAME"+mSceneObj.getArtist_name());
 
                         LibreApplication.currentAlbumnName =mSceneObj.getAlbum_name();

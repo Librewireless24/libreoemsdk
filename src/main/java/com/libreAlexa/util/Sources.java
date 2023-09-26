@@ -1,5 +1,7 @@
 package com.libreAlexa.util;
 
+import java.util.HashMap;
+
 /**
  * Created by karunakaran on 9/2/2016.
  */
@@ -25,6 +27,15 @@ public class Sources {
     boolean GoogleCast;
     boolean ExternalSource;
     boolean AlexaAvsSource;
+    HashMap<String, Boolean> capitalCities = new HashMap<String, Boolean>();
+
+    public HashMap<String, Boolean> getCapitalCities() {
+        return capitalCities;
+    }
+
+    public void setCapitalCities(HashMap<String, Boolean> capitalCities) {
+        this.capitalCities = capitalCities;
+    }
 
     public String toPrintString() {
 
@@ -33,11 +44,11 @@ public class Sources {
                 "Dmp :" + Dmp + "\t " +
                 "Spotify :" + Spotify + "\t " +
                 "USB :" + Usb + "\t " +
-                "SDCARD" + SDcard + "\t " +
+                "SDCARD: " + SDcard + "\t " +
                 "Melon :" + Melon + "\t " +
-                "VTuner" + vTuner + "\t " +
+                "VTuner :" + vTuner + "\t " +
                 "TuneIn :" + TuneIn + "\t " +
-                "Miracast" + Miracast + "\t " +
+                "Miracast :" + Miracast + "\t " +
                 "DDMS_SLAVE :" + DDMS_Slave + "\t " +
                 "AuxIn :" + AuxIn + "\t " +
                 "AppleDevice :" + AppleDevice + "\t " +

@@ -172,7 +172,10 @@ public class LUCIPacket {
 
         remoteID = (short) (((buffer[1] & 0xFF) << 8) & (buffer[0] & 0xFF));
         CommandType = buffer[2];
-        Command = (short)(buffer[3] * 16 + buffer[4]& 0xFF);
+        //Shaik OLD logic to receive the Mb blow  250
+      //  Command = (short)(buffer[3] * 16 + buffer[4]& 0xFF);
+        //Shaik new logic to receive the Mb above 250
+        Command = (short)(buffer[3] << 8 | buffer[4]& 0xFF);
         //command = buffer[4];//(short) (((buffer[4] & 0xFF)) & ((buffer[3] & 0xFF) << 8)) ;
         CommandStatus = buffer[5];
 

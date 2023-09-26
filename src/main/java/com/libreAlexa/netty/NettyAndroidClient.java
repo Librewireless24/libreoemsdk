@@ -52,7 +52,7 @@ public class NettyAndroidClient {
     long lastNotifiedTime;
     //isLuciSecure =true is SECURE DEVICE
     //isLuciSecure =false is NON SECURE DEVICE
-    boolean isLuciSecure=false;
+    boolean isLuciSecure=true;
     public long getCreationTime() {
         return creationTime;
     }

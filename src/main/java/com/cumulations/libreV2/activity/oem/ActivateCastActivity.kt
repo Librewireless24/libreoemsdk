@@ -2,6 +2,7 @@ package com.cumulations.libreV2.activity.oem
 
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.text.SpannableString
 import android.text.Spanned
@@ -9,12 +10,14 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
 import android.view.View
+import android.window.OnBackInvokedDispatcher
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.cumulations.libreV2.activity.CTDeviceDiscoveryActivity
 import com.cumulations.libreV2.activity.CTDeviceSettingsActivity
-import com.cumulations.libreV2.fragments.CTActiveDevicesFragment
+import com.cumulations.libreV2.roomdatabase.CastLiteUUIDDataClass
 import com.cumulations.libreV2.roomdatabase.LibreVoiceDatabase
 import com.libreAlexa.R
 import com.libreAlexa.constants.Constants
@@ -33,6 +36,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.json.JSONObject
+import java.util.UUID
 
 /**
  * Created by SHAIK
@@ -71,24 +75,24 @@ class ActivateCastActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteraction
         super.onCreate(savedInstanceState)
         binding = ActivityActivateCastBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        LibreLogger.d(TAG, "onCreate:speakerIpAddress: $currentIpAddress\n ToSStatus: $tosStatus and uuid: $currentDeviceUUID  and speakerName: $speakerName and From $from")
+        if (Build.VERSION.SDK_INT >= 33) {
+            //Android 13 and Above
+            onBackInvokedDispatcher.registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT) {
+                exitOnBackPressed()
+            }
+        } else {
+            //Android 12 and below
+            onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    exitOnBackPressed()
+                }
+            })
+        }
         if (currentIpAddress != null) {
             fetchUUIDFromDB(currentIpAddress!!)
         } else {
             showToast(getString(R.string.somethingWentWrong))
             intentToHome(this)
-
-        }
-        if (!from.isNullOrEmpty() && from.equals(CTActiveDevicesFragment::class.java.simpleName, ignoreCase = true) || !from.isNullOrEmpty() && from.equals(CTDeviceSettingsActivity::class.java.simpleName, ignoreCase = true)) {
-            binding.layLoader!!.visibility = View.VISIBLE
-            lifecycleScope.launch {
-                delay(2000)
-                val postData = JSONObject()
-                postData.put(LUCIMESSAGES.REQUEST_TYPE, "get")
-                postData.put(LUCIMESSAGES.ID, "status")
-                postData.put(LUCIMESSAGES.DEVICE_UUID, deviceUUID)
-                sendLuciCommand(postData.toString())
-            }
 
         }
         binding.imgRightArrow.setOnClickListener {
@@ -123,7 +127,7 @@ class ActivateCastActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteraction
         voiceControlString.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, R.color.blue)), 42, 57, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         binding.txtSetUpVoice.text = voiceControlString
         binding.txtSetUpVoice.movementMethod = LinkMovementMethod.getInstance()
-        binding.btnSendCrashReports?.setOnCheckedChangeListener { _buttonView, isChecked ->
+        binding.btnSendCrashReports.setOnCheckedChangeListener { _buttonView, isChecked ->
             if (!_buttonView.isPressed) return@setOnCheckedChangeListener
             if (isChecked) {
                 val postData = JSONObject()
@@ -143,6 +147,18 @@ class ActivateCastActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteraction
                 sendLuciCommand(postData.toString())
 
             }
+        }
+    }
+
+    private fun getCrashReportStatus() {
+        binding.layLoader.visibility = View.VISIBLE
+        lifecycleScope.launch {
+            delay(2000)
+            val postData = JSONObject()
+            postData.put(LUCIMESSAGES.REQUEST_TYPE, "get")
+            postData.put(LUCIMESSAGES.ID, "status")
+            postData.put(LUCIMESSAGES.DEVICE_UUID, deviceUUID)
+            sendLuciCommand(postData.toString())
         }
     }
 
@@ -175,14 +191,12 @@ class ActivateCastActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteraction
     }
 
     override fun deviceGotRemoved(ipaddress: String?) {
-        LibreLogger.d(TAG_DEVICE_REMOVED, "deviceGotRemoved called ActivateCast $ipaddress and speakerIpAddress $currentIpAddress")
     }
 
     override fun messageRecieved(nettyData: NettyData?) {
-        binding.layLoader!!.visibility = View.GONE
+        binding.layLoader.visibility = View.GONE
         val packet = LUCIPacket(nettyData!!.getMessage())
-        val remoteDeviceIp = nettyData.getRemotedeviceIp()
-        LibreLogger.d(TAG, "messageReceived: " + remoteDeviceIp + ", command is " + packet.command + "msg" + " is\n" + String(packet.payload))
+        val remoteDeviceIp = nettyData.getRemotedeviceIp()/*  LibreLogger.d(TAG, "messageReceived: " + remoteDeviceIp + ", command is " + packet.command + "msg" + " is\n" + String(packet.payload))*/
         if (packet.command == MIDCONST.CAST_ACCEPT_STATUS || packet.command == MIDCONST.CAST_ACCEPT_STATUS_572) {
             val message = String(packet.getpayload())
             val root = JSONObject(message)
@@ -190,7 +204,7 @@ class ActivateCastActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteraction
                 if (root.getString("status") == LUCIMESSAGES.SUCCESS) {
                     deviceTOSStatus = root.getString("tos")
                     val crashReport = root.getBoolean("crash_report")
-                    binding.btnSendCrashReports!!.isChecked = crashReport
+                    binding.btnSendCrashReports.isChecked = crashReport
                     if (deviceTOSStatus != "activated") {
                         binding.txtSendDevice.alpha = .5F
                         binding.txtGoogleAccountControls.alpha = .5F
@@ -198,14 +212,14 @@ class ActivateCastActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteraction
                         binding.txtActivateCast.text = getString(R.string.activate_cast)
                         binding.imgRightArrow.isClickable = true
                         binding.imgRightArrow.visibility = View.VISIBLE
-                        binding.btnSendCrashReports!!.isClickable = false
+                        binding.btnSendCrashReports.isClickable = false
                     } else {
                         binding.txtActivateCast.text = getString(R.string.cast_enabled)
                         binding.imgRightArrow.isClickable = false
                         binding.imgRightArrow.visibility = View.GONE
-                        binding.btnSendCrashReports!!.isClickable = true
+                        binding.btnSendCrashReports.isClickable = true
                     }
-                }else{
+                } else {
                     gotoHome()
                 }
             }
@@ -220,6 +234,7 @@ class ActivateCastActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteraction
     override fun onResume() {
         super.onResume()
         registerForDeviceEvents(this)
+        getCrashReportStatus()
     }
 
     override fun onStop() {
@@ -229,7 +244,30 @@ class ActivateCastActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteraction
 
     private fun fetchUUIDFromDB(speakerIpAddress: String) {
         lifecycleScope.launch(Dispatchers.IO) {
-            deviceUUID = libreVoiceDatabaseDao.getDeviceUUID(speakerIpAddress).deviceUuid
+            try {
+                deviceUUID = libreVoiceDatabaseDao.getDeviceUUID(speakerIpAddress).deviceUuid
+            } catch (ex: Exception) {
+                ex.printStackTrace()
+                LibreLogger.d(TAG, "Retrieving is not working properly ")
+                val uuid: String = UUID.randomUUID().toString()
+                val addDeviceDate = CastLiteUUIDDataClass(0, speakerIpAddress, speakerName!!, uuid)
+                libreVoiceDatabaseDao.addDeviceUUID(addDeviceDate)
+                delay(2000)
+                fetchUUIDFromDB(speakerIpAddress)
+            }
+        }
+    }
+
+    private fun exitOnBackPressed() {
+        if (!from.isNullOrEmpty() && from!!.equals(CTDeviceSettingsActivity::class.java.simpleName, ignoreCase = true)) {
+            val newIntent = Intent(this@ActivateCastActivity, CTDeviceSettingsActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            newIntent.putExtra(Constants.FROM_ACTIVITY, OpenGHomeAppActivity::class.java.simpleName)
+            newIntent.putExtra(Constants.CURRENT_DEVICE_IP, currentIpAddress)
+            newIntent.putExtra(Constants.DEVICE_NAME, speakerName)
+            startActivity(newIntent)
+            finish()
+        } else {
+            intentToHome(this)
         }
     }
 }

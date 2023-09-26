@@ -62,7 +62,7 @@
         android:clickable="true"
         android:background="@color/transparent" />
       <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/radbtn_senDeviceUsage"
+        android:id="@+id/btn_send_crash_reports"
         android:layout_width="100dp"
         android:layout_height="30dp"
         android:layout_weight=".3"
@@ -102,5 +102,21 @@
       android:clickable="true"
       android:background="@color/transparent"
       android:layout_below="@+id/txt_google_account_controls"/>
+  </RelativeLayout>
+  <RelativeLayout
+    android:id="@+id/lay_Loader"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_loader"
+    android:visibility="gone">
+
+    <ProgressBar
+      android:id="@+id/progress_bar"
+      android:layout_width="100dp"
+      android:layout_height="100dp"
+      android:layout_centerInParent="true"
+      android:indeterminateTint="@color/brand_orange"
+      android:background="@color/transparent">
+    </ProgressBar>
   </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -170,14 +170,14 @@ class CTWifiListActivity : CTDeviceDiscoveryActivity(), BLEServiceToApplicationI
         }
         if (WifiConnection.getInstance().savedScanResults.isEmpty()) {
             if (intent?.getStringExtra(AppConstants.DEVICE_IP) != null) {
-               // getScanResultsForIp(intent?.getStringExtra(AppConstants.DEVICE_IP)!!)
+                binding.rvWifiList.visibility = View.GONE
+                binding.tvNoData.visibility = View.VISIBLE
             }
         } else {
             runOnUiThread {
                 binding.rvWifiList.visibility = View.VISIBLE
                 binding.tvNoData.visibility = View.GONE
                 filteredScanResults = WifiConnection.getInstance().savedScanResults as ArrayList<ScanResultItem>?
-                LibreLogger.d(TAG, "getScanResultsFromDevice filteredScanResults size" + filteredScanResults!!.size)
                 wifiListAdapter?.updateList(filteredScanResults)
             }
         }
@@ -188,7 +188,6 @@ class CTWifiListActivity : CTDeviceDiscoveryActivity(), BLEServiceToApplicationI
 
         override fun handleMessage(msg: Message) {
             super.handleMessage(msg)
-            LibreLogger.d(TAG, "handler ${msg.what} timeout")
             when (msg.what) {
                 Constants.GETTING_SCAN_RESULTS -> {
                     LibreLogger.d(TAG, "handler  ${msg.what} timeout")

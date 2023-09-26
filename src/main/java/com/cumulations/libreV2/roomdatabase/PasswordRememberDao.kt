@@ -21,7 +21,7 @@ interface PasswordRememberDao {
     @Query("SELECT * FROM passwordRememberDataClass WHERE device_ssid LIKE :ssid")
     fun getPasswordWithSSID(ssid: String): PasswordRememberDataClass
 
-    // getting all the notes and showing them to the recyclerView in the MainActivity
+
     @Query("SELECT * FROM passwordRememberDataClass ORDER BY Id DESC")
     fun getAllSSISandPWDS(): List<PasswordRememberDataClass>
 

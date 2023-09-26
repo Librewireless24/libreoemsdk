@@ -28,6 +28,7 @@
     <activity
       android:exported="false"
       android:name="com.cumulations.libreV2.activity.oem.CastToSActivity"
+      android:launchMode="singleInstance"
       android:screenOrientation="portrait"/>
     <activity
       android:exported="true"
@@ -35,7 +36,6 @@
       android:screenOrientation="portrait"/>
     <activity
       android:exported="true"
-      android:launchMode="singleTask"
       android:name="com.cumulations.libreV2.activity.CTBluetoothPassCredentials"
       android:screenOrientation="portrait" />
     <activity
@@ -196,6 +196,7 @@
   </application>
   <queries>
     <package android:name="com.google.android.apps.chromecast.app" />
+    <package android:name="com.spotify.music" />
   </queries>
 
   <uses-feature
@@ -205,6 +206,7 @@
   <uses-feature
     android:name="android.hardware.touchscreen"
     android:required="false" />
+
   <uses-permission android:name="android.permission.BLUETOOTH" />
   <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
   <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
