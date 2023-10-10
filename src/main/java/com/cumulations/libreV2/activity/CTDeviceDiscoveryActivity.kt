@@ -6,7 +6,9 @@ import android.annotation.TargetApi
 import android.app.Activity
 import android.app.AlarmManager
 import android.app.PendingIntent
+import android.bluetooth.BluetoothAdapter
 import android.content.*
+import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.net.Uri
@@ -71,6 +73,7 @@ import com.libreAlexa.app.dlna.dmc.processor.upnp.CoreUpnpService
 import com.libreAlexa.app.dlna.dmc.server.ContentTree
 import com.libreAlexa.app.dlna.dmc.utility.UpnpDeviceManager
 import com.libreAlexa.constants.AppConstants
+import com.libreAlexa.constants.AppConstants.BT_ENABLED_REQUEST_CODE
 import com.libreAlexa.constants.AppConstants.LOCATION_PERMISSION_REQUEST_CODE
 import com.libreAlexa.constants.AppConstants.LOCATION_PERM_SETTINGS_REQUEST_CODE
 import com.libreAlexa.constants.AppConstants.LOCATION_SETTINGS_REQUEST_CODE
@@ -126,6 +129,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
         const val TAG_DEVICE_REMOVED = "TAG_DEVICE_REMOVED"
         const val TAG_FW_UPDATE = "TAG_FW_UPDATE"
         const val TAG_SECUREROOM = "TAG_SECUREROOM"
+        const val TAG_BLE = "TAG_BLE"
         var isKeyStored = false
     }
 
@@ -2121,7 +2125,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
          * Created By Shaik Mansoor
          */
         protected open fun customOnActivityResult(data: Intent?, requestCode: Int, resultCode: Int) {
-            //LibreLogger.d(TAG, "came back from wifi list requestCode:4 $requestCode")
+            LibreLogger.d(TAG_BLE, "customOnActivityResult requestCode: $requestCode")
             if (requestCode == WIFI_SETTINGS_REQUEST_CODE) {
                 //  LibreLogger.d(TAG,"==mandateDialog==12", "onActivityResult wifi list")
                 val connManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -2156,7 +2160,13 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                 //  Log.d(TAG, "came back from wifi list storage")
                 checkReadStoragePermission()
             }
+            if(requestCode == BT_ENABLED_REQUEST_CODE){
+                LibreLogger.d(TAG_BLE, "resultCode: $resultCode ")
 
+                val intentOpenBluetoothSettings = Intent()
+                intentOpenBluetoothSettings.action = Settings.ACTION_BLUETOOTH_SETTINGS
+                startActivity(intentOpenBluetoothSettings)
+            }
         }
 
         /**
@@ -2229,4 +2239,18 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                 isKeyStored = true
             }
         }
+    fun requestUserBluetooth(activity: Activity) {
+        val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return
+        }
+        customStartActivityForResult(BT_ENABLED_REQUEST_CODE, enableBtIntent)
+    }
 }

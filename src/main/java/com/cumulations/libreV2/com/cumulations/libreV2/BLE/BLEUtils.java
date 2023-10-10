@@ -1,5 +1,7 @@
 package com.cumulations.libreV2.com.cumulations.libreV2.BLE;
 
+import static com.cumulations.libreV2.activity.CTDeviceDiscoveryActivity.TAG_BLE;
+
 import android.Manifest;
 import android.Manifest.permission;
 import android.app.Activity;
@@ -53,10 +55,10 @@ public class BLEUtils {
     // Ensures Bluetooth is available on the device and it is enabled. If not,
     // displays a dialog requesting user permission to enable Bluetooth.
     if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
-      LibreLogger.d(TAG, "onClick: isEnabled: if " + bluetoothAdapter.isEnabled());
+      LibreLogger.d(TAG_BLE, "checkBluetooth if " + bluetoothAdapter.isEnabled());
       return false;
     } else {
-      LibreLogger.d(TAG, "onClick: isEnabled:else " + bluetoothAdapter.isEnabled());
+      LibreLogger.d(TAG_BLE, "checkBluetooth :else " + bluetoothAdapter.isEnabled());
       return true;
     }
   }
@@ -73,6 +75,9 @@ public class BLEUtils {
     }
     activity.startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
   }
+
+
+
 
   public static IntentFilter makeGattUpdateIntentFilter() {
 

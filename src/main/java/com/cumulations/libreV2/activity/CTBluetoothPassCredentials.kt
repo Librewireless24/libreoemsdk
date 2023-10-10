@@ -244,7 +244,6 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
             BLEUtils.BLE_SAC_DEV2APP_CRED_FAILURE -> runOnUiThread { showAlertMessageRegardingSAC(" ", getString(R.string.credientials_invalid)) }
             BLEUtils.BLE_SAC_DEV2APP_WIFI_CONNECTING -> runOnUiThread { setMessageProgressDialog(getString(R.string.start_connecting)) }
             BLEUtils.BLE_SAC_DEV2APP_WIFI_CONNECTED -> {
-                //Shaik for connected or not connected
                 lifecycleScope.launch {
                     cancelJob()
                 }

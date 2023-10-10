@@ -8,6 +8,7 @@ import android.Manifest.permission.BLUETOOTH_SCAN
 import android.app.AlertDialog
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGattCharacteristic
+import android.bluetooth.BluetoothManager
 import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
@@ -28,6 +29,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.cumulations.libreV2.AppUtils
 import com.cumulations.libreV2.SharedPreferenceHelper
 import com.cumulations.libreV2.activity.BluetoothLeService.LocalBinder
 import com.cumulations.libreV2.adapter.CTBLEDeviceListAdapter
@@ -35,6 +37,7 @@ import com.cumulations.libreV2.adapter.OnClickInterfaceListener
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEDevice
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEPacket.BLEDataPacket
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEServiceToApplicationInterface
+import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEUtils
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BleCommunication
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.Scanner_BLE
 import com.libreAlexa.LibreApplication
@@ -164,15 +167,23 @@ class CTBluetoothDeviceListActivity : CTDeviceDiscoveryActivity(), BLEServiceToA
      * trigger
      */
     fun startScan() {
-        mBleDevices.clear()
-        mBTDevicesHashMap.clear()
-        mBLEListAdapter!!.notifyDataSetChanged()
-        binding.noBleDeviceFrameLayout.visibility = View.GONE
-        binding.layDeviceCount.visibility = View.GONE
-        binding.ivBledevicelist.visibility = View.GONE
-        showProgressDialog(getString(R.string.looking_for_devices))
-        mBTLeScanner!!.start()
-        handler.postDelayed(showWifiConfigurationScreen, TIMEOUT_WIFI.toLong())
+        val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager?
+        val mBluetoothAdapter = bluetoothManager!!.adapter
+        if (!BLEUtils.checkBluetooth(mBluetoothAdapter)) {
+            requestUserBluetooth(this)
+            LibreLogger.d(TAG_BLE,"BT Not Enabled")
+        }else {
+            LibreLogger.d(TAG_BLE,"BT Enabled")
+            mBleDevices.clear()
+            mBTDevicesHashMap.clear()
+            mBLEListAdapter!!.notifyDataSetChanged()
+            binding.noBleDeviceFrameLayout.visibility = View.GONE
+            binding.layDeviceCount.visibility = View.GONE
+            binding.ivBledevicelist.visibility = View.GONE
+            showProgressDialog(getString(R.string.looking_for_devices))
+            mBTLeScanner!!.start()
+            handler.postDelayed(showWifiConfigurationScreen, TIMEOUT_WIFI.toLong())
+        }
     }
 
     fun stopScan() {
@@ -197,7 +208,7 @@ class CTBluetoothDeviceListActivity : CTDeviceDiscoveryActivity(), BLEServiceToA
         super.onStop()
         unbindService(mServiceConnection)
         stopScan()
-        mBluetoothLeService!!.removelistener(this)
+        mBluetoothLeService?.removelistener(this)
     }
 
     fun isRivaSpeaker(device: BluetoothDevice): Boolean {
@@ -259,7 +270,6 @@ class CTBluetoothDeviceListActivity : CTDeviceDiscoveryActivity(), BLEServiceToA
         }
         runOnUiThread {
             dismissDialog()
-            //Shaik Change size
             if (mBleDevices.size == 0) {
                 binding.noBleDeviceFrameLayout.visibility = View.VISIBLE
                 binding.layDeviceCount.visibility = View.GONE
@@ -355,6 +365,7 @@ class CTBluetoothDeviceListActivity : CTDeviceDiscoveryActivity(), BLEServiceToA
                  *  Request the permission directly, without explanation first time launch
                  */
                 requestPermissionLauncher.launch(permissions)
+
             }
         } else {
             /**

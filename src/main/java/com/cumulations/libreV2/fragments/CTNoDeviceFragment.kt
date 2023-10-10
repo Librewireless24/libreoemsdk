@@ -1,5 +1,6 @@
 package com.cumulations.libreV2.fragments
 
+import android.Manifest
 import android.bluetooth.BluetoothManager
 import android.content.Context
 import android.content.Intent
@@ -12,9 +13,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.cumulations.libreV2.AppUtils
 import com.cumulations.libreV2.activity.CTBluetoothDeviceListActivity
 import com.cumulations.libreV2.activity.CTBluetoothSetupInstructionsActivity
 import com.cumulations.libreV2.activity.CTDeviceDiscoveryActivity
+import com.cumulations.libreV2.activity.CTDeviceDiscoveryActivity.Companion.TAG_BLE
 import com.cumulations.libreV2.activity.CTDeviceSettingsActivity
 import com.cumulations.libreV2.activity.CTHomeTabsActivity
 import com.cumulations.libreV2.activity.CTMediaSourcesActivity
@@ -72,8 +75,19 @@ class CTNoDeviceFragment:Fragment(),LibreDeviceInteractionListner,View.OnClickLi
 
             }
             R.id.tv_setup_speaker -> {
+                val fineLocationPermission = AppUtils.isPermissionGranted(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                if (fineLocationPermission) {
+                    LibreLogger.d(TAG_BLE,"NoDevice Location Granted")
+                    val intent = Intent(activity, CTBluetoothDeviceListActivity::class.java)
+                    startActivity(intent)
+                    requireActivity().finish()
+                }else{
+                    LibreLogger.d(TAG_BLE,"NoDevice Location Not Granted")
+                    (activity as CTDeviceDiscoveryActivity).checkLocationPermission()
+                }
+            }
 
-                val bluetoothManager = requireActivity().getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager?
+                /*val bluetoothManager = requireActivity().getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager?
                 val mBluetoothAdapter = bluetoothManager!!.adapter
                 LibreLogger.d(TAG, "onClick: StartBTCall")
                 if (!BLEUtils.checkBluetooth(mBluetoothAdapter)) {
@@ -86,9 +100,8 @@ class CTNoDeviceFragment:Fragment(),LibreDeviceInteractionListner,View.OnClickLi
                     val intent = Intent(activity, CTBluetoothDeviceListActivity::class.java)
                     startActivity(intent)
                     requireActivity().finish()
-                }
+                }*/
 
-            }
         }
     }
 
