@@ -43,7 +43,6 @@ import com.cumulations.libreV2.model.SceneObject.CURRENTLY_NOTPLAYING
 import com.cumulations.libreV2.model.SceneObject.CURRENTLY_PAUSED
 import com.cumulations.libreV2.model.SceneObject.CURRENTLY_PLAYING
 import com.cumulations.libreV2.model.SceneObject.CURRENTLY_STOPPED
-import com.cumulations.libreV2.roomdatabase.CastLiteDao
 import com.cumulations.libreV2.roomdatabase.CastLiteUUIDDataClass
 import com.cumulations.libreV2.roomdatabase.LibreVoiceDatabase
 import com.cumulations.libreV2.tcp_tunneling.TCPTunnelPacket
@@ -94,8 +93,10 @@ import com.libreAlexa.util.LibreLogger
 import com.libreAlexa.util.PicassoTrustCertificates
 import com.squareup.otto.Subscribe
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.jboss.netty.channel.ChannelFuture
 import org.json.JSONObject
 import java.text.DateFormat
@@ -115,23 +116,13 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
         private val TAG = CTDeviceDiscoveryActivity::class.java.simpleName
         @JvmField
          val TAG_SPLASH = "TAG_SPLASH"
-
-        @JvmField
-        val APP_CLOSE = "APP_CLOSE"
-        @JvmField
-        val APP_FORGROUND = "APP_FORGROUND"
         @JvmField
         val SPOTIFY_TIDAL = "SPOTIFY_TIDAL"
         @JvmField
         val TIMEZONE_UPDATE = "TIMEZONE_UPDATE"
         @JvmField
         val PLAY_PAUSE = "PLAY_PAUSE"
-        @JvmField
-        val KILL_APP = "KILL_APP"
         const val TAG_RESULT = "==CTDevice"
-        const val TAG_IPAddress = "TAG_IPAddress"
-        const val DeviceGotRemoved = "DeviceGotRemoved"
-        const val TAG_ROOM_DB = "TAG_ROOM_DB"
         const val TAG_DEVICE_REMOVED = "TAG_DEVICE_REMOVED"
         const val TAG_FW_UPDATE = "TAG_FW_UPDATE"
         const val TAG_SECUREROOM = "TAG_SECUREROOM"
@@ -175,14 +166,14 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
     private var micTcpServer: MicTcpServer? = null
     private var requestCode: Int = -1
     private var resultHandler: ActivityResultLauncher<Intent>? = null
-    private var libreVoiceDatabaseDao:CastLiteDao?=null
-    /*private val libreVoiceDatabaseDao by lazy { LibreVoiceDatabase.getDatabase(this).castLiteDao() }*/
+    private val libreVoiceDatabaseDao by lazy { LibreVoiceDatabase.getDatabase(this).castLiteDao() }
 
     private var busEventListener: Any = object : Any() {
         @Subscribe
         fun newDeviceFound(nodes: LSSDPNodes) {
-            /*  LibreLogger.d(TAG_SECUREROOM, "newDeviceFound, node = " + nodes.friendlyname + " Ip Adress: " + nodes.ip + " cast model: " + nodes.castModel)*/
-            insertDeviceIntoDb(nodes, "DI")
+            GlobalScope.launch {
+                    insertDeviceIntoDb(nodes, "DI")
+            }
             if (libreDeviceInteractionListner != null) {
                 libreDeviceInteractionListner!!.newDeviceFound(nodes)
             }
@@ -324,12 +315,13 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
         get() = upnpProcessor!!.binder
     private var sAcalertDialog: AlertDialog? = null
     private var fwUpdateAlertDialog: AlertDialog? = null
+    private lateinit var libreVoiceDatabase: LibreVoiceDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         libreApplication = LibreEntryPoint()
         sharedPreferenceHelper = SharedPreferenceHelper(this)
-        libreVoiceDatabaseDao =LibreVoiceDatabase.getDatabase(this).castLiteDao()
+       // libreVoiceDatabase =LibreVoiceDatabase.getDatabase(this)
         val intentFilter = IntentFilter()
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION)
         intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION)
@@ -530,7 +522,6 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
     }
 
     fun killApp() {
-        LibreLogger.d(KILL_APP, "Declined App is Killed ")
         stopDmrPlayerService()
         finishActivitiesAndKillAppProcess()
     }
@@ -1009,7 +1000,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
             currentSourceView.visibility = View.VISIBLE
             when (sceneObject.currentSource) {
                 NO_SOURCE -> currentSourceView.visibility = View.GONE
-                AIRPLAY_SOURCE -> currentSourceView.setImageResource(R.drawable.airplay_logo)
+                AIRPLAY_SOURCE -> currentSourceView.setImageResource(R.drawable.airplay)
                 DMR_SOURCE -> currentSourceView.setImageResource(R.drawable.my_device_enabled)
                 DMP_SOURCE -> currentSourceView.setImageResource(R.drawable.media_servers_enabled)
                 SPOTIFY_SOURCE -> currentSourceView.setImageResource(R.mipmap.spotify)
@@ -1072,7 +1063,6 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                 albumNameView?.visibility = View.VISIBLE
                 trackNameView?.visibility = View.VISIBLE
                 trackNameView?.text = LibreApplication.currentTrackName
-                //trackNameView?.text = getText(R.string.app_name)
                 playPauseView?.visibility = View.VISIBLE
                 albumArtView?.visibility = View.VISIBLE
                 LibreLogger.d(SPOTIFY_TIDAL, "suma in handle alexaplay icon currently stopped1" + sceneObject.playstatus)
@@ -1103,8 +1093,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
 
 
         } else {
-            //SHAIK code Review
-            if (/*sceneObject.currentSource == BT_SOURCE || */sceneObject.currentSource == AUX_SOURCE || sceneObject.currentSource == EXTERNAL_SOURCE || sceneObject.currentSource == NO_SOURCE) {
+            if (sceneObject.currentSource == AUX_SOURCE || sceneObject.currentSource == EXTERNAL_SOURCE || sceneObject.currentSource == NO_SOURCE) {
                 if (node.alexaRefreshToken.isNullOrEmpty()) {
                     albumNameView?.visibility = View.GONE
                     playPauseView?.visibility = View.GONE
@@ -1709,6 +1698,8 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
         }
 
         fun alertDialogForDeviceNotAvailable(mNode: LSSDPNodes?) {
+            LibreLogger.d(TAG_DEVICE_REMOVED, "deviceGotRemoved, alertDialogForDeviceNotAvailable" +
+                    " called")
             if (!this@CTDeviceDiscoveryActivity.isFinishing) {
                 if (mNode == null) return
                 alertDialog1 = null
@@ -1721,6 +1712,9 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                 }
                 if (alertDialog1 == null) alertDialog1 = alertDialogBuilder.create()
                 alertDialog1!!.show()
+            }else{
+                LibreLogger.d(TAG_DEVICE_REMOVED, "deviceGotRemoved, " +
+                        "alertDialogForDeviceNotAvailable ELSE")
             }
         }
 
@@ -1977,7 +1971,6 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                 val luciPackets = ArrayList<LUCIPacket>()
                 val mSceneNamePacket = LUCIPacket(null, 0.toShort(), MIDCONST.MID_SCENE_NAME.toShort(), LSSDPCONST.LUCI_GET.toByte())/*removing it to resolve flickering issue*/
                 val volumePacket = LUCIPacket(null, 0.toShort(), MIDCONST.VOLUME_CONTROL.toShort(), LSSDPCONST.LUCI_GET.toByte())
-                //Have to remove this after 5 sec function starts
                 val mutePacket = LUCIPacket(null, 0.toShort(), MIDCONST.MUTE_UNMUTE_STATUS.toShort(), LSSDPCONST.LUCI_GET.toByte())
                 val currentSourcePacket = LUCIPacket(null, 0.toShort(), MIDCONST.MID_CURRENT_SOURCE, LSSDPCONST.LUCI_GET.toByte())
                 val currentPlayStatePacket = LUCIPacket(null, 0.toShort(), MIDCONST.MID_CURRENT_PLAY_STATE, LSSDPCONST.LUCI_GET.toByte())/*   val getUIPacket = LUCIPacket(null, 0.toShort(), MIDCONST.MID_REMOTE_UI, LSSDPCONST.LUCI_GET.toByte())*//*val getUIPacket = LUCIPacket(null, 0.toShort(), MIDCONST.MID_REMOTE_UI_OEM, LSSDPCONST.LUCI_SET.toByte())*/
@@ -2193,31 +2186,31 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                 first.uppercaseChar().toString() + s.substring(1)
             }
         }
+ /**
+    * Created By Shaik Mansoor
+    */
+    suspend fun insertDeviceIntoDb(lsdNodes: LSSDPNodes, s: String) {
+     val uuid: String = randomUUID().toString()
+     val addDeviceDate = CastLiteUUIDDataClass(0, lsdNodes.ip, lsdNodes.friendlyname, uuid)
+     withContext(Dispatchers.IO) {
+         // Database operations go here
+         delay(5000)
+         try {
+             val id = libreVoiceDatabaseDao.addDeviceUUID(addDeviceDate)
+             LibreLogger.d(TAG_SECUREROOM, "insertDeviceIntoDb:id  $id")
+         } catch (e: NullPointerException) {
+             e.printStackTrace()
+             LibreLogger.d(TAG_SECUREROOM, "insertDeviceIntoDb:ex  ${e.message}")
+         }
 
-        /**
-         * Created By Shaik Mansoor
-         */
-        fun insertDeviceIntoDb(lsdNodes: LSSDPNodes, s: String) {
-            val uuid: String = randomUUID().toString()
-            val addDeviceDate = CastLiteUUIDDataClass(0, lsdNodes.ip, lsdNodes.friendlyname, uuid)
-            lifecycleScope.launch(Dispatchers.IO) {
-                delay(5000)
-                try {
-                    val id = libreVoiceDatabaseDao!!.addDeviceUUID(addDeviceDate)
-                    LibreLogger.d(TAG_SECUREROOM, "insertDeviceIntoDb:id  $id")
-                } catch (e: NullPointerException) {
-                    e.printStackTrace()
-                    LibreLogger.d(TAG_SECUREROOM, "insertDeviceIntoDb:ex  ${e.message}")
-                }
-            }
-        }
-
+     }
+ }
         /**
          * Created By Shaik Mansoor
          */
         private fun removeUUIDFromDB(deviceIpAddress: String?) {
             lifecycleScope.launch(Dispatchers.IO) {
-                libreVoiceDatabaseDao!!.deleteDeviceUUID(deviceIpAddress.toString())
+                libreVoiceDatabaseDao.deleteDeviceUUID(deviceIpAddress.toString())
             }
         }
 

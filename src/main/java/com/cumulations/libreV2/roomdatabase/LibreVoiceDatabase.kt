@@ -42,17 +42,18 @@ abstract class LibreVoiceDatabase : RoomDatabase() {
         private fun buildDatabase(context: Context): LibreVoiceDatabase {
             /** SECURING THE DATABASE STARTS */
             val encryptedPasskey = LibreEntryPoint().getKey()
-            LibreLogger.d(TAG_SECUREROOM, "buildDatabase called")
           /*  val encryptedPasskey = "Libre"*/
+            LibreLogger.d(TAG_SECUREROOM, "buildDatabase called encryptedPasskey $encryptedPasskey")
             val builder = Room.databaseBuilder(context.applicationContext, LibreVoiceDatabase::class.java, "libre_voice_database.db")
-            val factory = SupportFactory(SQLiteDatabase.getBytes(encryptedPasskey?.toCharArray()))
+            val factory = SupportFactory(SQLiteDatabase.getBytes(encryptedPasskey?.toCharArray()),null,false)
+            builder.openHelperFactory(factory)
             builder.fallbackToDestructiveMigration()
             builder.enableMultiInstanceInvalidation()
             builder.allowMainThreadQueries()
             builder.setJournalMode(JournalMode.AUTOMATIC)
-            builder.openHelperFactory(factory)
             return builder.build()
             /** SECURING THE DATABASE ENDS */
+
 
             /**Non Secure database  */
        /*   return Room.databaseBuilder(context.applicationContext,
@@ -93,4 +94,5 @@ abstract class LibreVoiceDatabase : RoomDatabase() {
         }
 
     }
+
 }

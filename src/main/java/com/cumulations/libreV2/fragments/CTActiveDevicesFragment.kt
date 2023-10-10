@@ -177,8 +177,7 @@ class CTActiveDevicesFragment:Fragment(),LibreDeviceInteractionListner,Tunneling
             return
         }*/
 
-        LibreLogger.d(TAG,"newDeviceFound device found ip ${node.ip} Device State ${node
-            .deviceState}")
+        LibreLogger.d(TAG,"newDeviceFound device found ip ${node.ip} Device State ${node.deviceState}")
         mDeviceFound = true
 
         (activity as CTDeviceDiscoveryActivity).requestLuciUpdates(node.ip)

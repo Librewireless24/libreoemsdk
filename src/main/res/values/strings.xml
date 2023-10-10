@@ -30,7 +30,8 @@
   <string name="restartAppManually">Loading of Local content failed! Auto restarting is failed.Please restart the app manually!</string>
   <string name="failed">FAILED</string>
   <string name="deviceNameChanging">Speaker Name Changing</string>
-  <string name="deviceNameEmpty">FAILED\nDevice Name Cannot Be an Empty</string>
+  <string name="deviceNameEmpty">Device name cannot be an empty</string>
+  <string name="deviceNameNull">Device Name Cannot Be an Null</string>
   <string name="deviceLength">Speaker Name cannot be more than 50</string>
   <string name="Settings">Settings</string>
   <string name="deviceNamecannotBeEmpty">Speaker Name Cannot Be an Empty</string>
@@ -365,7 +366,7 @@ By clicking Confirm, Device will be removed and you will be redirected to Home. 
   <string name="use_voice_control_spotify">Use your voice to\n control Spotify</string>
   <string name="ask_alexa">Ask Alexa to play your\n favourite playlists, artists and genres.\n For example, just say, Alexa,\n play Today’s Top Hits.</string>
   <string name="time_zone">Time Zone</string>
-  <string name="edit_speaker_name">Edit Speaker Name</string>
+  <string name="edit_speaker_name">Enter Device Name</string>
   <string name="posting_cred">Posting credentials ....</string>
 
   <string name="airplay">Airplay</string>
@@ -388,13 +389,27 @@ By clicking Confirm, Device will be removed and you will be redirected to Home. 
   <string name="favourites">Favourites</string>
   <string name="google_cast">Google Cast</string>
   <string name="external_source">External Source</string>
-  <string name="devices_are_available"> Devices are available to setup</string>
-  <string name="device_are_available"> Device are available to setup</string>
+  <string name="devices_are_available">"&#x20;"Devices are available to setup</string>
+  <string name="device_are_available">"&#x20;"Device are available to setup</string>
   <string name="alexa_source">Alexa Source</string>
   <string name="permission_required">Permission required</string>
   <string name="permission_connect">Bluetooth scan and connect permissions are required to scan and connect to Bluetooth devices</string>
   <string name="permission_denied">Permission Denied</string>
   <string name="open_settings">Open Settings</string>
+  <string name="save">Save</string>
+  <string name="trackname_not_available">TrackName Not Available</string>
+  <string name="albumname_not_available">AlbumName Not Available</string>
+  <string name="issues">Issues</string>
+  <string name="report_issues">Report Issues</string>
+  <string name="please_share_details">Please share details of the issues faced on</string>
+  <string name="enter_the_description">Enter the description of the issue faced.</string>
+  <string name="characters_remaining">Characters Remaining</string>
+  <string name="characters">Characters</string>
+  <string name="select_the_approximate_time">Please select the approximate timeframe when the issue occurred.</string>
+  <string name="submit">Submit</string>
+  <string name="less_than_5_minutes">Less Than 5 Minutes Ago</string>
+  <string name="descriptionNameEmpty">Description cannot be an empty</string>
+
 
   <string name="hello_blank_fragment">Hello blank fragment</string>
   <string-array name="audio_output_array">
@@ -406,13 +421,22 @@ By clicking Confirm, Device will be removed and you will be redirected to Home. 
         <item>Right Rear Subwoofer(RRSub)</item>
         <item>Subwoofer(Sub)</item>-->
   </string-array>
-  <!-- TODO: Remove or change this placeholder text -->
   <string-array name="audio_preset_array">
     <item>Normal</item>
     <item>Flat</item>
     <item>Vocal</item>
     <item>Rock</item>
     <item>DRC</item>
+  </string-array>
+  <string-array name="timeframes">
+    <item>15 Minutes</item>
+    <item>30 Minutes</item>
+    <item>1 Hour</item>
+    <item>3 Hours</item>
+    <item>6 Hours</item>
+    <item>12 Hours</item>
+    <item>24 Hours</item>
+    <item>24+ Hours</item>
   </string-array>
 
 </resources>

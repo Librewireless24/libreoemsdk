@@ -30,9 +30,8 @@ class CTSplashScreenActivityV2 : CTDeviceDiscoveryActivity() {
         super.onCreate(savedInstanceState)
         binding = CtActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.txtAppVersion.text = getVersion(applicationContext)
+        binding.txtAppVersion.text = AppUtils.getVersion(applicationContext)
         LibreEntryPoint.getInstance().init(this@CTSplashScreenActivityV2)
-        val isFirsTime = AppUtils.getIsFirstTimeLaunch(this)
 
     }
 
@@ -58,21 +57,4 @@ class CTSplashScreenActivityV2 : CTDeviceDiscoveryActivity() {
         killApp()
     }
 
-    private fun getVersion(context: Context, flags: Int=1): String {
-        //Shaik Change Create a Jira ticket
-        var version = getString(R.string.title_activity_welcome)
-        var pInfo: PackageInfo? = null
-        try {
-            pInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                context.packageManager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(flags.toLong()))
-            } else {
-                context.packageManager.getPackageInfo(packageName, flags)
-            }
-           /* pInfo = context.packageManager.getPackageInfo(context.packageName, PackageManager.GET_META_DATA)*/
-        } catch (e: PackageManager.NameNotFoundException) {
-            e.printStackTrace()
-        }
-        if (pInfo != null) version = pInfo.versionName
-        return version
-    }
 }

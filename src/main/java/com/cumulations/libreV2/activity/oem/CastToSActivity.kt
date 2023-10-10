@@ -312,6 +312,7 @@ class CastToSActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionListn
                 dismissDialog()
                 LibreLogger.d(TAG_FW_UPDATE,"initiateJob called")
                 showSomethingWentWrongAlert(this@CastToSActivity)
+                showToast("Device is not responding, Please try again")
             }
         }
     }

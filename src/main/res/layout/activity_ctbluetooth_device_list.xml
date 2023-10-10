@@ -48,7 +48,6 @@
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
     <LinearLayout
-        android:paddingBottom="?android:attr/actionBarSize"
         android:layout_marginTop="?android:attr/actionBarSize"
         android:gravity="center"
         android:layout_width="match_parent"

@@ -8,41 +8,62 @@
     android:padding="24dp"
     android:orientation="vertical">
 
-    <LinearLayout
-      android:id="@+id/lay_txtView"
+    <androidx.appcompat.widget.AppCompatTextView
+      android:id="@+id/txt_header"
+      android:textStyle="bold"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:visibility="gone"
-      android:orientation="vertical">
-
-        <androidx.appcompat.widget.AppCompatTextView
-          android:id="@+id/txt_header"
-          android:textStyle="bold"
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
-          tools:text="@string/forget_network"
-          android:textColor="@color/white"
-          android:textSize="24dp"
-          android:gravity="center_horizontal">
-        </androidx.appcompat.widget.AppCompatTextView>
+      android:layout_height="match_parent"
+      tools:text="@string/forget_network"
+      android:layout_marginBottom="10dp"
+      android:textColor="@color/white"
+      android:textSize="24dp"
+      android:gravity="center_horizontal">
+    </androidx.appcompat.widget.AppCompatTextView>
 
         <androidx.appcompat.widget.AppCompatTextView
           android:id="@+id/txt_message"
           android:layout_width="match_parent"
           android:layout_height="match_parent"
+          android:visibility="gone"
           tools:text="@string/forget_network_confirmation"
           android:textColor="@color/white"
           android:layout_marginVertical="10dp"
           android:textSize="14dp"
           android:gravity="center_horizontal">
         </androidx.appcompat.widget.AppCompatTextView>
+<!--Edit Device name layout-->
+        <LinearLayout
+          android:id="@+id/lay_editDeviceName"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginVertical="20dp"
+          android:background="@drawable/ic_edit_device_frame"
+          android:orientation="vertical"
+          android:padding="5dp">
 
+            <EditText
+              android:id="@+id/et_deviceName"
+              android:layout_width="match_parent"
+              android:layout_height="40dp"
+              android:background="@color/transparent"
+              android:maxLength="50"
+              android:maxLines="1"
+              android:paddingHorizontal="10dp"
+              android:singleLine="true"
+              android:gravity="center_vertical"
+              android:hint="@string/edit_speaker_name"
+              android:textColor="@color/white"
+              android:textColorHint="@color/grey"
+              android:textSize="@dimen/dimen_16">
+            </EditText>
     </LinearLayout>
-    <LinearLayout
+
+
+   <!-- <LinearLayout
       android:id="@+id/lay_editText"
       android:layout_width="match_parent"
       android:orientation="vertical"
-      android:visibility="gone"
+      android:visibility="visible"
       android:layout_height="wrap_content">
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_network_name"
@@ -83,36 +104,37 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </com.google.android.material.textfield.TextInputLayout>
-    </LinearLayout>
+    </LinearLayout>-->
+
     <LinearLayout
-      android:layout_marginTop="16dp"
       android:orientation="horizontal"
       android:layout_width="match_parent"
-      android:layout_height="wrap_content">
+      android:layout_height="wrap_content"
+      android:weightSum="2">
         <androidx.appcompat.widget.AppCompatButton
           android:id="@+id/btn_cancel"
           android:enabled="true"
           android:textSize="14sp"
           android:text="@string/cancel"
+          android:layout_marginHorizontal="16dp"
           android:background="@drawable/app_btn_selector"
           android:textColor="@color/white"
           android:layout_weight="1"
           android:gravity="center"
-          android:layout_width="wrap_content"
+          android:layout_width="0dp"
           android:layout_height="40dp" />
 
         <androidx.appcompat.widget.AppCompatButton
           android:id="@+id/btn_ok"
-          style="@style/GradientAppButtonStyle"
-          android:layout_marginLeft="20dp"
-          android:layout_width="wrap_content"
+          android:layout_width="0dp"
           android:layout_height="40dp"
-          android:layout_weight="1"
-          android:paddingLeft="0dp"
-          android:paddingRight="0dp"
-          android:text="@string/ok"
+          android:layout_marginHorizontal="16dp"
+          tools:text="@string/confirm"
           android:gravity="center"
+          android:layout_weight="1"
+          android:background="@drawable/ic_rectangle_big_orange_color"
           android:textAllCaps="true"
+          android:textColor="@color/white"
           android:textSize="14sp" />
     </LinearLayout>
 </LinearLayout>

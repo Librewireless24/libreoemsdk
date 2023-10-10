@@ -2,8 +2,10 @@ package com.cumulations.libreV2.activity
 
 
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -302,6 +304,7 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
     private fun initViews() {
         val lssdpNodes = LSSDPNodeDB.getInstance().getTheNodeBasedOnTheIpAddress(currentIpAddress)
         binding.tvDeviceName.text = lssdpNodes?.friendlyname
+        binding.tvDeviceName.isSelected = true
         mediaSourcesList.clear()
         //Shaik Dynamic source list
         if (lssdpNodes?.getmDeviceCap() != null && lssdpNodes.getmDeviceCap().getmSource() != null) {
@@ -892,8 +895,7 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
             fun bindSourceItem(source: String?, position: Int) {
                 itemBinding.tvSourceType.text = source
                 when(source) {
-                    //Shaik Dynamic list some icons are not available for now
-                    context.getString(R.string.airplay) -> itemBinding.ivSourceIcon.setImageResource(R.drawable.add_device_selected)
+                    context.getString(R.string.airplay) -> itemBinding.ivSourceIcon.setImageResource(R.drawable.airplay)
                     context.getString(R.string.dmr) -> itemBinding.ivSourceIcon.setImageResource(R.drawable.add_device_selected)
                     context.getString(R.string.dmp) -> itemBinding.ivSourceIcon.setImageResource(R.drawable.add_device_selected)
                     context.getString(R.string.spotify) -> itemBinding.ivSourceIcon.setImageResource(R.mipmap.spotify)
@@ -921,7 +923,6 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
                         return@setOnClickListener
 
                     if (source != myDevice && getConnectedSSIDName(this@CTMediaSourcesActivity).contains(Constants.DDMS_SSID)) {
-                        //  Toast.makeText(getApplicationContext(), "No Internet Connection ,in SA Mode", Toast.LENGTH_SHORT).show();
                         val error = LibreError(currentIpAddress, Constants.NO_INTERNET_CONNECTION)
                         showErrorMessage(error)
                         return@setOnClickListener
@@ -929,12 +930,37 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
 
                     when (source) {
 
+                        context.getString(R.string.airplay),
+                        context.getString(R.string.dmr),
+                        context.getString(R.string.dmp),
+                        context.getString(R.string.sdcard),
+                        context.getString(R.string.melon),
+                        context.getString(R.string.v_tuner),
+                        context.getString(R.string.tune_in),
+                        context.getString(R.string.miracast),
+                        context.getString(R.string.ddms_salve),
+                        context.getString(R.string.aux_in),
+                        context.getString(R.string.apple_device),
+                        context.getString(R.string.direct_url),
+                        context.getString(R.string.bluetooth),
+                        context.getString(R.string.deezer),
+                        context.getString(R.string.favourites),
+                        context.getString(R.string.external_source),
+                        context.getString(R.string.usb),
+                        context.getString(R.string.alexa_source)->{
+                            showToast("We are not supporting now")
+                        }
+
                         context.getString(R.string.my_device) -> {
                             if (!checkReadStoragePermission()){
                                 return@setOnClickListener
                             }
-
-//                            openLocalDMS()
+                        }
+                        context.getString(R.string.tidal) ->{
+                            openTidal()
+                        }
+                        context.getString(R.string.google_cast) ->{
+                            openGhome()
                         }
                         context.getString(R.string.spotify)->{
                             if (this@CTMediaSourcesActivity.isFinishing)
@@ -945,11 +971,12 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
                             spotifyIntent.putExtra("current_source", "" + currentSource)
                             startActivity(spotifyIntent)
                         }
+                        //Commented because crashing
 
-                        context.getString(R.string.usb_storage) -> {
+                      /*  context.getString(R.string.usb) -> {
 
                             currentSourceIndexSelected = 3
-                            /*Reset the UI to Home ,, will wait for the confirmation of home command completion and then start the required activity*/
+                            *//*Reset the UI to Home ,, will wait for the confirmation of home command completion and then start the required activity*//*
                             LUCIControl(currentIpAddress).SendCommand(MIDCONST.MID_REMOTE_UI.toInt(), GET_HOME, LSSDPCONST.LUCI_SET)
                             ///////////// timeout for dialog - showLoader() ///////////////////
                             timeOutHandler!!.sendEmptyMessageDelayed(NETWORK_TIMEOUT, Constants.ITEM_CLICKED_TIMEOUT.toLong())
@@ -963,7 +990,7 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
 
                           //  LUCIControl(currentIpAddress).SendCommand(MIDCONST.MID_STOP_PREV_SOURCE, BLUETOOTH_OFF, LSSDPCONST.LUCI_SET)
 
-                        }
+                        }*/
 
                         context.getString(R.string.mediaserver) -> {
                           //  LUCIControl(currentIpAddress).SendCommand(MIDCONST.MID_BLUETOOTH, BLUETOOTH_OFF, LSSDPCONST.LUCI_SET)
@@ -989,6 +1016,7 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
                                 show(supportFragmentManager,this::class.java.simpleName)
                             }*/
                         }
+
                     }
                 }
             }
@@ -997,6 +1025,51 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
         fun updateList(sourcesList: MutableList<String>?) {
             this.sourcesList = sourcesList
             notifyDataSetChanged()
+        }
+    }
+
+    private fun openGhome() {
+        val gHomeIntent = packageManager.getLaunchIntentForPackage("com.google.android.apps.chromecast.app")
+        if (gHomeIntent != null) {
+            val uri = Uri.parse("https://madeby.google.com/home-app/?deeplink=DEVICE_SETUP")
+            val intentOpenGHome = Intent(Intent.ACTION_VIEW, uri)
+            startActivity(intentOpenGHome)
+        } else {
+            showAppNotInstalledAlertDialog()
+        }
+    }
+    private fun showAppNotInstalledAlertDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle(getString(R.string.app_not_installed))
+        builder.setMessage(getString(R.string.google_home_install))
+        builder.setPositiveButton(getString(R.string.yes_str)) { dialog, which -> //Navigate to Play Store
+            val uri = Uri.parse(getString(R.string.ghome_link))
+            val intent = Intent(Intent.ACTION_VIEW, uri)
+            startActivity(intent)
+        }
+        builder.show()
+    }
+
+    private fun openTidal() {
+        if (!LaunchApp(this, "com.aspiro.tidal")) {
+            launchPlayStoreWithAppPackage(this, "com.aspiro.tidal")
+        }
+
+    }
+    private fun launchPlayStoreWithAppPackage(context: Context, packageName: String) {
+        val i = Intent(Intent.ACTION_VIEW)
+        i.data = Uri.parse("https://play.google.com/store/apps/details?id=$packageName")
+        context.startActivity(i)
+    }
+    private fun LaunchApp(context: Context, packageName: String?): Boolean {
+        val manager = context.packageManager
+        return try {
+            val i = manager.getLaunchIntentForPackage(packageName!!) ?: return false
+            i.addCategory(Intent.CATEGORY_LAUNCHER)
+            context.startActivity(i)
+            true
+        } catch (e: ActivityNotFoundException) {
+            false
         }
     }
 

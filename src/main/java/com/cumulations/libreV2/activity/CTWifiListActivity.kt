@@ -14,6 +14,7 @@ import android.os.IBinder
 import android.os.Looper
 import android.os.Message
 import android.view.View
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cumulations.libreV2.AppUtils
 import com.cumulations.libreV2.adapter.CTWifiListAdapter
@@ -35,6 +36,10 @@ import com.libreAlexa.constants.Constants
 import com.libreAlexa.databinding.CtActivityWifiListBinding
 import com.libreAlexa.serviceinterface.LSDeviceClient
 import com.libreAlexa.util.LibreLogger
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
 import retrofit.Callback
@@ -50,14 +55,15 @@ class CTWifiListActivity : CTDeviceDiscoveryActivity(), BLEServiceToApplicationI
     private lateinit var binding: CtActivityWifiListBinding
     private val TAG = CTWifiListActivity::class.java.simpleName
     private var value: BluetoothGattCharacteristic? = null
-    var mIntentExtraScanResults = false
+    private var mIntentExtraScanResults = false
     var mBluetoothAdapter: BluetoothAdapter? = null
     var mDeviceAddress: String? = null
     private var isItDying = false
     private var mBluetoothLeService: BluetoothLeService? = null
-    var constructJSonString = StringBuilder()
-    var scanListMap: MutableMap<String, String> = TreeMap()
-
+    private var constructJSonString = StringBuilder()
+    private var scanListMap: MutableMap<String, String> = TreeMap()
+    private var scanListLength: Int? = null
+    private var taskJob: Job? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = CtActivityWifiListBinding.inflate(layoutInflater)
@@ -89,7 +95,7 @@ class CTWifiListActivity : CTDeviceDiscoveryActivity(), BLEServiceToApplicationI
             mDeviceAddress = intent.getStringExtra(AppConstants.DEVICE_BLE_ADDRESS)
         }
 
-    fun initBluetoothAdapterAndListener() {
+    private fun initBluetoothAdapterAndListener() {
         val bluetoothManager = getSystemService(BLUETOOTH_SERVICE) as BluetoothManager
         mBluetoothAdapter = bluetoothManager.adapter
         val gattServiceIntent = Intent(this@CTWifiListActivity, BluetoothLeService::class.java)
@@ -132,6 +138,9 @@ class CTWifiListActivity : CTDeviceDiscoveryActivity(), BLEServiceToApplicationI
             runOnUiThread {
                 if ((this@CTWifiListActivity).isFinishing) {
                     return@runOnUiThread
+                }
+                lifecycleScope.launch {
+                    initiateJob()
                 }
                 showProgressDialog(getString(R.string.get_scan_results))
                 val timeout = 500
@@ -257,12 +266,25 @@ class CTWifiListActivity : CTDeviceDiscoveryActivity(), BLEServiceToApplicationI
 
         when (packet!!.command) {
             BLEUtils.BLE_SAC_DEV2APP_WIFI_AP_NOT_FOUND -> runOnUiThread { setMessageProgressDialog(getString(R.string.ap_notfound)) }
-            BLEUtils.BLE_SAC_DEV2APP_SCAN_LIST_START -> constructJSonString = StringBuilder()
+            BLEUtils.BLE_SAC_DEV2APP_SCAN_LIST_START -> {
+                constructJSonString = StringBuilder()
+              //  scanListLength = String(packet.message).toInt()
+            }
             BLEUtils.BLE_SAC_DEV2APP_SCAN_LIST_DATA -> constructJSonString.append(String(packet.message))
 
             BLEUtils.BLE_SAC_DEV2APP_SCAN_LIST_END -> {
+                lifecycleScope.launch {
+                    cancelJob()
+                }
                 populateScanlistMap(constructJSonString.toString())
                 dismissDialog()
+               /* if (scanListLength == constructJSonString.length) {
+                    populateScanlistMap(constructJSonString.toString())
+                }else{
+                    //showSomethingWentWrongAlert(this@CTWifiListActivity)
+                    populateScanlistMap(constructJSonString.toString())
+                    LibreLogger.d(CTBluetoothPassCredentials.TAG, "SCAN_LIST List size is not matching ${constructJSonString.length}")
+                }*/
             }
         }
     }
@@ -345,5 +367,18 @@ class CTWifiListActivity : CTDeviceDiscoveryActivity(), BLEServiceToApplicationI
             }
 
         })
+    }
+    private fun initiateJob() {
+        taskJob = lifecycleScope.launch(Dispatchers.IO) {
+            delay(6000)
+            runOnUiThread {
+                dismissDialog()
+              //  showSomethingWentWrongAlert(this@CTWifiListActivity)
+            }
+        }
+    }
+
+    private fun cancelJob() {
+        taskJob?.cancel()
     }
 }

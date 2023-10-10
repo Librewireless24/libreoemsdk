@@ -124,6 +124,15 @@ public class LUCIMESSAGES {
     public static final String REQUEST_APPROVED = "Request approved successfully!";
     public static final String TIMEZONE_OEM = "timezone_oem";
     public static final String HOUR_FORMAT = "time_in_12_hour_format";
+    public static final String SOURCE  = "source";
+    public static final String RANDOM_UUID  = "uuid";
+    public static final String DESCRIPTION  = "description";
+    public static final String TIME  = "time";
+    public static final String APP_INFO  = "app_info";
+    public static final String BRAND  = "brand";
+    public static final String MODEL  = "model";
+    public static final String APP_VERSION  = "app_version";
+    public static final String DATE_TIME  = "date_time";
 
     /*response for cast client SET request is {"action":"accepted","device_uuid":"f1ae28a2-5b97-4443-8a9f-3b6eb94ee321","id":"tos","status":"success","status_msg":"Request approved successfully!"}*/
 }

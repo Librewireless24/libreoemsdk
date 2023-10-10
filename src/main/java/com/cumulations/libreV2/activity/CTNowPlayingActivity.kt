@@ -41,8 +41,6 @@ import com.libreAlexa.netty.LibreDeviceInteractionListner
 import com.libreAlexa.netty.NettyData
 import com.libreAlexa.util.LibreLogger
 import com.libreAlexa.util.PicassoTrustCertificates
-import com.squareup.picasso.MemoryPolicy
-import com.squareup.picasso.NetworkPolicy
 import org.fourthline.cling.model.ModelUtil
 import org.fourthline.cling.model.message.UpnpResponse
 import org.fourthline.cling.model.meta.Action
@@ -63,20 +61,18 @@ class CTNowPlayingActivity : CTDeviceDiscoveryActivity(), View.OnClickListener,
         const val REPEAT_ALL = 2
         const val PLAYBACK_TIMER_TIMEOUT = 5000
     }
-
     private var currentSceneObject: SceneObject? = null
     private val currentIpAddress: String? by lazy {
         intent?.getStringExtra(CURRENT_DEVICE_IP)
     }
     private var isLocalDMRPlayback = false
-
     /* Added to handle the case where trackname is empty string"*/
     private var currentDeviceNode: LSSDPNodes? = null
     private var currentTrackName = "-1"
     private var isStillPlaying = false
     private var is49MsgBoxReceived = false
-    internal var durationInSeeconds = 0.0f
-    internal var durationInSeeconds1 = 0.0f
+    private var durationInSeeconds = 0.0f
+    private var durationInSeeconds1 = 0.0f
     private var mScanHandler: ScanningHandler? = null
     private var remoteDevice: RemoteDevice? = null
     private lateinit var binding: CtAcitvityNowPlayingBinding
@@ -147,7 +143,6 @@ class CTNowPlayingActivity : CTDeviceDiscoveryActivity(), View.OnClickListener,
         mScanHandler = ScanningHandler.getInstance()
         getTheRenderer(currentIpAddress)
         remoteDevice = UpnpDeviceManager.getInstance().getRemoteDMRDeviceByIp(currentIpAddress)
-        LibreLogger.d("UpnpDeviceDiscovery", "udn"+remoteDevice)
         onRemoteDeviceAdded(remoteDevice)
     }
 
@@ -203,7 +198,6 @@ class CTNowPlayingActivity : CTDeviceDiscoveryActivity(), View.OnClickListener,
         binding.mediaBtnSkipNext.setOnClickListener(this)
         binding.mediaBtnSkipPrev.setOnClickListener(this)
         binding.ivAlbumArt.setOnClickListener(this)
-        //Shaik Mute and UnMute
         binding.ivVolumeDown.setOnClickListener(this)
 
         binding.ivBack.setOnClickListener {
@@ -265,7 +259,6 @@ class CTNowPlayingActivity : CTDeviceDiscoveryActivity(), View.OnClickListener,
 
             }
         })
-        //Shaik Added Device Name
         currentDeviceNode = LSSDPNodeDB.getInstance().getTheNodeBasedOnTheIpAddress(currentIpAddress)
         binding.tvDeviceName.text = currentDeviceNode?.friendlyname
     }
@@ -323,73 +316,18 @@ class CTNowPlayingActivity : CTDeviceDiscoveryActivity(), View.OnClickListener,
 //                artistName!!.text = message
                 binding.tvAlbumName.text = ""
                 binding.tvTrackName.text = ""
-                binding.ivRepeat.visibility = View.GONE
-                binding.ivShuffle.visibility = View.GONE
                 LibreLogger.d(TAG, "we set the song name to empty for disabling " +
                         currentSceneObject!!
                 .trackName
                 + " in disabling view where artist name is " + message)
 
             }
-
-           /* BT_SOURCE -> {
-                *//*setting seek to zero*//*
-                binding.seekBarSong.progress = 0
-                binding.seekBarSong.isEnabled = false
-                binding.seekBarSong.isClickable = false
-                binding.tvCurrentDuration.text = "0:00"
-                binding.tvTotalDuration.text = "0:00"
-//                artistName!!.text = message
-                binding.tvAlbumName.text = ""
-                binding.tvTrackName.text = ""
-                // hide repeat and shuffle
-                binding.ivRepeat.visibility = View.GONE
-                binding.ivShuffle.visibility = View.GONE
-                val mNode = LSSDPNodeDB.getInstance().getTheNodeBasedOnTheIpAddress(currentIpAddress)
-                        ?: return
-                LibreLogger.d(TAG, "BT controller value in sceneobject " + mNode.bT_CONTROLLER)
-                //    Toast.makeText(getContext(), "BT controller value in sceneobject " + currentSceneObject.getBT_CONTROLLER(), Toast.LENGTH_SHORT);
-                if (mNode.bT_CONTROLLER == CURRENTLY_STOPPED || mNode.bT_CONTROLLER == CURRENTLY_PAUSED || mNode.bT_CONTROLLER == 3) {
-                    binding.seekBarVolume.isEnabled = true
-                    binding.seekBarVolume.isClickable = true
-                } else {
-                    binding.ivPlayPause.setImageResource(R.drawable.play_white)
-                    binding.ivNext.setImageResource(R.drawable.next_disabled)
-                    binding.ivPrevious.setImageResource(R.drawable.prev_disabled)
-                }
-
-            }
-
-            GCAST_SOURCE -> {
-                //gCast is Playing
-
-                *//*setting seek to zero*//*
-                binding.seekBarSong.progress = 0
-                binding.seekBarSong.isEnabled = false
-                binding.seekBarSong.isClickable = false
-                binding.tvCurrentDuration.text = "0:00"
-                binding.tvTotalDuration.text = "0:00"
-                binding.ivPlayPause.setImageResource(R.drawable.play_white)
-                binding.ivNext.setImageResource(R.drawable.next_disabled)
-                binding.ivPrevious.setImageResource(R.drawable.prev_disabled)
-
-                binding.seekBarVolume.progress = 0
-                binding.seekBarVolume.isClickable = false
-                binding.seekBarVolume.isEnabled = false
-//                artistName!!.text = "Casting"
-                binding.tvAlbumName.text = currentSceneObject?.album_name
-                binding.tvTrackName.text = currentSceneObject?.trackName
-            }
-*/
-
             DEEZER_SOURCE -> {
-
                 if (message != null && message.contains(DEZER_RADIO)) {
                     binding.ivPrevious.isEnabled = false
                     binding.ivPrevious.isClickable = false
                 }
             }
-
             ALEXA_SOURCE -> {
                 binding.ilMusic.visibility=View.VISIBLE
                 binding.seekBarSong.isClickable = false
@@ -418,7 +356,6 @@ class CTNowPlayingActivity : CTDeviceDiscoveryActivity(), View.OnClickListener,
 
     }
 
-    //Shaik BT change
     private fun playPauseNextPrevAllowed(): Boolean {
         val mNodeWeGotForControl = mScanHandler!!.getLSSDPNodeFromCentralDB(currentIpAddress)
         return (currentSceneObject!!.currentSource != AUX_SOURCE
@@ -464,12 +401,6 @@ class CTNowPlayingActivity : CTDeviceDiscoveryActivity(), View.OnClickListener,
                     if (currentSceneObject!!.playstatus == CURRENTLY_PLAYING) {
                         control.SendCommand(MIDCONST.MID_PLAYCONTROL.toInt(), LUCIMESSAGES.PAUSE, LSSDPCONST.LUCI_SET)
                         isStillPlaying = false
-                        /**
-                         * Commneted by Shaik bcz icons have to handle dynamic
-                         */
-                      /*  binding.ivPlayPause.setImageResource(R.drawable.play_white)
-                        binding.ivNext.setImageResource(R.drawable.next_disabled)
-                        binding.ivPrevious.setImageResource(R.drawable.prev_disabled)*/
                     } else {
                         isStillPlaying = true
                         if (currentSceneObject!!.currentSource == BT_SOURCE) {
@@ -477,14 +408,6 @@ class CTNowPlayingActivity : CTDeviceDiscoveryActivity(), View.OnClickListener,
                         } else {
                             control.SendCommand(MIDCONST.MID_PLAYCONTROL.toInt(), LUCIMESSAGES.RESUME, LSSDPCONST.LUCI_SET)
                         }
-                        /**
-                         * Commneted by Shaik bcz icons have to handle dynamic
-                         */
-                       /*
-                        binding.ivPlayPause.setImageResource(R.drawable.pause_orange)
-                        binding.ivNext.setImageResource(R.drawable.next_enabled)
-                        binding.ivPrevious.setImageResource(R.drawable.prev_enabled)*/
-
                     }
 
                     if (currentSceneObject!!.currentSource != BT_SOURCE
@@ -796,8 +719,7 @@ override fun deviceGotRemoved(mIpAddress: String) {
 }
 
 override fun messageRecieved(nettyData: NettyData) {
-    LibreLogger.d(TAG, "Nowplaying: New message appeared for the device " + nettyData
-    .getRemotedeviceIp())
+    LibreLogger.d(TAG, "Nowplaying: New message appeared for the device " + nettyData.getRemotedeviceIp())
     if (currentSceneObject != null && nettyData.getRemotedeviceIp().equals(currentIpAddress!!, ignoreCase = true)) {
         val packet = LUCIPacket(nettyData.getMessage())
         LibreLogger.d(TAG, "Packet is _" + packet.command)
@@ -1129,7 +1051,6 @@ override fun messageRecieved(nettyData: NettyData) {
                     }
 
                 }
-            //Shaik Mute ans UnMute Changes
             MIDCONST.MUTE_UNMUTE_STATUS -> {
                 val message = String(packet.payload)
                 LibreLogger.d(TAG, "MB : 63, msg = $message")
@@ -1153,10 +1074,6 @@ override fun messageRecieved(nettyData: NettyData) {
         if (currentSceneObject == null) {
             return
         }
-        /*making visibility gone*//*
-        binding.ivShuffle.visibility = View.GONE
-        binding.ivRepeat.visibility = View.GONE
-*/
         if (LibreApplication.INDIVIDUAL_VOLUME_MAP.containsKey(currentSceneObject!!.ipAddress)) {
             binding.seekBarVolume.progress = LibreApplication.INDIVIDUAL_VOLUME_MAP[currentSceneObject?.ipAddress!!]!!
         } else {
@@ -1212,10 +1129,7 @@ override fun messageRecieved(nettyData: NettyData) {
             }
         }
         if (currentSceneObject!!.currentSource == SPOTIFY_SOURCE) {
-            LibreLogger.d(TAG, "suma in setviews spotify next \n" + currentSceneObject!!
-                .nextControl +
-                    "prev " +
-            "control\n" + currentSceneObject!!.previousControl)
+            LibreLogger.d(TAG, "suma in setviews spotify next \n" + currentSceneObject!!.nextControl + "prev " + "control\n" + currentSceneObject!!.previousControl)
             // if(currentSceneObject.getNextControl()||currentSceneObject.getPreviousControl()){
             if (currentSceneObject!!.nextControl) {
                 binding.ivNext.alpha = 1f
@@ -1296,11 +1210,33 @@ override fun messageRecieved(nettyData: NettyData) {
             }
         }
 
-        if (currentSceneObject!!.playUrl != null) {
-            if (currentSceneObject!!.playUrl.contains("spotify:episode") || currentSceneObject!!.playUrl.contains("spotify:show")) {
+        /**
+         * And for some sources like CAST,AIRPLAY,BT, DMR_SOURCE, AUX_SOURCE Shuffle & Repeat will not
+         * support, so we are making visibility GONE for now "hideShuffleRepeat()"
+         * As Discussed with Sathish in the future for Repeat & Shuffle status we have to
+         * dependent on the Device response(JSON), and make dynamic UI
+         */
+        if (currentSceneObject?.currentSource == GCAST_SOURCE
+            || currentSceneObject?.currentSource == BT_SOURCE
+            || currentSceneObject?.currentSource == AIRPLAY_SOURCE
+            || currentSceneObject!!.currentSource == USB_SOURCE
+            || currentSceneObject!!.currentSource == SDCARD_SOURCE
+            || currentSceneObject!!.currentSource == DEEZER_SOURCE
+            || currentSceneObject!!.currentSource == NETWORK_DEVICES
+            || currentSceneObject!!.currentSource == FAVOURITES_SOURCE
+            || currentSceneObject!!.currentSource == DMR_SOURCE
+            || currentSceneObject!!.currentSource == AUX_SOURCE
+            || (currentSceneObject!!.playUrl != null
+            && !currentSceneObject!!.playUrl.contains(LibreApplication.LOCAL_IP)
+            && currentSceneObject!!.currentSource == DMR_SOURCE)) {
+            hideShuffleRepeat()
+        } else {
+            /**For Spotify Podcasts PlayBackCommands like Repeat,Shuffle,Next & Previous will not
+             * support so we are making visibility Gone
+             */
+            if (currentSceneObject!!.playUrl != null && currentSceneObject!!.playUrl.contains("spotify:episode") || currentSceneObject!!.playUrl.contains("spotify:show")) {
                 binding.mediaBtnSkipNext.visibility = View.VISIBLE
                 binding.mediaBtnSkipPrev.visibility = View.VISIBLE
-
                 binding.ivPrevious.visibility = View.GONE
                 binding.ivNext.visibility = View.GONE
                 binding.ivRepeat.visibility = View.GONE
@@ -1308,51 +1244,20 @@ override fun messageRecieved(nettyData: NettyData) {
             } else {
                 binding.mediaBtnSkipNext.visibility = View.GONE
                 binding.mediaBtnSkipPrev.visibility = View.GONE
-
                 binding.ivPrevious.visibility = View.VISIBLE
                 binding.ivNext.visibility = View.VISIBLE
                 binding.ivRepeat.visibility = View.VISIBLE
                 binding.ivShuffle.visibility = View.VISIBLE
-            }
-        }
-        /*this condition making sure that shuffl e and repeat is being shown only for USB/SD card*/
-        /*added for deezer/tidal source*/
-        if (currentSceneObject!!.currentSource == USB_SOURCE
-                || currentSceneObject!!.currentSource == SDCARD_SOURCE
-                || currentSceneObject!!.currentSource == DEEZER_SOURCE
-                || currentSceneObject!!.currentSource == TIDAL_SOURCE
-                || currentSceneObject!!.currentSource == SPOTIFY_SOURCE
-                || currentSceneObject!!.currentSource == NETWORK_DEVICES
-                || currentSceneObject!!.currentSource == GCAST_SOURCE
-                || currentSceneObject!!.currentSource == FAVOURITES_SOURCE
-                || currentSceneObject!!.currentSource == DMR_SOURCE) {
 
-            if(currentSceneObject!!.playUrl.contains("spotify:episode") || currentSceneObject!!.playUrl.contains("spotify:show")){
-                binding.ivShuffle.visibility = View.GONE
-                binding.ivRepeat.visibility = View.GONE
-            }else {
-                /*making visibile only for USB/SD card*/
-                binding.ivShuffle.visibility = View.VISIBLE
-                binding.ivRepeat.visibility = View.VISIBLE
             }
-            if (currentSceneObject!!.shuffleState == NO_SOURCE  ) {
-                /*which means shuffle is off*/
-                if(currentSceneObject?.currentSource== GCAST_SOURCE || currentSceneObject?.currentSource== BT_SOURCE){
-                    binding.ivShuffle.visibility=View.GONE
-                    binding.ivRepeat.visibility=View.GONE
-                }else {
-                    binding.ivShuffle.setImageResource(R.drawable.shuffle_disabled)
-                }
+            /** Comment By SHAIK
+             * If Shuffle state is "0"  which means -> Shuffle is OFF(Disabled)
+             * If Shuffle state is "1"  which means -> Shuffle is ON(Enabled)
+             */
+            if (currentSceneObject!!.shuffleState == 0) {
+                binding.ivShuffle.setImageResource(R.drawable.shuffle_disabled)
             } else {
-                /*shuffle is on */
                 binding.ivShuffle.setImageResource(R.drawable.shuffle_enabled)
-            }
-            /*if other is playing local DMR we should hide repeat and shuffle*/
-            if (currentSceneObject!!.playUrl != null
-                    && !currentSceneObject!!.playUrl.contains(LibreApplication.LOCAL_IP)
-                    && currentSceneObject!!.currentSource == DMR_SOURCE) {
-                binding.ivShuffle.visibility = View.GONE
-                binding.ivRepeat.visibility = View.GONE
             }
             /*this for repeat state*/
             when (currentSceneObject!!.repeatState) {
@@ -1360,8 +1265,10 @@ override fun messageRecieved(nettyData: NettyData) {
                 REPEAT_ONE -> binding.ivRepeat.setImageResource(R.drawable.ic_repeat_one)
                 REPEAT_ALL -> binding.ivRepeat.setImageResource(R.drawable.ic_repeatall)
             }
+
         }
         LibreLogger.d(TAG,"playStatus CT: "+currentSceneObject!!.playstatus)
+
         when (currentSceneObject!!.playstatus) {
             CURRENTLY_BUFFERING -> {
                 showLoader(true)
@@ -1419,6 +1326,11 @@ override fun messageRecieved(nettyData: NettyData) {
         setTheSourceIconFromCurrentSceneObject()
     }
 
+    private fun hideShuffleRepeat() {
+            binding.ivShuffle.visibility = View.GONE
+            binding.ivRepeat.visibility = View.GONE
+    }
+
     private fun setSourceIconsForAlexaSource(currentSceneObject: SceneObject?) {
         binding.ivSourceIcon.visibility = View.VISIBLE
         setControlIconsForAlexa(currentSceneObject, binding.ivPlayPause, binding.ivNext, binding.ivPrevious)
@@ -1455,10 +1367,10 @@ override fun messageRecieved(nettyData: NettyData) {
                     LibreLogger.d(TAG, "Invalidated the URL $album_url Status $mInvalidated")
                 }
 
-                PicassoTrustCertificates.getInstance(this)
+                /*PicassoTrustCertificates.getInstance(this)
                         .load(album_url)
                         .error(R.mipmap.album_art).placeholder(R.mipmap.album_art)
-                        .into(binding.ivAlbumArt)
+                        .into(binding.ivAlbumArt)*/
 
                 /*Blurred Album art*/
                 PicassoTrustCertificates.getInstance(this)
@@ -1505,96 +1417,61 @@ override fun messageRecieved(nettyData: NettyData) {
     current source that is being played.
     */
     private fun setTheSourceIconFromCurrentSceneObject() {
-        if (currentSceneObject == null)
+        if (currentSceneObject == null){
             return
+            }
         /* Enabling the views by default which gets updated to disabled based on the need */
         enableViews(enable = true)
-
-        /**
-         * Shaik Enabled  the below code for the source icon display
-         */
-       // tv_source_type?.visibility = View.VISIBLE
         var imgResId = R.drawable.songs_borderless
-
         when(currentSceneObject?.currentSource){
-            DMR_SOURCE -> {
-                imgResId = R.drawable.my_device_enabled
-               // tv_source_type.text = getText(R.string.my_device)
-            }
-            DMP_SOURCE -> {
-                imgResId = /*R.mipmap.network*/R.drawable.media_servers_enabled
-                //tv_source_type.text = getText(R.string.mediaserver)
-            }
-            SPOTIFY_SOURCE -> {
-                imgResId = R.mipmap.spotify
-               // tv_source_type.text = getText(R.string.spotify)
-            }
-            USB_SOURCE -> {
-                imgResId = /*R.mipmap.usb*/R.drawable.usb_storage_enabled
-               // tv_source_type.text = getText(R.string.usb_storage)
-            }
-            SDCARD_SOURCE -> {
-                imgResId = R.mipmap.sdcard
-                //tv_source_type.text = getText(R.string.sdcard)
-            }
+            NO_SOURCE -> imgResId = 0
+            AIRPLAY_SOURCE -> imgResId = R.drawable.airplay
+            DMR_SOURCE -> imgResId = R.drawable.my_device_enabled
+            DMP_SOURCE -> imgResId = R.drawable.media_servers_enabled
+            SPOTIFY_SOURCE -> imgResId = R.mipmap.spotify
+            USB_SOURCE -> imgResId = R.drawable.usb_storage_enabled
+            SDCARD_SOURCE -> imgResId = R.mipmap.sdcard
+            MELON_SOURCE -> imgResId = 0
             VTUNER_SOURCE -> {
                 imgResId = R.mipmap.vtuner_logo
-               // tv_source_type.text = "VTUNER"
                 /*disabling views for VTUNER*/
                 disableViews(currentSceneObject!!.currentSource, currentSceneObject!!.album_name)
             }
-
             TUNEIN_SOURCE -> {
                 imgResId = R.mipmap.tunein_logo1
-                //tv_source_type.text = "TuneIn"
                 disableViews(currentSceneObject!!.currentSource, currentSceneObject!!.album_name)
             }
-
+            MIRACAST_SOURCE -> imgResId = 0
+            DDMSSLAVE_SOURCE -> imgResId = 0
             AUX_SOURCE -> {
                 imgResId = R.drawable.ic_aux_in
-                //tv_source_type.text = getText(R.string.aux)
                 /* added to make sure we dont show the album art during aux */
                 disableViews(currentSceneObject!!.currentSource, getString(R.string.aux))
             }
-
+            APPLEDEVICE_SOURCE -> imgResId=R.drawable.airplay_logo
+            DIRECTURL_SOURCE -> imgResId=0
             BT_SOURCE -> {
                 imgResId = R.drawable.ic_bt_on
-                //tv_source_type.text = getText(R.string.btOn)
                 when (currentSceneObject!!.playstatus) {
-                    SceneObject.CURRENTLY_STOPPED -> disableViews(currentSceneObject!!.currentSource, getString(R.string.btOn))
+                    CURRENTLY_STOPPED -> disableViews(currentSceneObject!!.currentSource, getString(R.string.btOn))
                     CURRENTLY_PAUSED -> disableViews(currentSceneObject!!.currentSource, getString(R.string.btOn))
                     else -> disableViews(currentSceneObject!!.currentSource, getString(R.string.btOn))
                 }
                 /* added to make sure we dont show the album art during aux */
                 disableViews(currentSceneObject!!.currentSource, getString(R.string.aux))
             }
-
             DEEZER_SOURCE -> {
                 imgResId = R.mipmap.deezer_logo
-                //tv_source_type.text = "Deezer"
                 disableViews(currentSceneObject!!.currentSource, currentSceneObject!!.trackName)
             }
-
-            TIDAL_SOURCE -> {
-                imgResId = R.mipmap.tidal_white_logo
-               // tv_source_type.text = "Tidal"
-            }
-
-            FAVOURITES_SOURCE -> {
-                imgResId = R.mipmap.ic_remote_favorite
-               // tv_source_type.text = getText(R.string.favorite_button)
-            }
-
-            ALEXA_SOURCE -> {
-                imgResId = R.drawable.alexa_blue_white_100px
-               // tv_source_type.text = getText(R.string.alexaText)
-            }
-            GCAST_SOURCE -> {
-                imgResId = R.mipmap.ic_cast_white_24dp_2x
-                //tv_source_type.text = getText(R.string.casting)
-            }
+            TIDAL_SOURCE -> imgResId = R.mipmap.tidal_white_logo
+            FAVOURITES_SOURCE -> imgResId = R.mipmap.ic_remote_favorite
+            GCAST_SOURCE -> imgResId = R.mipmap.ic_cast_white_24dp_2x
+            ALEXA_SOURCE -> imgResId = R.drawable.alexa_blue_white_100px
+            EXTERNAL_SOURCE -> imgResId=0
+            OPTICAL_SOURCE -> imgResId=0
+            TUNNELING_WIFI_SOURCE -> imgResId=0
         }
-
         binding.ivSourceIcon.setImageResource(imgResId)
         //handleThePlayIconsForGrayoutOption()
         if (currentSceneObject?.currentSource == ALEXA_SOURCE) {

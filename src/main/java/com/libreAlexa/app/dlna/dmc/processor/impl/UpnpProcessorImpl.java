@@ -1,6 +1,5 @@
 package com.libreAlexa.app.dlna.dmc.processor.impl;
 
-import static com.cumulations.libreV2.activity.CTDeviceDiscoveryActivity.APP_CLOSE;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -106,7 +105,6 @@ public class UpnpProcessorImpl implements UpnpProcessor, RegistryListener {
     public void addListener(UpnpProcessorListener listener) {
         synchronized (upnpProcessorListeners) {
             if (!upnpProcessorListeners.contains(listener)) {
-                LibreLogger.d(APP_CLOSE, "addListener2 " + listener.getClass().getSimpleName());
                 upnpProcessorListeners.add(listener);
             }
         }

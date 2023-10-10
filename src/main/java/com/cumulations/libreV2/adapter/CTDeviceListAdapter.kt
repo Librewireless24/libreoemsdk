@@ -9,6 +9,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import com.cumulations.libreV2.AppUtils
 import com.cumulations.libreV2.AppUtils.setPlayPauseLoader
@@ -34,39 +35,7 @@ import com.libreAlexa.alexa.AudioRecordCallback
 import com.libreAlexa.alexa.AudioRecordUtil
 import com.libreAlexa.alexa.MicExceptionListener
 import com.libreAlexa.alexa.MicTcpServer
-import com.libreAlexa.constants.Constants.AIRPLAY_SOURCE
-import com.libreAlexa.constants.Constants.ALEXA_SOURCE
-import com.libreAlexa.constants.Constants.APPLEDEVICE_SOURCE
-import com.libreAlexa.constants.Constants.AUX_SOURCE
-import com.libreAlexa.constants.Constants.BT_SOURCE
-import com.libreAlexa.constants.Constants.CURRENT_DEVICE_IP
-import com.libreAlexa.constants.Constants.CURRENT_SOURCE
-import com.libreAlexa.constants.Constants.DDMSSLAVE_SOURCE
-import com.libreAlexa.constants.Constants.DEEZER_SOURCE
-import com.libreAlexa.constants.Constants.DEVICE_NAME
-import com.libreAlexa.constants.Constants.DEZER_RADIO
-import com.libreAlexa.constants.Constants.DEZER_SONGSKIP
-import com.libreAlexa.constants.Constants.DIRECTURL_SOURCE
-import com.libreAlexa.constants.Constants.DMP_SOURCE
-import com.libreAlexa.constants.Constants.DMR_SOURCE
-import com.libreAlexa.constants.Constants.EXTERNAL_SOURCE
-import com.libreAlexa.constants.Constants.FAVOURITES_SOURCE
-import com.libreAlexa.constants.Constants.FROM_ACTIVITY
-import com.libreAlexa.constants.Constants.GCAST_SOURCE
-import com.libreAlexa.constants.Constants.MELON_SOURCE
-import com.libreAlexa.constants.Constants.MIRACAST_SOURCE
-import com.libreAlexa.constants.Constants.NO_SOURCE
-import com.libreAlexa.constants.Constants.OPTICAL_SOURCE
-import com.libreAlexa.constants.Constants.PLAY_PAUSE_NOT_ALLOWED
-import com.libreAlexa.constants.Constants.SDCARD_SOURCE
-import com.libreAlexa.constants.Constants.SECURE_DEVICE
-import com.libreAlexa.constants.Constants.SPOTIFY_SOURCE
-import com.libreAlexa.constants.Constants.START_MIC
-import com.libreAlexa.constants.Constants.TIDAL_SOURCE
-import com.libreAlexa.constants.Constants.TUNEIN_SOURCE
-import com.libreAlexa.constants.Constants.TUNNELING_WIFI_SOURCE
-import com.libreAlexa.constants.Constants.USB_SOURCE
-import com.libreAlexa.constants.Constants.VTUNER_SOURCE
+import com.libreAlexa.constants.Constants.*
 import com.libreAlexa.constants.LSSDPCONST
 import com.libreAlexa.constants.LUCIMESSAGES
 import com.libreAlexa.constants.MIDCONST
@@ -111,14 +80,13 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
 
     inner class SceneObjectItemViewHolder(val itemBinding: CtListItemSpeakersBinding) : RecyclerView.ViewHolder(itemBinding.root) {
         private var currentTrackName: String? = "-1"
-//        private var previousSourceIndex: Int = 0
 
         fun bindSceneObject(sceneObject: SceneObject?, position: Int) {
-            LibreLogger.d(TAG, "Scene Ipaddress ${sceneObject!!.currentSource}")
+            LibreLogger.d(TAG, "bindSceneObject called currentSource ${sceneObject!!.currentSource}")
             try {
                 val ipAddress = sceneObject.ipAddress
-                LibreLogger.d(TAG, "track name  ${sceneObject.trackName}")
-                clearViews()
+                //Shaik Commented to see for long and if not found it as unusable remove it
+               clearViews()
                 if (sceneObject != null) {
                     if (!sceneObject.sceneName.isNullOrEmpty() && !sceneObject.sceneName.equals("NULL", ignoreCase = true)) {
                         if (itemBinding.tvDeviceName.text.toString() != sceneObject.sceneName) {
@@ -128,48 +96,15 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
                     } else {
                         itemBinding.tvDeviceName.text = ""
                     }
-
-                    if (!sceneObject.trackName.isNullOrEmpty() && !sceneObject.trackName.equals("NULL", ignoreCase = true)) {
-                        var trackname = sceneObject.trackName
-
-                        /* This change is done to handle the case of deezer where the song name is appended by radio or skip enabled */
-                        if (trackname.contains(DEZER_RADIO)) trackname =
-                            trackname.replace(DEZER_RADIO, "")
-
-                        if (trackname.contains(DEZER_SONGSKIP)) trackname =
-                            trackname.replace(DEZER_SONGSKIP, "")
-                        trackname = trackname.replace(DEZER_SONGSKIP, "")
-
-                        if (itemBinding.ilMusicPlayingWidget.tvTrackName.text.toString() != trackname) {
-                            LibreLogger.d(TAG, "Track name : $trackname")
-                            itemBinding.ilMusicPlayingWidget.tvTrackName.text = trackname
-                            itemBinding.ilMusicPlayingWidget.tvTrackName.isSelected = true
-                        }
-                    } else {
-                        itemBinding.ilMusicPlayingWidget.tvTrackName.text = ""
-                    }
-
-                    if (!sceneObject.artist_name.isNullOrEmpty() && !sceneObject.artist_name.equals("null", ignoreCase = true)) {
-                        if (itemBinding.ilMusicPlayingWidget.tvAlbumName.text.toString() != sceneObject.artist_name) {
-                            itemBinding.ilMusicPlayingWidget.tvAlbumName.text = sceneObject.artist_name
-                            itemBinding.ilMusicPlayingWidget.tvAlbumName.isSelected = true
-                        }
-                    } else if (!sceneObject.album_name.isNullOrEmpty() && !sceneObject.album_name.equals("null", ignoreCase = true)) {
-                        if (itemBinding.ilMusicPlayingWidget.tvAlbumName.text.toString() != sceneObject.album_name) {
-                            itemBinding.ilMusicPlayingWidget.tvAlbumName.text = sceneObject.album_name
-                            itemBinding.ilMusicPlayingWidget.tvAlbumName.isSelected = true
-                        }
-                    } else {
-                        itemBinding.ilMusicPlayingWidget.tvAlbumName.text = ""
-                    }
+                    setCurrentTrackName(sceneObject,itemBinding.ilMusicPlayingWidget.tvTrackName)
+                    setAlbumArtistName(sceneObject,itemBinding.ilMusicPlayingWidget.tvAlbumName)
 
                     /*this is to show loading dialog while we are preparing to play*/
                     if (sceneObject.currentSource != AUX_SOURCE/*&& sceneObject!!.currentSource != Constants.EXTERNAL_SOURCE*//* && sceneObject.currentSource != BT_SOURCE*/ && sceneObject.currentSource != GCAST_SOURCE) {
 
                         /*Album Art For All other Sources Except */
                         if (!sceneObject.album_art.isNullOrEmpty() && sceneObject.album_art.equals("coverart.jpg", ignoreCase = true)) {
-                            val albumUrl =
-                                "http://" + sceneObject.ipAddress + "/" + "coverart.jpg"/* If Track Name is Different just Invalidate the Path And if we are resuming the Screen(Screen OFF and Screen ON) , it will not re-download it */
+                            val albumUrl = "http://" + sceneObject.ipAddress + "/" + "coverart.jpg"/* If Track Name is Different just Invalidate the Path And if we are resuming the Screen(Screen OFF and Screen ON) , it will not re-download it */
 
                             if (sceneObject.trackName != null && !currentTrackName.equals(sceneObject.trackName, ignoreCase = true)) {
                                 currentTrackName = sceneObject.trackName!!
@@ -201,7 +136,6 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
                                 }
 
                                 else -> {
-                                    LibreLogger.d(TAG, "Album art  ELSE ELSE ")
                                     itemBinding.ilMusicPlayingWidget.ivAlbumArt.setImageResource(R.mipmap.album_art)
                                 }
                             }
@@ -221,7 +155,6 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
                         CURRENTLY_BUFFERING -> {
                             setPlayPauseLoader(itemBinding.ilMusicPlayingWidget.ivPlayPause, isEnabled = false, isLoader = true, image = 0)
                         }
-
                         CURRENTLY_PLAYING -> {
                             setPlayPauseLoader(itemBinding.ilMusicPlayingWidget.ivPlayPause, isEnabled = true, isLoader = false, image = R.drawable.pause_orange)
                         }
@@ -264,33 +197,24 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
                     }
 
                     if (itemBinding.seekBarVolume.progress == 0) {
-                        LibreLogger.d(TAG,"Volume Status:-3 "+itemBinding.seekBarVolume.progress )
                         itemBinding.ivVolumeMute.setImageResource(R.drawable.ic_volume_mute)
                     } else {
                         itemBinding.ivVolumeMute.setImageResource(R.drawable.volume_low_enabled)
-                        LibreLogger.d(TAG,"Volume Status:-4 ")
                     }
 
                     //Seeting the Mute and UnMute status
                     if(sceneObject.mute_status==LUCIMESSAGES.MUTE){
-                        LibreLogger.d(TAG,"Volume Status:-5 "+sceneObject.mute_status)
                         itemBinding.ivVolumeMute.setImageResource(R.drawable.ic_volume_mute)
                     }else{
-                        LibreLogger.d(TAG,"Volume Status:-6 ")
                         itemBinding.ivVolumeMute.setImageResource(R.drawable.volume_low_enabled)
                     }
-
-                    /* This line should always be here do not move this line above the ip-else loop where we check the current Source*/
-//                    previousSourceIndex = sceneObject!!.currentSource
-
-//                    toggleAVSViews(sceneObject?.isAlexaBtnLongPressed)
-
                     updateViews(sceneObject)
                     updatePlayPause(sceneObject)
                     handleThePlayIconsForGrayOutOption(sceneObject)
                     setBatteryViews(sceneObject)
-
                     handleClickListeners(sceneObject, position)
+                }else{
+                    LibreLogger.d(TAG,"SceneObject is null")
                 }
 
             } catch (e: Exception) {
@@ -360,7 +284,6 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
                     }
                 } else {
                     /**notifying adapter as sometime sceneObject is present but not lssdp node */
-                    LibreLogger.d(TAG,"notifyDataSetChanged handleClickListeners")
                     notifyDataSetChanged()
                 }
             }
@@ -471,7 +394,6 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
             }
 
             itemBinding.ilMusicPlayingWidget.ibAlexaAvsBtn.setOnTouchListener { view, motionEvent ->
-                LibreLogger.d(TAG,"AlexaBtn motionEvent = " + motionEvent.action)
                 if (motionEvent.action == MotionEvent.ACTION_UP || motionEvent.action == MotionEvent.ACTION_CANCEL) {/*if (motionEvent.action != MotionEvent.ACTION_DOWN) {*/
                     LibreLogger.d(TAG,"AlexaBtn long press release, sceneObject isLongPressed = " + sceneObject?.isAlexaBtnLongPressed)
                     toggleAVSViews(false)
@@ -537,14 +459,19 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
             LibreLogger.d(TAG, "updateViews ${sceneObject?.playUrl} current source =  ${sceneObject?.currentSource}")
             itemBinding.ilMusicPlayingWidget.ivCurrentSource.visibility = View.GONE
             itemBinding.ivAuxBt.visibility = View.GONE
-            updateCurrentSourceIcon(itemBinding.ilMusicPlayingWidget,sceneObject)
-            LibreLogger.d(TAG, "handleAlexaViews source from:-  ${sceneObject?.currentSource}")
+            if(sceneObject!=null) {
+                updateCurrentSourceIcon(itemBinding.ilMusicPlayingWidget, sceneObject)
+                LibreLogger.d(TAG, "updateCurrentSourceIcon source from:-  ${sceneObject.currentSource}")
+            }
             when (sceneObject?.currentSource) {
                 NO_SOURCE, DDMSSLAVE_SOURCE -> {
                     itemBinding.ilMusicPlayingWidget.ivPlayPause.isEnabled = false
-                    if (sceneObject.currentSource == NO_SOURCE) {
+                    /**
+                     *Commented because we have handled in the new function called@setCurrentTrackName
+                     */
+                   /* if (sceneObject.currentSource == NO_SOURCE) {
                         handleAlexaViews(sceneObject)
-                    }
+                    }*/
                 }
 
                 VTUNER_SOURCE, TUNEIN_SOURCE -> {
@@ -556,41 +483,29 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
 
                 /*For Riva Tunneling, When switched to Aux, its External Source*/
                 AUX_SOURCE -> {
-                    handleAlexaViews(sceneObject)
+                    /**
+                     *Commented because we have handled in the new function called@setCurrentTrackName
+                     */
+                   // handleAlexaViews(sceneObject)
                     itemBinding.ivAuxBt.visibility = View.VISIBLE
                     itemBinding.ivAuxBt.setImageResource(R.drawable.ic_aux_in)
                 }
 
                 BT_SOURCE -> {
                     itemBinding.ilMusicPlayingWidget.ivCurrentSource.visibility = View.VISIBLE
-                    itemBinding.ilMusicPlayingWidget.tvTrackName.visibility = View.VISIBLE
+                 //   itemBinding.ilMusicPlayingWidget.tvTrackName.visibility = View.VISIBLE
                     itemBinding.ilMusicPlayingWidget.ivAlbumArt.visibility = View.VISIBLE
-                    itemBinding.ilMusicPlayingWidget.tvAlbumName.visibility = View.VISIBLE
+                   // itemBinding.ilMusicPlayingWidget.tvAlbumName.visibility = View.VISIBLE
                     itemBinding.ilMusicPlayingWidget.ivPlayPause.visibility = View.VISIBLE
-
-
-                    /*val mNode = LSSDPNodeDB.getInstance().getTheNodeBasedOnTheIpAddress(sceneObject.ipAddress) ?: return
-                    LibreLogger.d(TAG, "BT controller value in sceneobject " + mNode.bT_CONTROLLER)
-                    if (mNode.bT_CONTROLLER != 1 && mNode.bT_CONTROLLER != 2 && mNode.bT_CONTROLLER != 3) {
-                        itemBinding.iv_play_pause.setImageResource(R.drawable.play_white)
-                    }
-
-                    handleAlexaViews(sceneObject)
-                    itemBinding.ivAuxBt.visibility = View.VISIBLE
-                    itemBinding.ivAuxBt.setImageResource(R.drawable.ic_bt_on)*/
-
                 }
 
                 GCAST_SOURCE -> {
-                    itemBinding.ilMusicPlayingWidget.tvTrackName.text = sceneObject.trackName
+                    //itemBinding.ilMusicPlayingWidget.tvTrackName.text = sceneObject.trackName
                     itemBinding.ilMusicPlayingWidget.seekBarSong.isEnabled = false
                     itemBinding.ilMusicPlayingWidget.seekBarSong.progress = 0
                     itemBinding.ilMusicPlayingWidget.seekBarSong.isClickable = false
-                 /*   itemBinding.ilMusicPlayingWidget.ivCurrentSource.visibility = View.VISIBLE
-                    itemBinding.ilMusicPlayingWidget.ivCurrentSource.setImageResource(R.drawable.chrome_cast_enabled)*/
                 }
-                //Added tidal changes
-                ALEXA_SOURCE, DMR_SOURCE, DMP_SOURCE, SPOTIFY_SOURCE, USB_SOURCE, TIDAL_SOURCE -> {
+                ALEXA_SOURCE, DMR_SOURCE, DMP_SOURCE, SPOTIFY_SOURCE, USB_SOURCE, TIDAL_SOURCE, AIRPLAY_SOURCE -> {
                     if (!sceneObject.trackName.isNullOrEmpty() && !sceneObject.trackName.equals("NULL", ignoreCase = true)) {
                         itemBinding.ilMusicPlayingWidget.ivPlayPause.visibility = View.VISIBLE
                         itemBinding.ilMusicPlayingWidget.tvTrackName.visibility = View.VISIBLE
@@ -607,13 +522,12 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
                             itemBinding.ilMusicPlayingWidget.seekBarSong.visibility = View.VISIBLE
                             itemBinding.ilMusicPlayingWidget.seekBarSong.isEnabled = true
                         }
-                    } else {
-                        handleAlexaViews(sceneObject)
                     }
-
-                  /*  if (sceneObject.currentSource == SPOTIFY_SOURCE) {
-                        itemBinding.ilMusicPlayingWidget.ivCurrentSource.visibility = View.VISIBLE
-                        itemBinding.ilMusicPlayingWidget.ivCurrentSource.setImageResource(R.mipmap.spotify)
+                    /**
+                     *Commented because we have handled in the new function called@setCurrentTrackName
+                     */
+                    /*else {
+                        handleAlexaViews(sceneObject)
                     }*/
 
                     if (sceneObject.currentSource == ALEXA_SOURCE) {
@@ -622,8 +536,6 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
                         itemBinding.ilMusicPlayingWidget.ivAlbumArt.visibility = View.VISIBLE
                         itemBinding.ilMusicPlayingWidget.tvAlbumName.visibility = View.VISIBLE
                         itemBinding.ilMusicPlayingWidget.ivPlayPause.visibility = View.VISIBLE
-
-//                        itemBinding.tv_track_name?.text=sceneObject.trackName
                         itemBinding.ilMusicPlayingWidget.tvAlbumName.text = LibreApplication.currentArtistName
 
                         when {
@@ -644,8 +556,10 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
                         itemBinding.ivAuxBt.setImageResource(R.drawable.usb_storage_enabled)
                     }
                 }
-
-                else -> handleAlexaViews(sceneObject)
+                /**
+                 *Commented because we have handled in the new function called@setCurrentTrackName
+                 */
+                //else -> handleAlexaViews(sceneObject)
             }
 
             toggleAlexaBtnForSAMode()
@@ -672,8 +586,7 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
             }
 
             if (AppUtils.isActivePlaylistNotAvailable(sceneObject)) {
-                LibreLogger.d(TAG, "isActivePlaylistNotAvailable true")
-                handleAlexaViews(sceneObject)
+                handleAlexaViews(sceneObject,1)
             }
 
             if (AppUtils.isDMRPlayingFromOtherPhone(sceneObject)) {
@@ -683,33 +596,6 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
             if (AppUtils.isLocalDMRPlaying(sceneObject)) {
                 itemBinding.ilMusicPlayingWidget.ivPlayPause.visibility = View.VISIBLE
             }
-        }
-
-        private fun handleAlexaViews(sceneObject: SceneObject?) {
-            itemBinding.ilMusicPlayingWidget.seekBarSong.visibility = View.GONE
-            itemBinding.ilMusicPlayingWidget.ivAlbumArt.visibility = View.GONE
-            itemBinding.ilMusicPlayingWidget.ivPlayPause.visibility = View.GONE
-            itemBinding.ilMusicPlayingWidget.tvTrackName.text = context.getText(R.string.libre_voice)
-
-            val node = LSSDPNodeDB.getInstance().getTheNodeBasedOnTheIpAddress(sceneObject?.ipAddress)
-           if(node.getmDeviceCap().getmSource().isAlexaAvsSource) {
-               if (node?.alexaRefreshToken.isNullOrEmpty()) {
-                   itemBinding.ilMusicPlayingWidget.tvTrackName.visibility = View.VISIBLE
-                   itemBinding.ilMusicPlayingWidget.tvTrackName.text = context.getText(R.string.login_to_enable_cmds)
-                   itemBinding.ilMusicPlayingWidget.tvAlbumName.visibility = View.GONE
-               } else {
-                   itemBinding.ilMusicPlayingWidget.tvAlbumName.visibility = View.VISIBLE
-                   itemBinding.ilMusicPlayingWidget.tvTrackName.visibility = View.VISIBLE
-                   itemBinding.ilMusicPlayingWidget.tvTrackName.text = context.getText(R.string.app_name)
-                   itemBinding.ilMusicPlayingWidget.tvAlbumName.text = context.getText(R.string.speaker_ready_for_cmds)
-
-               }
-           }else{
-               itemBinding.ilMusicPlayingWidget.tvTrackName.visibility = View.VISIBLE
-               itemBinding.ilMusicPlayingWidget.tvTrackName.text = context.getText(R.string.app_name)
-               itemBinding.ilMusicPlayingWidget.tvAlbumName.visibility = View.VISIBLE
-               itemBinding.ilMusicPlayingWidget.tvAlbumName.text = context.getText(R.string.speaker_ready_for_use)
-           }
         }
 
         private fun toggleAlexaBtnForSAMode() {
@@ -722,6 +608,7 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
         }
 
         private fun handleThePlayIconsForGrayOutOption(sceneObject: SceneObject?) {
+            LibreLogger.d(TAG,"handleThePlayIconsForGrayOutOption "+sceneObject?.playstatus)
                 when (sceneObject?.playstatus) {
                     CURRENTLY_BUFFERING -> {
                         setPlayPauseLoader(itemBinding.ilMusicPlayingWidget.ivPlayPause, isEnabled = false, isLoader = true, image = 0)
@@ -748,7 +635,79 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
                 itemBinding.ilMusicPlayingWidget.llPlayingLayout.visibility = View.VISIBLE
             }
         }
+        private fun setCurrentTrackName(sceneObject: SceneObject, tvTrackName: AppCompatTextView) {
+            LibreLogger.d(TAG,"setCurrentTrackName trackName:- ${sceneObject.trackName}  and sourceName:- ${sceneObject.currentSource} ")
+            if(sceneObject.currentSource!= NO_SOURCE ||sceneObject.currentSource!= AUX_SOURCE ) {
+                if (!sceneObject.trackName.isNullOrEmpty() && !sceneObject.trackName.equals("NULL", ignoreCase = true)) {
+                    var trackname = sceneObject.trackName
+
+                    /* This change is done to handle the case of deezer where the song name is appended by radio or skip enabled */
+                    if (trackname.contains(DEZER_RADIO)) trackname = trackname.replace(DEZER_RADIO, "")
+
+                    if (trackname.contains(DEZER_SONGSKIP)) trackname = trackname.replace(DEZER_SONGSKIP, "")
+                    trackname = trackname.replace(DEZER_SONGSKIP, "")
+                    if (tvTrackName.text.toString() != trackname) {
+                        tvTrackName.text = trackname
+                    }
+                } else {
+                    //Setting the not available because to debug the issue
+                    tvTrackName.setText(R.string.trackname_not_available)
+                }
+            }else{
+                handleAlexaViews(sceneObject, 2)
+            }
+
+        }
+        private fun setAlbumArtistName(sceneObject: SceneObject, tvAlbumName: AppCompatTextView) {
+            LibreLogger.d(TAG,"setCurrentTrackName trackName:- ${sceneObject.trackName}  and sourceName:- ${sceneObject.currentSource} ")
+            if(sceneObject.currentSource!= NO_SOURCE ||sceneObject.currentSource!= AUX_SOURCE ) {
+                if (!sceneObject.artist_name.isNullOrEmpty() && !sceneObject.artist_name.equals("null", ignoreCase = true)) {
+                    if (tvAlbumName.text.toString() != sceneObject.artist_name) {
+                        tvAlbumName.text = sceneObject.artist_name
+                    }
+                } else if (!sceneObject.album_name.isNullOrEmpty() && !sceneObject.album_name.equals("null", ignoreCase = true)) {
+                    if (tvAlbumName.text.toString() != sceneObject.album_name) {
+                        tvAlbumName.text = sceneObject.album_name
+                    }
+                } else {
+                    //Setting the not available because to debug the issue
+                    tvAlbumName.setText(R.string.albumname_not_available)
+                }
+            }
+        }
+        private fun handleAlexaViews(sceneObject: SceneObject?, i: Int) {
+            LibreLogger.d(TAG,"setCurrentTrackName handleAlexaViews called from  $i")
+            itemBinding.ilMusicPlayingWidget.seekBarSong.visibility = View.GONE
+            itemBinding.ilMusicPlayingWidget.ivAlbumArt.visibility = View.GONE
+            itemBinding.ilMusicPlayingWidget.ivPlayPause.visibility = View.GONE
+            itemBinding.ilMusicPlayingWidget.tvTrackName.text = context.getText(R.string.libre_voice)
+
+            val node = LSSDPNodeDB.getInstance().getTheNodeBasedOnTheIpAddress(sceneObject?.ipAddress)
+            if(node.getmDeviceCap().getmSource().isAlexaAvsSource) {
+                if (node?.alexaRefreshToken.isNullOrEmpty()) {
+                    itemBinding.ilMusicPlayingWidget.tvTrackName.visibility = View.VISIBLE
+                    itemBinding.ilMusicPlayingWidget.tvTrackName.text = context.getText(R.string.login_to_enable_cmds)
+                    itemBinding.ilMusicPlayingWidget.tvAlbumName.visibility = View.GONE
+                } else {
+                    itemBinding.ilMusicPlayingWidget.tvAlbumName.visibility = View.VISIBLE
+                    itemBinding.ilMusicPlayingWidget.tvTrackName.visibility = View.VISIBLE
+                    itemBinding.ilMusicPlayingWidget.tvTrackName.text = context.getText(R.string.app_name)
+                    itemBinding.ilMusicPlayingWidget.tvAlbumName.text = context.getText(R.string.speaker_ready_for_cmds)
+
+                }
+            }else{
+                itemBinding.ilMusicPlayingWidget.tvTrackName.visibility = View.VISIBLE
+                itemBinding.ilMusicPlayingWidget.tvTrackName.text = context.getText(R.string.app_name)
+                itemBinding.ilMusicPlayingWidget.tvAlbumName.visibility = View.VISIBLE
+                itemBinding.ilMusicPlayingWidget.tvAlbumName.text = context.getText(R.string.speaker_ready_for_use)
+            }
+        }
+
     }
+
+
+
+
     private fun gotoSourcesOption(ipaddress: String, currentSource: Int) {
         context.startActivity(Intent(context, CTMediaSourcesActivity::class.java).apply {
             putExtra(CURRENT_DEVICE_IP, ipaddress)
@@ -760,25 +719,21 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
         if (sceneObject == null) return
         LibreLogger.d(TAG,"addDevice ip ${sceneObject.ipAddress} scene ${sceneObject.trackName}")
         sceneObjectMap[sceneObject.ipAddress!!] = sceneObject
-        LibreLogger.d(TAG,"notifyDataSetChanged addDeviceToList")
 //        notifyDataSetChanged()
 
         /*To update particular item only*/
         val pos = ArrayList<SceneObject>(sceneObjectMap.values).indexOf(sceneObject)
         LibreLogger.d(TAG,"addDeviceToList pos = $pos, ${sceneObject.sceneName}")
-        LibreLogger.d(TAG,"notifyDataSetChanged  notifyItemChanged addDeviceToList")
         notifyItemChanged(pos, sceneObject)
     }
 
     fun getDeviceSceneFromAdapter(deviceIp: String): SceneObject? {
-        LibreLogger.d(TAG,"getDevice ip $deviceIp")
         return sceneObjectMap[deviceIp]
     }
 
     fun removeDeviceFromList(sceneObject: SceneObject?) {
         LibreLogger.d(TAG,"removeDevice ip ${sceneObject?.ipAddress} scene ${sceneObject?.trackName}")
         sceneObjectMap.remove(sceneObject?.ipAddress)
-        LibreLogger.d(TAG,"notifyDataSetChanged removeDeviceFromList")
         notifyDataSetChanged()
     }
 
@@ -786,16 +741,13 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
 
         sceneObjectMap.clear()
         sceneObjectConcurrentMap.forEach { (ipAddress, sceneObject) ->
-            LibreLogger.d(TAG,"addAllDevices ip $ipAddress scene ${sceneObject.trackName}")
             sceneObjectMap[ipAddress] = sceneObject
         }
-        LibreLogger.d(TAG,"notifyDataSetChanged addAllDevices")
         notifyDataSetChanged()
     }
 
     fun clear() {
         sceneObjectMap.clear()
-        LibreLogger.d(TAG,"notifyDataSetChanged clear")
         notifyDataSetChanged()
     }
 
@@ -804,11 +756,9 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
     }
 
     override fun recordStopped() {
-        LibreLogger.d(TAG, "recordStopped")
     }
 
     override fun recordProgress(byteBuffer: ByteArray?) {
-        LibreLogger.d(TAG, "recordProgress")
     }
 
     override fun sendBufferAudio(audioBufferBytes: ByteArray?) {
@@ -816,7 +766,6 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
     }
 
     override fun micExceptionCaught(e: java.lang.Exception?) {
-        LibreLogger.d(TAG, "micExceptionCaught ${e?.message}")
         audioRecordUtil?.stopRecording()
     }
 
@@ -835,11 +784,12 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
      *  Device team we can enable or dependents on customer requirement
      */
     private fun updateCurrentSourceIcon(itemBinding: MusicPlayingWidgetBinding, sceneObject: SceneObject?) {
+        LibreLogger.d(TAG,"Current source is :- "+sceneObject?.currentSource)
         if (itemBinding.ivCurrentSource.visibility == View.GONE) {
             itemBinding.ivCurrentSource.visibility = View.VISIBLE
             when (sceneObject?.currentSource) {
                 NO_SOURCE -> itemBinding.ivCurrentSource.visibility = View.GONE
-                AIRPLAY_SOURCE -> itemBinding.ivCurrentSource.setImageResource(R.drawable.airplay_logo)
+                AIRPLAY_SOURCE -> itemBinding.ivCurrentSource.setImageResource(R.drawable.airplay)
                 DMR_SOURCE -> itemBinding.ivCurrentSource.setImageResource(R.drawable.my_device_enabled)
                 DMP_SOURCE -> itemBinding.ivCurrentSource.setImageResource(R.drawable.media_servers_enabled)
                 SPOTIFY_SOURCE -> itemBinding.ivCurrentSource.setImageResource(R.mipmap.spotify)
@@ -859,7 +809,6 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
                 TIDAL_SOURCE -> itemBinding.ivCurrentSource.setImageResource(R.mipmap.tidal_white_logo)
                 FAVOURITES_SOURCE -> itemBinding.ivCurrentSource.setImageResource(R.mipmap.ic_remote_favorite)
                 GCAST_SOURCE -> itemBinding.ivCurrentSource.setImageResource(R.drawable.chrome_cast_enabled)
-
                 EXTERNAL_SOURCE -> itemBinding.ivCurrentSource.visibility = View.GONE
                 OPTICAL_SOURCE -> itemBinding.ivCurrentSource.visibility = View.GONE
                 TUNNELING_WIFI_SOURCE -> itemBinding.ivCurrentSource.visibility = View.GONE
