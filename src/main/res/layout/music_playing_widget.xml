@@ -106,17 +106,18 @@
                     android:layout_gravity="center"
                     tools:src="@mipmap/spotify"
                     android:visibility="gone" />
+
                 <com.cumulations.libreV2.ProgressButtonImageView
                   android:id="@+id/iv_play_pause"
-                  android:layout_width="50dp"
+                  android:layout_width="60dp"
                   android:layout_height="match_parent"
                   android:layout_marginLeft="5dp"
                   android:layout_marginRight="5dp"
                   android:padding="16dp"
                   android:background="?attr/selectableItemBackground"
                   app:enabled="true"
-                  app:loading="false"
-                  app:imageButtonStyle="@null" />
+                  app:imageButtonStyle="@null"
+                  app:loading="false" />
               <!--  Commented by shaik bcz added custom progressImageview-->
              <!--   <androidx.appcompat.widget.AppCompatImageView
                     android:layout_width="50dp"

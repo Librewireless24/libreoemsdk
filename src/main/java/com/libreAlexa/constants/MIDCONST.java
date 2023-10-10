@@ -102,5 +102,6 @@ public class MIDCONST {
     public static final int FORGET_NETWORK = 142;
     public static final int UPDATE_TIMEZONE = 573;
     public static final int UPDATE_TIMEZONE_DUMMY = 93;
+    public static final int ISSUE_REPORT = 651;
 
 }

@@ -58,7 +58,6 @@ class TimeZoneFragment : Fragment(), TimeZoneListAdapter.SendDataToFragment{
             val id = tz.id
             val timeZoneDataClass = TimeZoneDataClass(id, name)
             timeZoneData.add(timeZoneDataClass)
-
         }
         timeZoneListAdapter = TimeZoneListAdapter(timeZoneData, this)
         binding.rlTimeZone.layoutManager = LinearLayoutManager(activity)
@@ -141,5 +140,10 @@ class TimeZoneFragment : Fragment(), TimeZoneListAdapter.SendDataToFragment{
         super.onStop()
         (activity as CTDeviceSettingsActivity?)!!.supportActionBar!!.show()
     }
+    /**According to Suma, Satish ,Shaik , Device has to send the acknowldgement as soon as timezone
+     * update, in the future if any bug Raised by QA, discussed in the code review
+     * Hint :- after Updating the Timezone call on more MB to update the timezone bad architure
+     * from device end
+     */
 
 }

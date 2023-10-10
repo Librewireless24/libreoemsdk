@@ -88,32 +88,26 @@
                     android:textColor="@color/white"
                     app:fontFamily="sans-serif" />
 
-                <EditText
+                <TextView
                     android:id="@+id/tv_device_name"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:background="@color/appbar_bg"
-                    android:gravity="center_horizontal"
-                    android:padding="16dp"
+                    android:gravity="center"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
                     android:text="@string/app_name"
                     android:textSize="16sp"
                     android:maxLength="50"
-                    android:textAllCaps="true"
                     android:textColor="@color/white"
-                    app:fontFamily="sans-serif-black"
-                    android:singleLine="true"
-                   android:inputType="text|textNoSuggestions" />
+                    android:singleLine="true" />
                 <ImageButton
                   android:id="@+id/btn_edit_speakerName"
-                  style="?android:attr/buttonStyleSmall"
                   android:layout_width="wrap_content"
                   android:layout_height="60dp"
-                  android:layout_alignParentTop="true"
-                  android:layout_alignParentEnd="true"
-                  android:layout_alignParentRight="true"
-                  android:layout_marginLeft="10dp"
-                  android:gravity="center_vertical"
+                  android:paddingHorizontal="16dp"
                   android:background="@color/transparent"
                   android:src="@drawable/baseline_edit_24" />
             </LinearLayout>
@@ -473,7 +467,7 @@
                   android:textColor="@color/white"
                   app:fontFamily="sans-serif-black" />
             </LinearLayout>
-            <!-- Shaik 582 -->
+           <!-- &lt;!&ndash; Shaik 582 &ndash;&gt;
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -513,7 +507,7 @@
                     android:textColor="@color/app_text_color_enabled"
                     app:fontFamily="sans-serif-black" />
             </RelativeLayout>
-            <!-- Shaik 582 -->
+            &lt;!&ndash; Shaik 582 &ndash;&gt;
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="?android:attr/actionBarSize"
@@ -564,7 +558,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@android:color/transparent" />
-           <!-- Shaik 582 -->
+           &lt;!&ndash; Shaik 582 &ndash;&gt;
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="?android:attr/actionBarSize"
@@ -593,7 +587,7 @@
                     android:textSize="16sp"
                     app:fontFamily="sans-serif-black"
                     tools:text="@string/hello_world" />
-            </LinearLayout>
+            </LinearLayout>-->
 
             <LinearLayout
                 android:id="@+id/ll_alexa_settings"
@@ -988,6 +982,60 @@
                 </LinearLayout>
             </LinearLayout>
 
+            <!--Report issue -->
+            <LinearLayout
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:gravity="center_horizontal"
+              android:orientation="horizontal"
+              android:padding="16dp">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                  android:layout_width="wrap_content"
+                  android:layout_height="match_parent"
+                  android:layout_marginRight="16dp"
+                  app:srcCompat="@drawable/issues_report" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                  android:layout_width="wrap_content"
+                  android:layout_height="match_parent"
+                  android:text="@string/issues"
+                  android:gravity="center_vertical"
+                  android:textColor="@color/app_text_color_disabled" />
+            </LinearLayout>
+
+            <LinearLayout
+              android:id="@+id/ll_issues_report"
+              android:layout_width="match_parent"
+              android:layout_height="?android:attr/actionBarSize"
+              android:background="@color/appbar_bg"
+              android:gravity="center_vertical">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"
+                  android:gravity="center_vertical"
+                  android:padding="16dp"
+                  android:textSize="16sp"
+                  android:text="@string/report_issues"
+                  android:textColor="@color/white"
+                  app:fontFamily="sans-serif" />
+                <androidx.appcompat.widget.AppCompatTextView
+                  android:paddingLeft="8dp"
+                  android:paddingRight="8dp"
+                  android:layout_width="wrap_content"
+                  android:layout_height="match_parent"
+                  android:layout_gravity="center_vertical|right"
+                  android:background="?attr/selectableItemBackground"
+                  android:drawableRight="@drawable/ic_orange_right_arrow"
+                  android:drawablePadding="12dp"
+                  android:gravity="center_vertical"
+                  android:textSize="16sp"
+                  android:textColor="@color/app_text_color_enabled"
+                  app:fontFamily="sans-serif-black" />
+            </LinearLayout>
+
             <androidx.appcompat.widget.AppCompatButton
               android:id="@+id/btn_forget_network"
               android:layout_width="wrap_content"
@@ -1005,6 +1053,10 @@
     </androidx.core.widget.NestedScrollView>
     <FrameLayout
       android:id="@+id/lay_timeZone"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent" />
+    <FrameLayout
+      android:id="@+id/lay_issuesReport"
       android:layout_width="match_parent"
       android:layout_height="match_parent" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

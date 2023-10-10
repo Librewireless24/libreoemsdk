@@ -240,7 +240,7 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
             }
 
             BLEUtils.BLE_SAC_DEV2APP_CRED_RECEIVED -> runOnUiThread { setMessageProgressDialog(getString(R.string.cred_received)) }
-            BLEUtils.BLE_SAC_DEV2APP_CRED_SUCCESS -> runOnUiThread { showAlertMessageRegardingSAC(" ", getString(R.string.cred_success)) }
+            BLEUtils.BLE_SAC_DEV2APP_CRED_SUCCESS -> runOnUiThread { setMessageProgressDialog(getString(R.string.cred_success)) }
             BLEUtils.BLE_SAC_DEV2APP_CRED_FAILURE -> runOnUiThread { showAlertMessageRegardingSAC(" ", getString(R.string.credientials_invalid)) }
             BLEUtils.BLE_SAC_DEV2APP_WIFI_CONNECTING -> runOnUiThread { setMessageProgressDialog(getString(R.string.start_connecting)) }
             BLEUtils.BLE_SAC_DEV2APP_WIFI_CONNECTED -> {
@@ -270,8 +270,7 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
             BLEUtils.BLE_SAC_DEV2APP_STARTED -> {}
             BLEUtils.BLE_SAC_DEV2APP_SCAN_LIST_START -> {
                 constructJSonString = StringBuilder()
-                //Shaik new change
-                scanListLength = String(packet.message).toInt()
+              //  scanListLength = String(packet.message).toInt()
             }
 
             BLEUtils.BLE_SAC_DEV2APP_SCAN_LIST_DATA -> {
@@ -284,13 +283,18 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
                  * Later Have to test in the newly released FW not in 3020
                  * Note:-  Have to Add the same change in the @CTWifiListActivity Activity while
                  * releasing this app
+                 * Commented the code because there is some issue from device end once it's
+                 * resolved we have to enable the below code
                  */
-                if (scanListLength == constructJSonString.length) {
+                populateScanListMap(constructJSonString.toString())
+
+                /*if (scanListLength == constructJSonString.length) {
                     populateScanListMap(constructJSonString.toString())
                 } else {
-                    showSomethingWentWrongAlert(this@CTBluetoothPassCredentials)
+                  //  showSomethingWentWrongAlert(this@CTBluetoothPassCredentials)
+                    populateScanListMap(constructJSonString.toString())
                     LibreLogger.d(TAG, "Scan List size is not matching " + "${constructJSonString.length}")
-                }
+                }*/
                 dismissDialog()
             }
 

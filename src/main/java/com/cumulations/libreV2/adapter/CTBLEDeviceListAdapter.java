@@ -53,7 +53,7 @@ public class CTBLEDeviceListAdapter extends ArrayAdapter<BLEDevice> {
         });
 
         TextView tv_name = (TextView) convertView.findViewById(R.id.tv_bledevice_name);
-        tv_name.setText(device.getName());
+        tv_name.setText((position+1)+". "+device.getName());
 
         TextView tv_rssi = (TextView) convertView.findViewById(R.id.tv_bledevice_rssi);
         tv_rssi.setText("RSSI: " + Integer.toString(rssi));

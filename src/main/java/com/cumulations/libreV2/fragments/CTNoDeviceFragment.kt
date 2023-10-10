@@ -15,11 +15,14 @@ import androidx.fragment.app.Fragment
 import com.cumulations.libreV2.activity.CTBluetoothDeviceListActivity
 import com.cumulations.libreV2.activity.CTBluetoothSetupInstructionsActivity
 import com.cumulations.libreV2.activity.CTDeviceDiscoveryActivity
+import com.cumulations.libreV2.activity.CTDeviceSettingsActivity
 import com.cumulations.libreV2.activity.CTHomeTabsActivity
+import com.cumulations.libreV2.activity.CTMediaSourcesActivity
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEUtils
 import com.cumulations.libreV2.model.SceneObject
 import com.libreAlexa.*
 import com.libreAlexa.Scanning.ScanningHandler
+import com.libreAlexa.constants.Constants
 import com.libreAlexa.databinding.CtFragmentNoDeviceBinding
 import com.libreAlexa.luci.LSSDPNodeDB
 import com.libreAlexa.luci.LSSDPNodes
@@ -60,7 +63,14 @@ class CTNoDeviceFragment:Fragment(),LibreDeviceInteractionListner,View.OnClickLi
 
     override fun onClick(p0: View?) {
         when(p0?.id){
-            R.id.iv_refresh,R.id.tv_refresh -> /*refreshDevices()*/(activity as CTHomeTabsActivity).refreshDevices()
+            R.id.iv_refresh,R.id.tv_refresh -> {
+                /*refreshDevices()*/
+                (activity as CTHomeTabsActivity).refreshDevices()
+              /*  val intent = Intent(activity, CTDeviceSettingsActivity::class.java)
+                intent.putExtra(Constants.CURRENT_DEVICE_IP, "192.168.10.1")
+                startActivity(intent)*/
+
+            }
             R.id.tv_setup_speaker -> {
 
                 val bluetoothManager = requireActivity().getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager?

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.net.ConnectivityManager
@@ -368,6 +369,26 @@ object AppUtils {
         } else {
             ivPlayPauseView.visibility = View.GONE
         }
+    }
+    /**
+     * Created By Shaik
+     * 06/OCT/2023
+     */
+    fun getVersion(context: Context, flags: Int=1): String {
+        var version = context.getString(R.string.title_activity_welcome)
+        var pInfo: PackageInfo? = null
+        try {
+            pInfo = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                context.packageManager.getPackageInfo(context.packageName, PackageManager
+                    .PackageInfoFlags.of(flags.toLong()))
+            } else {
+                context.packageManager.getPackageInfo(context.packageName, flags)
+            }
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+        }
+        if (pInfo != null) version = pInfo.versionName
+        return version
     }
 
 }

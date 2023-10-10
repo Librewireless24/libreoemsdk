@@ -228,11 +228,6 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
             /* do what you need to do */
             if (mBackgroundMSearchStoppedDeviceFound)
                 return;
-
-           /* final LibreApplication application = (LibreApplication) getApplication();
-            application.getScanThread().UpdateNodes();*/
-            //SDK CHANGE
-            // val application = application as LibreApplication?
             ScanThread.getInstance().UpdateNodes();
             /* and here comes the "trick" */
             mTaskHandlerForSendingMSearch.postDelayed(this, MSEARCH_TIMEOUT_SEARCH);
@@ -285,7 +280,7 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
                 LibreLogger.d(TAG_FW_UPDATE, "SAC*** Configured Device Found before third if  " + fwInternetUpgradeMessage);
               //NOTE FROM Suma :Enable this logic.., when checking with proper  OEM f/w
                  if (fwInternetUpgradeMessage.equals(NO_UPDATE)
-                        || fwInternetUpgradeMessage.equals(GCAST_COMPLETE)
+                     || fwInternetUpgradeMessage.equals(GCAST_COMPLETE)
                         || fwInternetUpgradeMessage.equals(Constants.BATTERY_POWER)) {
                     if (fwInternetUpgradeMessage.equals(GCAST_COMPLETE)) {
                         LibreLogger.d(TAG_FW_UPDATE, "SAC*** Configured Device Found = Third IF " + fwInternetUpgradeMessage);
@@ -365,8 +360,7 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
                             }
 
                             mHandler.removeMessages(Constants.ALEXA_CHECK_TIMEOUT);
-                            if (fwInternetUpgradeMessage.equals(NO_UPDATE)
-                                    || fwInternetUpgradeMessage.equals(Constants.BATTERY_POWER)) {
+                            if (fwInternetUpgradeMessage.equals(NO_UPDATE) || fwInternetUpgradeMessage.equals(Constants.BATTERY_POWER)) {
                                 mHandler.sendEmptyMessage(Constants.CONFIGURED_DEVICE_FOUND);
                             }
                         } catch (JSONException e) {
@@ -393,8 +387,8 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
                         if (mNode != null) {
                             mNode.setAlexaRefreshToken(token);
                             if (token != null && !token.isEmpty()) {
-                                if (fwInternetUpgradeMessage.equals(NO_UPDATE)
-                                        || fwInternetUpgradeMessage.equals(Constants.BATTERY_POWER)) {
+                                LibreLogger.d(TAG, "MID_ENV_READ, fwInternetUpgradeMessage "+fwInternetUpgradeMessage);
+                                if (fwInternetUpgradeMessage.equals(NO_UPDATE) || fwInternetUpgradeMessage.equals(Constants.BATTERY_POWER)) {
                                     mHandler.sendEmptyMessage(Constants.CONFIGURED_DEVICE_FOUND);
                                 }
                             } else {
@@ -571,7 +565,6 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
 
     }
 
-    //Shaik New Change Time Zone
     private void updateTimeZone(String ipAddress) {
         TimeZone timezone = TimeZone.getDefault();
         LUCIControl control = new LUCIControl(ipAddress);
@@ -586,6 +579,7 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
                 LibreLogger.d(TIMEZONE_UPDATE, "CT updateTimeZone: Exception: " + ex.getMessage());
             }
             control.SendCommand(MIDCONST.UPDATE_TIMEZONE, postData.toString(), LSSDPCONST.LUCI_SET);
+            LibreLogger.d(TIMEZONE_UPDATE, "CT updateTimeZone: Success: " + postData.toString());
         } else {
             LibreLogger.d(TIMEZONE_UPDATE, "CT updateTimeZone: failed ");
         }
@@ -651,7 +645,6 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
                     "Authentication Error  , App Will be closed ");
             BusProvider.getInstance().post(error);
             mHandler.removeMessages(Constants.CONNECTED_TO_MAIN_SSID_FAIL);
-            LibreLogger.d(APP_FORGROUND, "CONNECTED_TO_MAIN_SSID_FAIL connectivityOnReceiveCalled");
             mHandler.sendEmptyMessageDelayed(Constants.CONNECTED_TO_MAIN_SSID_FAIL, OOPS_TIMEOUT);
         }
 

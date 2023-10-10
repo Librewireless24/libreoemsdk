@@ -68,8 +68,7 @@
                         android:singleLine="true"
                         tools:text="RivaFestival21f36a"
                         android:textColor="@color/white"
-                        android:textSize="22sp"
-                        app:fontFamily="sans-serif-medium" />
+                        android:textSize="22sp" />
 
                     <androidx.appcompat.widget.AppCompatImageButton
                         android:id="@+id/iv_alexa_account"

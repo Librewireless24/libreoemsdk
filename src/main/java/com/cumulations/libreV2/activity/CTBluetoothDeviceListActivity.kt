@@ -90,6 +90,8 @@ class CTBluetoothDeviceListActivity : CTDeviceDiscoveryActivity(), BLEServiceToA
         val currentAPIVersion = VERSION.SDK_INT
         if (currentAPIVersion >= 31) {
             checkPermissions()
+        }else{
+            startScan()
         }
         val gattServiceIntent = Intent(this, BluetoothLeService::class.java)
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE)
@@ -130,13 +132,6 @@ class CTBluetoothDeviceListActivity : CTDeviceDiscoveryActivity(), BLEServiceToA
         this.registerReceiver(BTReceiver, filter1)
         this.registerReceiver(BTReceiver, filter2)
         this.registerReceiver(BTReceiver, filter3)
-        //Shaik Changes Commented here and added into onStart because it's calling into loop
-        LibreLogger.d(TAG, "suma in get the BTReceiver Intent")
-    /*  SUMA : Change according to the 33+ APi changes , Below code snippet may change */
-    /*  if (currentAPIVersion >= 31) {
-      checkPermissions();
-      LibreLogger.d(TAG, "suma in on Resume api 33");
-    }*/
     }
 
     override fun onBackPressed() {
@@ -174,6 +169,7 @@ class CTBluetoothDeviceListActivity : CTDeviceDiscoveryActivity(), BLEServiceToA
         mBLEListAdapter!!.notifyDataSetChanged()
         binding.noBleDeviceFrameLayout.visibility = View.GONE
         binding.layDeviceCount.visibility = View.GONE
+        binding.ivBledevicelist.visibility = View.GONE
         showProgressDialog(getString(R.string.looking_for_devices))
         mBTLeScanner!!.start()
         handler.postDelayed(showWifiConfigurationScreen, TIMEOUT_WIFI.toLong())

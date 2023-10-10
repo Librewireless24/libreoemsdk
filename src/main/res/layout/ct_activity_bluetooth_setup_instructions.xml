@@ -13,7 +13,7 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="?android:attr/actionBarSize"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp">
 
@@ -25,17 +25,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:layout_marginLeft="?attr/actionBarSize"
-                    android:layout_marginRight="?attr/actionBarSize"
+                    android:layout_marginLeft="?android:attr/actionBarSize"
+                    android:layout_marginRight="?android:attr/actionBarSize"
                     android:text="@string/bluetooth_hd"
                     android:textColor="@color/white"
                     android:textSize="20sp" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_back"
-                    android:layout_width="?attr/actionBarSize"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:layout_width="?android:attr/actionBarSize"
+                    android:layout_height="?android:attr/actionBarSize"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
                     android:padding="16dp"
                     app:srcCompat="@drawable/ic_arrow_back_white" />
             </RelativeLayout>
@@ -43,7 +43,7 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
-        android:paddingBottom="?attr/actionBarSize"
+        android:paddingBottom="?android:attr/actionBarSize"
         android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
