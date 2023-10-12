@@ -36,7 +36,7 @@ import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEDevice
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEPacket.BLEDataPacket
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEServiceToApplicationInterface
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BleCommunication
-import com.cumulations.libreV2.com.cumulations.libreV2.BLE.Scanner_BLE
+import com.cumulations.libreV2.com.cumulations.libreV2.BLE.ScannerBLE
 import com.libreAlexa.LibreApplication
 import com.libreAlexa.R
 import com.libreAlexa.constants.AppConstants
@@ -54,7 +54,7 @@ class CTBluetoothDeviceListActivity : CTDeviceDiscoveryActivity(), BLEServiceToA
     private var mBLEListAdapter: CTBLEDeviceListAdapter? = null
     private var mBleDevices = ArrayList<BLEDevice>()
     private val mBTDevicesHashMap = HashMap<String, BLEDevice>()
-    private var mBTLeScanner: Scanner_BLE? = null
+    private var mBTLeScanner: ScannerBLE? = null
     private var mBleCommunication: BleCommunication? = null
     private var mBluetoothLeService: BluetoothLeService? = null
     private val TIMEOUT_WIFI = 10000
@@ -69,7 +69,7 @@ class CTBluetoothDeviceListActivity : CTDeviceDiscoveryActivity(), BLEServiceToA
         setContentView(binding.root)
         sharedPreference = SharedPreferenceHelper(this)
 
-        mBTLeScanner = Scanner_BLE(this, 7000, -100)
+        mBTLeScanner = ScannerBLE(this, 7000, -100)
         mBleCommunication = BleCommunication(this)
         binding.ivRefresh.setOnClickListener {
             handler.removeCallbacks(showWifiConfigurationScreen)

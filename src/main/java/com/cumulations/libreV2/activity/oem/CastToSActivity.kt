@@ -90,7 +90,6 @@ class CastToSActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionListn
             })
         }
         binding.layLoader.visibility = View.VISIBLE
-        binding.parentLayout.visibility = View.GONE
         if (currentIpAddress != null) {
             fetchUUIDFromDB(currentIpAddress!!)
         } else {
@@ -210,9 +209,10 @@ class CastToSActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionListn
         lifecycleScope.launch {
             cancelJob()
         }
-        binding.layLoader.visibility = View.GONE
         val remoteDeviceIp = nettyData!!.getRemotedeviceIp()
-        val packet = LUCIPacket(nettyData.getMessage())/*LibreLogger.d(TAG_NETWORK, "messageRecieved: " + remoteDeviceIp + ", command is " + packet.command + "msg is\n" + String(packet.payload))*/
+        val packet = LUCIPacket(nettyData.getMessage())
+       /* LibreLogger.d(TAG_SCREEN, "messageRecieved: " + remoteDeviceIp + ", command is " + packet
+            .command + "msg is\n" + String(packet.payload))*/
         if (packet.command == CAST_ACCEPT_STATUS || packet.command == CAST_ACCEPT_STATUS_572) {
             val message = String(packet.getpayload())
             val root = JSONObject(message)
@@ -262,14 +262,12 @@ class CastToSActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionListn
         super.onResume()
         registerForDeviceEvents(this)
         binding.layLoader.visibility = View.VISIBLE
-        binding.parentLayout.visibility = View.GONE
         if(currentIpAddress!=null) {
             lifecycleScope.launch {
                 delay(5000)
                 checkCastActivateStatus(currentIpAddress)
                 delay(1000)
                 binding.layLoader.visibility = View.GONE
-                binding.parentLayout.visibility = View.VISIBLE
             }
         }else{
             intentToHome(this)

@@ -276,13 +276,13 @@ class CTWifiListActivity : CTDeviceDiscoveryActivity(), BLEServiceToApplicationI
                 lifecycleScope.launch {
                     cancelJob()
                 }
-                populateScanlistMap(constructJSonString.toString())
+                populateScanListMap(constructJSonString.toString())
                 dismissDialog()
                /* if (scanListLength == constructJSonString.length) {
-                    populateScanlistMap(constructJSonString.toString())
+                    populateScanListMap(constructJSonString.toString())
                 }else{
                     //showSomethingWentWrongAlert(this@CTWifiListActivity)
-                    populateScanlistMap(constructJSonString.toString())
+                    populateScanListMap(constructJSonString.toString())
                     LibreLogger.d(CTBluetoothPassCredentials.TAG, "SCAN_LIST List size is not matching ${constructJSonString.length}")
                 }*/
             }
@@ -295,7 +295,7 @@ class CTWifiListActivity : CTDeviceDiscoveryActivity(), BLEServiceToApplicationI
     override fun onDisconnectionSuccess(status: Int) {
     }
 
-    private fun populateScanlistMap(scanList: String?) {
+    private fun populateScanListMap(scanList: String?) {
         scanListMap.clear()
         try {
             val mainObj = JSONObject(scanList)
@@ -305,11 +305,12 @@ class CTWifiListActivity : CTDeviceDiscoveryActivity(), BLEServiceToApplicationI
                 if (obj.getString("SSID") == null || obj.getString("SSID").isEmpty()) {
                     continue
                 }
-                scanListMap[CTBluetoothPassCredentials.fromHtml(obj.getString("SSID")).toString()] = CTBluetoothPassCredentials.fromHtml(obj.getString("Security")).toString()/*  LibreLogger.d(TAG, "populateScanlistMap " + scanListMap[obj.getString("SSID")] + " ssid: " + obj.getString("SSID"))*/
+                scanListMap[CTBluetoothPassCredentials.fromHtml(obj.getString("SSID")).toString()
+                ] = CTBluetoothPassCredentials.fromHtml(obj.getString("Security")).toString()/*  LibreLogger.d(TAG, "populateScanListMap " + scanListMap[obj.getString("SSID")] + " ssid: " + obj.getString("SSID"))*/
             }
         } catch (e: JSONException) {
             e.printStackTrace()
-            LibreLogger.d(TAG, "populateScanlistMap Exception " + e.message)
+            LibreLogger.d(TAG, "populateScanListMap Exception " + e.message)
         }
         for (str in scanListMap.keys) {
             WifiConnection.getInstance().putWifiScanResultSecurity(str, scanListMap[str])
@@ -370,7 +371,7 @@ class CTWifiListActivity : CTDeviceDiscoveryActivity(), BLEServiceToApplicationI
     }
     private fun initiateJob() {
         taskJob = lifecycleScope.launch(Dispatchers.IO) {
-            delay(6000)
+            delay(60000)
             runOnUiThread {
                 dismissDialog()
               //  showSomethingWentWrongAlert(this@CTWifiListActivity)

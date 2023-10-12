@@ -77,7 +77,7 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
     private String fwInternetUpgradeMessage = "";
     private AppCompatImageView setupProgressImage;
     private boolean mb223TimerRunning;
-    public static final long OOPS_TIMEOUT = 45*1000;
+    public static final long OOPS_TIMEOUT = 60000; //45*1000;
     public static final String TAG = CTConnectingToMainNetwork.class.getSimpleName();
 
     @Override
@@ -178,13 +178,13 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
                 case Constants.TIMEOUT_FOR_SEARCHING_DEVICE:
                 case Constants.CONNECTED_TO_MAIN_SSID_FAIL:
                 case Constants.FW_UPGRADE_REBOOT_TIMER:
-                    LibreLogger.d(TAG,"mHandler TIMEOUT_FOR_SEARCHING_DEVICE||FW_UPGRADE_REBOOT_TIMER");
+                    LibreLogger.d(TAG_BLE,"mHandler TIMEOUT_FOR_SEARCHING_DEVICE||FW_UPGRADE_REBOOT_TIMER");
                     closeProgressDialog();
                     openOOPSScreen();
                     break;
 
                 case Constants.CONFIGURED_DEVICE_FOUND:
-                    LibreLogger.d(TAG,"mHandler CONFIGURED_DEVICE_FOUND");
+                    LibreLogger.d(TAG_BLE,"mHandler CONFIGURED_DEVICE_FOUND");
                     closeProgressDialog();
                     goToNextScreen();
                     break;
@@ -207,7 +207,7 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
                     readAlexaToken(mSACConfiguredIpAddress);
                     break;
                 case FW_FAILED:
-                    LibreLogger.d(TAG_FW_UPDATE, "FW_UPGRADE_INTERNET FW_FAILED ");
+                    LibreLogger.d(TAG_BLE, "FW_UPGRADE_INTERNET FW_FAILED ");
                     goToNextScreen();
             }
         }

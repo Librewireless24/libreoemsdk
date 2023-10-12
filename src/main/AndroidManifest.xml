@@ -30,7 +30,6 @@
       android:screenOrientation="portrait" />
     <activity
       android:exported="false"
-      android:launchMode="singleInstance"
       android:name="com.cumulations.libreV2.activity.oem.CastToSActivity"
       android:screenOrientation="portrait" />
     <activity
