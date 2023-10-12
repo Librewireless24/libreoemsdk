@@ -32,7 +32,7 @@ public class Constants {
     public static int PERMISSIONS_REQUEST_CODE_ACCESS_COARSE_LOCATION = 0x1001;
 
     public static final int CONNECTED_TO_MAIN_SSID_FAIL = 0x1234;
-    public static final int CONNECTED_TO_MAIN_SSID_SUCCESS = 0x1333;
+    public static final int CONNECTED_TO_MAIN_SSID_SUCCESS = 0x1333; //Decimal - 4915
 
     public static final int INITIATED_TO_FETCH_GCASTVERSION = 0x1555;
     public static final int FAIL_TO_FETCH_GCASTVERSION=0x1556;
@@ -52,15 +52,15 @@ public class Constants {
 
     public static final int RETRY_COUNT_FOR_DEVICE_NAME = 10;
 
-    /*Error case constants */
+    /*Error case constants  hex Decimal*/
     public static final int PREPARATION_INITIATED = 0x1334;
     public static final int PREPARATION_COMPLETED = 0x1335;
     public static final int PREPARATION_TIMEOUT_CONST = 0x1336;
 
-    public static final int SEARCHING_FOR_DEVICE = 0x1337;
+    public static final int SEARCHING_FOR_DEVICE = 0x1337; // Decimal -4919
     public static final int CONFIGURED_DEVICE_FOUND = 0x1338;
     public static final int CONNECTED_TO_DIFFERENT_SSID = 0x1339;
-    public static final int TIMEOUT_FOR_SEARCHING_DEVICE = 0x1340;
+    public static final int TIMEOUT_FOR_SEARCHING_DEVICE = 0x1340; // Decimal - 4928
     public static final int CHECK_ALIVE = 0x6789;
 
     /* 10 Minutes Timeout For Downloading and Upgrading the Firmware Update */

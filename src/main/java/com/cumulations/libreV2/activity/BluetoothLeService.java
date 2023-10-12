@@ -3,6 +3,7 @@ package com.cumulations.libreV2.activity;
 import static android.bluetooth.BluetoothGattDescriptor.ENABLE_INDICATION_VALUE;
 import static android.bluetooth.BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE;
 import static com.cumulations.libreV2.activity.CTBluetoothPassCredentials.TAG_SCAN;
+import static com.cumulations.libreV2.activity.CTDeviceDiscoveryActivity.TAG_BLE;
 import static com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEGattAttributes.MTU_SIZE;
 import static com.libreAlexa.LibreApplication.betweenDisconnectedCount;
 import static com.libreAlexa.LibreApplication.disconnectedCount;
@@ -182,7 +183,7 @@ public class BluetoothLeService extends Service {
         @Override
         public void onCharacteristicRead(BluetoothGatt gatt,
                                          BluetoothGattCharacteristic characteristic, int status) {
-            LibreLogger.d(TAG, "onCharacteristicRead received: " + status);
+            LibreLogger.d(TAG_BLE, "onCharacteristicRead received: " + status);
             if (status == 133) {
                 // connectGatt(mBluetoothDeviceAddress);
             }
@@ -194,7 +195,24 @@ public class BluetoothLeService extends Service {
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt,
                                             BluetoothGattCharacteristic characteristic) {
-            LibreLogger.d(TAG, "onCharacteristicChanged received");
+            LibreLogger.d(TAG_BLE, "onCharacteristicChanged received ");
+            /**
+             * The Below the is to check the packet lose as we requested BLE developer help
+             * we have to debug with him, the below code may help on that time
+             * As of now we are not doing anything with the below code
+             */
+            /*// Check for packet loss.
+            byte[] previousValue = characteristic.getValue();
+            if (previousValue != null) {
+                byte[] currentValue = characteristic.getValue();
+                if (currentValue != null && currentValue != previousValue) {
+                    // A packet was received.
+                    LibreLogger.d(TAG_BLE,"A packet was received.");
+                } else {
+                    // A packet was lost.
+                    LibreLogger.d(TAG_BLE,"A packet was lost");
+                }
+            }*/
             readCounterCharacteristic(characteristic);
         }
 
@@ -219,12 +237,13 @@ public class BluetoothLeService extends Service {
 
                 BLEPacket mPacket = new BLEPacket();
                 BLEPacket.BLEDataPacket mDataPacket = mPacket.createBlePacketFromMessage(value);
-                LibreLogger.d(TAG, "Received BLE data" + "Value received:  " + value.length +
+                LibreLogger.d(TAG_BLE, "Received BLE data" + "Value received:  " + value.length +
                         " String Received msg " + bytesToHex(value) +
                         " BLE Command received " + mDataPacket.getCommand());
                 fireOnBLEreceivedBLEDataPacket(mDataPacket);
             } catch (Exception e) {
                 e.printStackTrace();
+                LibreLogger.d(TAG_BLE,"Exception: "+e.getMessage());
             }
         }
     };

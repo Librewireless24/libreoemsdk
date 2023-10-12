@@ -543,7 +543,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
     }
 
     fun showSomethingWentWrongAlert(context: Context) {
-        LibreLogger.d(TAG_FW_UPDATE,"class name ${context::class.java.simpleName}")
+        LibreLogger.d(TAG_BLE,"class name ${context::class.java.simpleName}")
         try {
             if (alertDialog1 != null && alertDialog1!!.isShowing) alertDialog1!!.dismiss()
             val builder = AlertDialog.Builder(context)
