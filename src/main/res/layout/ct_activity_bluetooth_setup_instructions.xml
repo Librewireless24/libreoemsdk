@@ -22,14 +22,14 @@
                 android:layout_height="match_parent">
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_marginLeft="?android:attr/actionBarSize"
-                    android:layout_marginRight="?android:attr/actionBarSize"
-                    android:text="@string/bluetooth_hd"
-                    android:textColor="@color/white"
-                    android:textSize="20sp" />
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_marginLeft="?android:attr/actionBarSize"
+                  android:layout_marginRight="?android:attr/actionBarSize"
+                  android:layout_centerInParent="true"
+                  android:text="@string/app_name"
+                  android:textColor="@color/white"
+                  android:textSize="20sp" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/iv_back"
@@ -44,58 +44,51 @@
 
     <LinearLayout
         android:paddingBottom="?android:attr/actionBarSize"
-        android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:layout_marginTop="?android:attr/actionBarSize"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-        <androidx.appcompat.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatTextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_horizontal"
+          android:gravity="center"
+          android:textSize="@dimen/dimen_20"
+          android:text="@string/turn_on_bluetooth"
+          android:textColor="@color/white" />
+
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:paddingLeft="24dp"
-            android:paddingTop="2dp"
-            android:scaleType="fitCenter"
-            app:srcCompat="@drawable/bluetooth_icon" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="28dp"
-            android:layout_marginRight="16dp"
-            android:gravity="center"
-            android:paddingTop="24dp"
-            android:text="@string/bt_setup_instructions"
+            android:layout_marginHorizontal="20dp"
+            android:lineSpacingExtra="6sp"
+            android:gravity="center_horizontal"
+            android:layout_marginVertical="@dimen/dimen_16"
+            android:text="@string/bluetooth_access"
             android:textColor="@color/app_text_color_disabled" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginRight="16dp"
-            android:gravity="center"
-            android:text="@string/bt_setup_instructions_on"
-            android:textColor="@color/app_text_color_disabled" />
+        <androidx.appcompat.widget.AppCompatImageView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginVertical="60dp"
+          app:srcCompat="@drawable/bluetooth_icon" />
 
         <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/btn_other_option"
+            android:id="@+id/btn_turn_on_bt"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_height="50dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="64dp"
             android:layout_marginBottom="16dp"
             android:background="@drawable/app_btn_selector"
             android:enabled="true"
             android:minWidth="200dp"
-            android:text="@string/other_opt"
+            android:text="@string/turn_on"
+            android:gravity="center"
+            android:visibility="visible"
             android:textAllCaps="false"
-            android:visibility="gone"
             android:textColor="@color/white"
-            android:textSize="14sp" />
+            android:textSize="@dimen/dimen_16" />
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

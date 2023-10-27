@@ -306,7 +306,6 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
         binding.tvDeviceName.text = lssdpNodes?.friendlyname
         binding.tvDeviceName.isSelected = true
         mediaSourcesList.clear()
-        //Shaik Dynamic source list
         if (lssdpNodes?.getmDeviceCap() != null && lssdpNodes.getmDeviceCap().getmSource() != null) {
             for (i in lssdpNodes.getmDeviceCap().getmSource().capitalCities) {
                 if (i.value == true) {
@@ -358,7 +357,9 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
         val ssid = AppUtils.getConnectedSSID(this)
         if (ssid != null && !isConnectedToSAMode(ssid)) {
             binding.ivAlexaSettings.visibility = View.VISIBLE
-            if (lssdpNodes?.alexaRefreshToken.isNullOrEmpty()|| lssdpNodes?.alexaRefreshToken == "0" && !SharedPreferenceHelper(this).isAlexaLoginAlertDontAskChecked(currentIpAddress!!)){
+            if (lssdpNodes?.alexaRefreshToken.isNullOrEmpty()|| lssdpNodes?.alexaRefreshToken ==
+                "0" && !SharedPreferenceHelper.getInstance(this).isAlexaLoginAlertDontAskChecked
+                    (currentIpAddress!!)){
 
                 if (lssdpNodes.getmDeviceCap().getmSource().isAlexaAvsSource()) {
                     showAlexaLoginAlert()
@@ -379,7 +380,7 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
             //val checkBoxView = View.inflate(this@CTMediaSourcesActivity,R.layout.alert_checkbox,null)
             val binding = AlertCheckboxBinding.inflate(layoutInflater)
             binding.cbDont.setOnCheckedChangeListener { compoundButton, b ->
-                val sharedPreferenceHelper = SharedPreferenceHelper(this@CTMediaSourcesActivity)
+                val sharedPreferenceHelper = SharedPreferenceHelper.getInstance(this@CTMediaSourcesActivity)
                 if (/*compoundButton.isPressed && */b){
                     sharedPreferenceHelper.alexaLoginAlertDontAsk(currentIpAddress!!,dontAsk = true)
                 } else {
@@ -1031,9 +1032,7 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
     private fun openGhome() {
         val gHomeIntent = packageManager.getLaunchIntentForPackage("com.google.android.apps.chromecast.app")
         if (gHomeIntent != null) {
-            val uri = Uri.parse("https://madeby.google.com/home-app/?deeplink=DEVICE_SETUP")
-            val intentOpenGHome = Intent(Intent.ACTION_VIEW, uri)
-            startActivity(intentOpenGHome)
+            startActivity(gHomeIntent)
         } else {
             showAppNotInstalledAlertDialog()
         }

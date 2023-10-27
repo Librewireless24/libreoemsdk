@@ -636,7 +636,6 @@ class CTNowPlayingActivity : CTDeviceDiscoveryActivity(), View.OnClickListener,
                         setViews()
                         LibreLogger.d("====","else setViews called")
                     }
-                //Shaik Mute & UnMute Change
                 R.id.iv_volume_down -> {
                     if (currentSceneObject != null && currentSceneObject?.mute_status!=null) {
                         if (currentSceneObject?.mute_status == LUCIMESSAGES.UNMUTE) {
@@ -1367,10 +1366,10 @@ override fun messageRecieved(nettyData: NettyData) {
                     LibreLogger.d(TAG, "Invalidated the URL $album_url Status $mInvalidated")
                 }
 
-                /*PicassoTrustCertificates.getInstance(this)
+                PicassoTrustCertificates.getInstance(this)
                         .load(album_url)
                         .error(R.mipmap.album_art).placeholder(R.mipmap.album_art)
-                        .into(binding.ivAlbumArt)*/
+                        .into(binding.ivAlbumArt)
 
                 /*Blurred Album art*/
                 PicassoTrustCertificates.getInstance(this)
@@ -1500,7 +1499,6 @@ override fun messageRecieved(nettyData: NettyData) {
             updatePlayPauseNextPrevForCurrentSource(currentSceneObject)
     }
 
-    //Shaik Bt change
     private fun updatePlayPauseNextPrevForCurrentSource(sceneObject: SceneObject?) {
         if (sceneObject?.currentSource == VTUNER_SOURCE
                 || sceneObject?.currentSource == TUNEIN_SOURCE

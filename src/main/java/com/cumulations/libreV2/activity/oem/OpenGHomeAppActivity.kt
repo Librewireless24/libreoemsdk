@@ -71,9 +71,7 @@ class OpenGHomeAppActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteraction
         binding.btnOpenHomeApp.setOnClickListener {
             val gHomeIntent = packageManager.getLaunchIntentForPackage("com.google.android.apps.chromecast.app")
             if (gHomeIntent != null) {
-                val uri = Uri.parse("https://madeby.google.com/home-app/?deeplink=DEVICE_SETUP")
-                val intentOpenGHome = Intent(Intent.ACTION_VIEW, uri)
-                startActivity(intentOpenGHome)
+                startActivity(gHomeIntent)
                 isHomeAppOpen = true
             } else {
                 showAppNotInstalledAlertDialog()

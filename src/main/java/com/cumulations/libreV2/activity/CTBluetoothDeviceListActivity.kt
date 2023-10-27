@@ -6,9 +6,9 @@ import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.Manifest.permission.BLUETOOTH_CONNECT
 import android.Manifest.permission.BLUETOOTH_SCAN
 import android.app.AlertDialog
+import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGattCharacteristic
-import android.bluetooth.BluetoothManager
 import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
@@ -25,11 +25,9 @@ import android.os.IBinder
 import android.os.Looper
 import android.provider.Settings
 import android.view.View
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.cumulations.libreV2.AppUtils
 import com.cumulations.libreV2.SharedPreferenceHelper
 import com.cumulations.libreV2.activity.BluetoothLeService.LocalBinder
 import com.cumulations.libreV2.adapter.CTBLEDeviceListAdapter
@@ -39,16 +37,19 @@ import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEPacket.BLEDataPack
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEServiceToApplicationInterface
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEUtils
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BleCommunication
+import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BluetoothStateReceiver
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.ScannerBLE
 import com.libreAlexa.LibreApplication
 import com.libreAlexa.R
 import com.libreAlexa.constants.AppConstants
+import com.libreAlexa.constants.AppConstants.OPEN_APP_SETTINGS
 import com.libreAlexa.constants.Constants
 import com.libreAlexa.databinding.ActivityCtbluetoothDeviceListBinding
 import com.libreAlexa.util.LibreLogger
 
 /**
  * This activity is converted from java to kotlin
+ * Shaik
  */
 
 class CTBluetoothDeviceListActivity : CTDeviceDiscoveryActivity(), BLEServiceToApplicationInterface,
@@ -66,12 +67,12 @@ class CTBluetoothDeviceListActivity : CTDeviceDiscoveryActivity(), BLEServiceToA
     private var alertDialog: AlertDialog? = null
     private var mDeviceClicked: BLEDevice? = null
     private var mDeviceAddress = ""
+    private var bluetoothStateReceiver: BluetoothStateReceiver? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityCtbluetoothDeviceListBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        sharedPreference = SharedPreferenceHelper(this)
-
+        sharedPreference = SharedPreferenceHelper.getInstance(this)
         mBTLeScanner = ScannerBLE(this, 7000, -100)
         mBleCommunication = BleCommunication(this)
         binding.ivRefresh.setOnClickListener {
@@ -82,6 +83,9 @@ class CTBluetoothDeviceListActivity : CTDeviceDiscoveryActivity(), BLEServiceToA
         }
         binding.ivBack.setOnClickListener {
             intentToHome(this@CTBluetoothDeviceListActivity)
+        }
+        binding.btnTurnOnBt.setOnClickListener {
+            startScan()
         }
         mBleDevices = ArrayList()
         mBLEListAdapter = CTBLEDeviceListAdapter(this, R.layout.ct_bledevice_adapter, mBleDevices)
@@ -98,6 +102,11 @@ class CTBluetoothDeviceListActivity : CTDeviceDiscoveryActivity(), BLEServiceToA
         }
         val gattServiceIntent = Intent(this, BluetoothLeService::class.java)
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE)
+        bluetoothStateReceiver= BluetoothStateReceiver(this)
+        val filter = IntentFilter()
+        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED)
+        registerReceiver(bluetoothStateReceiver,filter)
+
     }
 
     override fun onDestroy() {
@@ -167,28 +176,39 @@ class CTBluetoothDeviceListActivity : CTDeviceDiscoveryActivity(), BLEServiceToA
      * trigger
      */
     fun startScan() {
-        val bluetoothManager = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager?
-        val mBluetoothAdapter = bluetoothManager!!.adapter
-        if (!BLEUtils.checkBluetooth(mBluetoothAdapter)) {
-            requestUserBluetooth(this)
-            LibreLogger.d(TAG_BLE,"BT Not Enabled")
+        binding.noBleDeviceFrameLayout.visibility = View.GONE
+        binding.layDeviceCount.visibility = View.GONE
+        binding.ivBledevicelist.visibility = View.GONE
+        binding.layNoBtOn.visibility = View.GONE
+        if (!BLEUtils.checkBluetooth(this@CTBluetoothDeviceListActivity)) {
+            promptBluetoothEnable()
         }else {
-            LibreLogger.d(TAG_BLE,"BT Enabled")
             mBleDevices.clear()
             mBTDevicesHashMap.clear()
             mBLEListAdapter!!.notifyDataSetChanged()
-            binding.noBleDeviceFrameLayout.visibility = View.GONE
-            binding.layDeviceCount.visibility = View.GONE
-            binding.ivBledevicelist.visibility = View.GONE
+            binding.layTurnOnBt.visibility=View.VISIBLE
+            binding.ivRefresh.visibility=View.VISIBLE
+            binding.layNoBtOn.visibility=View.GONE
             showProgressDialog(getString(R.string.looking_for_devices))
-            mBTLeScanner!!.start()
+            if (mBTLeScanner != null) {
+                mBTLeScanner?.start(this@CTBluetoothDeviceListActivity)
+            } else {
+                mBTLeScanner = ScannerBLE(this, 7000, -100)
+                mBTLeScanner?.start(this@CTBluetoothDeviceListActivity)
+            }
             handler.postDelayed(showWifiConfigurationScreen, TIMEOUT_WIFI.toLong())
         }
     }
 
+
+
     fun stopScan() {
         dismissDialog()
-        mBTLeScanner!!.stop()
+        if (BLEUtils.checkBluetooth(this@CTBluetoothDeviceListActivity)) {
+            mBTLeScanner!!.stop()
+        } else {
+           LibreLogger.d(TAG,"Bluetooth is not enabled")
+        }
         if (mBleDevices.size == 0) {
             binding.noBleDeviceFrameLayout.visibility = View.VISIBLE
             binding.layDeviceCount.visibility = View.GONE
@@ -209,6 +229,7 @@ class CTBluetoothDeviceListActivity : CTDeviceDiscoveryActivity(), BLEServiceToA
         unbindService(mServiceConnection)
         stopScan()
         mBluetoothLeService?.removelistener(this)
+        unregisterReceiver(bluetoothStateReceiver)
     }
 
     fun isRivaSpeaker(device: BluetoothDevice): Boolean {
@@ -291,8 +312,6 @@ class CTBluetoothDeviceListActivity : CTDeviceDiscoveryActivity(), BLEServiceToA
     }
 
     override fun onConnectionSuccess(btGattChar: BluetoothGattCharacteristic) {
-        LibreLogger.d(TAG, "onConnectionSuccess")
-        val data = ByteArray(0)
         mBluetoothLeService!!.removelistener(this)
         callConnectToWifiActivityPage()
     }
@@ -319,7 +338,8 @@ class CTBluetoothDeviceListActivity : CTDeviceDiscoveryActivity(), BLEServiceToA
     private var blPlayToneButtonClicked = false
     override fun onInterfaceClick(view: View, position: Int) {
         val id = view.id
-        if (id == R.id.btnPlayTone) {/* runOnUiThread(new Runnable() {
+        if (id == R.id.btnPlayTone) {
+        /* runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         showProgressDialog(getString(R.string.play_tone_request));
@@ -330,19 +350,28 @@ class CTBluetoothDeviceListActivity : CTDeviceDiscoveryActivity(), BLEServiceToA
              //   mBluetoothLeService.connect(mBleDevices.get(position).getAddress());
                 //BLE_SAC_MODE_SOFTAP_CONNECTED*/
         } else if (id == R.id.tv_bledevice_layout) {
-            if (blPlayToneButtonClicked) {
-                return
+            if(BLEUtils.checkBluetooth(this@CTBluetoothDeviceListActivity)) {
+                if (blPlayToneButtonClicked) {
+                    return
+                }
+                mDeviceClicked = mBleDevices[position]
+                if (VERSION.SDK_INT >= VERSION_CODES.M) {
+                    mBluetoothLeService!!.connect(mDeviceClicked!!.address)
+                }
+                mDeviceAddress = mDeviceClicked!!.address
+                runOnUiThread {
+                    showProgressDialog(getString(R.string.get_connecting) + " " + mDeviceClicked!!.name)
+                    handler.postDelayed(runnable, 12000)
+                }
+            }else{
+                promptBluetoothEnable()
             }
-            mDeviceClicked = mBleDevices[position]
-            if (VERSION.SDK_INT >= VERSION_CODES.M) {
-                mBluetoothLeService!!.connect(mDeviceClicked!!.address)
-            }
-            mDeviceAddress = mDeviceClicked!!.address
-            runOnUiThread {
-                showProgressDialog(getString(R.string.get_connecting))
-                handler.postDelayed(runnable, 12000)
-            }
+
         }
+    }
+    private fun promptBluetoothEnable() {
+        val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+        customStartActivityForResult(AppConstants.BT_ENABLED_REQUEST_CODE, enableBtIntent)
     }
 
     companion object {
@@ -353,7 +382,7 @@ class CTBluetoothDeviceListActivity : CTDeviceDiscoveryActivity(), BLEServiceToA
             BLUETOOTH_CONNECT)
     }
 
-    private fun checkPermissions() {
+     private fun checkPermissions() {
         if (!checkPermissionsGranted()) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, BLUETOOTH_SCAN)) {
                 /**
@@ -365,13 +394,12 @@ class CTBluetoothDeviceListActivity : CTDeviceDiscoveryActivity(), BLEServiceToA
                  *  Request the permission directly, without explanation first time launch
                  */
                 requestPermissionLauncher.launch(permissions)
-
             }
         } else {
             /**
              *  Permission is already granted, proceed with your logic
              */
-            if (alertDialog != null && !alertDialog!!.isShowing) alertDialog?.dismiss()
+            if (alertDialog != null && alertDialog!!.isShowing) alertDialog?.dismiss()
             handler.removeCallbacks(showWifiConfigurationScreen)
             startScan()
         }
@@ -396,7 +424,7 @@ class CTBluetoothDeviceListActivity : CTDeviceDiscoveryActivity(), BLEServiceToA
             allGranted = allGranted && isGranted
         }
         if (allGranted) {
-            if (alertDialog != null && !alertDialog!!.isShowing) alertDialog?.dismiss()
+            if (alertDialog != null && alertDialog!!.isShowing) alertDialog?.dismiss()
             handler.removeCallbacks(showWifiConfigurationScreen)
             startScan()
         } else {
@@ -437,7 +465,8 @@ class CTBluetoothDeviceListActivity : CTDeviceDiscoveryActivity(), BLEServiceToA
                     val packageName = packageName
                     val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                     intent.data = Uri.fromParts("package", packageName, null)
-                    openSettingsLauncher.launch(intent)
+                  //  openSettingsLauncher.launch(intent)
+                    customStartActivityForResult(OPEN_APP_SETTINGS,intent)
                 }
             }
             /**
@@ -452,16 +481,71 @@ class CTBluetoothDeviceListActivity : CTDeviceDiscoveryActivity(), BLEServiceToA
         if (!alertDialog!!.isShowing) alertDialog!!.show()
 
     }
+//    private fun requestUserBluetooth():Boolean {
+//        LibreLogger.d("===SHAIK===", "7")
+//        val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+//        customStartActivityForResult(AppConstants.BT_ENABLED_REQUEST_CODE, enableBtIntent)
+//    /*  return if (!isBTPermissionAsked) {
+//            isBTPermissionAsked = true
+//            LibreLogger.d(TAG,"requestUserBluetooth trigger")
+//            LibreLogger.d("===SHAIK===","7")
+//            val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+//            customStartActivityForResult(AppConstants.BT_ENABLED_REQUEST_CODE, enableBtIntent)
+//            true
+//        } else {
+//            LibreLogger.d("===SHAIK===","8")
+//            LibreLogger.d(TAG,"requestUserBluetooth trigger ELSE")
+//            isBTPermissionAsked=false
+//            false
+//        }*/
+//    }
 
-    private val openSettingsLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == RESULT_OK) {
-            /** The user may have granted the permission in settings
-             *  You can check again if the permission is granted here
+    override fun customOnActivityResult(data: Intent?, requestCode: Int, resultCode: Int) {
+        super.customOnActivityResult(data, requestCode, resultCode)
+        if (requestCode == OPEN_APP_SETTINGS) {
+            if(resultCode == RESULT_OK) {
+                /** The user may have granted the permission in settings
+                 *  You can check again if the permission is granted here
+                 */
+                if (alertDialog != null && alertDialog!!.isShowing) alertDialog?.dismiss()
+                handler.removeCallbacks(showWifiConfigurationScreen)
+                startScan()
+            }
+
+        }else if (requestCode == AppConstants.BT_ENABLED_REQUEST_CODE) {
+            /**
+             * The Below Source Code will take the user to BT Settings screen, now default BT
+             * Enable Alert Box is triggering so we don't need to call the below intent and
+             * as well as don't need to handle the result also
+             * Note:- Most of the BLE Apps and smart watch apps are doing same
              */
+            if (resultCode == RESULT_OK) {
+                binding.layTurnOnBt.visibility = View.VISIBLE
+                binding.layNoBtOn.visibility = View.GONE
+                binding.ivRefresh.visibility = View.VISIBLE
+                startScan()
+            } else {
+                binding.layNoBtOn.visibility = View.VISIBLE
+                binding.layTurnOnBt.visibility = View.GONE
+                binding.ivRefresh.visibility = View.GONE
+            }
+            /* val intentOpenBluetoothSettings = Intent()
+                intentOpenBluetoothSettings.action = Settings.ACTION_BLUETOOTH_SETTINGS
+                startActivity(intentOpenBluetoothSettings)*/
+        }else{
+            LibreLogger.d(TAG, "RequestCode are not handled")
+        }
+    }
+    //Commented by SHAIK,once QA confirmed we can remove this code
+    /*private val openSettingsLauncher: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == RESULT_OK) {
+            *//** The user may have granted the permission in settings
+             *  You can check again if the permission is granted here
+             *//*
             if (alertDialog != null && !alertDialog!!.isShowing) alertDialog?.dismiss()
             handler.removeCallbacks(showWifiConfigurationScreen)
             startScan()
         }
-    }
+    }*/
 
 }

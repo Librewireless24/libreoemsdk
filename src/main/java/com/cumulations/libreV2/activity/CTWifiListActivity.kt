@@ -134,6 +134,7 @@ class CTWifiListActivity : CTDeviceDiscoveryActivity(), BLEServiceToApplicationI
             filteredScanResults?.clear()
             wifiListAdapter?.scanResultList?.clear()
             wifiListAdapter?.notifyDataSetChanged()
+            binding.tvNoData.visibility = View.GONE
             initBluetoothAdapterAndListener()
             runOnUiThread {
                 if ((this@CTWifiListActivity).isFinishing) {

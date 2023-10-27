@@ -47,7 +47,6 @@ public class AudioRecordUtil {
         try {
             minAudioBufferSize = AudioRecord.getMinBufferSize(RECORDER_SAMPLERATE,
                 RECORDER_CHANNELS, RECORDER_AUDIO_ENCODING);
-                //Shaik to be added
           /*  *//*for voice only*//*
             if (ActivityCompat.checkSelfPermission(, permission.RECORD_AUDIO)
                 != PackageManager.PERMISSION_GRANTED) {

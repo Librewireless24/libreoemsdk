@@ -11,6 +11,8 @@ object AppConstants{
     const val LOCATION_PERM_SETTINGS_REQUEST_CODE = 1225
     const val READ_STORAGE_REQUEST_CODE = 1226
     const val STORAGE_PERM_SETTINGS_REQUEST_CODE = 1227
+    const val OPEN_APP_SETTINGS = 1400
+    const val NFC_PERMISSION = 1401
 
     const val DEVICES_FOUND = 412
     const val TIME_EXPIRED = 413

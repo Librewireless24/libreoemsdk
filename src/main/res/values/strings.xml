@@ -409,6 +409,9 @@ By clicking Confirm, Device will be removed and you will be redirected to Home. 
   <string name="submit">Submit</string>
   <string name="less_than_5_minutes">Less Than 5 Minutes Ago</string>
   <string name="descriptionNameEmpty">Description cannot be an empty</string>
+  <string name="turn_on">Turn on</string>
+  <string name="turn_on_bluetooth">Turn on Bluetooth</string>
+  <string name="bluetooth_access">Bluetooth access is needed to improve the connection to your device, determine your location during setup, and discover and setup nearby devices. You can turn it back off when you\'re done with setup.</string>
 
 
   <string name="hello_blank_fragment">Hello blank fragment</string>

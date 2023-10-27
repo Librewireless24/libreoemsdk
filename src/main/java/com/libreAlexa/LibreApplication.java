@@ -8,7 +8,7 @@ package com.libreAlexa;
  * Author: Subhajeet Roy
  ***********************************************************************************************/
 
-import static com.cumulations.libreV2.activity.CTDeviceDiscoveryActivity.TAG_SECUREROOM;
+
 
 import android.app.Activity;
 import android.app.Application;
@@ -28,6 +28,7 @@ import android.util.Log;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.AppLaunchChecker;
 
+import androidx.multidex.BuildConfig;
 import androidx.multidex.MultiDex;
 import com.cumulations.libreV2.AppUtils;
 import com.cumulations.libreV2.receiver.GpsStateReceiver;

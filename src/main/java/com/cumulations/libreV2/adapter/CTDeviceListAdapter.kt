@@ -169,13 +169,15 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
                     }
 
                     val lsdpNodes = LSSDPNodeDB.getInstance().getTheNodeBasedOnTheIpAddress(sceneObject.ipAddress)
-                    LibreLogger.d(TAG,"Is SecureDevice IP:- "+lsdpNodes.secureIpaddress)
-                    LibreLogger.d(TAG,"Is Avs Source:- "+lsdpNodes.getmDeviceCap().getmSource().isAlexaAvsSource)
-                    if(lsdpNodes.getmDeviceCap().getmSource().isAlexaAvsSource){
+                    /**
+                     * Commented because Ramya & Sathish confirmed no need to show any icon in the
+                     * discovery screen
+                     */
+                    /*if(lsdpNodes.getmDeviceCap().getmSource().isAlexaAvsSource){
                         itemBinding.ilMusicPlayingWidget.ibAlexaAvsBtn.visibility=View.VISIBLE
                     }else{
                         itemBinding.ilMusicPlayingWidget.ibAlexaAvsBtn.visibility=View.GONE
-                    }
+                    }*/
 
                     /* Setting the current seekbar progress -Start*/
                     val duration = sceneObject.currentPlaybackSeekPosition
@@ -704,8 +706,6 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
         }
 
     }
-
-
 
 
     private fun gotoSourcesOption(ipaddress: String, currentSource: Int) {

@@ -88,7 +88,8 @@ public class UpnpDeviceManager implements UpnpProcessor.UpnpProcessorListener {
         }
 
         try {
-            if (device.getDetails().getBaseURL().getHost() != null) {
+            if (device.getDetails().getBaseURL()!=null
+             && device.getDetails().getBaseURL().getHost() != null) {
                 remoteRemoved.remove(device.getDetails().getBaseURL().getHost());
             }
         } catch (Exception e) {

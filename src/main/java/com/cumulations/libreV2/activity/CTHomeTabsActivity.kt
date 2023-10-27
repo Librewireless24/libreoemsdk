@@ -137,7 +137,6 @@ class CTHomeTabsActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractionLis
                     //Checking Location Permission before going to Setup Screen
                     val fineLocationPermission=AppUtils.isPermissionGranted(this, Manifest.permission.ACCESS_FINE_LOCATION)
                         if(fineLocationPermission) {
-                            LibreLogger.d(TAG_BLE,"CTHome Location  Granted")
                             val intent = Intent(this, CTBluetoothDeviceListActivity::class.java)
                             startActivity(intent)
                             finish()
@@ -154,7 +153,6 @@ class CTHomeTabsActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractionLis
                                 finish()
                             }*/
                         }else{
-                            LibreLogger.d(TAG_BLE,"CTHome Location Not Granted")
                             checkLocationPermission()
                         }
 

@@ -4,10 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.cumulations.libreV2.activity.CTDeviceDiscoveryActivity.Companion.TAG_SECUREROOM
 import com.libreAlexa.LibreApplication
 import com.libreAlexa.LibreEntryPoint
-import com.libreAlexa.util.LibreLogger
 import net.sqlcipher.database.SQLiteDatabase
 import net.sqlcipher.database.SQLiteDatabaseHook
 import net.sqlcipher.database.SupportFactory
@@ -43,8 +41,7 @@ abstract class LibreVoiceDatabase : RoomDatabase() {
             /** SECURING THE DATABASE STARTS */
             val encryptedPasskey = LibreEntryPoint().getKey()
           /*  val encryptedPasskey = "Libre"*/
-            LibreLogger.d(TAG_SECUREROOM, "buildDatabase called encryptedPasskey $encryptedPasskey")
-            val builder = Room.databaseBuilder(context.applicationContext, LibreVoiceDatabase::class.java, "libre_voice_database.db")
+            val builder = Room.databaseBuilder(context, LibreVoiceDatabase::class.java, "libre_voice_database.db")
             val factory = SupportFactory(SQLiteDatabase.getBytes(encryptedPasskey?.toCharArray()),null,false)
             builder.openHelperFactory(factory)
             builder.fallbackToDestructiveMigration()

@@ -132,7 +132,11 @@ public class LUCIMESSAGES {
     public static final String BRAND  = "brand";
     public static final String MODEL  = "model";
     public static final String APP_VERSION  = "app_version";
+    public static final String VERSION  = "version";
     public static final String DATE_TIME  = "date_time";
+    public static final String PHONE_MODEL  = "phone_model";
+    public static final String WIFI_IP_ADDRESS  = "ip";
+    public static final String PHONE_OS_VERSION  = "phone_os_version";
 
     /*response for cast client SET request is {"action":"accepted","device_uuid":"f1ae28a2-5b97-4443-8a9f-3b6eb94ee321","id":"tos","status":"success","status_msg":"Request approved successfully!"}*/
 }
