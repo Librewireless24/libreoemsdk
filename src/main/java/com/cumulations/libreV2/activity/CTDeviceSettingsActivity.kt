@@ -794,7 +794,7 @@ class CTDeviceSettingsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInterac
     }
 
     override fun communicate(comm: String?) {
-        LibreLogger.d(TIMEZONE_UPDATE, "Got the data from Activity $comm")
+        LibreLogger.d(TAG, "Got the data from Activity $comm")
         binding.txtTimeZone.text = comm
     }
 }

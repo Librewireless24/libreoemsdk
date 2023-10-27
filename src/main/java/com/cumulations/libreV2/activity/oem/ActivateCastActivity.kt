@@ -111,9 +111,13 @@ class ActivateCastActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteraction
                 if (gHomeIntent != null) {
                     if (deviceTOSStatus == "activated") {
                         binding.txtSetUpVoice.isClickable = true
-                        val uri = Uri.parse("https://madeby.google.com/home-app/?deeplink=DEVICE_SETUP")
-                        val intentOpenGHome = Intent(Intent.ACTION_VIEW, uri)
-                        startActivity(intentOpenGHome)
+                        /**
+                         * Commented By Shaik because the below code will prompt like Open with
+                         * Chrome & Home App
+                         */
+                        /* val uri = Uri.parse("https://madeby.google.com/home-app/?deeplink=DEVICE_SETUP")
+                        val intentOpenGHome = Intent(Intent.ACTION_VIEW, uri)*/
+                        startActivity(gHomeIntent)
                         isHomeAppOpen = true
                     } else {
                         binding.txtSetUpVoice.isClickable = false

@@ -1041,7 +1041,7 @@
               android:layout_width="wrap_content"
               android:layout_height="45dp"
               android:paddingHorizontal="20dp"
-              android:layout_marginVertical="10dp"
+              android:layout_marginTop="30dp"
               android:textAllCaps="false"
               android:gravity="center"
               android:layout_gravity="center_horizontal"

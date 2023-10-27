@@ -243,7 +243,6 @@ public class ScanningHandler {
         String mHexString = hexString;
         LibreLogger.d(TAG, "getSource hexSrtring to String " + mHexString); //f7ffffff
         Sources mNewSources = new Sources();
-        //Shaik Source List class
         HashMap<String, Boolean> sourceList= new HashMap<>();
         BigInteger value;
         if (mHexString.startsWith("0x")) {

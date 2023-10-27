@@ -95,7 +95,7 @@ class CastToSActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionListn
         } else {
             showToast(getString(R.string.somethingWentWrong))
             intentToHome(this)
-        }/*LibreLogger.d(TAG_SECUREROOM, "onCreate:speakerIpAddress $currentIpAddress\n and DeviceName: $speakerName\n from $from\n and uuid $deviceUUID currentDeviceUUID $currentDeviceUUID")*/
+        }/*LibreLogger.d(TAG, "onCreate:speakerIpAddress $currentIpAddress\n and DeviceName: $speakerName\n from $from\n and uuid $deviceUUID currentDeviceUUID $currentDeviceUUID")*/
         val tos: String = getString(R.string.tos_accept)
         val tosString = SpannableString(tos)
         val clickableTermsSpan: ClickableSpan = object : ClickableSpan() {
@@ -138,7 +138,7 @@ class CastToSActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionListn
                 sendLuciCommand(postData.toString())
             }else{
                 handleBackPress()
-                LibreLogger.d(TAG_FW_UPDATE,"currentIpAddress or device uuid is null")
+                LibreLogger.d(TAG,"currentIpAddress or device uuid is null")
             }
 
             //Shaik If no response from device go to home screen showed to suma
@@ -308,7 +308,7 @@ class CastToSActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionListn
             delay(30000)
             runOnUiThread {
                 dismissDialog()
-                LibreLogger.d(TAG_FW_UPDATE,"initiateJob called")
+                LibreLogger.d(TAG,"initiateJob called")
                 showSomethingWentWrongAlert(this@CastToSActivity)
                 showToast("Device is not responding, Please try again")
             }

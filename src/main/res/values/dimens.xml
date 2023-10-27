@@ -20,4 +20,8 @@
   <dimen name="dimen_20">20dp</dimen>
   <dimen name="dimen_12">12dp</dimen>
   <dimen name="dimen_14">14dp</dimen>
+  <dimen name="dimen_8">14dp</dimen>
+  <dimen name="dimen_6">14dp</dimen>
+  <dimen name="dimen_4">14dp</dimen>
+  <dimen name="dimen_2">14dp</dimen>
 </resources>

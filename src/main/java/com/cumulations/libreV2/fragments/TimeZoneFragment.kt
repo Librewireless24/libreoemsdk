@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cumulations.libreV2.SendDataFragmentToActivity
-import com.cumulations.libreV2.activity.CTDeviceDiscoveryActivity.Companion.TIMEZONE_UPDATE
 import com.cumulations.libreV2.activity.CTDeviceSettingsActivity
 import com.cumulations.libreV2.adapter.TimeZoneListAdapter
 import com.cumulations.libreV2.model.TimeZoneDataClass
@@ -38,11 +37,13 @@ class TimeZoneFragment : Fragment(), TimeZoneListAdapter.SendDataToFragment{
     private lateinit var timeZoneListAdapter: TimeZoneListAdapter
     private var timeZoneData = java.util.ArrayList<TimeZoneDataClass>()
     private var sendDataFragmentToActivity: SendDataFragmentToActivity? = null
+    private val TAG = TimeZoneFragment::class.java.simpleName
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             currentIPAddress = it.getString(IPADRESS)
-            LibreLogger.d(TIMEZONE_UPDATE, "Getting the Ip from Activity $currentIPAddress")
+            LibreLogger.d(TAG, "Getting the Ip from Activity $currentIPAddress")
         }
     }
 
@@ -86,7 +87,7 @@ class TimeZoneFragment : Fragment(), TimeZoneListAdapter.SendDataToFragment{
     }
 
     override fun handleUserData(data: String) {
-        LibreLogger.d(TIMEZONE_UPDATE,"Getting user selected data from adapter $data  and IpAddress $currentIPAddress")
+        LibreLogger.d(TAG,"Getting user selected data from adapter $data  and IpAddress $currentIPAddress")
         (activity as CTDeviceSettingsActivity).showProgressDialog(R.string.pleaseWait)
         updateTimeZone(currentIPAddress,data)
         lifecycleScope.launch {
@@ -100,7 +101,7 @@ class TimeZoneFragment : Fragment(), TimeZoneListAdapter.SendDataToFragment{
 
     private fun updateTimeZone(ipAddress: String?, data: String?) {
         val control = LUCIControl(ipAddress)
-        LibreLogger.d(TIMEZONE_UPDATE,"updateTimeZone ipAddress $ipAddress and data $data")
+        LibreLogger.d(TAG,"updateTimeZone ipAddress $ipAddress and data $data")
         if (ipAddress!=null && data!= null) {
             val postData = JSONObject()
             try {
@@ -108,12 +109,12 @@ class TimeZoneFragment : Fragment(), TimeZoneListAdapter.SendDataToFragment{
                 postData.put(HOUR_FORMAT, "")
             } catch (ex: JSONException) {
                 ex.printStackTrace()
-                LibreLogger.d(TIMEZONE_UPDATE,"updateTimeZone JSONException: " + ex.message)
+                LibreLogger.d(TAG,"updateTimeZone JSONException: " + ex.message)
             }
             control.SendCommand(MIDCONST.UPDATE_TIMEZONE, postData.toString(), LSSDPCONST.LUCI_SET)
-            LibreLogger.d(TIMEZONE_UPDATE,"updateTimeZone Success $postData")
+            LibreLogger.d(TAG,"updateTimeZone Success $postData")
         } else {
-            LibreLogger.d(TIMEZONE_UPDATE,"updateTimeZone failed because Ip address and data is null")
+            LibreLogger.d(TAG,"updateTimeZone failed because Ip address and data is null")
         }
 
     }

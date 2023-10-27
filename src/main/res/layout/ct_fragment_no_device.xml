@@ -21,7 +21,7 @@
         android:layout_height="0dp"
         android:layout_weight="40"
         android:scaleType="fitCenter"
-        app:srcCompat="@drawable/no_speakers" />
+        app:srcCompat="@drawable/no_device_libre" />
 
 
     <LinearLayout

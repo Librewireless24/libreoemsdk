@@ -76,8 +76,7 @@ class CTAmazonInfoActivity : CTDeviceDiscoveryActivity(), View.OnClickListener {
     //Created By SHAIk
     private fun handleBackPress() {
         if (!from.isNullOrEmpty() && from.equals(SetUpDeviceActivity::class.java.simpleName, ignoreCase = true) || from.equals(CTAmazonLoginActivity::class.java.simpleName, ignoreCase = true)) {
-            val newIntent =
-                Intent(this@CTAmazonInfoActivity, SetUpDeviceActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            val newIntent = Intent(this@CTAmazonInfoActivity, SetUpDeviceActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             newIntent.putExtra(Constants.CURRENT_DEVICE_IP, speakerIpAddress)
             newIntent.putExtra(Constants.DEVICE_NAME, speakerNode!!.friendlyname)
             newIntent.putExtra(Constants.FROM_ACTIVITY, CTAmazonInfoActivity::class.java.simpleName)

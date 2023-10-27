@@ -27,8 +27,17 @@ import com.libreAlexa.LibreApplication.mLuciThreadInitiated
 import com.libreAlexa.Scanning.ScanThread
 import com.libreAlexa.Scanning.ScanningHandler
 import com.libreAlexa.alexa.MicExceptionListener
+import com.libreAlexa.constants.LUCIMESSAGES.APP_INFO
+import com.libreAlexa.constants.LUCIMESSAGES.ID
+import com.libreAlexa.constants.LUCIMESSAGES.PHONE_MODEL
+import com.libreAlexa.constants.LUCIMESSAGES.PHONE_OS_VERSION
+import com.libreAlexa.constants.LUCIMESSAGES.VERSION
+import com.libreAlexa.constants.LUCIMESSAGES.WIFI_IP_ADDRESS
 import com.libreAlexa.luci.LSSDPNodeDB
 import com.libreAlexa.luci.LUCIControl
+import com.libreAlexa.luci.Utils
+import com.libreAlexa.util.LibreLogger
+import org.json.JSONObject
 import java.io.IOException
 import java.io.InputStream
 import java.net.Inet4Address
@@ -42,6 +51,8 @@ class LibreEntryPoint() {
     var scanthread: Thread? = null
     var mExecuted = false
     private var micExceptionActivityListener: MicExceptionListener? = null
+    //MB 3 Changes
+    private var registerData: String? = null
 
     companion object {
         var wt: ScanThread? = null
@@ -64,7 +75,7 @@ class LibreEntryPoint() {
 
     fun init(context: Context) {
         appContext = context
-        Log.d(GLOBAL_TAG, "LibreEntryPoint Init on App Create Method Called")
+        Log.d(TAG, "LibreEntryPoint Init on App Create Method Called")
         val connection_manager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         var input: InputStream? = null
         try {
@@ -137,28 +148,28 @@ class LibreEntryPoint() {
     }
 
     fun initLUCIServices() {
-        Log.d(GLOBAL_TAG, "initLUCIServices Running:- $mLuciThreadInitiated isKeyAliasGenerated:- $isKeyAliasGenerated ")
+        Log.d(TAG, "initLUCIServices Running:- $mLuciThreadInitiated isKeyAliasGenerated:- $isKeyAliasGenerated ")
         try {
             wt = ScanThread.getInstance()
             wt!!.setmContext(appContext)
             if (!mLuciThreadInitiated) {
                 scanthread = Thread(wt)
                 scanthread!!.start()
-                // micTcpStart() //Have to this with suma
+                // micTcpStart()
                 mLuciThreadInitiated = true
             }
             if (!isKeyAliasGenerated) {
-                //  val isFirsTime = AppLaunchChecker.hasStartedFromLauncher(appContext!!)
                 val isFirsTime = AppUtils.getIsFirstTimeLaunch(appContext)
-                Log.d(GLOBAL_TAG, "IsFirstTime called $isFirsTime")
+              ///  Log.d(GLOBAL_TAG, "IsFirstTime called $isFirsTime")
                 if (!isFirsTime) {
                     generateKeyForDataStore()
                 }
             }
-            Log.d(GLOBAL_TAG, "initLUCIServices   After Setting the value  $mLuciThreadInitiated")
+            generateRegisterDataForMB3()
+            Log.d(GLOBAL_TAG, "initLUCIServices After Setting the value  $mLuciThreadInitiated")
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.d(GLOBAL_TAG, "initLUCIServices   Exception ${e.printStackTrace()}")
+            Log.d(GLOBAL_TAG, "initLUCIServices Exception ${e.printStackTrace()}")
         }
     }
 
@@ -167,7 +178,7 @@ class LibreEntryPoint() {
      */
     fun clearApplicationCollections() {
         try {
-            Log.d(GLOBAL_TAG, "LibreEntryPoint clearApplicationCollections() called with:")
+            Log.d(GLOBAL_TAG, "LibreEntryPoint clearApplicationCollections() called")
             PLAYBACK_HELPER_MAP.clear()
             INDIVIDUAL_VOLUME_MAP.clear()
             ZONE_VOLUME_MAP.clear()
@@ -212,7 +223,6 @@ class LibreEntryPoint() {
         return ip
     }
 
-    //Change 4
     fun registerForMicException(listener: MicExceptionListener) {
         micExceptionActivityListener = listener
     }
@@ -222,9 +232,8 @@ class LibreEntryPoint() {
     }
 
     private fun generateKeyForDataStore() {
-        Log.d(GLOBAL_TAG, "generateKeyForDataStore called")
-        val encodedKey: String
-        encodedKey = try {
+        Log.d(TAG, "generateKeyForDataStore called")
+        val encodedKey: String = try {
             // "AES" is the key generation algorithm, you might want to use a different one.
             val keyGen = KeyGenerator.getInstance("AES")
             // 256-bit key, you may want more or fewer bits.
@@ -240,7 +249,7 @@ class LibreEntryPoint() {
         } catch (e: NoSuchAlgorithmException) {
             throw RuntimeException(e)
         }
-        Log.d(GLOBAL_TAG, "Created Encoded key is $encodedKey")
+        Log.d(TAG, "Created Encoded key is $encodedKey")
         //Storing the key into Secure Shared pref
         providesSharedPreference(appContext!!).edit().putString("", encodedKey).apply()
         AppUtils.isFirstTimeLaunch(appContext!!, true)
@@ -253,5 +262,32 @@ class LibreEntryPoint() {
 
     fun setKey(key_alias: String?) {
         key = key_alias
+    }
+    private fun generateRegisterDataForMB3() {
+        try {
+            val packageName: String = appContext!!.packageName
+            val appVersion: String = AppUtils.getVersion(context = appContext!!)
+            val phoneModel: String = Build.MANUFACTURER + Build.MODEL
+            val wifiIpAddress: String = Utils().getIPAddress(true)
+            val phoneOsVersion: String = Build.VERSION.SDK_INT.toString()
+
+            val createAppJSON = JSONObject()
+            createAppJSON.put(ID, packageName)
+            createAppJSON.put(VERSION, appVersion)
+            createAppJSON.put(PHONE_MODEL, phoneModel)
+            createAppJSON.put(WIFI_IP_ADDRESS, wifiIpAddress)
+            createAppJSON.put(PHONE_OS_VERSION, phoneOsVersion)
+            val postData = JSONObject()
+            postData.put(APP_INFO, createAppJSON)
+            registerData = postData.toString()
+            LibreLogger.d(GLOBAL_TAG, "postData $postData")
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+        }
+
+    }
+
+    fun getRegisterMB3Data(): String? {
+        return registerData
     }
 }

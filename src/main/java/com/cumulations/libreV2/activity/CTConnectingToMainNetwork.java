@@ -178,13 +178,13 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
                 case Constants.TIMEOUT_FOR_SEARCHING_DEVICE:
                 case Constants.CONNECTED_TO_MAIN_SSID_FAIL:
                 case Constants.FW_UPGRADE_REBOOT_TIMER:
-                    LibreLogger.d(TAG_BLE,"mHandler TIMEOUT_FOR_SEARCHING_DEVICE||FW_UPGRADE_REBOOT_TIMER");
+                    LibreLogger.d(TAG,"mHandler TIMEOUT_FOR_SEARCHING_DEVICE||FW_UPGRADE_REBOOT_TIMER");
                     closeProgressDialog();
                     openOOPSScreen();
                     break;
 
                 case Constants.CONFIGURED_DEVICE_FOUND:
-                    LibreLogger.d(TAG_BLE,"mHandler CONFIGURED_DEVICE_FOUND");
+                    LibreLogger.d(TAG,"mHandler CONFIGURED_DEVICE_FOUND");
                     closeProgressDialog();
                     goToNextScreen();
                     break;
@@ -207,7 +207,7 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
                     readAlexaToken(mSACConfiguredIpAddress);
                     break;
                 case FW_FAILED:
-                    LibreLogger.d(TAG_BLE, "FW_UPGRADE_INTERNET FW_FAILED ");
+                    LibreLogger.d(TAG, "FW_UPGRADE_INTERNET FW_FAILED ");
                     goToNextScreen();
             }
         }
@@ -266,24 +266,24 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
             LibreLogger.d(TAG, "SAC Configured Device Found = " + node.getFriendlyname() +" and Node Ip "+node.getIP()+" at   "+ LibreApplication.sacDeviceNameSetFromTheApp);
             if (compareSacDeviceNameWithFriendlyName(node.getFriendlyname())) {
                 mHandler.removeMessages(Constants.TIMEOUT_FOR_SEARCHING_DEVICE);
-                LibreLogger.d(TAG_FW_UPDATE, "SAC Configured Device Found = TIMEOUT_FOR_SEARCHING_DEVICE " + node.getIP());
+                LibreLogger.d(TAG, "SAC Configured Device Found = TIMEOUT_FOR_SEARCHING_DEVICE " + node.getIP());
                 mSACConfiguredIpAddress = node.getIP();
                 //readAlexaToken(mSACConfiguredIpAddress,2);
 
                 if (fwInternetUpgradeMessage == null || fwInternetUpgradeMessage.isEmpty()) {
-                    LibreLogger.d(TAG_FW_UPDATE, "SAC Configured Device Found = Second IF " + node.getFriendlyname() + " at " + time);
+                    LibreLogger.d(TAG, "SAC Configured Device Found = Second IF " + node.getFriendlyname() + " at " + time);
                     mHandler.sendEmptyMessageDelayed(Constants.WAITING_FOR_223_MB, Constants.INTERNET_PLAY_TIMEOUT);
                     mb223TimerRunning = true;
                     AlexaUtils.getDeviceUpdateStatus(mSACConfiguredIpAddress);
                     return;
                 }
-                LibreLogger.d(TAG_FW_UPDATE, "SAC*** Configured Device Found before third if  " + fwInternetUpgradeMessage);
+                LibreLogger.d(TAG, "SAC*** Configured Device Found before third if  " + fwInternetUpgradeMessage);
               //NOTE FROM Suma :Enable this logic.., when checking with proper  OEM f/w
                  if (fwInternetUpgradeMessage.equals(NO_UPDATE)
                      || fwInternetUpgradeMessage.equals(GCAST_COMPLETE)
                         || fwInternetUpgradeMessage.equals(Constants.BATTERY_POWER)) {
                     if (fwInternetUpgradeMessage.equals(GCAST_COMPLETE)) {
-                        LibreLogger.d(TAG_FW_UPDATE, "SAC*** Configured Device Found = Third IF " + fwInternetUpgradeMessage);
+                        LibreLogger.d(TAG, "SAC*** Configured Device Found = Third IF " + fwInternetUpgradeMessage);
                         mHandler.removeMessages(Constants.FW_UPGRADE_REBOOT_TIMER);
                     }
                     readAlexaToken(mSACConfiguredIpAddress);
@@ -298,7 +298,7 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
 
     @Override
     public void newDeviceFound(final LSSDPNodes node) {
-      //  LibreLogger.d(TAG_SECUREROOM, "New Device Found CTConnect, friendlyName = " + node.getFriendlyname() +", gCastVersion = "+ node.getgCastVerision()+ " IPAddress: "+node.getIP());
+      //  LibreLogger.d(TAG, "New Device Found CTConnect, friendlyName = " + node.getFriendlyname() +", gCastVersion = "+ node.getgCastVerision()+ " IPAddress: "+node.getIP());
       //  insertDeviceIntoDb(node,"CT");
         configuredDeviceFound(node);
     }
@@ -320,7 +320,7 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
         LibreLogger.d(TAG, "Message recieved ipAddress " + nettyDataRemotedeviceIp
                 + ", command " + packet.getCommand()
                 + ", message " + message + ", at " + System.currentTimeMillis());
-        LibreLogger.d(TAG_FW_UPDATE, "MB:- Firmware Update Progress Command: "+packet.getCommand());
+        LibreLogger.d(TAG, "MB:- Firmware Update Progress Command: "+packet.getCommand());
         if (mSACConfiguredIpAddress.equalsIgnoreCase(nettyDataRemotedeviceIp)) {
 
             LSSDPNodes node = LSSDPNodeDB.getInstance().getTheNodeBasedOnTheIpAddress(nettyDataRemotedeviceIp);
@@ -431,14 +431,14 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
                     }
                     break;
                 case MIDCONST.FW_UPGRADE_PROGRESS:
-                    LibreLogger.d(TAG_FW_UPDATE, "MB:- 66 Firmware Update Progress Start and Message: "+message);
+                    LibreLogger.d(TAG, "MB:- 66 Firmware Update Progress Start and Message: "+message);
                     if (message.isEmpty())
                         return;
 
                     fwInternetUpgradeMessage = message;
                     /*if Gcast Failed State  back to PlayNEwScreen */
                     if (fwInternetUpgradeMessage.equals("255")) {
-                        LibreLogger.d(TAG_FW_UPDATE, "Firmware Update Failed For " + node.getFriendlyname());
+                        LibreLogger.d(TAG, "Firmware Update Failed For " + node.getFriendlyname());
                         return;
                     }
 
@@ -457,7 +457,7 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
     }
 
     public void showAlertDialogForFWError(String mainStr, String subStr) {
-        LibreLogger.d(TAG_FW_UPDATE, "FW_UPGRADE_INTERNET showAlertDialogForFWError "+mainStr);
+        LibreLogger.d(TAG, "FW_UPGRADE_INTERNET showAlertDialogForFWError "+mainStr);
         final AlertDialog.Builder dialog = new AlertDialog.Builder(this).setTitle(
             mainStr).setMessage(subStr);
         if (alertDialogFWFailed == null) {
@@ -468,7 +468,7 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
     }
 
     private void setSetupInfoTexts(String mainMsg,String subMsg) {
-        LibreLogger.d(TAG_FW_UPDATE, "setSetupInfoTexts: "+mainMsg+" and subMsg: "+subMsg);
+        LibreLogger.d(TAG, "setSetupInfoTexts: "+mainMsg+" and subMsg: "+subMsg);
         mainMsgText.setText(mainMsg);
         subMsgText.setText(subMsg);
 
@@ -521,10 +521,26 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
         updateTimeZone(mSACConfiguredIpAddress);
         LibreLogger.d(TAG, "goToNextScreen Checking the Both the source:- " + mNode.getAlexaRefreshToken() + "isAlexaSource:- " + mNode.getmDeviceCap().getmSource().isAlexaAvsSource() + "isCastSource:- " + mNode.getmDeviceCap().getmSource().isGoogleCast());
 
-        if (mNode.getmDeviceCap().getmSource().isAlexaAvsSource()) {
+       if(mNode.getmDeviceCap().getmSource().isGoogleCast() && mNode.getmDeviceCap().getmSource().isAlexaAvsSource()){
+           LibreLogger.d(TAG, "goToNextScreen BothSource " + mNode.getmDeviceCap().getmSource().isAlexaAvsSource() + " castSource:- " + mNode.getmDeviceCap().getmSource().isAlexaAvsSource());
+           Intent newIntent = new Intent(CTConnectingToMainNetwork.this, SetUpDeviceActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+           newIntent.putExtra(Constants.CURRENT_DEVICE_IP, mSACConfiguredIpAddress);
+           newIntent.putExtra(Constants.DEVICE_NAME, mNode.getFriendlyname());
+           newIntent.putExtra(AppConstants.DEVICE_PROVISIONING_INFO, mNode.getMdeviceProvisioningInfo());
+           newIntent.putExtra(Constants.FROM_ACTIVITY, CTConnectingToMainNetwork.class.getSimpleName());
+           startActivity(newIntent);
+           finish();
+       }else if (mNode.getmDeviceCap().getmSource().isGoogleCast()) {
+           LibreLogger.d(TAG, "goToNextScreen CastSource " + mNode.getmDeviceCap().getmSource().isGoogleCast());
+           Intent goToCastTOSActivity = new Intent(this, CastToSActivity.class);
+           goToCastTOSActivity.putExtra(Constants.CURRENT_DEVICE_IP, mSACConfiguredIpAddress);
+           goToCastTOSActivity.putExtra(Constants.DEVICE_NAME, mNode.getFriendlyname());
+           goToCastTOSActivity.putExtra(Constants.FROM_ACTIVITY, CTConnectingToMainNetwork.class.getSimpleName());
+           startActivity(goToCastTOSActivity);
+           finish();
+       } else if (mNode.getmDeviceCap().getmSource().isAlexaAvsSource()) {
             LibreLogger.d(TAG, "goToNextScreen AVSSource " + mNode.getmDeviceCap().getmSource().isGoogleCast());
-            if (mNode.getAlexaRefreshToken() == null || mNode.getAlexaRefreshToken().isEmpty()
-                || mNode.getAlexaRefreshToken().equals("0")) {
+            if (mNode.getAlexaRefreshToken() == null || mNode.getAlexaRefreshToken().isEmpty() || mNode.getAlexaRefreshToken().equals("0")) {
                 Intent newIntent = new Intent(CTConnectingToMainNetwork.this, CTAmazonInfoActivity.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 newIntent.putExtra(Constants.CURRENT_DEVICE_IP, mSACConfiguredIpAddress);
                 newIntent.putExtra(AppConstants.DEVICE_PROVISIONING_INFO, mNode.getMdeviceProvisioningInfo());
@@ -538,15 +554,14 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
                 startActivity(i);
                 finish();
             }
-        } else if (mNode.getmDeviceCap().getmSource().isGoogleCast()) {
-            LibreLogger.d(TAG, "goToNextScreen CastSource " + mNode.getmDeviceCap().getmSource().isGoogleCast());
-            Intent goToCastTOSActivity = new Intent(this, CastToSActivity.class);
-            goToCastTOSActivity.putExtra(Constants.CURRENT_DEVICE_IP, mSACConfiguredIpAddress);
-            goToCastTOSActivity.putExtra(Constants.DEVICE_NAME, mNode.getFriendlyname());
-            goToCastTOSActivity.putExtra(Constants.FROM_ACTIVITY, CTConnectingToMainNetwork.class.getSimpleName());
-            startActivity(goToCastTOSActivity);
-            finish();
-        } else if (mNode.getmDeviceCap().getmSource().isGoogleCast() && mNode.getmDeviceCap().getmSource().isAlexaAvsSource()) {
+        }else {
+           LibreLogger.d(TAG, "goToNextScreen No source available ");
+           showToast(getString(R.string.configuration_successful));
+           intentToHome(CTConnectingToMainNetwork.this);
+       }
+
+
+       /*else if (mNode.getmDeviceCap().getmSource().isGoogleCast() && mNode.getmDeviceCap().getmSource().isAlexaAvsSource()) {
             LibreLogger.d(TAG, "goToNextScreen BothSource " + mNode.getmDeviceCap().getmSource().isAlexaAvsSource() + " castSource:- " + mNode.getmDeviceCap().getmSource().isAlexaAvsSource());
             Intent newIntent = new Intent(CTConnectingToMainNetwork.this, SetUpDeviceActivity.class)
                 .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -557,11 +572,7 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
             startActivity(newIntent);
             finish();
 
-        } else {
-            LibreLogger.d(TAG, "goToNextScreen No source available ");
-            showToast(getString(R.string.configuration_successful));
-            intentToHome(CTConnectingToMainNetwork.this);
-        }
+        }*/
 
     }
 
@@ -576,12 +587,12 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
                 postData.put(HOUR_FORMAT, "");
             } catch (JSONException ex) {
                 ex.printStackTrace();
-                LibreLogger.d(TIMEZONE_UPDATE, "CT updateTimeZone: Exception: " + ex.getMessage());
+                LibreLogger.d(TAG, "CT updateTimeZone: Exception: " + ex.getMessage());
             }
             control.SendCommand(MIDCONST.UPDATE_TIMEZONE, postData.toString(), LSSDPCONST.LUCI_SET);
-            LibreLogger.d(TIMEZONE_UPDATE, "CT updateTimeZone: Success: " + postData.toString());
+            LibreLogger.d(TAG, "CT updateTimeZone: Success: " + postData.toString());
         } else {
-            LibreLogger.d(TIMEZONE_UPDATE, "CT updateTimeZone: failed ");
+            LibreLogger.d(TAG, "CT updateTimeZone: failed ");
         }
     }
 

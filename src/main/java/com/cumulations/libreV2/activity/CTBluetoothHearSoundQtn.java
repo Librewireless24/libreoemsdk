@@ -58,7 +58,7 @@ public class CTBluetoothHearSoundQtn extends CTDeviceDiscoveryActivity implement
 
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+
     public void initBluetoothAdapterAndListener(){
         final BluetoothManager bluetoothManager =
                 (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);

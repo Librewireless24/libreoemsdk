@@ -1,10 +1,14 @@
 package com.libreAlexa.luci;
 
+import static com.libreAlexa.LibreApplication.GLOBAL_TAG;
+import static com.libreAlexa.constants.MIDCONST.MID_REGISTER;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import com.libreAlexa.LibreApplication;
+import com.libreAlexa.LibreEntryPoint;
 import com.libreAlexa.constants.Constants;
 import com.libreAlexa.constants.LSSDPCONST;
 import com.libreAlexa.constants.MIDCONST;
@@ -16,6 +20,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
+import kotlin.io.LineReader;
 import org.jboss.netty.channel.ChannelHandlerContext;
 
 /**
@@ -49,9 +54,17 @@ public class LUCIControl {
         /* Crash Fixed Reported For Multiple Times SAC and rebooting Fix*/
         /*        if ((mNetIf != null)  && (new Utils().getIPAddress(true)!=null))*/
         {
-            SendCommand(3, new Utils().getIPAddress(true) + "," + LUCI_RESP_PORT, LSSDPCONST.LUCI_SET);
-            LibreLogger.d(TAG, "sendAsynchronousCommandSpecificPlaces, INIT LUCI CONTROL with = " + SERVER_IP + ", " +
-                    "OurIP = " + new Utils().getIPAddress(true));
+            String registerData;
+            //New MB3 source code changes
+            if (LibreEntryPoint.Companion.getInstance().getRegisterMB3Data() != null
+                && LibreEntryPoint.Companion.getInstance().getRegisterMB3Data().trim().length() > 0) {
+                registerData = LibreEntryPoint.Companion.getInstance().getRegisterMB3Data();
+            } else {
+                //Old Source code
+                registerData = new Utils().getIPAddress(true) + "," + LUCI_RESP_PORT;
+            }
+            SendCommand(MID_REGISTER, registerData, LSSDPCONST.LUCI_SET);
+            LibreLogger.d(GLOBAL_TAG, "MB3 Data Sent " + registerData);
         }
     }
 

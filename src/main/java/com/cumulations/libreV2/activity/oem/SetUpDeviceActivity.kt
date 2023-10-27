@@ -23,6 +23,7 @@ import com.libreAlexa.netty.LibreDeviceInteractionListner
 import com.libreAlexa.netty.NettyData
 import com.libreAlexa.util.LibreLogger
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.json.JSONObject
@@ -47,7 +48,7 @@ class SetUpDeviceActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionL
     }
     private val libreVoiceDatabaseDao by lazy { LibreVoiceDatabase.getDatabase(this).castLiteDao() }
     private var deviceUUID: String? = null
-
+    private var taskJob: Job? = null
     companion object {
         @JvmField
         var TAG: String = SetUpDeviceActivity::class.java.simpleName
@@ -69,13 +70,13 @@ class SetUpDeviceActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionL
             showToast(getString(R.string.somethingWentWrong))
             intentToHome(this)
         }
-      /*  LibreLogger.d(TAG, "onCreate:speakerIpAddress $speakerIpAddress\n and DeviceName: $speakerName\n" + " from $from\n and uuid $deviceUUID avsEnabled: ${
+        LibreLogger.d(TAG, "onCreate:speakerIpAddress $speakerIpAddress\n and DeviceName: $speakerName\n" + " from $from\n and uuid $deviceUUID avsEnabled: ${
             speakerNode!!.getmDeviceCap().getmSource().isAlexaAvsSource
-        } castEnabled: ${speakerNode!!.getmDeviceCap().getmSource().isGoogleCast}")*/
+        } castEnabled: ${speakerNode!!.getmDeviceCap().getmSource().isGoogleCast}")
         val speakerSetUpString = getString(R.string.speaker) + speakerName + getString(R.string.successfully_setup)
         binding.txtSpeakerName.text = speakerSetUpString
-        if (!from.isNullOrEmpty() && from.equals(OpenGHomeAppActivity::class.java.simpleName, ignoreCase = true) || !from.isNullOrEmpty() && from.equals(CTAmazonInfoActivity::class.java.simpleName, ignoreCase = true)) {
-            binding.layLoader!!.visibility = View.VISIBLE
+        if (!from.isNullOrEmpty() && from.equals(OpenGHomeAppActivity::class.java.simpleName, ignoreCase = true) ) {
+            binding.layLoader.visibility = View.VISIBLE
             lifecycleScope.launch {
                 delay(2000)
                 val postData = JSONObject()
@@ -84,7 +85,12 @@ class SetUpDeviceActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionL
                 postData.put(LUCIMESSAGES.DEVICE_UUID, deviceUUID)
                 sendLuciCommand(postData.toString())
             }
+            lifecycleScope.launch {
+                initiateJob()
+            }
 
+        }else {
+            binding.layLoader.visibility = View.GONE
         }
         binding.btnSetupChromecast.setOnClickListener {
             val goToCastTOSActivity = Intent(this, CastToSActivity::class.java)
@@ -142,7 +148,10 @@ class SetUpDeviceActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionL
     }
 
     override fun messageRecieved(nettyData: NettyData?) {
-        binding.layLoader!!.visibility = View.GONE
+        binding.layLoader.visibility = View.GONE
+        lifecycleScope.launch {
+            cancelJob()
+        }
         val remoteDeviceIp = nettyData!!.getRemotedeviceIp()
         val packet = LUCIPacket(nettyData.getMessage())/*  LibreLogger.d(TAG, "messageReceived: " + remoteDeviceIp + ", command is " + packet.command + "msg" + " is\n" + String(packet.payload))*/
         if (packet.command == MIDCONST.CAST_ACCEPT_STATUS || packet.command == MIDCONST.CAST_ACCEPT_STATUS_572) {
@@ -157,5 +166,17 @@ class SetUpDeviceActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionL
                 binding.btnSetupChromecast.isEnabled = true
             }
         }
+    }
+    private fun initiateJob() {
+        taskJob = lifecycleScope.launch(Dispatchers.IO) {
+            delay(30000)
+            runOnUiThread {
+                binding.layLoader.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun cancelJob() {
+        taskJob?.cancel()
     }
 }

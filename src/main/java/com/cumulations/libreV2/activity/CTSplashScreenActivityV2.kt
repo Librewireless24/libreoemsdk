@@ -8,6 +8,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import androidx.lifecycle.lifecycleScope
 import com.cumulations.libreV2.AppUtils
 import com.cumulations.libreV2.appInForeground
@@ -31,6 +32,7 @@ class CTSplashScreenActivityV2 : CTDeviceDiscoveryActivity() {
         binding = CtActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.txtAppVersion.text = AppUtils.getVersion(applicationContext)
+        Log.d(TAG, "SplashScreen onCreate called")
         LibreEntryPoint.getInstance().init(this@CTSplashScreenActivityV2)
 
     }
@@ -38,6 +40,7 @@ class CTSplashScreenActivityV2 : CTDeviceDiscoveryActivity() {
     override fun proceedToHome() {
         lifecycleScope.launch {
             delay(1000)
+            Log.d(TAG, "proceedToHome called from SplashScreen")
             openNextScreen()
         }
     }

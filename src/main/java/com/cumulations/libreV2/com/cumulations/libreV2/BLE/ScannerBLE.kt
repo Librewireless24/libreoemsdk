@@ -1,6 +1,7 @@
 package com.cumulations.libreV2.com.cumulations.libreV2.BLE
 
 import android.Manifest.permission
+import android.app.Activity
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
 import android.bluetooth.le.BluetoothLeScanner
@@ -16,12 +17,15 @@ import androidx.core.app.ActivityCompat
 import com.cumulations.libreV2.activity.CTBluetoothDeviceListActivity
 import com.libreAlexa.util.LibreLogger
 
-
+/**
+ * This class is converted from java to kotlin 11/OCT/2023
+ * Shaik
+ */
 class ScannerBLE(private val mBLActivity: CTBluetoothDeviceListActivity,
     private val scanPeriod: Long,
     private val signalStrength: Int) {
-    private val mBluetoothAdapter: BluetoothAdapter
-    private val mBluetoothScaneer: BluetoothLeScanner
+    private var mBluetoothAdapter: BluetoothAdapter
+    private var mBluetoothScaneer: BluetoothLeScanner? = null
     var isScanning = false
     private val mHandler: Handler = Handler(Looper.getMainLooper())
     fun getmBluetoothAdapter(): BluetoothAdapter {
@@ -29,20 +33,24 @@ class ScannerBLE(private val mBLActivity: CTBluetoothDeviceListActivity,
     }
 
     fun getBluetoothScaneer(): BluetoothLeScanner {
-        return mBluetoothScaneer
+        return mBluetoothScaneer!!
     }
 
     private val scanSettings = ScanSettings.Builder().setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY).build()
 
-    fun start() {
-        if (!BLEUtils.checkBluetooth(mBluetoothAdapter)) {
-            BLEUtils.requestUserBluetooth(mBLActivity)
+    fun start(activity: Activity) {
+        scanLeDevice(true)
+        /**
+         * Commented By Shaik becuase before this only we are checking BT enable or not
+         */
+    /*if (!BLEUtils.checkBluetooth(activity)) {
+            mBLActivity.requestUserBluetooth()
             LibreLogger.d(TAG, "Bt not enabled ")
             mBLActivity.stopScan()
         } else {
             LibreLogger.d(TAG, "Bt not enabled and start Scanning")
             scanLeDevice(true)
-        }
+        }*/
     }
 
     fun stop() {
@@ -66,7 +74,12 @@ class ScannerBLE(private val mBLActivity: CTBluetoothDeviceListActivity,
                         }
                     }
                     LibreLogger.d(TAG, "stopScan called after some time")
-                    mBluetoothScaneer.stopScan(scanCallback)
+                    if(mBluetoothScaneer!=null) {
+                        LibreLogger.d(TAG, "Stop Scan called ")
+                        mBluetoothScaneer!!.stopScan(scanCallback)
+                    }else{
+                        LibreLogger.d(TAG, "Bluetooth Scanner null")
+                    }
                     mBLActivity.stopScan()
                 }
             }, scanPeriod)
@@ -79,13 +92,25 @@ class ScannerBLE(private val mBLActivity: CTBluetoothDeviceListActivity,
             }
             LibreLogger.d(TAG, "startScan called")
             mBLActivity.startScan()
-            mBluetoothScaneer.startScan(null, scanSettings, scanCallback)
+            if(mBluetoothScaneer!=null) {
+                LibreLogger.d(TAG, "Start Scan called with scanCallback")
+                mBluetoothScaneer!!.startScan(null, scanSettings, scanCallback)
+            }else{
+                LibreLogger.d(TAG, "Bluetooth Scanner null so scan didn't called")
+            }
+
         } else {
             isScanning = false
-            LibreLogger.d(TAG, "stopScan called")
-            mBluetoothScaneer.stopScan(scanCallback)
+            if(mBluetoothScaneer!=null) {
+                LibreLogger.d(TAG, "Stop Scan called with scanCallback")
+                mBluetoothScaneer!!.stopScan(scanCallback)
+            }else{
+                LibreLogger.d(TAG, "Bluetooth Scanner null so stopScan didn't called")
+            }
         }
     }
+
+
 
     init {
         val bluetoothManager = mBLActivity.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
@@ -115,15 +140,16 @@ class ScannerBLE(private val mBLActivity: CTBluetoothDeviceListActivity,
             if (result.device.name != null) {
                 mBLActivity.runOnUiThread {
                     mBLActivity.addDevice(result.device, result.rssi)
-                    LibreLogger.d(TAG, "Device Name available ${result.device.name}")
+                    LibreLogger.d(TAG, "Shaik Device Name available ${result.device.name}")
                 }
             } else {
-                LibreLogger.d(TAG, "BT device name not available ")
+                LibreLogger.d(TAG, "Shaik BT device name not available ")
             }
         }
 
         override fun onScanFailed(errorCode: Int) {
-            LibreLogger.d(TAG, "onScanFailed $errorCode")
+            LibreLogger.d(TAG, "Shaik onScanFailed $errorCode")
         }
     }
+
 }

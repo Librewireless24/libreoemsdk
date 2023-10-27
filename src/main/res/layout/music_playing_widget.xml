@@ -150,6 +150,7 @@
                 android:layout_height="40dp"
                 android:background="@android:color/transparent"
                 android:scaleType="fitCenter"
+                android:visibility="gone"
                 app:srcCompat="@drawable/alexa_blue_white_100px" />
         </LinearLayout>
     </LinearLayout>

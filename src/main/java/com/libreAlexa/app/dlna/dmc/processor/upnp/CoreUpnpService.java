@@ -1,6 +1,7 @@
 package com.libreAlexa.app.dlna.dmc.processor.upnp;
 
 
+
 import static com.libreAlexa.constants.Constants.DMR_SOURCE;
 
 import android.content.Context;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.widget.Toast;
 import androidx.core.content.ContextCompat;
 import com.cumulations.libreV2.AppUtils;
+import com.cumulations.libreV2.activity.CTDeviceDiscoveryActivity;
 import com.cumulations.libreV2.model.SceneObject;
 import com.cumulations.libreV2.tcp_tunneling.TunnelingClientRunnable;
 import com.cumulations.libreV2.tcp_tunneling.TunnelingControl;
@@ -193,6 +195,8 @@ public class CoreUpnpService extends AndroidUpnpServiceImpl {
         @Subscribe
         public void newDeviceFound(final LSSDPNodes nodes) {
             LibreLogger.d(TAG, "newDeviceFound, node = " + nodes.getFriendlyname());
+            CTDeviceDiscoveryActivity ctDeviceDiscoveryActivity = new CTDeviceDiscoveryActivity();
+            ctDeviceDiscoveryActivity.insertDeviceIntoDbFromCoreUPNP(nodes);
             /* This below if loop is introduced to handle the case where Device state from the DUT could be Null sometimes
              * Ideally the device state should not be null but we are just handling it to make sure it will not result in any crash!
              *

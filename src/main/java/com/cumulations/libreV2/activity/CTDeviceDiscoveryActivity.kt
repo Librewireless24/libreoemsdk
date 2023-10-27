@@ -7,6 +7,7 @@ import android.app.Activity
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.*
+import android.database.sqlite.SQLiteException
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.net.Uri
@@ -114,20 +115,9 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
 
     companion object {
         private val TAG = CTDeviceDiscoveryActivity::class.java.simpleName
-        @JvmField
-         val TAG_SPLASH = "TAG_SPLASH"
-        @JvmField
-        val SPOTIFY_TIDAL = "SPOTIFY_TIDAL"
-        @JvmField
-        val TIMEZONE_UPDATE = "TIMEZONE_UPDATE"
-        @JvmField
-        val PLAY_PAUSE = "PLAY_PAUSE"
-        const val TAG_RESULT = "==CTDevice"
         const val TAG_DEVICE_REMOVED = "TAG_DEVICE_REMOVED"
-        const val TAG_FW_UPDATE = "TAG_FW_UPDATE"
-        const val TAG_SECUREROOM = "TAG_SECUREROOM"
-        const val TAG_BLE = "TAG_BLE"
         var isKeyStored = false
+        var isBTPermissionAsked = false
     }
 
     private var libreDeviceInteractionListner: LibreDeviceInteractionListner? = null
@@ -147,7 +137,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
 
     private var mandateDialog: AlertDialog? = null
     private var alertDialog: AlertDialog? = null
-    lateinit var sharedPreferenceHelper: SharedPreferenceHelper
+  //  lateinit var sharedPreferenceHelper: SharedPreferenceHelper
     private var parentView: View? = null
     private var onReceiveSSID: String? = null
 
@@ -167,14 +157,15 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
     private var micTcpServer: MicTcpServer? = null
     private var requestCode: Int = -1
     private var resultHandler: ActivityResultLauncher<Intent>? = null
-    private val libreVoiceDatabaseDao by lazy { LibreVoiceDatabase.getDatabase(this).castLiteDao() }
+   // private val libreVoiceDatabaseDao:LibreVoiceDatabase?=null
+/*    private val libreVoiceDatabaseDao by lazy { LibreVoiceDatabase.getDatabase(this).castLiteDao() }*/
 
     private var busEventListener: Any = object : Any() {
         @Subscribe
         fun newDeviceFound(nodes: LSSDPNodes) {
-            GlobalScope.launch {
+           /* GlobalScope.launch {
                     insertDeviceIntoDb(nodes, "DI")
-            }
+            }*/
             if (libreDeviceInteractionListner != null) {
                 libreDeviceInteractionListner!!.newDeviceFound(nodes)
             }
@@ -212,9 +203,11 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
 
         @Subscribe
         fun deviceGotRemoved(removedLibreDevice: RemovedLibreDevice?) {
-            LibreLogger.d(TAG_DEVICE_REMOVED, "deviceGotRemoved called " + removedLibreDevice?.getmIpAddress())
+            LibreLogger.d(TAG, "==SHAIK==deviceGotRemoved CTDevice " + removedLibreDevice?.getmIpAddress())
             if (removedLibreDevice != null) {
-                removeUUIDFromDB(removedLibreDevice.getmIpAddress())
+                GlobalScope.launch {
+                    removeUUIDFromDB(removedLibreDevice.getmIpAddress())
+                }
                 val nodes = LSSDPNodeDB.getInstance().getTheNodeBasedOnTheIpAddress(removedLibreDevice.getmIpAddress())
                 LibreLogger.d(TAG_DEVICE_REMOVED, "deviceGotRemoved before appInForeground ")
                 if (appInForeground(this@CTDeviceDiscoveryActivity)) {
@@ -316,19 +309,31 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
         get() = upnpProcessor!!.binder
     private var sAcalertDialog: AlertDialog? = null
     private var fwUpdateAlertDialog: AlertDialog? = null
-    private lateinit var libreVoiceDatabase: LibreVoiceDatabase
-
+    private var libreVoiceDatabase: LibreVoiceDatabase? = null
+    val sharedPreferenceHelper by lazy { SharedPreferenceHelper.getInstance(this)}
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         libreApplication = LibreEntryPoint()
-        sharedPreferenceHelper = SharedPreferenceHelper(this)
-       // libreVoiceDatabase =LibreVoiceDatabase.getDatabase(this)
+        //sharedPreferenceHelper = SharedPreferenceHelper.getInstance(this)
+        //Key Storing logic getting late so added in in the onCreate
+        lifecycleScope.launch {
+            delay(2000)
+            if (!isKeyStored) {
+                doSharedOperations()
+            }
+        }
         val intentFilter = IntentFilter()
         intentFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION)
         intentFilter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION)
         localNetworkStateReceiver = LocalNetworkStateReceiver()
         registerForActivityResult()
         registerReceiver(localNetworkStateReceiver, intentFilter)
+        LibreLogger.d(TAG,"CTDeviceDiscoveryActivity onCreate called ")
+        lifecycleScope.launch {
+            delay(2000)
+            libreVoiceDatabase = LibreVoiceDatabase.getDatabase(applicationContext)
+        }
+
     }
 
     private fun initUpnpProcessorListeners() {
@@ -340,9 +345,9 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
 
     override fun onStart() {
         super.onStart()
-        if (!isKeyStored) {
-            doSharedOperations()
-        }
+//        if (!isKeyStored) {
+//            doSharedOperations()
+//        }
         initBusEvent()
         initUpnpProcessorListeners()
         initDMRForegroundService()
@@ -431,7 +436,6 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                 AppUtils.requestPermission(this, Manifest.permission.ACCESS_FINE_LOCATION, LOCATION_PERMISSION_REQUEST_CODE)
             } else {
                 // showAlertForLocationPermissionRequired()
-                //Shaik Removed the cancel Button
                 showAlertDialog(getString(R.string.enableLocationPermit), getString(R.string.action_settings),  LOCATION_PERM_SETTINGS_REQUEST_CODE)
             }
 
@@ -540,7 +544,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
     }
 
     fun showSomethingWentWrongAlert(context: Context) {
-        LibreLogger.d(TAG_BLE,"class name ${context::class.java.simpleName}")
+        LibreLogger.d(TAG,"class name ${context::class.java.simpleName}")
         try {
             if (alertDialog1 != null && alertDialog1!!.isShowing) alertDialog1!!.dismiss()
             val builder = AlertDialog.Builder(context)
@@ -616,7 +620,6 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
 
         playPauseView?.setOnClickListener(object : View.OnClickListener {
             override fun onClick(view: View) {
-                //SHAIK BT change
                 if (musicSceneObject.currentSource == AUX_SOURCE/*|| musicSceneObject?.currentSource == EXTERNAL_SOURCE*/ || musicSceneObject.currentSource == VTUNER_SOURCE || musicSceneObject.currentSource == TUNEIN_SOURCE /*|| musicSceneObject.currentSource == BT_SOURCE*/ && ((mNodeWeGotForControl?.getgCastVerision() == null && (mNodeWeGotForControl?.bT_CONTROLLER == CURRENTLY_NOTPLAYING || mNodeWeGotForControl?.bT_CONTROLLER == SceneObject.CURRENTLY_PLAYING)) || (mNodeWeGotForControl.getgCastVerision() != null && mNodeWeGotForControl.bT_CONTROLLER < SceneObject.CURRENTLY_PAUSED))) {
                     val error = LibreError("", resources.getString(R.string.PLAY_PAUSE_NOT_ALLOWED), 1)
                     BusProvider.getInstance().post(error)
@@ -631,16 +634,12 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
 
                 if (musicSceneObject.playstatus == CURRENTLY_PLAYING) {
                     LUCIControl.SendCommandWithIp(MIDCONST.MID_PLAYCONTROL.toInt(), LUCIMESSAGES.PAUSE, LSSDPCONST.LUCI_SET, musicSceneObject.ipAddress)
-                    //SHAIK Commented Because of this is not the right way CustomProgressBar
-                   // playPauseView?.setImageResource(R.drawable.play_orange)
                 } else {
                     if (musicSceneObject.currentSource == BT_SOURCE) {
                         LUCIControl.SendCommandWithIp(MIDCONST.MID_PLAYCONTROL.toInt(), LUCIMESSAGES.PLAY, LSSDPCONST.LUCI_SET, musicSceneObject.ipAddress)
                     } else {
                         LUCIControl.SendCommandWithIp(MIDCONST.MID_PLAYCONTROL.toInt(), LUCIMESSAGES.RESUME, LSSDPCONST.LUCI_SET, musicSceneObject.ipAddress)
                     }
-                    //SHAIK Commented Because of this is not the right way CustomProgressBar
-                   // playPauseView?.setImageResource(R.drawable.pause_orange)
                 }
             }
         })
@@ -717,11 +716,15 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
         try {
             LibreLogger.d(TAG, "updateMusicPlayViews, Ip address: " + sceneObject.ipAddress)
             val lsdpNodes = LSSDPNodeDB.getInstance().getTheNodeBasedOnTheIpAddress(sceneObject.ipAddress)
-            if (lsdpNodes.getmDeviceCap().getmSource().isAlexaAvsSource) {
+            /**
+             * Commented because Ramya & Sathish confirmed no need to show any icon in the
+             * discovery screen
+             */
+            /*if (lsdpNodes.getmDeviceCap().getmSource().isAlexaAvsSource) {
                 alexaButton!!.visibility = View.VISIBLE
             } else {
                 alexaButton!!.visibility = View.GONE
-            }
+            }*/
             LibreLogger.d(TAG, "suma in device discovery activity update music player scene object1\n" + sceneObject.trackName + "convert url\n" + sceneObject.playUrl + "album name\n" + sceneObject.album_name)
             if (musicPlayerWidget?.id == R.id.fl_alexa_widget || AppUtils.isActivePlaylistNotAvailable(sceneObject)) {
                 handleAlexaViews(sceneObject)
@@ -748,7 +751,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                     albumNameView?.isSelected = true
                 }
             } else {
-                LibreLogger.d(SPOTIFY_TIDAL, "updateMusicPlayViews else")
+                LibreLogger.d(TAG, "updateMusicPlayViews else")
                 handleAlexaViews(sceneObject)
             }
 
@@ -912,18 +915,6 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                 }
                 else -> handleAlexaViews(sceneObject)
             }
-
-
-           /* if (sceneObject.playstatus == CURRENTLY_PLAYING) {
-                if (playPauseNextPrevAllowed(sceneObject)) {
-                    setPlayPauseLoader(playPauseView!!, isEnabled = true, isLoader = false, image = R.drawable.pause_orange)
-                }
-            } else {
-                if (playPauseNextPrevAllowed(sceneObject)) {
-
-                    setPlayPauseLoader(playPauseView!!, isEnabled = true, isLoader = false, image = R.drawable.play_orange)
-                }
-            }*/
             if (sceneObject.currentSource == VTUNER_SOURCE || sceneObject.currentSource == TUNEIN_SOURCE || sceneObject.currentSource == BT_SOURCE || sceneObject.currentSource == AUX_SOURCE/*|| sceneObject.currentSource == EXTERNAL_SOURCE*/ || sceneObject.currentSource == NO_SOURCE || sceneObject.currentSource == GCAST_SOURCE) {
                 songSeekBar?.progress = 0
                 songSeekBar?.secondaryProgress = 0
@@ -935,7 +926,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
              * Based playPauseNextPrevAllowed value we are setting the image and
              * one more function is above commented because the below code will work properly
              */
-            LibreLogger.d(SPOTIFY_TIDAL,"playStatus : "+sceneObject.playstatus)
+            LibreLogger.d(TAG,"playStatus : "+sceneObject.playstatus)
             if (playPauseView != null) {
                 when (sceneObject.playstatus) {
                     CURRENTLY_BUFFERING -> {
@@ -962,9 +953,8 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
 
                 }
             } else {
-                LibreLogger.d(SPOTIFY_TIDAL, "updateMusicPlayViews playPauseView is null")
+                LibreLogger.d(TAG, "updateMusicPlayViews playPauseView is null")
             }
-            //SHAIK BT
             if (sceneObject.currentSource == VTUNER_SOURCE || sceneObject.currentSource == TUNEIN_SOURCE /*|| sceneObject.currentSource == BT_SOURCE*/ || sceneObject.currentSource == AUX_SOURCE || sceneObject.currentSource == NO_SOURCE) {
                 setPlayPauseLoader(playPauseView!!, isEnabled = false, isLoader = false, image = R.drawable.play_white)
             }
@@ -973,13 +963,13 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
             val duration = sceneObject.currentPlaybackSeekPosition
             songSeekBar?.max = sceneObject.totalTimeOfTheTrack.toInt() / 1000
             songSeekBar?.secondaryProgress = sceneObject.totalTimeOfTheTrack.toInt() / 1000
-            LibreLogger.d(SPOTIFY_TIDAL, "seek_bar_song Duration = " + duration / 1000)
+            LibreLogger.d(TAG, "seek_bar_song Duration = " + duration / 1000)
             songSeekBar?.progress = duration.toInt() / 1000
 
             toggleAlexaBtnForSAMode()
 
             if (AppUtils.isActivePlaylistNotAvailable(sceneObject)) {
-                LibreLogger.d(SPOTIFY_TIDAL, "isActivePlaylistNotAvailable true")
+                LibreLogger.d(TAG, "isActivePlaylistNotAvailable true")
                 handleAlexaViews(sceneObject)
             }
 
@@ -1050,7 +1040,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
 
     fun handleAlexaViews(sceneObject: SceneObject) {
         songSeekBar?.visibility = View.VISIBLE
-        LibreLogger.d(SPOTIFY_TIDAL, "handleAlexaViews " + sceneObject.currentSource)
+        LibreLogger.d(TAG, "handleAlexaViews " + sceneObject.currentSource)
         val node = LSSDPNodeDB.getInstance().getTheNodeBasedOnTheIpAddress(sceneObject.ipAddress)
         if (currentAlbumnName != null) {
             if (!currentAlbumnName.isEmpty()) {
@@ -1066,7 +1056,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                 trackNameView?.text = LibreApplication.currentTrackName
                 playPauseView?.visibility = View.VISIBLE
                 albumArtView?.visibility = View.VISIBLE
-                LibreLogger.d(SPOTIFY_TIDAL, "suma in handle alexaplay icon currently stopped1" + sceneObject.playstatus)
+                LibreLogger.d(TAG, "suma in handle alexaplay icon currently stopped1" + sceneObject.playstatus)
                 if (node?.alexaRefreshToken.isNullOrEmpty()) {
                     trackNameView?.text = getText(R.string.login_to_enable_cmds)
 
@@ -1077,12 +1067,14 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                 trackNameView?.text = getText(R.string.app_name)
                 playPauseView?.visibility = View.INVISIBLE
                 albumArtView?.visibility = View.GONE
-                LibreLogger.d(SPOTIFY_TIDAL, "suma in handle alexaplay icon currently stopped12" + sceneObject.playstatus)
+                LibreLogger.d(TAG, "suma in handle alexaplay icon currently stopped12" + sceneObject.playstatus)
                 if (node.getmDeviceCap().getmSource().isAlexaAvsSource) {
                     if (node?.alexaRefreshToken.isNullOrEmpty()) {
                         trackNameView?.text = getText(R.string.login_to_enable_cmds)
                     } else {
-                        trackNameView?.text = getText(R.string.speaker_ready_for_cmds)
+                        trackNameView?.text = getText(R.string.app_name)
+                        albumNameView?.text = getText(R.string.speaker_ready_for_cmds)
+                       // trackNameView?.text = getText(R.string.speaker_ready_for_cmds)
                     }
                 } else {
                     trackNameView?.visibility = View.VISIBLE
@@ -1100,22 +1092,22 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                     playPauseView?.visibility = View.GONE
                     albumArtView?.visibility = View.GONE
                     trackNameView?.text = getText(R.string.login_to_enable_cmds)
-                    LibreLogger.d(SPOTIFY_TIDAL, "suma in handle alexaplay icon BT  & Aux if refreshtoken" + sceneObject.currentSource)
+                    LibreLogger.d(TAG, "suma in handle alexaplay icon BT  & Aux if refreshtoken" + sceneObject.currentSource)
                 } else {
                     albumNameView?.visibility = View.GONE
                     playPauseView?.visibility = View.GONE
                     albumArtView?.visibility = View.GONE
                     trackNameView?.text = getText(R.string.speaker_ready_for_cmds)
-                    LibreLogger.d(SPOTIFY_TIDAL, "suma in handle alexaplay icon BT  & Aux else refreshtoken" + sceneObject.currentSource)
+                    LibreLogger.d(TAG, "suma in handle alexaplay icon BT  & Aux else refreshtoken" + sceneObject.currentSource)
 
                 }
-                LibreLogger.d(SPOTIFY_TIDAL, "suma in handle alexaplay icon BT  & Aux" + sceneObject.currentSource)
+                LibreLogger.d(TAG, "suma in handle alexaplay icon BT  & Aux" + sceneObject.currentSource)
 
             } else {
-                LibreLogger.d(SPOTIFY_TIDAL, "suma in handle LibreApplication.currentTrackName " +LibreApplication.currentTrackName)
+                LibreLogger.d(TAG, "suma in handle LibreApplication.currentTrackName " +LibreApplication.currentTrackName)
                 if (LibreApplication.currentTrackName != null) {
                     if (LibreApplication.currentTrackName.isNotEmpty()) {
-                        LibreLogger.d(SPOTIFY_TIDAL, "suma in handle sceneObject.trackName " +sceneObject.trackName)
+                        LibreLogger.d(TAG, "suma in handle sceneObject.trackName " +sceneObject.trackName)
                         trackNameView?.text = sceneObject.trackName
                         if (node.alexaRefreshToken.isNullOrEmpty()) {
                             trackNameView?.text = getText(R.string.login_to_enable_cmds)
@@ -1162,7 +1154,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                     albumArtView?.visibility = View.GONE
 
                 }
-                LibreLogger.d(SPOTIFY_TIDAL, "suma in handle alexaplay icon BT  & Aux else" + sceneObject.currentSource)
+                LibreLogger.d(TAG, "suma in handle alexaplay icon BT  & Aux else" + sceneObject.currentSource)
 
             }
         }
@@ -1199,36 +1191,36 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
 
         private fun parseMessageForMusicPlayer(nettyData: NettyData?) {
             musicPlayerIp = nettyData?.remotedeviceIp
-          /*  LibreLogger.d(SPOTIFY_TIDAL, "parseForMusicPlayer musicIp = $musicPlayerIp, nettyData Ip = " + "${nettyData?.remotedeviceIp}")*/
+          /*  LibreLogger.d(TAG, "parseForMusicPlayer musicIp = $musicPlayerIp, nettyData Ip = " + "${nettyData?.remotedeviceIp}")*/
             if (musicPlayerIp == null || !musicPlayerIp?.equals(nettyData?.remotedeviceIp)!!) {
-                LibreLogger.d(SPOTIFY_TIDAL, "parseForMusicPlayer returning musicPlayerIp $musicPlayerIp " + "remotedeviceIp ${nettyData?.remotedeviceIp}")
+                LibreLogger.d(TAG, "parseForMusicPlayer returning musicPlayerIp $musicPlayerIp " + "remotedeviceIp ${nettyData?.remotedeviceIp}")
                 return
             }
 
             if (musicPlayerWidget == null) {
-                LibreLogger.d(SPOTIFY_TIDAL, "parseForMusicPlayer musicPlayerWidget null")
+                LibreLogger.d(TAG, "parseForMusicPlayer musicPlayerWidget null")
                 return
             }
-            LibreLogger.d(SPOTIFY_TIDAL, "parseForMusicPlayer After  luci packet $musicPlayerIp")
+            LibreLogger.d(TAG, "parseForMusicPlayer After  luci packet $musicPlayerIp")
             val luciPacket = LUCIPacket(nettyData?.message)
             val msg = String(luciPacket.payload)
 
             val sceneObject = ScanningHandler.getInstance().getSceneObjectFromCentralRepo(nettyData?.remotedeviceIp)
             if (sceneObject == null) {
-                LibreLogger.d(SPOTIFY_TIDAL, "MessageForMusicPlayer sceneObject null for " + nettyData?.remotedeviceIp)
+                LibreLogger.d(TAG, "MessageForMusicPlayer sceneObject null for " + nettyData?.remotedeviceIp)
                 return
             }
-            LibreLogger.d(SPOTIFY_TIDAL, "parseForMusicPlayer before When "+luciPacket.command)
+            LibreLogger.d(TAG, "parseForMusicPlayer before When "+luciPacket.command)
             when (luciPacket.command) {
                 MIDCONST.SET_UI -> {
                     try {
-                        LibreLogger.d(SPOTIFY_TIDAL, "MB : 42, msg = $msg")
+                        LibreLogger.d(TAG, "MB : 42, msg = $msg")
                         val root = JSONObject(msg)
                         val cmdId = root.getInt(LUCIMESSAGES.TAG_CMD_ID)
                         val window = root.getJSONObject(LUCIMESSAGES.ALEXA_KEY_WINDOW_CONTENT)
-                        LibreLogger.d(SPOTIFY_TIDAL, "PLAY JSON is \n= $msg")
+                        LibreLogger.d(TAG, "PLAY JSON is \n= $msg")
                         if (cmdId == 3) {
-                            LibreLogger.d(SPOTIFY_TIDAL, "Handle Play Json UI" + sceneObject.trackName)
+                            LibreLogger.d(TAG, "Handle Play Json UI" + sceneObject.trackName)
                             sceneObject.playUrl = window.getString("PlayUrl").lowercase(Locale.getDefault())
                             sceneObject.album_art = window.getString("CoverArtUrl")
                             sceneObject.artist_name = window.getString("Artist")
@@ -1243,7 +1235,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                             currentAlbumnName = sceneObject.album_name
                             currentAlbumArtView = sceneObject.album_art
                             handlePlayJsonUi(window, sceneObject)
-                            LibreLogger.d(SPOTIFY_TIDAL, "Handle Play Json UI" + sceneObject.trackName + "PLAY URL\n" + sceneObject.playUrl + "ARTIST NAME" + sceneObject.artist_name)
+                            LibreLogger.d(TAG, "Handle Play Json UI" + sceneObject.trackName + "PLAY URL\n" + sceneObject.playUrl + "ARTIST NAME" + sceneObject.artist_name)
                             handleAlexaViews(sceneObject)
                             //MID_STOP_PREV_SOURCE
                         }
@@ -1263,7 +1255,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                 }
 
                 MIDCONST.MID_CURRENT_PLAY_STATE.toInt() -> {
-                    LibreLogger.d(SPOTIFY_TIDAL, "MB : 51, msg = $msg")
+                    LibreLogger.d(TAG, "MB : 51, msg = $msg")
                     if (msg.isNotEmpty()) {
                         val playStatus = Integer.parseInt(msg)
                         if (sceneObject != null) {
@@ -1276,7 +1268,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
 
                 MIDCONST.MID_CURRENT_SOURCE.toInt() -> {/*this MB to get current sources*/
                     try {
-                         LibreLogger.d(SPOTIFY_TIDAL, "Recieved the current source as  " + sceneObject?.currentSource)
+                         LibreLogger.d(TAG, "Recieved the current source as  " + sceneObject?.currentSource)
                         val mSource = Integer.parseInt(msg)
                         if (sceneObject != null) {
                             sceneObject.currentSource = mSource
@@ -1311,7 +1303,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                 MIDCONST.MID_PLAYTIME.toInt() -> {
                     if (msg.isNotEmpty()) {
                         val longDuration = java.lang.Long.parseLong(msg)
-                        LibreLogger.d(SPOTIFY_TIDAL, "MID_PLAYTIME: $longDuration")
+                        LibreLogger.d(TAG, "MID_PLAYTIME: $longDuration")
                         sceneObject.currentPlaybackSeekPosition = longDuration.toFloat()
                         ScanningHandler.getInstance().putSceneObjectToCentralRepo(nettyData?.getRemotedeviceIp(), sceneObject)
 
@@ -1352,10 +1344,10 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                 return
             }
             val controlsArr = currentSceneObject.controlsValue ?: return
-            LibreLogger.d(PLAY_PAUSE, "setControlIconsForAlexa controls $controlsArr")
+            LibreLogger.d(TAG, "setControlIconsForAlexa controls $controlsArr")
             play.isEnabled = controlsArr[0]
             play.isClickable = controlsArr[0]
-            LibreLogger.d(PLAY_PAUSE, "setControlIconsForAlexa play ${play.isEnabled}")
+            LibreLogger.d(TAG, "setControlIconsForAlexa play ${play.isEnabled}")
             if (!play.isEnabled) {
                 play.setImageResource(R.drawable.play_white)
             }
@@ -1385,7 +1377,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
             LibreLogger.d(TAG, "handleGCastMessage: " + packet.command + " Message is " + msg)
             when (packet.command) {
                 MIDCONST.FW_UPGRADE_PROGRESS.toInt() -> {
-                    LibreLogger.d(TAG_FW_UPDATE, "handleGCastMessage:UPGRADE_PROGRESS " + packet.command + "FW update  Message is " + msg)
+                    LibreLogger.d(TAG, "handleGCastMessage:UPGRADE_PROGRESS " + packet.command + "FW update  Message is " + msg)
                     if (mNode == null) return
                     var fwUpgradeData: FwUpgradeData? = FW_UPDATE_AVAILABLE_LIST[nettyData.getRemotedeviceIp()]
                     var mNewData = false
@@ -1423,7 +1415,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                 }
 
                 MIDCONST.FW_UPGRADE_INTERNET_LS9.toInt() -> {
-                    LibreLogger.d(TAG_FW_UPDATE, "handleGCastMessage:INTERNET_LS9 " + packet.command + " INTERNET_LS9  Message is " + msg)
+                    LibreLogger.d(TAG, "handleGCastMessage:INTERNET_LS9 " + packet.command + " INTERNET_LS9  Message is " + msg)
                     if (mNode == null) return/* LibreLogger.d(TAG,_FW_UPDATE, "handleGCastMessage:INTERNET_LS9 before " + "Node:- $sacDeviceNameSetFromTheApp FriendlyName: ${mNode.friendlyname}")*/
                     if (mNode.friendlyname.equals(sacDeviceNameSetFromTheApp, ignoreCase = true)) {
                         if (msg.equals(NO_UPDATE, ignoreCase = true)) {
@@ -1436,7 +1428,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                             mNewData = true
                             FW_UPDATE_AVAILABLE_LIST[mNode.ip] = fwUpgradeData
                         }
-                        LibreLogger.d(TAG_FW_UPDATE, "handleGCastMessage:INTERNET_LS9  Before When Message is $msg")
+                        LibreLogger.d(TAG, "handleGCastMessage:INTERNET_LS9  Before When Message is $msg")
                         when {
                             msg.equals(UPDATE_STARTED, ignoreCase = true) -> fwUpgradeData.updateMsg = getString(R.string.mb223_update_started)
 
@@ -1458,13 +1450,13 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                                 }
                             } catch (e: Exception) {
                                 e.printStackTrace()
-                                LibreLogger.d(TAG_FW_UPDATE, "handleGCastMessage:INTERNET_LS9 Exception:- ${e.message}")
+                                LibreLogger.d(TAG, "handleGCastMessage:INTERNET_LS9 Exception:- ${e.message}")
                             }
                         }
 
                         if (mNewData) showAlertForFirmwareUpgrade(mNode, fwUpgradeData)
                     } else {
-                        LibreLogger.d(TAG_FW_UPDATE, "handleGCastMessage:INTERNET_LS9 SAC and FriendlyName " + "didn't match")
+                        LibreLogger.d(TAG, "handleGCastMessage:INTERNET_LS9 SAC and FriendlyName " + "didn't match")
                     }
                 }
             }
@@ -1615,8 +1607,6 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                 cleanUpCode(false)
             } else {
                 if (!mLuciThreadInitiated) {
-                    //SDK 5Sec Error Debug
-                    //val restarted = restartAllSockets()
                     restartAllSockets()
                 }
 
@@ -1792,7 +1782,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
         }
 
         private fun restartSplashScreen() {
-            LibreLogger.d(TAG_SPLASH, "restartSplashScreen starting ")
+            LibreLogger.d(TAG, "restartSplashScreen starting ")
             val mStartActivity = Intent(this, CTSplashScreenActivityV2::class.java)/*sending to let user know that app is restarting*/
             val mPendingIntentId = 123456
             val mPendingIntent = PendingIntent.getActivity(this, mPendingIntentId, mStartActivity, PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE)
@@ -1884,11 +1874,11 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
         }
 
         private fun showAlertForFirmwareUpgrade(mNode: LSSDPNodes, fwUpgradeData: FwUpgradeData) {
-            LibreLogger.d(TAG_FW_UPDATE, "handleGCastMessage:showAlertForFirmwareUpgrade  ${
+            LibreLogger.d(TAG, "handleGCastMessage:showAlertForFirmwareUpgrade  ${
                 mNode.friendlyname
             } progress: " + "${fwUpgradeData.getmProgressValue()}")
             //  if (!sacDeviceNameSetFromTheApp.equals("", ignoreCase = true)) return
-            LibreLogger.d(TAG_FW_UPDATE, "handleGCastMessage:showAlertForFirmwareUpgrade 1 " + "$sacDeviceNameSetFromTheApp")
+            LibreLogger.d(TAG, "handleGCastMessage:showAlertForFirmwareUpgrade 1 " + "$sacDeviceNameSetFromTheApp")
             val builder = AlertDialog.Builder(this@CTDeviceDiscoveryActivity)
             // set title
             builder.setTitle("Firmware Upgrade")
@@ -1898,7 +1888,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                 BusProvider.getInstance().post(fwUpgradeData)
             }
             // create alertDialog1 dialog
-            LibreLogger.d(TAG_FW_UPDATE, "handleGCastMessage:showAlertForFirmwareUpgrade  2")
+            LibreLogger.d(TAG, "handleGCastMessage:showAlertForFirmwareUpgrade  2")
             if (fwUpdateAlertDialog == null) fwUpdateAlertDialog = builder.create()
             if (!fwUpdateAlertDialog?.isShowing!!) fwUpdateAlertDialog!!.show()
         }
@@ -2075,7 +2065,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
          * Created By Shaik Mansoor
          */
         private fun showAlertDialog(message: String, positiveButtonString: String, requestCode: Int) {
-            LibreLogger.d(TAG_RESULT, "showAlertDialog and requestCode: $requestCode")
+            LibreLogger.d(TAG, "showAlertDialog and requestCode: $requestCode")
             if (mandateDialog != null && mandateDialog!!.isShowing) mandateDialog!!.dismiss()
             else mandateDialog = null
 
@@ -2122,7 +2112,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
          * Created By Shaik Mansoor
          */
         protected open fun customOnActivityResult(data: Intent?, requestCode: Int, resultCode: Int) {
-            //LibreLogger.d(TAG, "came back from wifi list requestCode:4 $requestCode")
+            LibreLogger.d(TAG, "customOnActivityResult requestCode: $requestCode")
             if (requestCode == WIFI_SETTINGS_REQUEST_CODE) {
                 //  LibreLogger.d(TAG,"==mandateDialog==12", "onActivityResult wifi list")
                 val connManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -2157,7 +2147,6 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                 //  Log.d(TAG, "came back from wifi list storage")
                 checkReadStoragePermission()
             }
-
         }
 
         /**
@@ -2190,18 +2179,25 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
  /**
     * Created By Shaik Mansoor
     */
-    suspend fun insertDeviceIntoDb(lsdNodes: LSSDPNodes, s: String) {
+ private suspend fun insertDeviceIntoDb(lsdNodes: LSSDPNodes){
      val uuid: String = randomUUID().toString()
      val addDeviceDate = CastLiteUUIDDataClass(0, lsdNodes.ip, lsdNodes.friendlyname, uuid)
      withContext(Dispatchers.IO) {
-         // Database operations go here
          delay(5000)
          try {
-             val id = libreVoiceDatabaseDao.addDeviceUUID(addDeviceDate)
-             LibreLogger.d(TAG_SECUREROOM, "insertDeviceIntoDb:id  $id")
-         } catch (e: NullPointerException) {
+            // val id = libreVoiceDatabaseDao.addDeviceUUID(addDeviceDate)
+             val id:Long
+             if(libreVoiceDatabase!=null) {
+                  id = libreVoiceDatabase!!.castLiteDao().addDeviceUUID(addDeviceDate)
+                 LibreLogger.d(TAG, "insertDeviceIntoDb:id  $id")
+             }else{
+                 libreVoiceDatabase =LibreVoiceDatabase.getDatabase(this@CTDeviceDiscoveryActivity)
+                 id = libreVoiceDatabase?.castLiteDao()?.addDeviceUUID(addDeviceDate) ?: 0
+                 LibreLogger.d(TAG, "insertDeviceIntoDb else $id")
+             }
+         } catch (e: SQLiteException) {
              e.printStackTrace()
-             LibreLogger.d(TAG_SECUREROOM, "insertDeviceIntoDb:ex  ${e.message}")
+             LibreLogger.d(TAG, "insertDeviceIntoDb:ex  ${e.message}")
          }
 
      }
@@ -2209,9 +2205,15 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
         /**
          * Created By Shaik Mansoor
          */
-        private fun removeUUIDFromDB(deviceIpAddress: String?) {
-            lifecycleScope.launch(Dispatchers.IO) {
-                libreVoiceDatabaseDao.deleteDeviceUUID(deviceIpAddress.toString())
+        private suspend fun removeUUIDFromDB(deviceIpAddress: String?) {
+            withContext(Dispatchers.IO) {
+                delay(2000)
+                try {
+                    libreVoiceDatabase!!.castLiteDao().deleteDeviceUUID(deviceIpAddress.toString())
+                }catch (ex: Exception){
+                    LibreLogger.d(TAG, "removeUUIDFromDB:ex  ${ex.message}")
+                }
+
             }
         }
 
@@ -2230,4 +2232,11 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                 isKeyStored = true
             }
         }
+
+    fun insertDeviceIntoDbFromCoreUPNP(nodes: LSSDPNodes) {
+        lifecycleScope.launch {
+            insertDeviceIntoDb(nodes)
+        }
+    }
+
 }
