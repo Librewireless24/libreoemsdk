@@ -61,6 +61,8 @@ public class LibreApplication extends Application implements
   public static boolean mCleanUpIsDoneButNotRestarted = false;
   public static boolean isWifiON = false;
   public static InputStream openRawandroidp12;
+  public static boolean isUSBSrc=false;
+
   public static String getMYPEMstring = "";
   public static Activity ContextActivity;
   public static int disconnectedCount = 0, betweenDisconnectedCount = 0;

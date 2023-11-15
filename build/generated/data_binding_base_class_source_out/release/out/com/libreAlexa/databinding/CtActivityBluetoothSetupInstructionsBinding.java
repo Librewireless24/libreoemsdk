@@ -26,7 +26,7 @@ public final class CtActivityBluetoothSetupInstructionsBinding implements ViewBi
   public final AppBarLayout appbarLayout;
 
   @NonNull
-  public final AppCompatButton btnOtherOption;
+  public final AppCompatButton btnTurnOnBt;
 
   @NonNull
   public final AppCompatImageView ivBack;
@@ -35,11 +35,11 @@ public final class CtActivityBluetoothSetupInstructionsBinding implements ViewBi
   public final Toolbar toolbar;
 
   private CtActivityBluetoothSetupInstructionsBinding(@NonNull CoordinatorLayout rootView,
-      @NonNull AppBarLayout appbarLayout, @NonNull AppCompatButton btnOtherOption,
+      @NonNull AppBarLayout appbarLayout, @NonNull AppCompatButton btnTurnOnBt,
       @NonNull AppCompatImageView ivBack, @NonNull Toolbar toolbar) {
     this.rootView = rootView;
     this.appbarLayout = appbarLayout;
-    this.btnOtherOption = btnOtherOption;
+    this.btnTurnOnBt = btnTurnOnBt;
     this.ivBack = ivBack;
     this.toolbar = toolbar;
   }
@@ -78,9 +78,9 @@ public final class CtActivityBluetoothSetupInstructionsBinding implements ViewBi
         break missingId;
       }
 
-      id = R.id.btn_other_option;
-      AppCompatButton btnOtherOption = ViewBindings.findChildViewById(rootView, id);
-      if (btnOtherOption == null) {
+      id = R.id.btn_turn_on_bt;
+      AppCompatButton btnTurnOnBt = ViewBindings.findChildViewById(rootView, id);
+      if (btnTurnOnBt == null) {
         break missingId;
       }
 
@@ -97,7 +97,7 @@ public final class CtActivityBluetoothSetupInstructionsBinding implements ViewBi
       }
 
       return new CtActivityBluetoothSetupInstructionsBinding((CoordinatorLayout) rootView,
-          appbarLayout, btnOtherOption, ivBack, toolbar);
+          appbarLayout, btnTurnOnBt, ivBack, toolbar);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

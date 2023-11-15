@@ -14,7 +14,7 @@
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="?android:attr/actionBarSize"
             app:contentInsetLeft="0dp"
             app:contentInsetStart="0dp">
 
@@ -26,8 +26,8 @@
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/iv_back"
-                    android:layout_width="?attr/actionBarSize"
-                    android:layout_height="?attr/actionBarSize"
+                    android:layout_width="?android:attr/actionBarSize"
+                    android:layout_height="?android:attr/actionBarSize"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:padding="16dp"
                     app:srcCompat="@drawable/ic_arrow_back_white" />
@@ -43,8 +43,7 @@
                     android:singleLine="true"
                     android:text="@string/app_name"
                     android:textColor="@color/white"
-                    android:textSize="22sp"
-                    app:fontFamily="sans-serif-medium" />
+                    android:textSize="22sp" />
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/iv_alexa_settings"
@@ -130,6 +129,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rv_media_sources_list"
                 android:layout_width="match_parent"
+                android:paddingBottom="60dp"
                 android:layout_height="wrap_content" />
            <!-- Making invisible  for now SHAIK-->
             <RelativeLayout
@@ -212,7 +212,7 @@
         </LinearLayout>
 
         <include
-          android:id="@+id/ilMusicPlayingWidget"
+            android:id="@+id/ilMusicPlayingWidget"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"

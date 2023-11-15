@@ -28,6 +28,9 @@ public final class CtAlexaWidgetBinding implements ViewBinding {
   public final AppCompatImageButton ibAlexaAvsBtn;
 
   @NonNull
+  public final LinearLayout layAlexa;
+
+  @NonNull
   public final LinearLayout llPlayingLayout;
 
   @NonNull
@@ -40,12 +43,13 @@ public final class CtAlexaWidgetBinding implements ViewBinding {
   public final AppCompatTextView tvTrackName;
 
   private CtAlexaWidgetBinding(@NonNull FrameLayout rootView, @NonNull FrameLayout flAlexaWidget,
-      @NonNull AppCompatImageButton ibAlexaAvsBtn, @NonNull LinearLayout llPlayingLayout,
-      @NonNull AppCompatTextView tvAlbumName, @NonNull AppCompatTextView tvAlexaListening,
-      @NonNull AppCompatTextView tvTrackName) {
+      @NonNull AppCompatImageButton ibAlexaAvsBtn, @NonNull LinearLayout layAlexa,
+      @NonNull LinearLayout llPlayingLayout, @NonNull AppCompatTextView tvAlbumName,
+      @NonNull AppCompatTextView tvAlexaListening, @NonNull AppCompatTextView tvTrackName) {
     this.rootView = rootView;
     this.flAlexaWidget = flAlexaWidget;
     this.ibAlexaAvsBtn = ibAlexaAvsBtn;
+    this.layAlexa = layAlexa;
     this.llPlayingLayout = llPlayingLayout;
     this.tvAlbumName = tvAlbumName;
     this.tvAlexaListening = tvAlexaListening;
@@ -87,6 +91,12 @@ public final class CtAlexaWidgetBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.lay_Alexa;
+      LinearLayout layAlexa = ViewBindings.findChildViewById(rootView, id);
+      if (layAlexa == null) {
+        break missingId;
+      }
+
       id = R.id.ll_playing_layout;
       LinearLayout llPlayingLayout = ViewBindings.findChildViewById(rootView, id);
       if (llPlayingLayout == null) {
@@ -112,7 +122,7 @@ public final class CtAlexaWidgetBinding implements ViewBinding {
       }
 
       return new CtAlexaWidgetBinding((FrameLayout) rootView, flAlexaWidget, ibAlexaAvsBtn,
-          llPlayingLayout, tvAlbumName, tvAlexaListening, tvTrackName);
+          layAlexa, llPlayingLayout, tvAlbumName, tvAlexaListening, tvTrackName);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

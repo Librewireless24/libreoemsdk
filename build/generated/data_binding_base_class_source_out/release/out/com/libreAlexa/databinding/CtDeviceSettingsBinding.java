@@ -5,10 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatSeekBar;
 import androidx.appcompat.widget.AppCompatTextView;
@@ -34,6 +37,12 @@ public final class CtDeviceSettingsBinding implements ViewBinding {
   public final ProgressBar audioProgressBar;
 
   @NonNull
+  public final ImageButton btnEditSpeakerName;
+
+  @NonNull
+  public final AppCompatButton btnForgetNetwork;
+
+  @NonNull
   public final ProgressBar chromecastLoginProgressBar;
 
   @NonNull
@@ -46,10 +55,19 @@ public final class CtDeviceSettingsBinding implements ViewBinding {
   public final AppCompatImageView ivBack;
 
   @NonNull
+  public final FrameLayout layIssuesReport;
+
+  @NonNull
+  public final FrameLayout layTimeZone;
+
+  @NonNull
   public final LinearLayout llAlexaSettings;
 
   @NonNull
   public final LinearLayout llChromecastSettings;
+
+  @NonNull
+  public final LinearLayout llIssuesReport;
 
   @NonNull
   public final LinearLayout llSoftUpdate;
@@ -65,9 +83,6 @@ public final class CtDeviceSettingsBinding implements ViewBinding {
 
   @NonNull
   public final ProgressBar loginProgressBar;
-
-  @NonNull
-  public final ProgressBar networkNameProgressBar;
 
   @NonNull
   public final AppCompatSeekBar seekBarBass;
@@ -103,19 +118,13 @@ public final class CtDeviceSettingsBinding implements ViewBinding {
   public final AppCompatTextView tvAudioOutput;
 
   @NonNull
-  public final AppCompatTextView tvAwayModeLabel;
-
-  @NonNull
   public final AppCompatTextView tvBassValue;
 
   @NonNull
   public final AppCompatTextView tvChromecastStatus;
 
   @NonNull
-  public final AppCompatTextView tvDeviceName;
-
-  @NonNull
-  public final AppCompatTextView tvEditAwayMode;
+  public final TextView tvDeviceName;
 
   @NonNull
   public final AppCompatTextView tvHostFirmware;
@@ -125,9 +134,6 @@ public final class CtDeviceSettingsBinding implements ViewBinding {
 
   @NonNull
   public final AppCompatTextView tvMacAddress;
-
-  @NonNull
-  public final AppCompatTextView tvNetworkName;
 
   @NonNull
   public final AppCompatTextView tvSoftUpdate;
@@ -148,45 +154,49 @@ public final class CtDeviceSettingsBinding implements ViewBinding {
   public final AppCompatTextView tvVolumeValue;
 
   @NonNull
-  public final AppCompatTextView tvWifiPwd;
+  public final AppCompatTextView txtTimeZone;
 
   private CtDeviceSettingsBinding(@NonNull CoordinatorLayout rootView,
       @NonNull AppBarLayout appbarLayout, @NonNull ProgressBar audioProgressBar,
+      @NonNull ImageButton btnEditSpeakerName, @NonNull AppCompatButton btnForgetNetwork,
       @NonNull ProgressBar chromecastLoginProgressBar, @NonNull FrameLayout flChromecastSettings,
       @NonNull ProgressBar hostFirmwareProgressBar, @NonNull AppCompatImageView ivBack,
+      @NonNull FrameLayout layIssuesReport, @NonNull FrameLayout layTimeZone,
       @NonNull LinearLayout llAlexaSettings, @NonNull LinearLayout llChromecastSettings,
-      @NonNull LinearLayout llSoftUpdate, @NonNull LinearLayout llTopChromecastSettings,
-      @NonNull LinearLayout llTunnelingControls, @NonNull ProgressBar localeProgressBar,
-      @NonNull ProgressBar loginProgressBar, @NonNull ProgressBar networkNameProgressBar,
+      @NonNull LinearLayout llIssuesReport, @NonNull LinearLayout llSoftUpdate,
+      @NonNull LinearLayout llTopChromecastSettings, @NonNull LinearLayout llTunnelingControls,
+      @NonNull ProgressBar localeProgressBar, @NonNull ProgressBar loginProgressBar,
       @NonNull AppCompatSeekBar seekBarBass, @NonNull AppCompatSeekBar seekBarTreble,
       @NonNull AppCompatSeekBar seekBarVolume, @NonNull ProgressBar softUpdateProgressBar,
       @NonNull LinearLayout speechVolume, @NonNull SwitchCompat switchSpeechVolumeFollow,
       @NonNull ProgressBar systemFirmwareProgressBar, @NonNull Toolbar toolbar,
       @NonNull AppCompatTextView tvAlexaLocale, @NonNull AppCompatTextView tvAmazonLogin,
-      @NonNull AppCompatTextView tvAudioOutput, @NonNull AppCompatTextView tvAwayModeLabel,
-      @NonNull AppCompatTextView tvBassValue, @NonNull AppCompatTextView tvChromecastStatus,
-      @NonNull AppCompatTextView tvDeviceName, @NonNull AppCompatTextView tvEditAwayMode,
+      @NonNull AppCompatTextView tvAudioOutput, @NonNull AppCompatTextView tvBassValue,
+      @NonNull AppCompatTextView tvChromecastStatus, @NonNull TextView tvDeviceName,
       @NonNull AppCompatTextView tvHostFirmware, @NonNull AppCompatTextView tvIpAddress,
-      @NonNull AppCompatTextView tvMacAddress, @NonNull AppCompatTextView tvNetworkName,
-      @NonNull AppCompatTextView tvSoftUpdate, @NonNull AppCompatTextView tvSwitchStatus,
-      @NonNull AppCompatTextView tvSystemFirmware, @NonNull AppCompatTextView tvToolbarTitle,
-      @NonNull AppCompatTextView tvTrebleValue, @NonNull AppCompatTextView tvVolumeValue,
-      @NonNull AppCompatTextView tvWifiPwd) {
+      @NonNull AppCompatTextView tvMacAddress, @NonNull AppCompatTextView tvSoftUpdate,
+      @NonNull AppCompatTextView tvSwitchStatus, @NonNull AppCompatTextView tvSystemFirmware,
+      @NonNull AppCompatTextView tvToolbarTitle, @NonNull AppCompatTextView tvTrebleValue,
+      @NonNull AppCompatTextView tvVolumeValue, @NonNull AppCompatTextView txtTimeZone) {
     this.rootView = rootView;
     this.appbarLayout = appbarLayout;
     this.audioProgressBar = audioProgressBar;
+    this.btnEditSpeakerName = btnEditSpeakerName;
+    this.btnForgetNetwork = btnForgetNetwork;
     this.chromecastLoginProgressBar = chromecastLoginProgressBar;
     this.flChromecastSettings = flChromecastSettings;
     this.hostFirmwareProgressBar = hostFirmwareProgressBar;
     this.ivBack = ivBack;
+    this.layIssuesReport = layIssuesReport;
+    this.layTimeZone = layTimeZone;
     this.llAlexaSettings = llAlexaSettings;
     this.llChromecastSettings = llChromecastSettings;
+    this.llIssuesReport = llIssuesReport;
     this.llSoftUpdate = llSoftUpdate;
     this.llTopChromecastSettings = llTopChromecastSettings;
     this.llTunnelingControls = llTunnelingControls;
     this.localeProgressBar = localeProgressBar;
     this.loginProgressBar = loginProgressBar;
-    this.networkNameProgressBar = networkNameProgressBar;
     this.seekBarBass = seekBarBass;
     this.seekBarTreble = seekBarTreble;
     this.seekBarVolume = seekBarVolume;
@@ -198,22 +208,19 @@ public final class CtDeviceSettingsBinding implements ViewBinding {
     this.tvAlexaLocale = tvAlexaLocale;
     this.tvAmazonLogin = tvAmazonLogin;
     this.tvAudioOutput = tvAudioOutput;
-    this.tvAwayModeLabel = tvAwayModeLabel;
     this.tvBassValue = tvBassValue;
     this.tvChromecastStatus = tvChromecastStatus;
     this.tvDeviceName = tvDeviceName;
-    this.tvEditAwayMode = tvEditAwayMode;
     this.tvHostFirmware = tvHostFirmware;
     this.tvIpAddress = tvIpAddress;
     this.tvMacAddress = tvMacAddress;
-    this.tvNetworkName = tvNetworkName;
     this.tvSoftUpdate = tvSoftUpdate;
     this.tvSwitchStatus = tvSwitchStatus;
     this.tvSystemFirmware = tvSystemFirmware;
     this.tvToolbarTitle = tvToolbarTitle;
     this.tvTrebleValue = tvTrebleValue;
     this.tvVolumeValue = tvVolumeValue;
-    this.tvWifiPwd = tvWifiPwd;
+    this.txtTimeZone = txtTimeZone;
   }
 
   @Override
@@ -255,6 +262,18 @@ public final class CtDeviceSettingsBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.btn_edit_speakerName;
+      ImageButton btnEditSpeakerName = ViewBindings.findChildViewById(rootView, id);
+      if (btnEditSpeakerName == null) {
+        break missingId;
+      }
+
+      id = R.id.btn_forget_network;
+      AppCompatButton btnForgetNetwork = ViewBindings.findChildViewById(rootView, id);
+      if (btnForgetNetwork == null) {
+        break missingId;
+      }
+
       id = R.id.chromecast_login_progress_bar;
       ProgressBar chromecastLoginProgressBar = ViewBindings.findChildViewById(rootView, id);
       if (chromecastLoginProgressBar == null) {
@@ -279,6 +298,18 @@ public final class CtDeviceSettingsBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.lay_issuesReport;
+      FrameLayout layIssuesReport = ViewBindings.findChildViewById(rootView, id);
+      if (layIssuesReport == null) {
+        break missingId;
+      }
+
+      id = R.id.lay_timeZone;
+      FrameLayout layTimeZone = ViewBindings.findChildViewById(rootView, id);
+      if (layTimeZone == null) {
+        break missingId;
+      }
+
       id = R.id.ll_alexa_settings;
       LinearLayout llAlexaSettings = ViewBindings.findChildViewById(rootView, id);
       if (llAlexaSettings == null) {
@@ -288,6 +319,12 @@ public final class CtDeviceSettingsBinding implements ViewBinding {
       id = R.id.ll_chromecast_settings;
       LinearLayout llChromecastSettings = ViewBindings.findChildViewById(rootView, id);
       if (llChromecastSettings == null) {
+        break missingId;
+      }
+
+      id = R.id.ll_issues_report;
+      LinearLayout llIssuesReport = ViewBindings.findChildViewById(rootView, id);
+      if (llIssuesReport == null) {
         break missingId;
       }
 
@@ -318,12 +355,6 @@ public final class CtDeviceSettingsBinding implements ViewBinding {
       id = R.id.login_progress_bar;
       ProgressBar loginProgressBar = ViewBindings.findChildViewById(rootView, id);
       if (loginProgressBar == null) {
-        break missingId;
-      }
-
-      id = R.id.network_name_progress_bar;
-      ProgressBar networkNameProgressBar = ViewBindings.findChildViewById(rootView, id);
-      if (networkNameProgressBar == null) {
         break missingId;
       }
 
@@ -393,12 +424,6 @@ public final class CtDeviceSettingsBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.tv_away_mode_label;
-      AppCompatTextView tvAwayModeLabel = ViewBindings.findChildViewById(rootView, id);
-      if (tvAwayModeLabel == null) {
-        break missingId;
-      }
-
       id = R.id.tv_bass_value;
       AppCompatTextView tvBassValue = ViewBindings.findChildViewById(rootView, id);
       if (tvBassValue == null) {
@@ -412,14 +437,8 @@ public final class CtDeviceSettingsBinding implements ViewBinding {
       }
 
       id = R.id.tv_device_name;
-      AppCompatTextView tvDeviceName = ViewBindings.findChildViewById(rootView, id);
+      TextView tvDeviceName = ViewBindings.findChildViewById(rootView, id);
       if (tvDeviceName == null) {
-        break missingId;
-      }
-
-      id = R.id.tv_edit_away_mode;
-      AppCompatTextView tvEditAwayMode = ViewBindings.findChildViewById(rootView, id);
-      if (tvEditAwayMode == null) {
         break missingId;
       }
 
@@ -438,12 +457,6 @@ public final class CtDeviceSettingsBinding implements ViewBinding {
       id = R.id.tv_mac_address;
       AppCompatTextView tvMacAddress = ViewBindings.findChildViewById(rootView, id);
       if (tvMacAddress == null) {
-        break missingId;
-      }
-
-      id = R.id.tv_network_name;
-      AppCompatTextView tvNetworkName = ViewBindings.findChildViewById(rootView, id);
-      if (tvNetworkName == null) {
         break missingId;
       }
 
@@ -483,22 +496,22 @@ public final class CtDeviceSettingsBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.tv_wifi_pwd;
-      AppCompatTextView tvWifiPwd = ViewBindings.findChildViewById(rootView, id);
-      if (tvWifiPwd == null) {
+      id = R.id.txt_timeZone;
+      AppCompatTextView txtTimeZone = ViewBindings.findChildViewById(rootView, id);
+      if (txtTimeZone == null) {
         break missingId;
       }
 
       return new CtDeviceSettingsBinding((CoordinatorLayout) rootView, appbarLayout,
-          audioProgressBar, chromecastLoginProgressBar, flChromecastSettings,
-          hostFirmwareProgressBar, ivBack, llAlexaSettings, llChromecastSettings, llSoftUpdate,
+          audioProgressBar, btnEditSpeakerName, btnForgetNetwork, chromecastLoginProgressBar,
+          flChromecastSettings, hostFirmwareProgressBar, ivBack, layIssuesReport, layTimeZone,
+          llAlexaSettings, llChromecastSettings, llIssuesReport, llSoftUpdate,
           llTopChromecastSettings, llTunnelingControls, localeProgressBar, loginProgressBar,
-          networkNameProgressBar, seekBarBass, seekBarTreble, seekBarVolume, softUpdateProgressBar,
-          speechVolume, switchSpeechVolumeFollow, systemFirmwareProgressBar, toolbar, tvAlexaLocale,
-          tvAmazonLogin, tvAudioOutput, tvAwayModeLabel, tvBassValue, tvChromecastStatus,
-          tvDeviceName, tvEditAwayMode, tvHostFirmware, tvIpAddress, tvMacAddress, tvNetworkName,
-          tvSoftUpdate, tvSwitchStatus, tvSystemFirmware, tvToolbarTitle, tvTrebleValue,
-          tvVolumeValue, tvWifiPwd);
+          seekBarBass, seekBarTreble, seekBarVolume, softUpdateProgressBar, speechVolume,
+          switchSpeechVolumeFollow, systemFirmwareProgressBar, toolbar, tvAlexaLocale,
+          tvAmazonLogin, tvAudioOutput, tvBassValue, tvChromecastStatus, tvDeviceName,
+          tvHostFirmware, tvIpAddress, tvMacAddress, tvSoftUpdate, tvSwitchStatus, tvSystemFirmware,
+          tvToolbarTitle, tvTrebleValue, tvVolumeValue, txtTimeZone);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

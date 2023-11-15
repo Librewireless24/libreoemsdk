@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -34,21 +35,39 @@ public final class ActivitySpotifyInstructionsBinding implements ViewBinding {
   public final TextView openSpotify;
 
   @NonNull
+  public final ImageView spotifyImage;
+
+  @NonNull
   public final TextView textView2;
 
   @NonNull
   public final Toolbar toolbar;
 
+  @NonNull
+  public final TextView txtFirstString;
+
+  @NonNull
+  public final TextView txtSecondString;
+
+  @NonNull
+  public final TextView txtThirdString;
+
   private ActivitySpotifyInstructionsBinding(@NonNull RelativeLayout rootView,
       @NonNull ImageButton back, @NonNull TextView choosesong, @NonNull TextView learnMore,
-      @NonNull TextView openSpotify, @NonNull TextView textView2, @NonNull Toolbar toolbar) {
+      @NonNull TextView openSpotify, @NonNull ImageView spotifyImage, @NonNull TextView textView2,
+      @NonNull Toolbar toolbar, @NonNull TextView txtFirstString, @NonNull TextView txtSecondString,
+      @NonNull TextView txtThirdString) {
     this.rootView = rootView;
     this.back = back;
     this.choosesong = choosesong;
     this.learnMore = learnMore;
     this.openSpotify = openSpotify;
+    this.spotifyImage = spotifyImage;
     this.textView2 = textView2;
     this.toolbar = toolbar;
+    this.txtFirstString = txtFirstString;
+    this.txtSecondString = txtSecondString;
+    this.txtThirdString = txtThirdString;
   }
 
   @Override
@@ -102,6 +121,12 @@ public final class ActivitySpotifyInstructionsBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.spotify_image;
+      ImageView spotifyImage = ViewBindings.findChildViewById(rootView, id);
+      if (spotifyImage == null) {
+        break missingId;
+      }
+
       id = R.id.textView2;
       TextView textView2 = ViewBindings.findChildViewById(rootView, id);
       if (textView2 == null) {
@@ -114,8 +139,27 @@ public final class ActivitySpotifyInstructionsBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.txt_first_String;
+      TextView txtFirstString = ViewBindings.findChildViewById(rootView, id);
+      if (txtFirstString == null) {
+        break missingId;
+      }
+
+      id = R.id.txt_second_String;
+      TextView txtSecondString = ViewBindings.findChildViewById(rootView, id);
+      if (txtSecondString == null) {
+        break missingId;
+      }
+
+      id = R.id.txt_third_String;
+      TextView txtThirdString = ViewBindings.findChildViewById(rootView, id);
+      if (txtThirdString == null) {
+        break missingId;
+      }
+
       return new ActivitySpotifyInstructionsBinding((RelativeLayout) rootView, back, choosesong,
-          learnMore, openSpotify, textView2, toolbar);
+          learnMore, openSpotify, spotifyImage, textView2, toolbar, txtFirstString, txtSecondString,
+          txtThirdString);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

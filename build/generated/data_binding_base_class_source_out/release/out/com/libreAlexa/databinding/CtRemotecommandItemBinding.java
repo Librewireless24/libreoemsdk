@@ -21,24 +21,42 @@ public final class CtRemotecommandItemBinding implements ViewBinding {
   private final LinearLayout rootView;
 
   @NonNull
+  public final AppCompatTextView itemAtlabel;
+
+  @NonNull
   public final AppCompatImageView itemFavButton;
+
+  @NonNull
+  public final AppCompatImageView itemFolder;
 
   @NonNull
   public final AppCompatImageView itemIcon;
 
   @NonNull
+  public final AppCompatImageView itemInfo;
+
+  @NonNull
   public final AppCompatTextView itemTitle;
+
+  @NonNull
+  public final LinearLayout layItem;
 
   @NonNull
   public final LinearLayout rowLayout;
 
   private CtRemotecommandItemBinding(@NonNull LinearLayout rootView,
-      @NonNull AppCompatImageView itemFavButton, @NonNull AppCompatImageView itemIcon,
-      @NonNull AppCompatTextView itemTitle, @NonNull LinearLayout rowLayout) {
+      @NonNull AppCompatTextView itemAtlabel, @NonNull AppCompatImageView itemFavButton,
+      @NonNull AppCompatImageView itemFolder, @NonNull AppCompatImageView itemIcon,
+      @NonNull AppCompatImageView itemInfo, @NonNull AppCompatTextView itemTitle,
+      @NonNull LinearLayout layItem, @NonNull LinearLayout rowLayout) {
     this.rootView = rootView;
+    this.itemAtlabel = itemAtlabel;
     this.itemFavButton = itemFavButton;
+    this.itemFolder = itemFolder;
     this.itemIcon = itemIcon;
+    this.itemInfo = itemInfo;
     this.itemTitle = itemTitle;
+    this.layItem = layItem;
     this.rowLayout = rowLayout;
   }
 
@@ -69,9 +87,21 @@ public final class CtRemotecommandItemBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
+      id = R.id.item_atlabel;
+      AppCompatTextView itemAtlabel = ViewBindings.findChildViewById(rootView, id);
+      if (itemAtlabel == null) {
+        break missingId;
+      }
+
       id = R.id.item_fav_button;
       AppCompatImageView itemFavButton = ViewBindings.findChildViewById(rootView, id);
       if (itemFavButton == null) {
+        break missingId;
+      }
+
+      id = R.id.item_folder;
+      AppCompatImageView itemFolder = ViewBindings.findChildViewById(rootView, id);
+      if (itemFolder == null) {
         break missingId;
       }
 
@@ -81,16 +111,28 @@ public final class CtRemotecommandItemBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.item_info;
+      AppCompatImageView itemInfo = ViewBindings.findChildViewById(rootView, id);
+      if (itemInfo == null) {
+        break missingId;
+      }
+
       id = R.id.item_title;
       AppCompatTextView itemTitle = ViewBindings.findChildViewById(rootView, id);
       if (itemTitle == null) {
         break missingId;
       }
 
+      id = R.id.lay_Item;
+      LinearLayout layItem = ViewBindings.findChildViewById(rootView, id);
+      if (layItem == null) {
+        break missingId;
+      }
+
       LinearLayout rowLayout = (LinearLayout) rootView;
 
-      return new CtRemotecommandItemBinding((LinearLayout) rootView, itemFavButton, itemIcon,
-          itemTitle, rowLayout);
+      return new CtRemotecommandItemBinding((LinearLayout) rootView, itemAtlabel, itemFavButton,
+          itemFolder, itemIcon, itemInfo, itemTitle, layItem, rowLayout);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

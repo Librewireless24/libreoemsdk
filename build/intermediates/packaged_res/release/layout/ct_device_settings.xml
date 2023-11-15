@@ -1,59 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@color/screen_bg">
+  <com.google.android.material.appbar.AppBarLayout
+    android:id="@+id/appbarLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/screen_bg">
+    android:layout_height="wrap_content"
+    android:background="@color/appbar_bg">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbarLayout"
+    <androidx.appcompat.widget.Toolbar
+      android:id="@+id/toolbar"
+      android:layout_width="match_parent"
+      android:layout_height="?android:attr/actionBarSize"
+      app:contentInsetLeft="0dp"
+      app:contentInsetStart="0dp">
+
+      <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/appbar_bg">
+        android:layout_height="match_parent">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:contentInsetLeft="0dp"
-            app:contentInsetStart="0dp">
+        <androidx.appcompat.widget.AppCompatImageView
+          android:id="@+id/iv_back"
+          android:layout_width="?android:attr/actionBarSize"
+          android:layout_height="?android:attr/actionBarSize"
+          android:background="?attr/selectableItemBackgroundBorderless"
+          android:padding="16dp"
+          app:srcCompat="@drawable/ic_arrow_back_white" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/iv_back"
-                    android:layout_width="?attr/actionBarSize"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:padding="16dp"
-                    app:srcCompat="@drawable/ic_arrow_back_white" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tv_toolbar_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:ellipsize="marquee"
-                    android:marqueeRepeatLimit="marquee_forever"
-                    android:scrollHorizontally="true"
-                    android:singleLine="true"
-                    android:text="@string/app_name"
-                    android:textColor="@color/white"
-                    android:textSize="22sp"
-                    app:fontFamily="sans-serif-medium" />
-            </LinearLayout>
-        </androidx.appcompat.widget.Toolbar>
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.core.widget.NestedScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clipToPadding="false"
-        android:fillViewport="true"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+        <androidx.appcompat.widget.AppCompatTextView
+          android:id="@+id/tv_toolbar_title"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_vertical"
+          android:ellipsize="marquee"
+          android:marqueeRepeatLimit="marquee_forever"
+          android:scrollHorizontally="true"
+          android:singleLine="true"
+          android:text="@string/app_name"
+          android:textColor="@color/white"
+          android:textSize="22sp"
+          app:fontFamily="sans-serif-medium" />
+      </LinearLayout>
+    </androidx.appcompat.widget.Toolbar>
+  </com.google.android.material.appbar.AppBarLayout>
+  <androidx.core.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fillViewport="true"
+    android:clipToPadding="false"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -75,7 +74,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
+                android:layout_height="?android:attr/actionBarSize"
                 android:background="@color/appbar_bg"
                 android:gravity="center_vertical">
 
@@ -89,18 +88,28 @@
                     android:textColor="@color/white"
                     app:fontFamily="sans-serif" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <TextView
                     android:id="@+id/tv_device_name"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:gravity="center_vertical|right"
-                    android:padding="16dp"
+                    android:background="@color/appbar_bg"
+                    android:gravity="center"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
                     android:text="@string/app_name"
                     android:textSize="16sp"
-                    android:textAllCaps="true"
+                    android:maxLength="50"
                     android:textColor="@color/white"
-                    app:fontFamily="sans-serif-black" />
+                    android:singleLine="true" />
+                <ImageButton
+                  android:id="@+id/btn_edit_speakerName"
+                  android:layout_width="wrap_content"
+                  android:layout_height="60dp"
+                  android:paddingHorizontal="16dp"
+                  android:background="@color/transparent"
+                  android:src="@drawable/baseline_edit_24" />
             </LinearLayout>
 
             <View
@@ -111,14 +120,13 @@
             <LinearLayout
                 android:id="@+id/ll_tunneling_controls"
                 android:orientation="vertical"
-                android:visibility="gone"
-                tools:visibility="visible"
+                android:visibility="visible"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
                 <LinearLayout
                     android:visibility="visible"
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
+                    android:layout_height="?android:attr/actionBarSize"
                     android:background="@color/appbar_bg"
                     android:gravity="center_vertical">
 
@@ -158,7 +166,7 @@
                             android:layout_width="28dp"
                             android:layout_height="28dp"
                             android:layout_gravity="center_vertical|right"
-                            android:layout_marginRight="?attr/actionBarSize"
+                            android:layout_marginRight="?android:attr/actionBarSize"
                             android:indeterminate="true"
                             android:visibility="gone"
                             tools:visibility="visible" />
@@ -174,7 +182,7 @@
                 <LinearLayout
                     android:visibility="visible"
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
+                    android:layout_height="?android:attr/actionBarSize"
                     android:background="@color/appbar_bg"
                     android:gravity="center_vertical"
                     android:paddingLeft="16dp"
@@ -220,7 +228,7 @@
                 <LinearLayout
                     android:visibility="visible"
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
+                    android:layout_height="?android:attr/actionBarSize"
                     android:background="@color/appbar_bg"
                     android:gravity="center_vertical"
                     android:paddingLeft="16dp"
@@ -266,7 +274,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
+                android:layout_height="?android:attr/actionBarSize"
                 android:background="@color/appbar_bg"
                 android:gravity="center_vertical">
 
@@ -301,7 +309,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
+                android:layout_height="?android:attr/actionBarSize"
                 android:background="@color/appbar_bg"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
@@ -354,7 +362,7 @@
             <LinearLayout
                 android:visibility="gone"
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
+                android:layout_height="?android:attr/actionBarSize"
                 android:background="@color/appbar_bg"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
@@ -400,7 +408,7 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
+                android:layout_height="?android:attr/actionBarSize"
                 android:background="@color/appbar_bg"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
@@ -428,10 +436,42 @@
                     app:fontFamily="sans-serif-black" />
 
             </LinearLayout>
+            <View
+              android:layout_width="match_parent"
+              android:layout_height="1dp"
+              android:background="@android:color/transparent" />
+            <LinearLayout
+              android:layout_width="match_parent"
+              android:layout_height="?android:attr/actionBarSize"
+              android:background="@color/appbar_bg"
+              android:gravity="center_vertical"
+              android:orientation="horizontal">
 
+                <androidx.appcompat.widget.AppCompatTextView
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:gravity="center_vertical"
+                  android:padding="16dp"
+                  android:textSize="16sp"
+                  android:text="@string/time_zone"
+                  android:textColor="@color/white"
+                  app:fontFamily="sans-serif" />
+                <androidx.appcompat.widget.AppCompatTextView
+                  android:id="@+id/txt_timeZone"
+                  android:padding="16dp"
+                  android:gravity="right"
+                  android:textSize="16sp"
+                  android:layout_weight="1"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:textColor="@color/white"
+                  app:fontFamily="sans-serif-black" />
+            </LinearLayout>
+           <!-- &lt;!&ndash; Shaik 582 &ndash;&gt;
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 android:padding="4dp">
 
                 <LinearLayout
@@ -467,12 +507,13 @@
                     android:textColor="@color/app_text_color_enabled"
                     app:fontFamily="sans-serif-black" />
             </RelativeLayout>
-
+            &lt;!&ndash; Shaik 582 &ndash;&gt;
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
+                android:layout_height="?android:attr/actionBarSize"
                 android:background="@color/appbar_bg"
                 android:gravity="center_vertical"
+                android:visibility="gone"
                 android:orientation="horizontal">
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -517,11 +558,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@android:color/transparent" />
-
+           &lt;!&ndash; Shaik 582 &ndash;&gt;
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
+                android:layout_height="?android:attr/actionBarSize"
                 android:background="@color/appbar_bg"
+                android:visibility="gone"
                 android:gravity="center_vertical">
 
                 <androidx.appcompat.widget.AppCompatTextView
@@ -545,7 +587,7 @@
                     android:textSize="16sp"
                     app:fontFamily="sans-serif-black"
                     tools:text="@string/hello_world" />
-            </LinearLayout>
+            </LinearLayout>-->
 
             <LinearLayout
                 android:id="@+id/ll_alexa_settings"
@@ -578,7 +620,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
+                    android:layout_height="?android:attr/actionBarSize"
                     android:background="@color/appbar_bg"
                     android:gravity="center_vertical">
 
@@ -618,7 +660,7 @@
                             android:layout_width="28dp"
                             android:layout_height="28dp"
                             android:layout_gravity="center_vertical|right"
-                            android:layout_marginRight="?attr/actionBarSize"
+                            android:layout_marginRight="?android:attr/actionBarSize"
                             android:indeterminate="true"
                             android:visibility="gone"
                             tools:visibility="visible" />
@@ -633,7 +675,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
+                    android:layout_height="?android:attr/actionBarSize"
                     android:background="@color/appbar_bg"
                     android:gravity="center_vertical">
 
@@ -673,20 +715,122 @@
                             android:layout_width="28dp"
                             android:layout_height="28dp"
                             android:layout_gravity="center_vertical|right"
-                            android:layout_marginRight="?attr/actionBarSize"
+                            android:layout_marginRight="?android:attr/actionBarSize"
                             android:indeterminate="true"
                             android:visibility="gone"
                             tools:visibility="visible" />
                     </FrameLayout>
 
                 </LinearLayout>
+
+                <LinearLayout
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:gravity="center"
+                  android:orientation="horizontal"
+                  android:padding="12dp">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                      android:layout_width="36dp"
+                      android:layout_height="36dp"
+                      android:layout_marginRight="24dp"
+                      android:scaleType="fitCenter"
+                      app:srcCompat="@drawable/alexa_blue_white_100px" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:text="@string/speech_volume_follow"
+                      android:textColor="@color/app_text_color_disabled" />
+                </LinearLayout>
+
+                <LinearLayout
+                  android:layout_width="match_parent"
+                  android:layout_height="?android:attr/actionBarSize"
+                  android:background="@color/appbar_bg"
+                  android:gravity="center_vertical">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                      android:layout_width="0dp"
+                      android:layout_height="wrap_content"
+                      android:layout_weight="1"
+                      android:gravity="center_vertical"
+                      android:padding="16dp"
+                      android:text="@string/speech_volume_follow"
+                      android:textSize="16sp"
+                      android:textColor="@color/white"
+                      app:fontFamily="sans-serif" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                      android:id="@+id/tv_switch_status"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:text="@string/off"
+                      android:textAllCaps="true"
+                      android:textSize="16sp"
+                      android:textColor="@color/app_text_color_enabled" />
+
+                    <androidx.appcompat.widget.SwitchCompat
+                      android:id="@+id/switch_speech_volume_follow"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:layout_marginLeft="16dp"
+                      android:layout_marginRight="16dp"
+                      android:checked="false"
+                      android:textOff="OFF"
+                      android:textOn="ON" />
+                </LinearLayout>
+
+                <View
+                  android:layout_width="match_parent"
+                  android:layout_height="1dp"
+                  android:background="@android:color/transparent" />
+
+                <LinearLayout
+                  android:layout_width="match_parent"
+                  android:layout_height="?android:attr/actionBarSize"
+                  android:background="@color/appbar_bg"
+                  android:gravity="center_vertical"
+                  android:paddingLeft="16dp"
+                  android:paddingRight="16dp"
+                  android:id="@+id/speechVolume">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:layout_marginRight="16dp"
+                      android:gravity="center_vertical"
+                      android:text="@string/volume"
+                      android:textSize="16sp"
+                      android:textColor="@color/white"
+                      app:fontFamily="sans-serif" />
+
+                    <androidx.appcompat.widget.AppCompatSeekBar
+                      android:id="@+id/seek_bar_volume"
+                      android:layout_width="0dp"
+                      android:layout_height="wrap_content"
+                      android:layout_weight="1"
+                      android:max="100"
+                      android:maxHeight="3dp"
+                      android:progressDrawable="@drawable/gradient_progress_drawable"
+                      android:thumb="@drawable/thumb_drawable"
+                      tools:progress="30" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                      android:id="@+id/tv_volume_value"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:gravity="center_vertical|right"
+                      android:text="0db"
+                      android:textSize="16sp"
+                      android:textColor="@color/white"
+                      app:fontFamily="sans-serif" />
+                </LinearLayout>
             </LinearLayout>
 
 
 
-
-
-<!--            Chromecast Settings Layout-->
+            <!--Chromecast Settings Layout-->
             <LinearLayout
               android:id="@+id/ll_top_chromecast_settings"
               android:layout_width="match_parent"
@@ -719,7 +863,7 @@
                 <LinearLayout
                   android:id="@+id/ll_chromecast_settings"
                   android:layout_width="match_parent"
-                  android:layout_height="?attr/actionBarSize"
+                  android:layout_height="?android:attr/actionBarSize"
                   android:background="@color/appbar_bg"
                   android:gravity="center_vertical">
 
@@ -760,7 +904,7 @@
                           android:layout_width="28dp"
                           android:layout_height="28dp"
                           android:layout_gravity="center_vertical|right"
-                          android:layout_marginRight="?attr/actionBarSize"
+                          android:layout_marginRight="?android:attr/actionBarSize"
                           android:indeterminate="true"
                           android:visibility="gone"
                           tools:visibility="visible" />
@@ -768,18 +912,6 @@
 
                 </LinearLayout>
             </LinearLayout>
-
-
-
-
-
-
-
-
-
-
-
-
 
             <LinearLayout
                 android:id="@+id/ll_soft_update"
@@ -802,7 +934,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
+                    android:layout_height="?android:attr/actionBarSize"
                     android:background="@color/appbar_bg"
                     android:gravity="center_vertical">
 
@@ -841,7 +973,7 @@
                             android:layout_width="28dp"
                             android:layout_height="28dp"
                             android:layout_gravity="center_vertical|right"
-                            android:layout_marginRight="?attr/actionBarSize"
+                            android:layout_marginRight="?android:attr/actionBarSize"
                             android:indeterminate="true"
                             android:visibility="gone"
                             tools:visibility="visible" />
@@ -850,111 +982,81 @@
                 </LinearLayout>
             </LinearLayout>
 
-
+            <!--Report issue -->
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal"
-                android:padding="12dp">
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:gravity="center_horizontal"
+              android:orientation="horizontal"
+              android:padding="16dp">
 
                 <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:layout_marginRight="24dp"
-                    android:scaleType="fitCenter"
-                    app:srcCompat="@drawable/alexa_blue_white_100px" />
+                  android:layout_width="wrap_content"
+                  android:layout_height="match_parent"
+                  android:layout_marginRight="16dp"
+                  app:srcCompat="@drawable/issues_report" />
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/speech_volume_follow"
-                    android:textColor="@color/app_text_color_disabled" />
+                  android:layout_width="wrap_content"
+                  android:layout_height="match_parent"
+                  android:text="@string/issues"
+                  android:gravity="center_vertical"
+                  android:textColor="@color/app_text_color_disabled" />
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@color/appbar_bg"
-                android:gravity="center_vertical">
+              android:id="@+id/ll_issues_report"
+              android:layout_width="match_parent"
+              android:layout_height="?android:attr/actionBarSize"
+              android:background="@color/appbar_bg"
+              android:gravity="center_vertical">
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:padding="16dp"
-                    android:text="@string/speech_volume_follow"
-                    android:textSize="16sp"
-                    android:textColor="@color/white"
-                    app:fontFamily="sans-serif" />
-
+                  android:layout_width="0dp"
+                  android:layout_height="wrap_content"
+                  android:layout_weight="1"
+                  android:gravity="center_vertical"
+                  android:padding="16dp"
+                  android:textSize="16sp"
+                  android:text="@string/report_issues"
+                  android:textColor="@color/white"
+                  app:fontFamily="sans-serif" />
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tv_switch_status"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/off"
-                    android:textAllCaps="true"
-                    android:textSize="16sp"
-                    android:textColor="@color/app_text_color_enabled" />
-
-                <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/switch_speech_volume_follow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:checked="false"
-                    android:textOff="OFF"
-                    android:textOn="ON" />
+                  android:paddingLeft="8dp"
+                  android:paddingRight="8dp"
+                  android:layout_width="wrap_content"
+                  android:layout_height="match_parent"
+                  android:layout_gravity="center_vertical|right"
+                  android:background="?attr/selectableItemBackground"
+                  android:drawableRight="@drawable/ic_orange_right_arrow"
+                  android:drawablePadding="12dp"
+                  android:gravity="center_vertical"
+                  android:textSize="16sp"
+                  android:textColor="@color/app_text_color_enabled"
+                  app:fontFamily="sans-serif-black" />
             </LinearLayout>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@android:color/transparent" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@color/appbar_bg"
-                android:gravity="center_vertical"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:id="@+id/speechVolume">
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="16dp"
-                    android:gravity="center_vertical"
-                    android:text="@string/volume"
-                    android:textSize="16sp"
-                    android:textColor="@color/white"
-                    app:fontFamily="sans-serif" />
-
-                <androidx.appcompat.widget.AppCompatSeekBar
-                    android:id="@+id/seek_bar_volume"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:max="100"
-                    android:maxHeight="3dp"
-                    android:progressDrawable="@drawable/gradient_progress_drawable"
-                    android:thumb="@drawable/thumb_drawable"
-                    tools:progress="30" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tv_volume_value"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical|right"
-                    android:text="0db"
-                    android:textSize="16sp"
-                    android:textColor="@color/white"
-                    app:fontFamily="sans-serif" />
-            </LinearLayout>
-
+            <androidx.appcompat.widget.AppCompatButton
+              android:id="@+id/btn_forget_network"
+              android:layout_width="wrap_content"
+              android:layout_height="45dp"
+              android:paddingHorizontal="20dp"
+              android:layout_marginTop="30dp"
+              android:textAllCaps="false"
+              android:gravity="center"
+              android:layout_gravity="center_horizontal"
+              android:layout_marginBottom="20dp"
+              android:text="@string/forget_network"
+              android:background="@drawable/ic_rectangle_color"
+              android:textColor="@color/white" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+    <FrameLayout
+      android:id="@+id/lay_timeZone"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent" />
+    <FrameLayout
+      android:id="@+id/lay_issuesReport"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

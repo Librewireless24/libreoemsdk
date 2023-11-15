@@ -4,7 +4,9 @@ package com.libreAlexa.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageButton;
@@ -33,6 +35,18 @@ public final class CtActivityDeviceBrowserBinding implements ViewBinding {
   public final AppCompatImageView ibHome;
 
   @NonNull
+  public final MusicPlayingWidgetBinding idMusicWidget;
+
+  @NonNull
+  public final LinearLayout idPrevNextLayout;
+
+  @NonNull
+  public final TextView idTvNext;
+
+  @NonNull
+  public final TextView idTvPrevious;
+
+  @NonNull
   public final AppCompatImageView ivSourceIcon;
 
   @NonNull
@@ -46,13 +60,19 @@ public final class CtActivityDeviceBrowserBinding implements ViewBinding {
 
   private CtActivityDeviceBrowserBinding(@NonNull RelativeLayout rootView,
       @NonNull AppCompatTextView browserTitle, @NonNull AppCompatImageButton ibBack,
-      @NonNull AppCompatImageView ibHome, @NonNull AppCompatImageView ivSourceIcon,
+      @NonNull AppCompatImageView ibHome, @NonNull MusicPlayingWidgetBinding idMusicWidget,
+      @NonNull LinearLayout idPrevNextLayout, @NonNull TextView idTvNext,
+      @NonNull TextView idTvPrevious, @NonNull AppCompatImageView ivSourceIcon,
       @NonNull RecyclerView rvDeviceBrowser, @NonNull Toolbar toolbar,
       @NonNull AppCompatTextView tvNoData) {
     this.rootView = rootView;
     this.browserTitle = browserTitle;
     this.ibBack = ibBack;
     this.ibHome = ibHome;
+    this.idMusicWidget = idMusicWidget;
+    this.idPrevNextLayout = idPrevNextLayout;
+    this.idTvNext = idTvNext;
+    this.idTvPrevious = idTvPrevious;
     this.ivSourceIcon = ivSourceIcon;
     this.rvDeviceBrowser = rvDeviceBrowser;
     this.toolbar = toolbar;
@@ -104,6 +124,31 @@ public final class CtActivityDeviceBrowserBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.id_music_widget;
+      View idMusicWidget = ViewBindings.findChildViewById(rootView, id);
+      if (idMusicWidget == null) {
+        break missingId;
+      }
+      MusicPlayingWidgetBinding binding_idMusicWidget = MusicPlayingWidgetBinding.bind(idMusicWidget);
+
+      id = R.id.id_prev_next_layout;
+      LinearLayout idPrevNextLayout = ViewBindings.findChildViewById(rootView, id);
+      if (idPrevNextLayout == null) {
+        break missingId;
+      }
+
+      id = R.id.id_tv_next;
+      TextView idTvNext = ViewBindings.findChildViewById(rootView, id);
+      if (idTvNext == null) {
+        break missingId;
+      }
+
+      id = R.id.id_tv_previous;
+      TextView idTvPrevious = ViewBindings.findChildViewById(rootView, id);
+      if (idTvPrevious == null) {
+        break missingId;
+      }
+
       id = R.id.iv_source_icon;
       AppCompatImageView ivSourceIcon = ViewBindings.findChildViewById(rootView, id);
       if (ivSourceIcon == null) {
@@ -129,7 +174,8 @@ public final class CtActivityDeviceBrowserBinding implements ViewBinding {
       }
 
       return new CtActivityDeviceBrowserBinding((RelativeLayout) rootView, browserTitle, ibBack,
-          ibHome, ivSourceIcon, rvDeviceBrowser, toolbar, tvNoData);
+          ibHome, binding_idMusicWidget, idPrevNextLayout, idTvNext, idTvPrevious, ivSourceIcon,
+          rvDeviceBrowser, toolbar, tvNoData);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

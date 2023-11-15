@@ -40,36 +40,10 @@ public final class ActivitySetUpDeviceBinding implements ViewBinding {
   @NonNull
   public final AppCompatImageView ivBack;
 
-  /**
-   * This binding is not available in all configurations.
-   * <p>
-   * Present:
-   * <ul>
-   *   <li>layout/</li>
-   * </ul>
-   *
-   * Absent:
-   * <ul>
-   *   <li>layout-sw600dp/</li>
-   * </ul>
-   */
-  @Nullable
+  @NonNull
   public final RelativeLayout layLoader;
 
-  /**
-   * This binding is not available in all configurations.
-   * <p>
-   * Present:
-   * <ul>
-   *   <li>layout/</li>
-   * </ul>
-   *
-   * Absent:
-   * <ul>
-   *   <li>layout-sw600dp/</li>
-   * </ul>
-   */
-  @Nullable
+  @NonNull
   public final ProgressBar progressBar;
 
   @NonNull
@@ -81,8 +55,8 @@ public final class ActivitySetUpDeviceBinding implements ViewBinding {
   private ActivitySetUpDeviceBinding(@NonNull ConstraintLayout rootView,
       @NonNull AppBarLayout appbarLayout, @NonNull AppCompatButton btnSetupChromecast,
       @NonNull AppCompatButton btnSigninAmazon, @NonNull AppCompatButton btnSkipToHome,
-      @NonNull AppCompatImageView ivBack, @Nullable RelativeLayout layLoader,
-      @Nullable ProgressBar progressBar, @NonNull Toolbar toolbar,
+      @NonNull AppCompatImageView ivBack, @NonNull RelativeLayout layLoader,
+      @NonNull ProgressBar progressBar, @NonNull Toolbar toolbar,
       @NonNull AppCompatTextView txtSpeakerName) {
     this.rootView = rootView;
     this.appbarLayout = appbarLayout;
@@ -155,9 +129,15 @@ public final class ActivitySetUpDeviceBinding implements ViewBinding {
 
       id = R.id.lay_Loader;
       RelativeLayout layLoader = ViewBindings.findChildViewById(rootView, id);
+      if (layLoader == null) {
+        break missingId;
+      }
 
       id = R.id.progress_bar;
       ProgressBar progressBar = ViewBindings.findChildViewById(rootView, id);
+      if (progressBar == null) {
+        break missingId;
+      }
 
       id = R.id.toolbar;
       Toolbar toolbar = ViewBindings.findChildViewById(rootView, id);

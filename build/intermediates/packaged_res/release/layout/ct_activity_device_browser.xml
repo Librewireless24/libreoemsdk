@@ -56,15 +56,18 @@
                 android:src="@mipmap/ic_home_black" />
         </LinearLayout>
     </androidx.appcompat.widget.Toolbar>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_device_browser"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@id/id_prev_next_layout"
         android:layout_below="@+id/toolbar"
-        android:paddingBottom="64dp"
-        android:paddingTop="16dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="0dp"
         android:paddingLeft="16dp"
-        android:paddingRight="16dp"/>
+        android:paddingTop="16dp"
+        android:paddingRight="16dp" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tv_no_data"
@@ -76,8 +79,36 @@
         android:textSize="16sp"
         android:visibility="gone"
         tools:visibility="visible" />
+    <LinearLayout
+        android:id="@+id/id_prev_next_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_above="@id/id_music_widget"
+        android:weightSum="1">
 
+        <TextView
+            android:id="@+id/id_tv_previous"
+            android:layout_width="0dp"
+            android:padding="6dp"
+            android:text="Prev"
+            android:gravity="left"
+            android:textColor="@color/white"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5" />
+
+        <TextView
+            android:id="@+id/id_tv_next"
+            android:layout_width="0dp"
+            android:padding="6dp"
+            android:text="Next"
+            android:gravity="right"
+            android:textColor="@color/white"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5" />
+    </LinearLayout>
     <include
+        android:id="@+id/id_music_widget"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

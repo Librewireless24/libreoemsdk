@@ -9,11 +9,13 @@ import android.os.Handler
 import android.os.Looper
 import android.os.Message
 import android.text.TextUtils
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,6 +24,7 @@ import com.cumulations.libreV2.adapter.CTDeviceBrowserListAdapter
 import com.cumulations.libreV2.closeKeyboard
 import com.cumulations.libreV2.model.DataItem
 import com.libreAlexa.LErrorHandeling.LibreError
+import com.libreAlexa.LibreApplication
 import com.libreAlexa.R
 import com.libreAlexa.Scanning.ScanningHandler
 import com.libreAlexa.constants.Constants
@@ -55,8 +58,12 @@ class CTDeviceBrowserActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteract
         const val TAG_ITEM_NAME = "Name"
         const val TAG_ITEM_FAVORITE = "Favorite"
         const val TAG_ITEM_ALBUMURL = "StationImage"
-
+        //PageNo":1,"TotalItems
+        const val TAG_TOTALITEM = "TotalItems"
+        const val TAG_PAGE_NO = "PageNo"
         const val GET_PLAY = "GETUI:PLAY"
+        const val SELECTITEM = "SELECTITEM:"
+
     }
 
     private var currentIpaddress: String? = null
@@ -119,6 +126,7 @@ class CTDeviceBrowserActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteract
         luciControl!!.SendCommand(MIDCONST.MID_REMOTE_UI.toInt(), LUCIMESSAGES.SELECT_ITEM + ":" + current_source_index_selected, LSSDPCONST.LUCI_SET)
 
         showLoader(R.string.loading_next_items)
+        LibreLogger.d(TAG,"ItemCLick showloader9")
 
         //////////// timeout for dialog - showLoader() ///////////////////
         if (current_source_index_selected == 0) {
@@ -199,7 +207,7 @@ class CTDeviceBrowserActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteract
         super.onResume()
         /*Registering to receive messages*/
         registerForDeviceEvents(this)
-        val musicPlayerView = findViewById<FrameLayout>(R.id.fl_music_play_widget)
+        val musicPlayerView = findViewById<LinearLayout>(R.id.fl_music_play_widget)
         setMusicPlayerWidget(musicPlayerView, currentIpaddress!!)
     }
 
@@ -210,6 +218,8 @@ class CTDeviceBrowserActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteract
             gotolastpostion = true
             //  mLayoutManager.scrollToPosition(49);
             showProgressDialog(R.string.loading_next_items)
+            LibreLogger.d(TAG,"ItemCLick showloader5")
+
             //////////// timeout for dialog - showLoader() ///////////////////
             if (current_source_index_selected == 0) {
                 /*increasing timeout for media servers only*/
@@ -330,14 +340,40 @@ class CTDeviceBrowserActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteract
                 MIDCONST.SET_UI -> {
                     val message = String(packet.getpayload())
                     LibreLogger.d(TAG," message 42 recieved  $message")
+
+//                    try {
+//                        presentJsonHashCode = message.hashCode()
+//                        LibreLogger.d(TAG, " present hash code : the hash code for $message is$presentJsonHashCode")
+//                        parseJsonAndReflectInUI(message)
+//
+//                        if(LibreApplication.isUSBSrc==true){
+//                            parseJsonAndReflectInUIUSB(message)
+//                        }
+//                        else{
+//                            parseJsonAndReflectInUI(message)
+//                        }
+//
+//                    } catch (e: JSONException) {
+//                        e.printStackTrace()
+//                        LibreLogger.d(TAG," Json exception ")
+//                        closeLoader()
+//                    }
                     try {
                         presentJsonHashCode = message.hashCode()
-                        LibreLogger.d(TAG, " present hash code : the hash code for $message is$presentJsonHashCode")
-                        parseJsonAndReflectInUI(message)
+                        LibreLogger.d(
+                            TAG,
+                            " present hash code : the hash code for $message is $presentJsonHashCode"
+                        )
+                        if(LibreApplication.isUSBSrc==true){
+                            parseJsonAndReflectInUIUSB(message)
+                        }
+                        else{
+                            parseJsonAndReflectInUI(message)
+                        }
 
                     } catch (e: JSONException) {
                         e.printStackTrace()
-                        LibreLogger.d(TAG," Json exception ")
+                        LibreLogger.d(TAG, " Json exception ")
                         closeLoader()
                     }
 
@@ -375,12 +411,14 @@ class CTDeviceBrowserActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteract
         }
     }
 
+
+
     /**
      * This function gets the Json string
      */
     @Throws(JSONException::class)
     private fun parseJsonAndReflectInUI(jsonStr: String?) {
-        LibreLogger.d(TAG,"Json Recieved from remote device $jsonStr")
+        LibreLogger.d(TAG,"Json Recieved from remote devicebrowser$jsonStr")
         if (jsonStr != null) {
             try {
                 val root = JSONObject(jsonStr)
@@ -410,16 +448,22 @@ class CTDeviceBrowserActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteract
                     intent.putExtra(Constants.CURRENT_DEVICE_IP, currentIpaddress)
                     startActivity(intent)
 
-                } else if (cmd_id == 1) {
+                }
+
+                else if (cmd_id == 1) {
+
                     browser = window.getString(TAG_BROWSER)
                     val Cur_Index = window.getInt(TAG_CUR_INDEX)
                     val item_count = window.getInt(TAG_ITEM_COUNT)
 
-                    if (browser.equals("HOME", ignoreCase = true)) {
-                       closeLoader()
+                    if (browser.equals("HOME", ignoreCase = true))
+                    {
+                        closeLoader()
+
 //                        handler.removeMessages(NETWORK_TIMEOUT)
 //                        /* This means we have reached the home collection and hence we need to lauch the SourcesOptionEntry Activity */
 //                        unRegisterForDeviceEvents()
+
                         val intent = Intent(this@CTDeviceBrowserActivity, CTMediaSourcesActivity::class.java)
                         intent.putExtra(Constants.CURRENT_DEVICE_IP, currentIpaddress)
 
@@ -427,7 +471,7 @@ class CTDeviceBrowserActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteract
                         intent.putExtra(Constants.CURRENT_SOURCE, "" + currentSceneObject!!.currentSource)
                         startActivity(intent)
                         finish()
-                       // return
+                        // return
                     }
 
                     if (item_count == 0) {
@@ -453,8 +497,8 @@ class CTDeviceBrowserActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteract
                         dataItem.favorite = item.getInt(TAG_ITEM_FAVORITE)
 
                         if (item.has(TAG_ITEM_ALBUMURL)
-                                && item.getString(TAG_ITEM_ALBUMURL) != null
-                                && item.getString(TAG_ITEM_ALBUMURL).isNotEmpty()) {
+                            && item.getString(TAG_ITEM_ALBUMURL) != null
+                            && item.getString(TAG_ITEM_ALBUMURL).isNotEmpty()) {
                             dataItem.itemAlbumURL = item.getString(TAG_ITEM_ALBUMURL)
                         }
 
@@ -482,8 +526,8 @@ class CTDeviceBrowserActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteract
                     deviceBrowserListAdapter?.updateList(dataItems)
 
                     val luciControl = LUCIControl(currentIpaddress)
-                  //  luciControl.SendCommand(MIDCONST.MID_BLUETOOTH, CTMediaSourcesActivity.BLUETOOTH_DISCONNECT, LSSDPCONST.LUCI_SET)
-              //      TunnelingControl(currentIpaddress).sendCommand(PayloadType.DEVICE_SOURCE,0x01)
+                    //  luciControl.SendCommand(MIDCONST.MID_BLUETOOTH, CTMediaSourcesActivity.BLUETOOTH_DISCONNECT, LSSDPCONST.LUCI_SET)
+                    //      TunnelingControl(currentIpaddress).sendCommand(PayloadType.DEVICE_SOURCE,0x01)
 
                     if (gotolastpostion)
                         mLayoutManager!!.scrollToPosition(49)
@@ -505,6 +549,244 @@ class CTDeviceBrowserActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteract
 
     }
 
+    fun sendData(str: String) {
+        // sendFMCommand()
+        Log.v("LuciMessageSent", "Send Data :" + str)
+        val devicIp = intent.getStringExtra(Constants.CURRENT_DEVICE_IP)
+        //currentSourceIndexSelected = 3
+        LUCIControl(devicIp).SendCommand(
+            MIDCONST.MID_REMOTE_UI.toInt(),
+            str,
+            LSSDPCONST.LUCI_SET
+        )
+        //showLoader()
+    }
+    private fun showNextPreviousButtons(window: JSONObject) {
+        try {
+            val TAG = "showPrevNext"
+            val browser = window.getString(TAG_BROWSER)
+            val curIndex = window.getString(TAG_CUR_INDEX)
+            val itemCount = window.getString(TAG_ITEM_COUNT)
+            val totalItem = window.getString(TAG_TOTALITEM)
+            val pageNo = window.getString(TAG_PAGE_NO)
+            Log.v(TAG, "browser :$browser")
+            Log.v(TAG, "curIndex :$curIndex")
+            Log.v(TAG, "itemCount :$itemCount")
+            Log.v(TAG, "totalItem :$totalItem")
+            Log.v(TAG, "pageNo :$pageNo")
+            var totalNoOfPages: Int = totalItem.toInt() / 20;
+
+            if (totalItem.toInt() % 20 != 0) {
+                totalNoOfPages += 1;
+            }
+            Log.v(TAG, "totalNo of Pages :$totalNoOfPages")
+            binding.idTvPrevious.setOnClickListener(View.OnClickListener {
+                sendData("SCROLLUP")
+            })
+
+            binding.idTvNext.setOnClickListener(View.OnClickListener {
+                sendData("SCROLLDOWN")
+            })
+            if (totalNoOfPages > 1) {
+                //show next page button
+                binding.idPrevNextLayout.visibility = View.VISIBLE
+
+                if (pageNo.toInt() > 1) {
+                    // show prev button
+                    binding.idTvPrevious.visibility = View.VISIBLE
+                } else {
+                    binding.idTvPrevious.visibility = View.INVISIBLE
+                    // hide prev button
+                }
+
+                if (pageNo.toInt() == totalNoOfPages) {
+                    // hide next page button
+                    binding.idTvNext.visibility = View.INVISIBLE
+                }
+                else
+                {
+                    binding.idTvNext.visibility = View.VISIBLE
+                }
+
+            } else {
+                //hide button ,previous button
+                binding.idPrevNextLayout.visibility = View.INVISIBLE
+            }
+
+        } catch (ex: Exception) {
+            Log.v("showPrevNext", "Exception :" + ex)
+        }
+
+
+    }
+
+    /**
+     * This function gets the Json string
+     */
+    @Throws(JSONException::class)
+    private fun parseJsonAndReflectInUIUSB(jsonStr: String?) {
+        LibreLogger.d(TAG, "====01Json Recieved from remote device $jsonStr")
+        if (jsonStr != null) {
+            try {
+                val root = JSONObject(jsonStr)
+                val cmd_id = root.getInt(TAG_CMD_ID)
+                LibreLogger.d(TAG, "====04Command Id$cmd_id")
+
+                val window = root.getJSONObject(TAG_WINDOW_CONTENT)
+                showNextPreviousButtons(window)
+//                val window1 = window.getJSONArray(TAG_ITEM_LIST)
+//                for (i in 0 until window1.length()) {
+//                    val item = window1.getJSONObject(i)
+//                  //  LibreLogger.d(this, "====02Command As${item.get(AS)}")
+//
+////                    if(current_source_index_selected!=3)/* other than usb source check this condition*/
+////                    {
+////                        As= item.get(AS).toString()
+////                    }
+//                  // for usb --  As= item.get(AS).toString()
+//                    //LibreLogger.d(this, "====03Command As${As}")
+//                }
+//                if(current_source_index_selected!=3) {
+//                    setTitleForTheBrowser(current_source_index_selected,As)
+//                }
+
+
+//                LibreLogger.d(this, "====05Command window$window")
+//                LibreLogger.d(this, "====06Command root$root")
+//                LibreLogger.d(this, "====07Command window1$window1")
+
+
+                if (cmd_id == 3) {
+                    closeLoader()
+                    handler.removeMessages(NETWORK_TIMEOUT)
+                    /* This means user has selected the song to be playing and hence we will need to navigate
+                     him to the Active scene list
+                      */
+                    unRegisterForDeviceEvents()
+
+                    val mScanHandler = ScanningHandler.getInstance()
+                    var currentSceneObject = mScanHandler.getSceneObjectFromCentralRepo(currentIpaddress)
+                    currentSceneObject = AppUtils.updateSceneObjectWithPlayJsonWindow(window, currentSceneObject!!)
+                    LibreLogger.d(TAG,"suma in get the cnd id 3 value\n"+currentSceneObject.currentSource)
+
+                    if (mScanHandler!!.isIpAvailableInCentralSceneRepo(currentIpaddress)) {
+                        mScanHandler!!.putSceneObjectToCentralRepo(currentIpaddress, currentSceneObject)
+                    }
+
+                    //Intent intent = new Intent(RemoteSourcesList.this, ActiveScenesListActivity.class);
+                    Log.i(CTDeviceBrowserActivity::class.simpleName, "Trigger  ")
+                    val intent = Intent(this@CTDeviceBrowserActivity, CTNowPlayingActivity::class.java)
+                    intent.putExtra(Constants.CURRENT_DEVICE_IP, currentIpaddress)
+                    startActivity(intent)
+
+                }
+                else if (cmd_id == 1) {
+
+                    browser = window.getString(TAG_BROWSER)
+                    val Cur_Index = window.getInt(TAG_CUR_INDEX)
+                    val item_count = window.getInt(TAG_ITEM_COUNT)
+                    LibreLogger.d(TAG, "Recieved from remote device item count"+"---"+item_count)
+                    if (browser.equals("HOME", ignoreCase = true)) {
+                        LibreLogger.d(TAG, "====07In side if")
+                        closeLoader()
+                        LibreLogger.d(TAG, "close laoder 7")
+
+                        handler.removeMessages(NETWORK_TIMEOUT)
+                        /* This means we have reached the home collection and hence we need to lauch the SourcesOptionEntry Activity */
+                        unRegisterForDeviceEvents()
+                        val intent = Intent(this@CTDeviceBrowserActivity, CTMediaSourcesActivity::class.java)
+                        intent.putExtra(Constants.CURRENT_DEVICE_IP, currentIpaddress)
+
+                        val currentSceneObject = ScanningHandler.getInstance().getSceneObjectFromCentralRepo(currentIpaddress)
+                        intent.putExtra(Constants.CURRENT_SOURCE, "" + currentSceneObject!!.currentSource)
+                        startActivity(intent)
+                        finish()
+                        return
+                    }
+
+                    if (item_count == 0) {
+                        val error = LibreError(currentIpaddress, getString(R.string.no_item_empty))
+                        showErrorMessage(error)
+                        closeLoader()
+                        LibreLogger.d(TAG, "close laoder 8 ")
+
+                        handler.removeMessages(NETWORK_TIMEOUT)
+                       //suma usb commnet  tv_no_data?.visibility = View.VISIBLE
+                    } else {
+                      ///suma usb comment  tv_no_data?.visibility = View.GONE
+                    }
+
+                    val ItemList = window.getJSONArray(TAG_ITEM_LIST)
+                    LibreLogger.d(TAG, "====08JSON PARSER item_count =  " + item_count + "  Array SIZE = " + ItemList.length())
+
+                    val tempDataItem = java.util.ArrayList<DataItem>()
+                    for (i in 0 until ItemList.length()) {
+                        val item = ItemList.getJSONObject(i)
+                        val dataItem = DataItem()
+                        dataItem.itemID = item.getInt(TAG_ITEM_ID)
+                        dataItem.itemType = item.getString(TAG_ITEM_TYPE)
+                        dataItem.itemName = item.getString(TAG_ITEM_NAME)
+                        // for usb - dataItem.si = item.getString(SI)
+
+//                        if(current_source_index_selected!=3) {
+//                            dataItem.si = item.getString(SI)
+//                        }
+                        // dataItem.at = item.getString(AT)
+
+                        if(current_source_index_selected!=8)
+                        //for airable -  dataItem.favorite = item.getInt(TAG_ITEM_FAVORITE)
+//                            if(current_source_index_selected!=5) {
+//                                dataItem.favorite = item.getInt(TAG_ITEM_FAVORITE)
+//                            }
+
+                            if (item.has(TAG_ITEM_ALBUMURL) && item.getString(TAG_ITEM_ALBUMURL).isNotEmpty()) {
+                                dataItem.itemAlbumURL = item.getString(TAG_ITEM_ALBUMURL)
+                            }
+
+                        if (searchOptionClicked) {
+                            //This JSON is the result,when user clicked search
+                            // put to hashcode
+                            searchJsonHashCode = jsonStr.hashCode()
+                            LibreLogger.d(TAG, "====09Search hash code : the hash code for $jsonStr is $searchJsonHashCode")
+                            searchOptionClicked = false
+
+                            //save it in shared preference
+                            val savedInPref = saveInSharedPreference(searchJsonHashCode)
+                            if (savedInPref) {
+                                LibreLogger.d(TAG, "====10saved in shared preference")
+                            } else {
+                                LibreLogger.d(TAG, "====11not saved in shared preference")
+                            }
+                        }
+                        tempDataItem.add(dataItem)
+                    }
+
+                    dataItems!!.clear()
+                    dataItems!!.addAll(tempDataItem)
+                    deviceBrowserListAdapter?.updateList(dataItems)
+                    if (gotolastpostion)
+                        mLayoutManager!!.scrollToPosition(49)
+                    else
+                        mLayoutManager!!.scrollToPosition(0)
+                    gotolastpostion = false
+
+                    if (handler.hasMessages(NETWORK_TIMEOUT)) handler.removeMessages(NETWORK_TIMEOUT)
+                    closeLoader()
+
+                }
+            } catch (e: java.lang.Exception) {
+                e.printStackTrace()
+                LibreLogger.d("this","====012${e.message}")
+                closeLoader()
+                LibreLogger.d(TAG, "close laoder 9")
+
+            }
+
+        } else closeLoader()
+        LibreLogger.d(TAG, "close laoder 11 ")
+
+
+    }
     private fun saveInSharedPreference(hashResult: Int): Boolean {
         try {
             getSharedPreferences(Constants.SEARCH_RESULT_HASH_CODE, Context.MODE_PRIVATE).apply {
@@ -545,7 +827,8 @@ class CTDeviceBrowserActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteract
         when (current_source_index_selected) {
 
             0 -> {
-                binding.browserTitle.text = "Music Server"
+
+                binding.browserTitle.text = "USB"
                 binding.browserTitle.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
             }
             1 -> {
@@ -557,7 +840,7 @@ class CTDeviceBrowserActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteract
                 binding.browserTitle.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
             }
             3 -> {
-                binding.browserTitle.text = "USB"
+                binding.browserTitle.text = "Music Server"
                 binding.browserTitle.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
             }
             4 -> {
@@ -618,6 +901,8 @@ class CTDeviceBrowserActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteract
                 LibreLogger.d(TAG,"hash codes did not match.")
                 luciControl!!.SendCommand(MIDCONST.MID_REMOTE.toInt(), LUCIMESSAGES.SELECT_ITEM + ":" + position, LSSDPCONST.LUCI_SET)
                 showLoader(R.string.loading_next_items)
+                LibreLogger.d(TAG,"ItemCLick showloader3")
+
             }
 
 
@@ -635,6 +920,8 @@ class CTDeviceBrowserActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteract
                 handler.sendEmptyMessageDelayed(NETWORK_TIMEOUT, 15000)
             }
             showLoader(R.string.loading_next_items)
+            LibreLogger.d(TAG,"ItemCLick showloader2")
+
         }
     }
 
@@ -655,4 +942,13 @@ class CTDeviceBrowserActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteract
             deviceBrowserListAdapter!!.notifyDataSetChanged()
         }
     }
+
+    fun selectItem(row: Int) {
+        Log.i(CTDeviceBrowserActivity::class.simpleName, "selectItem: ${row}")
+        showLoader(R.string.loading_next_items)
+        LibreLogger.d(TAG,"ItemCLick showloader1")
+        val devicIp = intent.getStringExtra(Constants.CURRENT_DEVICE_IP)
+        LUCIControl(devicIp).SendCommand(MIDCONST.MID_REMOTE_UI.toInt(), SELECTITEM + row, LSSDPCONST.LUCI_SET)
+    }
+
 }

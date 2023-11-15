@@ -37,39 +37,13 @@ public final class ActivityCastToSactivityBinding implements ViewBinding {
   @NonNull
   public final AppCompatImageView imgClose;
 
-  /**
-   * This binding is not available in all configurations.
-   * <p>
-   * Present:
-   * <ul>
-   *   <li>layout/</li>
-   * </ul>
-   *
-   * Absent:
-   * <ul>
-   *   <li>layout-sw600dp/</li>
-   * </ul>
-   */
-  @Nullable
+  @NonNull
   public final RelativeLayout layLoader;
 
   @NonNull
   public final RelativeLayout parentLayout;
 
-  /**
-   * This binding is not available in all configurations.
-   * <p>
-   * Present:
-   * <ul>
-   *   <li>layout/</li>
-   * </ul>
-   *
-   * Absent:
-   * <ul>
-   *   <li>layout-sw600dp/</li>
-   * </ul>
-   */
-  @Nullable
+  @NonNull
   public final ProgressBar progressBar;
 
   @NonNull
@@ -84,8 +58,8 @@ public final class ActivityCastToSactivityBinding implements ViewBinding {
   private ActivityCastToSactivityBinding(@NonNull ConstraintLayout rootView,
       @NonNull AppCompatButton btnAccept, @NonNull AppCompatButton btnSkip,
       @NonNull AppCompatImageView imageView, @NonNull AppCompatImageView imgClose,
-      @Nullable RelativeLayout layLoader, @NonNull RelativeLayout parentLayout,
-      @Nullable ProgressBar progressBar, @NonNull Toolbar toolbar,
+      @NonNull RelativeLayout layLoader, @NonNull RelativeLayout parentLayout,
+      @NonNull ProgressBar progressBar, @NonNull Toolbar toolbar,
       @NonNull AppCompatTextView txtCastTos, @NonNull WebView webView) {
     this.rootView = rootView;
     this.btnAccept = btnAccept;
@@ -153,6 +127,9 @@ public final class ActivityCastToSactivityBinding implements ViewBinding {
 
       id = R.id.lay_Loader;
       RelativeLayout layLoader = ViewBindings.findChildViewById(rootView, id);
+      if (layLoader == null) {
+        break missingId;
+      }
 
       id = R.id.parent_Layout;
       RelativeLayout parentLayout = ViewBindings.findChildViewById(rootView, id);
@@ -162,6 +139,9 @@ public final class ActivityCastToSactivityBinding implements ViewBinding {
 
       id = R.id.progress_bar;
       ProgressBar progressBar = ViewBindings.findChildViewById(rootView, id);
+      if (progressBar == null) {
+        break missingId;
+      }
 
       id = R.id.toolbar;
       Toolbar toolbar = ViewBindings.findChildViewById(rootView, id);

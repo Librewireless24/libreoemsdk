@@ -639,7 +639,7 @@ class CTDMSBrowserActivityV2 : CTDeviceDiscoveryActivity(), DMSProcessor.DMSProc
 
                 val root = JSONObject(jsonStr)
                 val cmd_id = root.getInt(TAG_CMD_ID)
-                LibreLogger.d(TAG, "Command Id$cmd_id")
+                LibreLogger.d(TAG, "DMS_BrowserActivity Command Id$cmd_id")
 
                 if (cmd_id == 3) {
                     /* This means user has selected the song to be playing and hence we will need to navigate

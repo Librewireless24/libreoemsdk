@@ -1,10 +1,6 @@
 package com.cumulations.libreV2.activity
 
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageInfo
-import android.content.pm.PackageManager
-import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -14,7 +10,6 @@ import com.cumulations.libreV2.AppUtils
 import com.cumulations.libreV2.appInForeground
 import com.libreAlexa.LibreApplication
 import com.libreAlexa.LibreEntryPoint
-import com.libreAlexa.R
 import com.libreAlexa.app.dlna.dmc.processor.upnp.LoadLocalContentService
 import com.libreAlexa.databinding.CtActivitySplashBinding
 import kotlinx.coroutines.delay

@@ -79,6 +79,7 @@
       android:layout_width="match_parent"
       android:layout_height="60dp"
       android:layout_marginTop="40dp"
+      android:gravity="center"
       android:layout_marginHorizontal="15dp"
       android:text="@string/setup_chromecast"
       android:textColor="@color/white"
@@ -93,6 +94,7 @@
       android:enabled="true"
       android:text="@string/setup_amazon_login"
       android:textColor="@color/white"
+      android:gravity="center"
       android:textSize="14sp" />
 
     <androidx.appcompat.widget.AppCompatButton
@@ -107,6 +109,7 @@
       android:enabled="true"
       android:text="@string/skip_to_home"
       android:textAllCaps="false"
+      android:gravity="center"
       android:textColor="@color/app_btn_textcolor_selector" />
 
     <androidx.appcompat.widget.AppCompatImageView

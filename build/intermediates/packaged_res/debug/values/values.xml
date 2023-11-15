@@ -4,7 +4,10 @@
     <item>Stereo (S)</item>
     <item>Left Speaker (L)</item>
     <item>Right Speaker (R)</item>
-    
+    <!--
+        <item>Left Rear Subwoofer(LRSub)</item>
+        <item>Right Rear Subwoofer(RRSub)</item>
+        <item>Subwoofer(Sub)</item>-->
   </string-array>
     <string-array name="audio_preset_array">
     <item>Normal</item>
@@ -12,6 +15,16 @@
     <item>Vocal</item>
     <item>Rock</item>
     <item>DRC</item>
+  </string-array>
+    <string-array name="timeframes">
+    <item>15 Minutes</item>
+    <item>30 Minutes</item>
+    <item>1 Hour</item>
+    <item>3 Hours</item>
+    <item>6 Hours</item>
+    <item>12 Hours</item>
+    <item>24 Hours</item>
+    <item>24+ Hours</item>
   </string-array>
     <color name="app_dark_pink_light">#7FB63070</color>
     <color name="app_mid_pink_light">#7FD44A4F</color>
@@ -36,19 +49,36 @@
     <color name="close_mark_night_theme">#FFFFFFFF</color>
     <color name="dark_gray">#808080</color>
     <color name="faint_grey" type="color">#F5F5F5</color>
+    <color name="grey">#9E9A9A</color>
     <color name="grey_400">#5A5D5E</color>
     <color name="help_close_mark">#212122</color>
     <color name="help_web_view_bg">#FFFFFFFF</color>
+    <color name="issue_report_card_color">#6F7787</color>
     <color name="light_gray">#C0C0C0</color>
     <color name="riva_logo_bg">#292929</color>
     <color name="screen_bg">#1E1E1E</color>
+    <color name="spotify_color">#1DB954</color>
     <color name="transparent">#0000ffff</color>
     <color name="web_view_bg">#FFFFFFFF</color>
     <color name="web_view_bg_night_theme">#212122</color>
     <color name="white">#FFFFFF</color>
     <color name="white_oem">#FF000000</color>
+    <dimen name="dimen_0">0dp</dimen>
+    <dimen name="dimen_10">10dp</dimen>
+    <dimen name="dimen_12">12dp</dimen>
+    <dimen name="dimen_14">14dp</dimen>
+    <dimen name="dimen_16">16dp</dimen>
+    <dimen name="dimen_2">14dp</dimen>
+    <dimen name="dimen_20">20dp</dimen>
+    <dimen name="dimen_32">32dp</dimen>
+    <dimen name="dimen_4">14dp</dimen>
+    <dimen name="dimen_6">14dp</dimen>
+    <dimen name="dimen_60">60dp</dimen>
+    <dimen name="dimen_8">14dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="five">5</dimen>
+    <dimen name="font_size_16">16sp</dimen>
+    <dimen name="font_size_24">24sp</dimen>
     <dimen name="medium_text">18sp</dimen>
     <dimen name="small_text">12sp</dimen>
     <dimen name="top_margin">10dp</dimen>
@@ -79,6 +109,8 @@
     <string name="activate_cast">Activate Cast</string>
     <string name="add">Add</string>
     <string name="after_connecting_to_libre_device"><![CDATA[After connecting to the Libre speaker, return to the LibreVoice app & click next]]></string>
+    <string name="airplay">Airplay</string>
+    <string name="albumname_not_available">AlbumName Not Available</string>
     <string name="alexaText">amazon alexa</string>
     <string name="alexa_info">Alexa allows you to use your voice to play music and get news, sorts scores, weather and more- all hands-free. All you have to do is ask Alexa.</string>
     <string name="alexa_locale">Alexa Locale</string>
@@ -86,22 +118,27 @@
     <string name="alexa_not_connected">Amazon Alexa account not connected</string>
     <string name="alexa_not_supported">Alexa Login not supported on this Device</string>
     <string name="alexa_settings">Alexa settings</string>
+    <string name="alexa_source">Alexa Source</string>
     <string name="amazon_alexa">amazon alexa</string>
     <string name="amazon_login">Amazon Login</string>
     <string name="amazon_login_caps">Amazon Login</string>
     <string name="ap_notfound">Speaker couldn\'t able to find AP</string>
     <string name="app_name">LibreVoice</string>
     <string name="app_not_installed">App Not Installed Alert</string>
+    <string name="apple_device">AppleDevice</string>
+    <string name="ask_alexa">Ask Alexa to play your\n favourite playlists, artists and genres.\n For example, just say, Alexa,\n play Today’s Top Hits.</string>
     <string name="ask_alexa1">Alexa, what\'s the weather?</string>
     <string name="ask_alexa2">Alexa, play my Flash Briefing.</string>
     <string name="ask_alexa3">Alexa, what are some top rated \nIndian restaurants?</string>
     <string name="ask_alexa4">Alexa, set Timer for 20 mins.</string>
     <string name="audio_output">Audio Output</string>
     <string name="aux">Aux In</string>
+    <string name="aux_in">AuxIn</string>
     <string name="aux_label">Aux</string>
     <string name="away_mode_info">Away Mode Info</string>
     <string name="bass">Bass</string>
     <string name="bluetooth">Bluetooth</string>
+    <string name="bluetooth_access">Bluetooth access is needed to improve the connection to your device, determine your location during setup, and discover and setup nearby devices. You can turn it back off when you\'re done with setup.</string>
     <string name="bluetooth_hd">Bluetooth</string>
     <string name="bluetooth_msg"> We will use of bluetooth to ease your device setup</string>
     <string name="brand_name">Libre Voice</string>
@@ -113,6 +150,8 @@
     <string name="cannotCreateDMS">Cannot create DMS Processor</string>
     <string name="cast_enabled">Cast is enabled</string>
     <string name="casting">Casting</string>
+    <string name="characters">Characters</string>
+    <string name="characters_remaining">Characters Remaining</string>
     <string name="choose_device">Choose the device you would like to setup</string>
     <string name="chromecast_builtin">Chromecast built-in</string>
     <string name="chromecast_settings">Chromecast Settings</string>
@@ -122,6 +161,7 @@
     <string name="configuration_successful">Configuration Successful!</string>
     <string name="configuration_timeout_msg">Timeout Happened , Retry </string>
     <string name="configuring_device">Configuring Speaker…</string>
+    <string name="confirm">Confirm</string>
     <string name="congrats">Congrats!</string>
     <string name="connectToWifi">Connect to Wi-Fi network</string>
     <string name="connect_amazon_account">Your speaker includes access to Alexa. Connect your Amazon account to access  personalized features.</string>
@@ -131,15 +171,22 @@
     <string name="cred_received">Credentials received by the Speaker</string>
     <string name="cred_success">Credentials are passed</string>
     <string name="credientials_invalid">Credentials are Wrong</string>
+    <string name="ddms_salve">DDMS SLAVE</string>
+    <string name="deezer">Deezer</string>
+    <string name="descriptionNameEmpty">Description cannot be an empty</string>
     <string name="deutschLang">Deutsch</string>
     <string name="deviceLength">Speaker Name cannot be more than 50</string>
+    <string name="deviceLengthReached">Device Name Maximum length reached</string>
     <string name="deviceMicOn">Speaker MIC is ON</string>
     <string name="deviceMissing">Oops! Speaker is missing! check if it is still connected</string>
     <string name="deviceNameChanging">Speaker Name Changing</string>
+    <string name="deviceNameEmpty">Device name cannot be an empty</string>
+    <string name="deviceNameNull">Device Name Cannot Be an Null</string>
     <string name="deviceNamecannotBeEmpty">Speaker Name Cannot Be an Empty</string>
     <string name="deviceNotAvailable">Speaker Not Available </string>
     <string name="deviceNotFound">Speaker not found</string>
     <string name="deviceRebooting">Speaker is Rebooting…</string>
+    <string name="device_are_available">" "Device are available to setup</string>
     <string name="device_blinking_colors">If the speaker light is blinking colors.</string>
     <string name="device_blinking_white">If the speaker light is blinking white.</string>
     <string name="device_light_white">If the speaker light is white.</string>
@@ -147,14 +194,19 @@
     <string name="device_name_empty">Enter speaker name</string>
     <string name="device_setup2">Speaker Setup</string>
     <string name="device_setup_successfull">Your speaker has been set up successfully.</string>
+    <string name="devices_are_available">" "Devices are available to setup</string>
     <string name="did_u_hear_sound">Did you hear the sound ?</string>
+    <string name="direct_url">Direct URL</string>
     <string name="discovery">Discovery</string>
+    <string name="dmp">Dmp</string>
+    <string name="dmr">Dmr</string>
     <string name="do_you_want_help_improve">Do you want to help improve everyone’s experience by sharing device stats and crash reports with Google?</string>
     <string name="done">Done</string>
     <string name="dontShowAgain">Dont Show Again</string>
     <string name="doubleTapToExit">Please double tap to exit</string>
     <string name="downloadingtheFirmare">Downloading the firmware update</string>
     <string name="edit">Edit</string>
+    <string name="edit_speaker_name">Enter Device Name</string>
     <string name="enableLocationPermit">You need to allow location permission to detect speaker Wi-Fi, please goto settings and enable
         \'location\' permission.</string>
     <string name="enableRecordPermit">Permission to record audio is required to instruct Alexa, please goto app settings and enable
@@ -164,10 +216,16 @@
     <string name="engUSLang">English (US)</string>
     <string name="english">English</string>
     <string name="enterText">Please enter text</string>
+    <string name="enter_the_description">Enter the description of the issue faced.</string>
     <string name="entered_incorrect_wifi_pwd">You might have entered incorrect Wi-Fi password*</string>
+    <string name="external_source">External Source</string>
     <string name="failed">FAILED</string>
     <string name="favorite_button">Favorites</string>
+    <string name="favourites">Favourites</string>
     <string name="foreground_channel_id">riva_foreground_channel</string>
+    <string name="forget_network">Forget Network</string>
+    <string name="forget_network_confirmation">Are you sure, you want to forget current network ?
+By clicking Confirm, Device will be removed and you will be redirected to Home. Later you can configure network by clicking Add option.</string>
     <string name="frenchLang">French</string>
     <string name="fwUpdateFailed">Firmware Update Failed</string>
     <string name="gcast_update_done">Firmware Upgrade Completed
@@ -175,13 +233,16 @@
     <string name="general_settings">General settings</string>
     <string name="get_connecting">Connecting</string>
     <string name="get_scan_results">Getting Scan Results</string>
+    <string name="get_spotify_free">GET SPOTIFY FREE</string>
     <string name="get_started">Get Started</string>
     <string name="getting_scan_results">Getting Speaker ScanResults..</string>
     <string name="ghome_link">https://play.google.com/store/apps/details?id=com.google.android.apps.chromecast.app</string>
     <string name="go_to_wifi_settings">Go to Wi-Fi settings and select \'RIVAACONCERT_xxxxxx\'/\'RIVAASTADIUM_xxxxxx\' from the Wi-Fi list</string>
     <string name="google_account_controls">This selection does not affect your Google Account controls at &lt;my account>.google.com</string>
+    <string name="google_cast">Google Cast</string>
     <string name="google_home"><u>Google Home App Deep Link Intent</u></string>
     <string name="google_home_install">Google Home app is not installed in your phone. Would you like to install.</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="hello_world">Hello world!</string>
     <string name="help_improve_chromecast">Help Improve\nChromecast built-in</string>
     <string name="hmmm">Hmmm…</string>
@@ -190,6 +251,7 @@
     <string name="indicating_light">Indicating light will breath in blue and turn white at the end …</string>
     <string name="ipAddress">IP Address </string>
     <string name="ip_null">Ip address is Null</string>
+    <string name="issues">Issues</string>
     <string name="italyLang">Italy</string>
     <string name="language">Language</string>
     <string name="lastSong">Last Song</string>
@@ -200,7 +262,9 @@
     <string name="learn_more2">download the </string>
     <string name="learn_more3"> Amazon Alexa App.</string>
     <string name="left">Left</string>
+    <string name="less_than_5_minutes">Less Than 5 Minutes Ago</string>
     <string name="libre_voice">LibreVoice</string>
+    <string name="listen_speakers_using_remote">Listen on your speakers or TV,\n <b>using the Spotify app as a remote</b></string>
     <string name="listening">Listening …</string>
     <string name="loadingLocalContent">Loading Local contents</string>
     <string name="loadingMusic">Loading the music contents.Please wait..</string>
@@ -229,6 +293,8 @@
     <string name="mb223_update_image_available">Firmware image downloaded from server and ready to update speaker</string>
     <string name="mb223_update_started">Internet firmware update started…</string>
     <string name="mediaserver">Media Server</string>
+    <string name="melon">Melon</string>
+    <string name="miracast">Miracast</string>
     <string name="music">Music</string>
     <string name="my_device">My Device</string>
     <string name="network_name">Network Name</string>
@@ -262,6 +328,7 @@
     <string name="onlyOneSong">No previous song available</string>
     <string name="open">OPEN</string>
     <string name="open_home_app">Open Home app</string>
+    <string name="open_settings">Open Settings</string>
     <string name="open_spotify">Open Spotify</string>
     <string name="open_wifi_settings">Open Wi-Fi settings</string>
     <string name="openspotifyapp">Open Spotify App</string>
@@ -270,20 +337,27 @@
     <string name="other_opt">Other Option</string>
     <string name="password">Password</string>
     <string name="password_empty_error">Password cannot be empty</string>
+    <string name="permission_connect">Bluetooth scan and connect permissions are required to scan and connect to Bluetooth devices</string>
+    <string name="permission_denied">Permission Denied</string>
     <string name="permission_location_rationale">You need to allow location permission to detect speaker Wi-Fi</string>
     <string name="permission_record_rationale">You need to allow microphone permission to instruct Alexa</string>
+    <string name="permission_required">Permission required</string>
     <string name="play_music">Play music from…</string>
     <string name="play_tone">Play Tone</string>
     <string name="play_tone_request">Requesting to Play Tone</string>
     <string name="pleaseWait">Please wait…</string>
     <string name="please_selecte_wifi">Please select Wi-Fi</string>
+    <string name="please_share_details">Please share details of the issues faced on</string>
+    <string name="posting_cred">Posting credentials ....</string>
     <string name="power">Power</string>
     <string name="power_on_libre_device">Power on Libre speaker</string>
     <string name="powered_text">Powered by DDMS technology</string>
+    <string name="ready_play_music">Ready to play some music?</string>
     <string name="refresh">Refresh</string>
     <string name="remote_control">Remote Control</string>
     <string name="removeDeviceMsg">Do You Want To Remove The Speaker   </string>
     <string name="removeDeviceMsg2"> from the List ??</string>
+    <string name="report_issues">Report Issues</string>
     <string name="requestTimeout">Speaker response timed out. Please try again</string>
     <string name="restartAppManually">Loading of Local content failed! Auto restarting is failed.Please restart the app manually!</string>
     <string name="restartTitle">Network Change Happened,App Will Restart</string>
@@ -292,9 +366,10 @@
     <string name="retry_hearsound">Retry</string>
     <string name="right">Right</string>
     <string name="riva_tutorial_url">https://rivaaudio.com/alexa-tutorial/en/index.html</string>
+    <string name="save">Save</string>
     <string name="scanning">Finding BLE devices</string>
     <string name="screen2_tv1">Here are some of the many things \n you can ask Alexa</string>
-    <string name="sdcard">SD Card</string>
+    <string name="sdcard">SDCard</string>
     <string name="searchText">Please enter text to search</string>
     <string name="searchTextPlaceHolder">Please enter text to search</string>
     <string name="searching_renderer">Searching the renderer…</string>
@@ -302,6 +377,7 @@
     <string name="select_audio_output">Select audio output</string>
     <string name="select_locale">Select locale for Alexa</string>
     <string name="select_media_server">Please select the media server:</string>
+    <string name="select_the_approximate_time">Please select the approximate timeframe when the issue occurred.</string>
     <string name="select_wifi">Select a Wi-Fi</string>
     <string name="send_device_usage">Send device usage and crash reports to Google</string>
     <string name="set_up_voice_control">Set up voice control and multiroom in the <u><font color="#FF3351F4">Google Home App</font></u></string>
@@ -339,10 +415,13 @@
     <string name="start_connecting">Speaker started connecting to Network</string>
     <string name="start_setup_resetting_msg">*You can start the setup again by resetting your speaker.</string>
     <string name="storagePermitToast">You need to allow read storage permission to stream local media</string>
+    <string name="submit">Submit</string>
     <string name="successfully_setup">" "has been successfully setup.</string>
     <string name="system_firmware">System Firmware</string>
     <string name="things_try">Things to try out</string>
     <string name="three">3</string>
+    <string name="tidal">Tidal</string>
+    <string name="time_zone">Time Zone</string>
     <string name="title_activity_ctbluetooth_setup_instructions">Bluetooth</string>
     <string name="title_activity_gcast_update_status_available">Firmware Update Status</string>
     <string name="title_activity_google_cast_update_after_sac">Firmware Upgrade</string>
@@ -351,18 +430,25 @@
         Please connect to speaker ssid
     </string>
     <string name="tos_accept">Stream the music you love using your favorite apps on your phone, tablet, or laptop to this soundbar.\n\n\nBy clicking “Accept” below, you are indicating your agreement to the <u><b><font color="#FF3351F4">Google Terms of Service</font></b></u> and <u><b><font color="#FF3351F4">Google Privacy Policy</font></b></u>, which govern your use of Chromecast built-in.</string>
+    <string name="trackname_not_available">TrackName Not Available</string>
     <string name="treble">Treble</string>
     <string name="trillium">Trillium</string>
+    <string name="tune_in">TuneIn</string>
+    <string name="turn_on">Turn on</string>
     <string name="turn_on_ble">Please check if your device is in Setup mode and refresh </string>
+    <string name="turn_on_bluetooth">Turn on Bluetooth</string>
     <string name="tutorials">Tutorials</string>
     <string name="two">2</string>
     <string name="update_pending_wait">The updating is still going on, please wait a few minutes.</string>
     <string name="updating_in_progress">Firmware Update in progress...</string>
     <string name="updating_your_speaker">Updating your speaker</string>
     <string name="upgrading">Upgrading</string>
+    <string name="usb">USB</string>
     <string name="usb_storage">USB Storage</string>
+    <string name="use_voice_control_spotify">Use your voice to\n control Spotify</string>
     <string name="using_speaker_first_time">Using the speaker for the first time?</string>
-    <string name="version_only">Version</string>
+    <string name="v_tuner">VTuner</string>
+    <string name="version_only">SDK Version</string>
     <string name="volume">Volume</string>
     <string name="wifiConnectivityStatus">Wifi Connectivity Status</string>
     <string name="wifi_list_unavailable">No Wi-Fi results available</string>
@@ -379,28 +465,28 @@
         <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
     </style>
     <style name="AppTextInputLayoutTheme" parent="Widget.Design.TextInputLayout">
-        
+        <!-- Hint color and label color in FALSE state -->
         <item name="android:textColorHint">@android:color/white</item>
         <item name="android:textSize">14sp</item>
-        
+        <!-- Label color in TRUE state and bar color FALSE and TRUE State -->
         <item name="colorAccent">@android:color/white</item>
         <item name="colorControlNormal">@color/white</item>
         <item name="colorControlActivated">@color/app_text_color_enabled</item>
     </style>
     <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
-        
+        <!-- Customize your theme here. -->
         <item name="android:windowSoftInputMode">stateHidden|adjustPan</item>
 
-        
+        <!-- Active thumb color & Active track color(30% transparency) -->
         <item name="colorControlActivated">@color/app_text_color_enabled</item>
-        
+        <!-- Inactive thumb color -->
         <item name="colorSwitchThumbNormal">@color/brand_dark_grey</item>
-        
-        
+        <!-- Inactive track color(30% transparency) -->
+        <!--<item name="android:colorForeground">@color/brand_dark_grey</item>-->
         <item name="android:textColor">@color/white</item>
         <item name="colorAccent">@color/transparent</item>
 
-        
+        <!--Should be importing 'android.support.v7.app.AlertDialog' instead of 'android.app.AlertDialog'-->
         <item name="alertDialogTheme">@style/AlertDialogTheme</item>
 
     </style>
@@ -411,9 +497,9 @@
     </style>
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
     <style name="CustomProgressDialogTheme" parent="Theme.AppCompat.Dialog.Alert">
-        
+        <!-- Customize your theme here. -->
         <item name="android:windowSoftInputMode">stateHidden|adjustPan</item>
-        
+        <!-- Active thumb color & Active track color(30% transparency) -->
         <item name="colorControlActivated">@color/app_text_color_enabled</item>
         <item name="colorAccent">@color/app_text_color_enabled</item>
     </style>
@@ -440,9 +526,9 @@
     <style name="GradientProgressBarStyle" parent="@style/Widget.AppCompat.ProgressBar.Horizontal">
         <item name="android:indeterminateDrawable">@drawable/gradient_progress_drawable</item>
         <item name="android:indeterminate">true</item>
-        
-        
-        
+        <!--<item name="android:indeterminateTint" tools:targetApi="lollipop">@color/btn_app_dark_pink</item>-->
+        <!--<item name="android:indeterminateTintMode" tools:targetApi="lollipop">src_in</item>-->
+        <!--<item name="colorAccent">@color/btn_app_orange</item>-->
         <item name="android:maxHeight">2dp</item>
         <item name="android:minHeight">2dp</item>
     </style>
@@ -484,6 +570,23 @@
         <item name="android:textSize">14sp</item>
         <item name="android:textAllCaps">true</item>
     </style>
+    <style name="TextInputLayoutTheme" parent="Base.Theme.MaterialComponents">
+        <!-- Customize your theme here. -->
+        <item name="android:windowSoftInputMode">stateHidden|adjustPan</item>
+
+        <!-- Active thumb color & Active track color(30% transparency) -->
+        <item name="colorControlActivated">@color/app_text_color_enabled</item>
+        <!-- Inactive thumb color -->
+        <item name="colorSwitchThumbNormal">@color/brand_dark_grey</item>
+        <!-- Inactive track color(30% transparency) -->
+        <!--<item name="android:colorForeground">@color/brand_dark_grey</item>-->
+        <item name="android:textColor">@color/white</item>
+        <item name="colorAccent">@color/transparent</item>
+
+        <!--Should be importing 'android.support.v7.app.AlertDialog' instead of 'android.app.AlertDialog'-->
+        <item name="alertDialogTheme">@style/AlertDialogTheme</item>
+
+    </style>
     <style name="TransparentDialogTheme" parent="AppTheme">
         <item name="windowNoTitle">true</item>
         <item name="android:windowIsFloating">true</item>
@@ -497,4 +600,56 @@
     <style name="progressBarOrange">
       <item name="colorAccent">@color/brand_orange</item>
   </style>
+    <declare-styleable name="ArcProgressBar">
+        <attr format="dimension" name="borderWidth"/>
+        <attr format="color" name="backgroundColor"/>
+        <attr format="color" name="progressColor"/>
+        <attr format="integer" name="startAngle"/>
+        <attr format="enum" name="drawDirection">
+            <enum name="anti_clockwise" value="0"/>
+            <enum name="clockwise" value="1"/>
+        </attr>
+    </declare-styleable>
+    <declare-styleable name="ColorArcProgressBarNew">
+        <attr format="color" name="back_color"/>
+        <attr format="color" name="front_color1"/>
+        <attr format="color" name="front_color2"/>
+        <attr format="color" name="front_color3"/>
+        <attr format="dimension" name="back_width"/>
+        <attr format="dimension" name="front_width"/>
+        <attr format="boolean" name="is_need_title"/>
+        <attr format="boolean" name="is_need_content"/>
+        <attr format="boolean" name="is_need_unit"/>
+        <attr format="boolean" name="is_need_dial"/>
+        <attr format="string" name="string_title"/>
+        <attr format="string" name="string_unit"/>
+        <attr format="integer" name="total_engle"/>
+        <attr format="float" name="current_value"/>
+        <attr format="float" name="max_value"/>
+    </declare-styleable>
+    <declare-styleable name="DonutProgress">
+        <attr format="integer" name="donut_progress"/>
+        <attr format="integer" name="donut_max"/>
+        <attr format="color" name="donut_unfinished_color"/>
+        <attr format="color" name="donut_finished_color"/>
+        <attr format="dimension" name="donut_finished_stroke_width"/>
+        <attr format="dimension" name="donut_unfinished_stroke_width"/>
+        <attr format="dimension" name="donut_text_size"/>
+        <attr format="color" name="donut_text_color"/>
+        <attr format="string" name="donut_text"/>
+        <attr format="string" name="donut_prefix_text"/>
+        <attr format="string" name="donut_suffix_text"/>
+        <attr format="color" name="donut_background_color"/>
+    </declare-styleable>
+    <declare-styleable name="ProgressButton">
+        <attr format="boolean" name="loading"/>
+        <attr format="boolean" name="enabled"/>
+        <attr format="reference" name="imageButtonStyle"/>
+    </declare-styleable>
+    <declare-styleable name="font">
+        <attr format="string" name="text" value="1"/>
+        <attr format="color" name="textColor" value="2"/>
+        <attr format="integer" name="textSize" value="3"/>
+        <attr name="textAllCaps" value="true"/>
+    </declare-styleable>
 </resources>

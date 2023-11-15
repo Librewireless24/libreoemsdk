@@ -14,6 +14,7 @@ import androidx.appcompat.widget.AppCompatSeekBar;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
+import com.cumulations.libreV2.ProgressButtonImageView;
 import com.libreAlexa.R;
 import java.lang.NullPointerException;
 import java.lang.Override;
@@ -24,7 +25,7 @@ public final class MusicPlayingWidgetBinding implements ViewBinding {
   private final FrameLayout rootView;
 
   @NonNull
-  public final FrameLayout flMusicPlayWidget;
+  public final LinearLayout flMusicPlayWidget;
 
   @NonNull
   public final AppCompatImageButton ibAlexaAvsBtn;
@@ -36,7 +37,7 @@ public final class MusicPlayingWidgetBinding implements ViewBinding {
   public final AppCompatImageView ivCurrentSource;
 
   @NonNull
-  public final AppCompatImageView ivPlayPause;
+  public final ProgressButtonImageView ivPlayPause;
 
   @NonNull
   public final LinearLayout llPlayingLayout;
@@ -54,9 +55,9 @@ public final class MusicPlayingWidgetBinding implements ViewBinding {
   public final AppCompatTextView tvTrackName;
 
   private MusicPlayingWidgetBinding(@NonNull FrameLayout rootView,
-      @NonNull FrameLayout flMusicPlayWidget, @NonNull AppCompatImageButton ibAlexaAvsBtn,
+      @NonNull LinearLayout flMusicPlayWidget, @NonNull AppCompatImageButton ibAlexaAvsBtn,
       @NonNull AppCompatImageView ivAlbumArt, @NonNull AppCompatImageView ivCurrentSource,
-      @NonNull AppCompatImageView ivPlayPause, @NonNull LinearLayout llPlayingLayout,
+      @NonNull ProgressButtonImageView ivPlayPause, @NonNull LinearLayout llPlayingLayout,
       @NonNull AppCompatSeekBar seekBarSong, @NonNull AppCompatTextView tvAlbumName,
       @NonNull AppCompatTextView tvAlexaListening, @NonNull AppCompatTextView tvTrackName) {
     this.rootView = rootView;
@@ -99,7 +100,11 @@ public final class MusicPlayingWidgetBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
-      FrameLayout flMusicPlayWidget = (FrameLayout) rootView;
+      id = R.id.fl_music_play_widget;
+      LinearLayout flMusicPlayWidget = ViewBindings.findChildViewById(rootView, id);
+      if (flMusicPlayWidget == null) {
+        break missingId;
+      }
 
       id = R.id.ib_alexa_avs_btn;
       AppCompatImageButton ibAlexaAvsBtn = ViewBindings.findChildViewById(rootView, id);
@@ -120,7 +125,7 @@ public final class MusicPlayingWidgetBinding implements ViewBinding {
       }
 
       id = R.id.iv_play_pause;
-      AppCompatImageView ivPlayPause = ViewBindings.findChildViewById(rootView, id);
+      ProgressButtonImageView ivPlayPause = ViewBindings.findChildViewById(rootView, id);
       if (ivPlayPause == null) {
         break missingId;
       }

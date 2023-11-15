@@ -278,12 +278,12 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
                          */
                     val secureIP=ScanningHandler.getInstance().getSecureIP()
                     LibreLogger.d(TAG,"Is SecureDevice IP:- "+secureIP +" and " + "current Ip address: "+sceneObject?.ipAddress)
-                    if(secureIP==sceneObject?.ipAddress){
-                        val error = LibreError(lsdpNodes.secureIpaddress, SECURE_DEVICE, 1)
-                        BusProvider.getInstance().post(error)
-                    }else {
+//                    if(secureIP==sceneObject?.ipAddress){
+//                        val error = LibreError(lsdpNodes.secureIpaddress, SECURE_DEVICE, 1)
+//                        BusProvider.getInstance().post(error) //not proper msg displayed here//suma
+//                    }else {
                         gotoSourcesOption(sceneObject?.ipAddress!!, sceneObject.currentSource)
-                    }
+                    //}
                 } else {
                     /**notifying adapter as sometime sceneObject is present but not lssdp node */
                     notifyDataSetChanged()
@@ -554,7 +554,7 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
                     }
 
                     if (sceneObject.currentSource == USB_SOURCE) {
-                        itemBinding.ivAuxBt.visibility = View.VISIBLE
+                        itemBinding.ivAuxBt.visibility = View.GONE
                         itemBinding.ivAuxBt.setImageResource(R.drawable.usb_storage_enabled)
                     }
                 }
@@ -578,7 +578,7 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
                 }
 
                 USB_SOURCE -> {
-                    itemBinding.ivAuxBt.visibility = View.VISIBLE
+                    itemBinding.ivAuxBt.visibility = View.GONE
                     itemBinding.ivAuxBt.setImageResource(R.drawable.usb_storage_enabled)
                 }
 
@@ -651,11 +651,14 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
                     if (tvTrackName.text.toString() != trackname) {
                         tvTrackName.text = trackname
                     }
-                } else {
+                }
+                else
+                {
                     //Setting the not available because to debug the issue
                     tvTrackName.setText(R.string.trackname_not_available)
                 }
-            }else{
+            }
+            else{
                 handleAlexaViews(sceneObject, 2)
             }
 
@@ -667,16 +670,19 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
                     if (tvAlbumName.text.toString() != sceneObject.artist_name) {
                         tvAlbumName.text = sceneObject.artist_name
                     }
-                } else if (!sceneObject.album_name.isNullOrEmpty() && !sceneObject.album_name.equals("null", ignoreCase = true)) {
+                }
+                else if (!sceneObject.album_name.isNullOrEmpty() && !sceneObject.album_name.equals("null", ignoreCase = true)) {
                     if (tvAlbumName.text.toString() != sceneObject.album_name) {
                         tvAlbumName.text = sceneObject.album_name
                     }
-                } else {
+                }
+                else {
                     //Setting the not available because to debug the issue
                     tvAlbumName.setText(R.string.albumname_not_available)
                 }
             }
         }
+
         private fun handleAlexaViews(sceneObject: SceneObject?, i: Int) {
             LibreLogger.d(TAG,"setCurrentTrackName handleAlexaViews called from  $i")
             itemBinding.ilMusicPlayingWidget.seekBarSong.visibility = View.GONE

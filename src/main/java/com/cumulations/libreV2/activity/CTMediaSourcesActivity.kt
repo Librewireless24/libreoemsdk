@@ -749,18 +749,51 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
             val cmd_id = root.getInt(TAG_CMD_ID)
             val window = root.getJSONObject(TAG_WINDOW_CONTENT)
 
-            LibreLogger.d(TAG, "Command Id$cmd_id")
+            LibreLogger.d(TAG, "MediaSources_Command Id$cmd_id")
 
             if (cmd_id == 1) {
+//                val Browser = window.getString(TAG_BROWSER)
+//                if (Browser.equals("HOME", ignoreCase = true)) {
+//                    /* Now we have successfully got the stack intialiized to home */
+//                    timeOutHandler.removeMessages(NETWORK_TIMEOUT)
+//                    unRegisterForDeviceEvents()
+//                    val intent = Intent(this@CTMediaSourcesActivity, CTDeviceBrowserActivity::class.java)
+//                    intent.putExtra(Constants.CURRENT_DEVICE_IP, currentIpAddress)
+//                    intent.putExtra(Constants.CURRENT_SOURCE_INDEX_SELECTED, currentSourceIndexSelected)
+//                    LibreLogger.d(TAG, "removing handler message")
+//                    startActivity(intent)
+//                    finish()
+//                }
+
                 val Browser = window.getString(TAG_BROWSER)
                 if (Browser.equals("HOME", ignoreCase = true)) {
                     /* Now we have successfully got the stack intialiized to home */
-                    timeOutHandler.removeMessages(NETWORK_TIMEOUT)
+                    /*   val tempDataItem = ArrayList<DataItem>()
+                   for (i in 0 until ItemList.length()) {
+                       val item = ItemList.getJSONObject(i)
+                       val dataItem = DataItem()
+                       if (item.has(TAG_AIRABLE_SOURCE)) {
+                           dataItem.airableSource = item.getString(TAG_AIRABLE_SOURCE)
+                           source = dataItem.airableSource
+                       }
+                   }*/
+                    timeOutHandler!!.removeMessages(NETWORK_TIMEOUT)
                     unRegisterForDeviceEvents()
-                    val intent = Intent(this@CTMediaSourcesActivity, CTDeviceBrowserActivity::class.java)
+                    val intent =
+                        Intent(
+                            this@CTMediaSourcesActivity,
+                            CTDeviceBrowserActivity::class.java
+                        )
                     intent.putExtra(Constants.CURRENT_DEVICE_IP, currentIpAddress)
                     intent.putExtra(Constants.CURRENT_SOURCE_INDEX_SELECTED, currentSourceIndexSelected)
-                    LibreLogger.d(TAG, "removing handler message")
+                    intent.putExtra(
+                        Constants.CURRENT_SOURCE_INDEX_SELECTED,
+                        currentSourceIndexSelected
+                    )
+                    LibreLogger.d(
+                        TAG,
+                        "removing handler message and index is $currentSourceIndexSelected"
+                    )
                     startActivity(intent)
                     finish()
                 }
@@ -928,7 +961,7 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
                         showErrorMessage(error)
                         return@setOnClickListener
                     }
-
+                   LibreLogger.d(TAG,"OEM APP SOURCE VALUE\n"+source)
                     when (source) {
 
                         context.getString(R.string.airplay),
@@ -947,7 +980,6 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
                         context.getString(R.string.deezer),
                         context.getString(R.string.favourites),
                         context.getString(R.string.external_source),
-                        context.getString(R.string.usb),
                         context.getString(R.string.alexa_source)->{
                             showToast("We are not supporting now")
                         }
@@ -974,14 +1006,17 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
                         }
                         //Commented because crashing
 
-                      /*  context.getString(R.string.usb) -> {
+                       context.getString(R.string.usb) -> {
+                           LibreLogger.d(TAG,"suma in usb media browse ")
+                            currentSourceIndexSelected = 0
+                           LibreApplication.isUSBSrc=true;
 
-                            currentSourceIndexSelected = 3
-                            *//*Reset the UI to Home ,, will wait for the confirmation of home command completion and then start the required activity*//*
+                           //*Reset the UI to Home ,, will wait for the confirmation of home command completion and then start the required activity*//*
                             LUCIControl(currentIpAddress).SendCommand(MIDCONST.MID_REMOTE_UI.toInt(), GET_HOME, LSSDPCONST.LUCI_SET)
                             ///////////// timeout for dialog - showLoader() ///////////////////
-                            timeOutHandler!!.sendEmptyMessageDelayed(NETWORK_TIMEOUT, Constants.ITEM_CLICKED_TIMEOUT.toLong())
+                           // timeOutHandler!!.sendEmptyMessageDelayed(NETWORK_TIMEOUT, Constants.ITEM_CLICKED_TIMEOUT.toLong())
                             showLoader()
+
 //                            val luciControl = LUCIControl(currentIpAddress)
 //
 //                           luciControl.SendCommand(MIDCONST.MID_BLUETOOTH, BLUETOOTH_DISCONNECT, LSSDPCONST.LUCI_SET)
@@ -991,7 +1026,7 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
 
                           //  LUCIControl(currentIpAddress).SendCommand(MIDCONST.MID_STOP_PREV_SOURCE, BLUETOOTH_OFF, LSSDPCONST.LUCI_SET)
 
-                        }*/
+                        }
 
                         context.getString(R.string.mediaserver) -> {
                           //  LUCIControl(currentIpAddress).SendCommand(MIDCONST.MID_BLUETOOTH, BLUETOOTH_OFF, LSSDPCONST.LUCI_SET)

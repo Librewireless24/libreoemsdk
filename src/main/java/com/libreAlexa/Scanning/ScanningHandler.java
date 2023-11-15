@@ -374,6 +374,7 @@ public class ScanningHandler {
                         mNewSources.setGoogleCast(mResult);
                         sourceList.put("Google Cast",mResult);
                         mNewSources.setCapitalCities(sourceList);
+                        LibreLogger.d(TAG,"getSource value cast enabled\n"+mResult);
                         break;
                     /*case Constants.EXTERNAL_SOURCE:
                         mNewSources.setExternalSource(mResult);
@@ -383,6 +384,8 @@ public class ScanningHandler {
                         mNewSources.setAlexaAvsSource(mResult);
                         sourceList.put("Alexa Source",mResult);
                         mNewSources.setCapitalCities(sourceList);
+                        LibreLogger.d(TAG,"getSource value alexasource enabled\n"+mResult);
+
                         break;
 
                 }

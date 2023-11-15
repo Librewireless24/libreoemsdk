@@ -92,4 +92,31 @@
     android:visibility="gone">
 
   </WebView>
+  <RelativeLayout
+    android:id="@+id/lay_Loader"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_loader"
+    android:visibility="gone">
+    <androidx.appcompat.widget.AppCompatTextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginHorizontal="30dp"
+      android:text="@string/pleaseWait"
+      android:textSize="24sp"
+      android:layout_marginTop="280dp"
+      android:gravity="center_horizontal"
+      android:textColor="@color/white"
+      android:background="@color/transparent" />
+
+    <ProgressBar
+      android:id="@+id/progress_bar"
+      android:layout_width="100dp"
+      android:layout_marginTop="10dp"
+      android:layout_height="100dp"
+      android:layout_centerInParent="true"
+      android:indeterminateTint="@color/brand_orange"
+      android:background="@color/transparent">
+    </ProgressBar>
+  </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

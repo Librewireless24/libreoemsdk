@@ -559,7 +559,8 @@ class CTNowPlayingActivity : CTDeviceDiscoveryActivity(), View.OnClickListener,
                                     /*which means shuffle is off hence making it on*/
                                     playbackHelper.setIsShuffleOn(true)
                                     currentSceneObject!!.shuffleState = 1
-                                } else {
+                                }
+                                else {
                                     /*which means shuffle is on hence making it off*/
                                     currentSceneObject!!.shuffleState = 0
                                     playbackHelper.setIsShuffleOn(false)
@@ -695,6 +696,7 @@ class CTNowPlayingActivity : CTDeviceDiscoveryActivity(), View.OnClickListener,
     setViews()
     /* This is done to make sure we retain the album
        art even when the fragment gets recycled in viewpager */
+
 //        updateAlbumArt()
 }
 
@@ -1218,7 +1220,7 @@ override fun messageRecieved(nettyData: NettyData) {
         if (currentSceneObject?.currentSource == GCAST_SOURCE
             || currentSceneObject?.currentSource == BT_SOURCE
             || currentSceneObject?.currentSource == AIRPLAY_SOURCE
-            || currentSceneObject!!.currentSource == USB_SOURCE
+            /*|| currentSceneObject!!.currentSource == USB_SOURCE*/
             || currentSceneObject!!.currentSource == SDCARD_SOURCE
             || currentSceneObject!!.currentSource == DEEZER_SOURCE
             || currentSceneObject!!.currentSource == NETWORK_DEVICES

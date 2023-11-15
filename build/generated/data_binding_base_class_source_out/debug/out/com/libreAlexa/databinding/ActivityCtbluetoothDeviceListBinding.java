@@ -9,6 +9,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
@@ -32,6 +33,9 @@ public final class ActivityCtbluetoothDeviceListBinding implements ViewBinding {
   public final AppCompatImageView btnRefresh;
 
   @NonNull
+  public final AppCompatButton btnTurnOnBt;
+
+  @NonNull
   public final AppCompatImageView ivBack;
 
   @NonNull
@@ -42,6 +46,12 @@ public final class ActivityCtbluetoothDeviceListBinding implements ViewBinding {
 
   @NonNull
   public final RelativeLayout layDeviceCount;
+
+  @NonNull
+  public final LinearLayout layNoBtOn;
+
+  @NonNull
+  public final LinearLayout layTurnOnBt;
 
   @NonNull
   public final LinearLayout noBleDeviceFrameLayout;
@@ -57,17 +67,22 @@ public final class ActivityCtbluetoothDeviceListBinding implements ViewBinding {
 
   private ActivityCtbluetoothDeviceListBinding(@NonNull CoordinatorLayout rootView,
       @NonNull AppBarLayout appbarLayout, @NonNull AppCompatImageView btnRefresh,
-      @NonNull AppCompatImageView ivBack, @NonNull ListView ivBledevicelist,
-      @NonNull AppCompatImageView ivRefresh, @NonNull RelativeLayout layDeviceCount,
-      @NonNull LinearLayout noBleDeviceFrameLayout, @NonNull Toolbar toolbar,
-      @NonNull AppCompatTextView tvTurnOnBle, @NonNull AppCompatTextView txtDeviceCount) {
+      @NonNull AppCompatButton btnTurnOnBt, @NonNull AppCompatImageView ivBack,
+      @NonNull ListView ivBledevicelist, @NonNull AppCompatImageView ivRefresh,
+      @NonNull RelativeLayout layDeviceCount, @NonNull LinearLayout layNoBtOn,
+      @NonNull LinearLayout layTurnOnBt, @NonNull LinearLayout noBleDeviceFrameLayout,
+      @NonNull Toolbar toolbar, @NonNull AppCompatTextView tvTurnOnBle,
+      @NonNull AppCompatTextView txtDeviceCount) {
     this.rootView = rootView;
     this.appbarLayout = appbarLayout;
     this.btnRefresh = btnRefresh;
+    this.btnTurnOnBt = btnTurnOnBt;
     this.ivBack = ivBack;
     this.ivBledevicelist = ivBledevicelist;
     this.ivRefresh = ivRefresh;
     this.layDeviceCount = layDeviceCount;
+    this.layNoBtOn = layNoBtOn;
+    this.layTurnOnBt = layTurnOnBt;
     this.noBleDeviceFrameLayout = noBleDeviceFrameLayout;
     this.toolbar = toolbar;
     this.tvTurnOnBle = tvTurnOnBle;
@@ -113,6 +128,12 @@ public final class ActivityCtbluetoothDeviceListBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.btn_turn_on_bt;
+      AppCompatButton btnTurnOnBt = ViewBindings.findChildViewById(rootView, id);
+      if (btnTurnOnBt == null) {
+        break missingId;
+      }
+
       id = R.id.iv_back;
       AppCompatImageView ivBack = ViewBindings.findChildViewById(rootView, id);
       if (ivBack == null) {
@@ -134,6 +155,18 @@ public final class ActivityCtbluetoothDeviceListBinding implements ViewBinding {
       id = R.id.lay_deviceCount;
       RelativeLayout layDeviceCount = ViewBindings.findChildViewById(rootView, id);
       if (layDeviceCount == null) {
+        break missingId;
+      }
+
+      id = R.id.lay_no_bt_on;
+      LinearLayout layNoBtOn = ViewBindings.findChildViewById(rootView, id);
+      if (layNoBtOn == null) {
+        break missingId;
+      }
+
+      id = R.id.lay_turn_on_bt;
+      LinearLayout layTurnOnBt = ViewBindings.findChildViewById(rootView, id);
+      if (layTurnOnBt == null) {
         break missingId;
       }
 
@@ -162,8 +195,8 @@ public final class ActivityCtbluetoothDeviceListBinding implements ViewBinding {
       }
 
       return new ActivityCtbluetoothDeviceListBinding((CoordinatorLayout) rootView, appbarLayout,
-          btnRefresh, ivBack, ivBledevicelist, ivRefresh, layDeviceCount, noBleDeviceFrameLayout,
-          toolbar, tvTurnOnBle, txtDeviceCount);
+          btnRefresh, btnTurnOnBt, ivBack, ivBledevicelist, ivRefresh, layDeviceCount, layNoBtOn,
+          layTurnOnBt, noBleDeviceFrameLayout, toolbar, tvTurnOnBle, txtDeviceCount);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

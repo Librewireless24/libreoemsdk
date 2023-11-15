@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import androidx.annotation.NonNull;
@@ -16,6 +17,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
+import com.cumulations.libreV2.ProgressButtonImageView;
 import com.libreAlexa.R;
 import java.lang.NullPointerException;
 import java.lang.Override;
@@ -26,7 +28,7 @@ public final class CtAcitvityNowPlayingBinding implements ViewBinding {
   private final FrameLayout rootView;
 
   @NonNull
-  public final CtAlexaWidgetBinding ilMusicPlayingWidget;
+  public final LinearLayout ilMusic;
 
   @NonNull
   public final AppCompatImageView ivAlbumArt;
@@ -44,7 +46,7 @@ public final class CtAcitvityNowPlayingBinding implements ViewBinding {
   public final AppCompatImageView ivNext;
 
   @NonNull
-  public final AppCompatImageView ivPlayPause;
+  public final ProgressButtonImageView ivPlayPause;
 
   @NonNull
   public final AppCompatImageView ivPrevious;
@@ -60,6 +62,9 @@ public final class CtAcitvityNowPlayingBinding implements ViewBinding {
 
   @NonNull
   public final AppCompatImageView ivVolumeDown;
+
+  @NonNull
+  public final LinearLayout layPlay;
 
   @NonNull
   public final ProgressBar loader;
@@ -100,13 +105,13 @@ public final class CtAcitvityNowPlayingBinding implements ViewBinding {
   @NonNull
   public final AppCompatTextView tvTrackName;
 
-  private CtAcitvityNowPlayingBinding(@NonNull FrameLayout rootView,
-      @NonNull CtAlexaWidgetBinding ilMusicPlayingWidget, @NonNull AppCompatImageView ivAlbumArt,
-      @NonNull AppCompatImageButton ivAlexaAccount, @NonNull AppCompatImageButton ivBack,
-      @NonNull AppCompatImageView ivBlurredAlbumArt, @NonNull AppCompatImageView ivNext,
-      @NonNull AppCompatImageView ivPlayPause, @NonNull AppCompatImageView ivPrevious,
-      @NonNull AppCompatImageView ivRepeat, @NonNull AppCompatImageView ivShuffle,
-      @NonNull AppCompatImageView ivSourceIcon, @NonNull AppCompatImageView ivVolumeDown,
+  private CtAcitvityNowPlayingBinding(@NonNull FrameLayout rootView, @NonNull LinearLayout ilMusic,
+      @NonNull AppCompatImageView ivAlbumArt, @NonNull AppCompatImageButton ivAlexaAccount,
+      @NonNull AppCompatImageButton ivBack, @NonNull AppCompatImageView ivBlurredAlbumArt,
+      @NonNull AppCompatImageView ivNext, @NonNull ProgressButtonImageView ivPlayPause,
+      @NonNull AppCompatImageView ivPrevious, @NonNull AppCompatImageView ivRepeat,
+      @NonNull AppCompatImageView ivShuffle, @NonNull AppCompatImageView ivSourceIcon,
+      @NonNull AppCompatImageView ivVolumeDown, @NonNull LinearLayout layPlay,
       @NonNull ProgressBar loader, @NonNull AppCompatImageView mediaBtnSkipNext,
       @NonNull AppCompatImageView mediaBtnSkipPrev, @NonNull RelativeLayout mshuffleFavRepeat,
       @NonNull AppCompatSeekBar seekBarSong, @NonNull AppCompatSeekBar seekBarVolume,
@@ -115,7 +120,7 @@ public final class CtAcitvityNowPlayingBinding implements ViewBinding {
       @NonNull AppCompatTextView tvSourceType, @NonNull AppCompatTextView tvTotalDuration,
       @NonNull AppCompatTextView tvTrackName) {
     this.rootView = rootView;
-    this.ilMusicPlayingWidget = ilMusicPlayingWidget;
+    this.ilMusic = ilMusic;
     this.ivAlbumArt = ivAlbumArt;
     this.ivAlexaAccount = ivAlexaAccount;
     this.ivBack = ivBack;
@@ -127,6 +132,7 @@ public final class CtAcitvityNowPlayingBinding implements ViewBinding {
     this.ivShuffle = ivShuffle;
     this.ivSourceIcon = ivSourceIcon;
     this.ivVolumeDown = ivVolumeDown;
+    this.layPlay = layPlay;
     this.loader = loader;
     this.mediaBtnSkipNext = mediaBtnSkipNext;
     this.mediaBtnSkipPrev = mediaBtnSkipPrev;
@@ -169,12 +175,11 @@ public final class CtAcitvityNowPlayingBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
-      id = R.id.ilMusicPlayingWidget;
-      View ilMusicPlayingWidget = ViewBindings.findChildViewById(rootView, id);
-      if (ilMusicPlayingWidget == null) {
+      id = R.id.ilMusic;
+      LinearLayout ilMusic = ViewBindings.findChildViewById(rootView, id);
+      if (ilMusic == null) {
         break missingId;
       }
-      CtAlexaWidgetBinding binding_ilMusicPlayingWidget = CtAlexaWidgetBinding.bind(ilMusicPlayingWidget);
 
       id = R.id.iv_album_art;
       AppCompatImageView ivAlbumArt = ViewBindings.findChildViewById(rootView, id);
@@ -206,8 +211,8 @@ public final class CtAcitvityNowPlayingBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.iv_play_pause;
-      AppCompatImageView ivPlayPause = ViewBindings.findChildViewById(rootView, id);
+      id = R.id.iv_playPause;
+      ProgressButtonImageView ivPlayPause = ViewBindings.findChildViewById(rootView, id);
       if (ivPlayPause == null) {
         break missingId;
       }
@@ -239,6 +244,12 @@ public final class CtAcitvityNowPlayingBinding implements ViewBinding {
       id = R.id.iv_volume_down;
       AppCompatImageView ivVolumeDown = ViewBindings.findChildViewById(rootView, id);
       if (ivVolumeDown == null) {
+        break missingId;
+      }
+
+      id = R.id.lay_Play;
+      LinearLayout layPlay = ViewBindings.findChildViewById(rootView, id);
+      if (layPlay == null) {
         break missingId;
       }
 
@@ -284,7 +295,7 @@ public final class CtAcitvityNowPlayingBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.tv_album_name;
+      id = R.id.tv_albumName;
       AppCompatTextView tvAlbumName = ViewBindings.findChildViewById(rootView, id);
       if (tvAlbumName == null) {
         break missingId;
@@ -320,9 +331,9 @@ public final class CtAcitvityNowPlayingBinding implements ViewBinding {
         break missingId;
       }
 
-      return new CtAcitvityNowPlayingBinding((FrameLayout) rootView, binding_ilMusicPlayingWidget,
-          ivAlbumArt, ivAlexaAccount, ivBack, ivBlurredAlbumArt, ivNext, ivPlayPause, ivPrevious,
-          ivRepeat, ivShuffle, ivSourceIcon, ivVolumeDown, loader, mediaBtnSkipNext,
+      return new CtAcitvityNowPlayingBinding((FrameLayout) rootView, ilMusic, ivAlbumArt,
+          ivAlexaAccount, ivBack, ivBlurredAlbumArt, ivNext, ivPlayPause, ivPrevious, ivRepeat,
+          ivShuffle, ivSourceIcon, ivVolumeDown, layPlay, loader, mediaBtnSkipNext,
           mediaBtnSkipPrev, mshuffleFavRepeat, seekBarSong, seekBarVolume, toolbar, tvAlbumName,
           tvCurrentDuration, tvDeviceName, tvSourceType, tvTotalDuration, tvTrackName);
     }

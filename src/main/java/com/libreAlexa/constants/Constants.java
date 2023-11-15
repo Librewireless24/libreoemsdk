@@ -244,4 +244,7 @@ public class Constants {
     public static final String CONFIG_THRO_BLE = "ConfiguringThroBLE";
     public static final String DEVICE_NAME = "DeviceName";
     public static final String SECURE_DEVICE = "This is Secure Device";
+
+    public static final String AIRABLE_SOURCE = "airable_source";
+
 }

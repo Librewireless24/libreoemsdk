@@ -24,6 +24,7 @@ class CTSettingsFragment:Fragment() {
     }
 
     private fun initViews() {
-        binding!!.tvAppVersion.text = getAppVersion(requireActivity())
+        //binding!!.tvAppVersion.text = getAppVersion(requireActivity())
+       // Suma: keep only one area of changes
     }
 }

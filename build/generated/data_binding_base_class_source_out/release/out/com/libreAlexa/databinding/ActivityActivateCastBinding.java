@@ -24,20 +24,7 @@ public final class ActivityActivateCastBinding implements ViewBinding {
   @NonNull
   private final ConstraintLayout rootView;
 
-  /**
-   * This binding is not available in all configurations.
-   * <p>
-   * Present:
-   * <ul>
-   *   <li>layout/</li>
-   * </ul>
-   *
-   * Absent:
-   * <ul>
-   *   <li>layout-sw600dp/</li>
-   * </ul>
-   */
-  @Nullable
+  @NonNull
   public final SwitchCompat btnSendCrashReports;
 
   @NonNull
@@ -46,20 +33,7 @@ public final class ActivityActivateCastBinding implements ViewBinding {
   @NonNull
   public final AppCompatImageView imgRightArrow;
 
-  /**
-   * This binding is not available in all configurations.
-   * <p>
-   * Present:
-   * <ul>
-   *   <li>layout/</li>
-   * </ul>
-   *
-   * Absent:
-   * <ul>
-   *   <li>layout-sw600dp/</li>
-   * </ul>
-   */
-  @Nullable
+  @NonNull
   public final RelativeLayout layLoader;
 
   @NonNull
@@ -68,37 +42,8 @@ public final class ActivityActivateCastBinding implements ViewBinding {
   @NonNull
   public final RelativeLayout parentLayout;
 
-  /**
-   * This binding is not available in all configurations.
-   * <p>
-   * Present:
-   * <ul>
-   *   <li>layout/</li>
-   * </ul>
-   *
-   * Absent:
-   * <ul>
-   *   <li>layout-sw600dp/</li>
-   * </ul>
-   */
-  @Nullable
+  @NonNull
   public final ProgressBar progressBar;
-
-  /**
-   * This binding is not available in all configurations.
-   * <p>
-   * Present:
-   * <ul>
-   *   <li>layout-sw600dp/</li>
-   * </ul>
-   *
-   * Absent:
-   * <ul>
-   *   <li>layout/</li>
-   * </ul>
-   */
-  @Nullable
-  public final SwitchCompat radbtnSenDeviceUsage;
 
   @NonNull
   public final AppCompatTextView txtActivateCast;
@@ -113,11 +58,10 @@ public final class ActivityActivateCastBinding implements ViewBinding {
   public final AppCompatTextView txtSetUpVoice;
 
   private ActivityActivateCastBinding(@NonNull ConstraintLayout rootView,
-      @Nullable SwitchCompat btnSendCrashReports, @NonNull AppCompatImageView imageView,
-      @NonNull AppCompatImageView imgRightArrow, @Nullable RelativeLayout layLoader,
+      @NonNull SwitchCompat btnSendCrashReports, @NonNull AppCompatImageView imageView,
+      @NonNull AppCompatImageView imgRightArrow, @NonNull RelativeLayout layLoader,
       @NonNull LinearLayout llDeviceUsage, @NonNull RelativeLayout parentLayout,
-      @Nullable ProgressBar progressBar, @Nullable SwitchCompat radbtnSenDeviceUsage,
-      @NonNull AppCompatTextView txtActivateCast,
+      @NonNull ProgressBar progressBar, @NonNull AppCompatTextView txtActivateCast,
       @NonNull AppCompatTextView txtGoogleAccountControls, @NonNull AppCompatTextView txtSendDevice,
       @NonNull AppCompatTextView txtSetUpVoice) {
     this.rootView = rootView;
@@ -128,7 +72,6 @@ public final class ActivityActivateCastBinding implements ViewBinding {
     this.llDeviceUsage = llDeviceUsage;
     this.parentLayout = parentLayout;
     this.progressBar = progressBar;
-    this.radbtnSenDeviceUsage = radbtnSenDeviceUsage;
     this.txtActivateCast = txtActivateCast;
     this.txtGoogleAccountControls = txtGoogleAccountControls;
     this.txtSendDevice = txtSendDevice;
@@ -164,6 +107,9 @@ public final class ActivityActivateCastBinding implements ViewBinding {
     missingId: {
       id = R.id.btn_send_crash_reports;
       SwitchCompat btnSendCrashReports = ViewBindings.findChildViewById(rootView, id);
+      if (btnSendCrashReports == null) {
+        break missingId;
+      }
 
       id = R.id.imageView;
       AppCompatImageView imageView = ViewBindings.findChildViewById(rootView, id);
@@ -179,6 +125,9 @@ public final class ActivityActivateCastBinding implements ViewBinding {
 
       id = R.id.lay_Loader;
       RelativeLayout layLoader = ViewBindings.findChildViewById(rootView, id);
+      if (layLoader == null) {
+        break missingId;
+      }
 
       id = R.id.ll_deviceUsage;
       LinearLayout llDeviceUsage = ViewBindings.findChildViewById(rootView, id);
@@ -194,9 +143,9 @@ public final class ActivityActivateCastBinding implements ViewBinding {
 
       id = R.id.progress_bar;
       ProgressBar progressBar = ViewBindings.findChildViewById(rootView, id);
-
-      id = R.id.radbtn_senDeviceUsage;
-      SwitchCompat radbtnSenDeviceUsage = ViewBindings.findChildViewById(rootView, id);
+      if (progressBar == null) {
+        break missingId;
+      }
 
       id = R.id.txt_activate_cast;
       AppCompatTextView txtActivateCast = ViewBindings.findChildViewById(rootView, id);
@@ -224,8 +173,7 @@ public final class ActivityActivateCastBinding implements ViewBinding {
 
       return new ActivityActivateCastBinding((ConstraintLayout) rootView, btnSendCrashReports,
           imageView, imgRightArrow, layLoader, llDeviceUsage, parentLayout, progressBar,
-          radbtnSenDeviceUsage, txtActivateCast, txtGoogleAccountControls, txtSendDevice,
-          txtSetUpVoice);
+          txtActivateCast, txtGoogleAccountControls, txtSendDevice, txtSetUpVoice);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));
