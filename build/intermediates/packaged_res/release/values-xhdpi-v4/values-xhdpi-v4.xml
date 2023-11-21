@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="medium_text">18sp</dimen>
+    <dimen name="small_text">12sp</dimen>
+    <dimen name="top_margin">10dp</dimen>
+    <dimen name="wifi_router_padding">32dp</dimen>
+</resources>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg_loader">#80000000</color>
+    <color name="black_oem">#FF000000</color>
+    <color name="blue">#3351F4</color>
+    <color name="button_custom_background">#4C4C4C</color>
+    <color name="close_mark">#FFFFFFFF</color>
+    <color name="close_mark_night_theme">#FFFFFFFF</color>
+    <color name="help_close_mark">#212122</color>
+    <color name="help_web_view_bg">#FFFFFFFF</color>
+    <color name="transparent">#0000ffff</color>
+    <color name="web_view_bg">#212122</color>
+    <color name="web_view_bg_night_theme">#212122</color>
+    <color name="white_oem">#FFFFFFFF</color>
+</resources>

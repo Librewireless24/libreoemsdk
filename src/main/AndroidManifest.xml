@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:tools="http://schemas.android.com/tools"
+  package="com.libreAlexa">
+
+  <application
+    android:allowBackup="false"
+    android:configChanges="keyboardHidden|orientation|screenSize"
+    android:hardwareAccelerated="false"
+    android:largeHeap="true"
+    android:name=".LibreApplication">
+    <activity
+      android:exported="false"
+      android:name="com.cumulations.libreV2.activity.IssuesReportActivity" />
+    <activity
+      android:exported="false"
+      android:name="com.cumulations.libreV2.activity.oem.SetUpDeviceActivity"
+      android:screenOrientation="portrait" />
+    <activity
+      android:exported="false"
+      android:name="com.cumulations.libreV2.activity.oem.OpenGHomeAppActivity"
+      android:screenOrientation="portrait" />
+    <activity
+      android:exported="false"
+      android:name="com.cumulations.libreV2.activity.oem.HelpImproveChromeCastActivity"
+      android:screenOrientation="portrait" />
+    <activity
+      android:exported="false"
+      android:name="com.cumulations.libreV2.activity.oem.ActivateCastActivity"
+      android:screenOrientation="portrait" />
+    <activity
+      android:exported="false"
+      android:name="com.cumulations.libreV2.activity.oem.CastToSActivity"
+      android:screenOrientation="portrait" />
+    <activity
+      android:exported="true"
+      android:name="com.cumulations.libreV2.activity.CTBluetoothHearSoundQtn"
+      android:screenOrientation="portrait" />
+    <activity
+      android:exported="true"
+      android:name="com.cumulations.libreV2.activity.CTBluetoothPassCredentials"
+      android:screenOrientation="portrait" />
+    <activity
+      android:exported="true"
+      android:launchMode="singleTask"
+      android:name="com.cumulations.libreV2.activity.CTBluetoothDeviceListActivity"
+      android:screenOrientation="portrait" />
+    <activity
+      android:exported="true"
+      android:label="@string/title_activity_ctbluetooth_setup_instructions"
+      android:launchMode="singleTask"
+      android:name="com.cumulations.libreV2.activity.CTBluetoothSetupInstructionsActivity"
+      android:screenOrientation="portrait" />
+    <activity
+      android:exported="true"
+      android:name=".util.spotifyInstructions"
+      android:screenOrientation="portrait" />
+    <activity
+      android:exported="true"
+      android:label="@string/title_activity_google_cast_update_after_sac"
+      android:launchMode="singleTask"
+      android:name=".Ls9Sac.GoogleCastUpdateAfterSac"
+      android:screenOrientation="portrait" />
+    <activity
+      android:exported="true"
+      android:label="@string/title_activity_gcast_update_status_available"
+      android:launchMode="singleTask"
+      android:name=".Ls9Sac.GcastUpdateStatusAvailableListView"
+      android:screenOrientation="portrait" />
+    <activity
+      android:exported="true"
+      android:label="@string/title_activity_welcome"
+      android:name="com.cumulations.libreV2.activity.CTSplashScreenActivityV2"
+      android:screenOrientation="portrait"></activity>
+    <activity
+      android:exported="true"
+      android:launchMode="singleTask"
+      android:name="com.cumulations.libreV2.activity.CTConnectToWifiActivity"
+      android:screenOrientation="portrait" />
+    <activity
+      android:exported="true"
+      android:launchMode="singleTask"
+      android:name="com.cumulations.libreV2.activity.CTWifiListActivity"
+      android:screenOrientation="portrait" />
+    <activity
+      android:exported="true"
+      android:launchMode="singleTask"
+      android:name="com.cumulations.libreV2.activity.CTConnectingToMainNetwork"
+      android:screenOrientation="portrait" />
+    <activity
+      android:exported="true"
+      android:launchMode="singleTask"
+      android:name="com.cumulations.libreV2.activity.CTAmazonInfoActivity"
+      android:screenOrientation="portrait" />
+    <activity
+      android:exported="true"
+      android:launchMode="singleTask"
+      android:name="com.cumulations.libreV2.activity.CTAmazonLoginActivity"
+      android:screenOrientation="portrait" />
+    <activity
+      android:allowTaskReparenting="true"
+      android:exported="true"
+      android:launchMode="singleTask"
+      android:name="com.amazon.identity.auth.device.authorization.AuthorizationActivity"
+      android:theme="@android:style/Theme.NoDisplay">
+      <intent-filter>
+        <action android:name="android.intent.action.VIEW" />
+
+        <category android:name="android.intent.category.DEFAULT" />
+        <category android:name="android.intent.category.BROWSABLE" />
+
+        <data
+          android:host="${applicationId}"
+          android:scheme="amzn" />
+      </intent-filter>
+    </activity>
+    <activity
+      android:exported="true"
+      android:launchMode="singleTask"
+      android:name="com.cumulations.libreV2.activity.CTAlexaThingsToTryActivity"
+      android:screenOrientation="portrait" />
+
+    <activity
+      android:exported="true"
+      android:launchMode="singleTask"
+      android:name="com.cumulations.libreV2.activity.CTDeviceSettingsActivity"
+      android:screenOrientation="portrait"
+      android:windowSoftInputMode="adjustPan" />
+    <activity
+      android:exported="true"
+      android:launchMode="singleTask"
+      android:name="com.cumulations.libreV2.activity.CTSetupFailedActivity"
+      android:screenOrientation="portrait" />
+    <activity
+      android:exported="true"
+      android:launchMode="singleTask"
+      android:name="com.cumulations.libreV2.activity.CTHomeTabsActivity"
+      android:screenOrientation="portrait" />
+    <activity
+      android:exported="true"
+      android:launchMode="singleTask"
+      android:name="com.cumulations.libreV2.activity.CTMediaSourcesActivity"
+      android:screenOrientation="portrait" />
+
+    <activity
+      android:exported="true"
+      android:launchMode="singleTask"
+      android:name="com.cumulations.libreV2.activity.CTNowPlayingActivity"
+      android:screenOrientation="portrait" />
+    <activity
+      android:exported="true"
+      android:launchMode="singleTask"
+      android:name="com.cumulations.libreV2.activity.CTDMSBrowserActivityV2"
+      android:screenOrientation="portrait" />
+    <activity
+      android:exported="true"
+      android:launchMode="singleTask"
+      android:name="com.cumulations.libreV2.activity.CTLocalDMSActivity"
+      android:screenOrientation="portrait" />
+    <activity
+      android:exported="true"
+      android:launchMode="singleTask"
+      android:name="com.cumulations.libreV2.activity.CTUpnpFileBrowserActivity"
+      android:screenOrientation="portrait" />
+    <activity
+      android:exported="true"
+      android:launchMode="singleTask"
+      android:name="com.cumulations.libreV2.activity.CTDeviceBrowserActivity"
+      android:screenOrientation="portrait" />
+    <activity
+      android:exported="true"
+      android:launchMode="singleTask"
+      android:name="com.cumulations.libreV2.activity.CTDMSDeviceListActivity"
+      android:screenOrientation="portrait" />
+    <activity
+      android:exported="true"
+      android:launchMode="singleTask"
+      android:name="com.cumulations.libreV2.activity.CTBluetoothSomethingWrong"
+      android:screenOrientation="portrait" />
+    <meta-data
+      android:name="io.fabric.ApiKey"
+      android:value="b0f91dc7a6f0d7ee35d247281ac32a618a418970" />
+    <service
+      android:exported="false"
+      android:name=".app.dlna.dmc.processor.upnp.CoreUpnpService" />
+    <service
+      android:exported="false"
+      android:name=".app.dlna.dmc.processor.upnp.LoadLocalContentService" />
+    <service
+      android:exported="false"
+      android:name=".DMRPlayerService" />
+
+    <service
+      android:exported="false"
+      android:name="com.cumulations.libreV2.activity.BluetoothLeService" />
+  </application>
+
+  <queries>
+    <package android:name="com.google.android.apps.chromecast.app" />
+    <package android:name="com.spotify.music" />
+    <package android:name="com.aspiro.tidal" />
+  </queries>
+  <uses-feature
+    android:name="android.hardware.bluetooth_le"
+    android:required="true" />
+
+  <uses-feature
+    android:name="android.hardware.touchscreen"
+    android:required="false" />
+  <uses-permission android:name="android.permission.BLUETOOTH" />
+  <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+  <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+  <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+  <uses-permission android:name="android.permission.INTERNET" />
+  <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+  <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+  <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+  <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+  <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+  <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+  <uses-permission android:name="android.permission.WAKE_LOCK" />
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+  <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+  <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+</manifest>

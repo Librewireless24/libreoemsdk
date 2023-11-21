@@ -1,0 +1,470 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    xmlns:tools="http://schemas.android.com/tools"
+4    package="com.libreAlexa" >
+5
+6    <uses-sdk
+7        android:minSdkVersion="21"
+7-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml
+8        android:targetSdkVersion="33" />
+8-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml
+9
+10    <queries>
+10-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:198:3-202:13
+11        <package android:name="com.google.android.apps.chromecast.app" />
+11-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:199:5-70
+11-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:199:14-67
+12        <package android:name="com.spotify.music" />
+12-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:200:5-49
+12-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:200:14-46
+13        <package android:name="com.aspiro.tidal" />
+13-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:201:5-48
+13-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:201:14-45
+14    </queries>
+15
+16    <uses-feature
+16-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:203:3-205:31
+17        android:name="android.hardware.bluetooth_le"
+17-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:204:5-49
+18        android:required="true" />
+18-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:205:5-28
+19    <uses-feature
+19-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:207:3-209:32
+20        android:name="android.hardware.touchscreen"
+20-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:208:5-48
+21        android:required="false" />
+21-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:209:5-29
+22
+23    <uses-permission android:name="android.permission.BLUETOOTH" />
+23-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:210:3-66
+23-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:210:20-63
+24    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+24-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:211:3-72
+24-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:211:20-69
+25    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
+25-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:212:3-74
+25-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:212:20-71
+26    <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
+26-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:213:3-71
+26-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:213:20-68
+27    <uses-permission android:name="android.permission.INTERNET" />
+27-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:214:3-65
+27-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:214:20-62
+28    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />
+28-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:215:3-83
+28-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:215:20-80
+29    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+29-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:216:3-77
+29-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:216:20-74
+30    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+30-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:217:3-77
+30-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:217:20-74
+31    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+31-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:218:3-74
+31-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:218:20-71
+32    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+32-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:219:3-74
+32-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:219:20-71
+33    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
+33-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:220:3-84
+33-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:220:20-81
+34    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+34-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:221:3-77
+34-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:221:20-74
+35    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+35-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:222:3-79
+35-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:222:20-76
+36    <uses-permission android:name="android.permission.WAKE_LOCK" />
+36-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:223:3-66
+36-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:223:20-63
+37    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+37-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:224:3-78
+37-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:224:20-75
+38    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+38-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:225:3-79
+38-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:225:20-76
+39    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+39-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:226:3-69
+39-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:226:20-66
+40    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+40-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:228:3-75
+40-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:228:20-72
+41
+42    <application
+42-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:6:3-196:17
+43        android:name="com.libreAlexa.LibreApplication"
+43-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:11:5-37
+44        android:allowBackup="false"
+44-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:7:5-32
+45        android:configChanges="keyboardHidden|orientation|screenSize"
+45-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:8:5-66
+46        android:hardwareAccelerated="false"
+46-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:9:5-40
+47        android:largeHeap="true" >
+47-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:10:5-29
+48        <activity
+48-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:12:5-14:78
+49            android:name="com.cumulations.libreV2.activity.IssuesReportActivity"
+49-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:14:7-75
+50            android:exported="false" />
+50-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:13:7-31
+51        <activity
+51-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:15:5-18:46
+52            android:name="com.cumulations.libreV2.activity.oem.SetUpDeviceActivity"
+52-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:17:7-78
+53            android:exported="false"
+53-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:16:7-31
+54            android:screenOrientation="portrait" />
+54-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:18:7-43
+55        <activity
+55-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:19:5-22:46
+56            android:name="com.cumulations.libreV2.activity.oem.OpenGHomeAppActivity"
+56-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:21:7-79
+57            android:exported="false"
+57-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:20:7-31
+58            android:screenOrientation="portrait" />
+58-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:22:7-43
+59        <activity
+59-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:23:5-26:46
+60            android:name="com.cumulations.libreV2.activity.oem.HelpImproveChromeCastActivity"
+60-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:25:7-88
+61            android:exported="false"
+61-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:24:7-31
+62            android:screenOrientation="portrait" />
+62-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:26:7-43
+63        <activity
+63-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:27:5-30:46
+64            android:name="com.cumulations.libreV2.activity.oem.ActivateCastActivity"
+64-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:29:7-79
+65            android:exported="false"
+65-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:28:7-31
+66            android:screenOrientation="portrait" />
+66-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:30:7-43
+67        <activity
+67-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:31:5-34:46
+68            android:name="com.cumulations.libreV2.activity.oem.CastToSActivity"
+68-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:33:7-74
+69            android:exported="false"
+69-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:32:7-31
+70            android:screenOrientation="portrait" />
+70-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:34:7-43
+71        <activity
+71-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:35:5-38:46
+72            android:name="com.cumulations.libreV2.activity.CTBluetoothHearSoundQtn"
+72-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:37:7-78
+73            android:exported="true"
+73-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:36:7-30
+74            android:screenOrientation="portrait" />
+74-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:38:7-43
+75        <activity
+75-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:39:5-42:46
+76            android:name="com.cumulations.libreV2.activity.CTBluetoothPassCredentials"
+76-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:41:7-81
+77            android:exported="true"
+77-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:40:7-30
+78            android:screenOrientation="portrait" />
+78-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:42:7-43
+79        <activity
+79-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:43:5-47:46
+80            android:name="com.cumulations.libreV2.activity.CTBluetoothDeviceListActivity"
+80-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:46:7-84
+81            android:exported="true"
+81-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:44:7-30
+82            android:launchMode="singleTask"
+82-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:45:7-38
+83            android:screenOrientation="portrait" />
+83-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:47:7-43
+84        <activity
+84-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:48:5-53:46
+85            android:name="com.cumulations.libreV2.activity.CTBluetoothSetupInstructionsActivity"
+85-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:52:7-91
+86            android:exported="true"
+86-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:49:7-30
+87            android:label="@string/title_activity_ctbluetooth_setup_instructions"
+87-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:50:7-76
+88            android:launchMode="singleTask"
+88-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:51:7-38
+89            android:screenOrientation="portrait" />
+89-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:53:7-43
+90        <activity
+90-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:54:5-57:46
+91            android:name="com.libreAlexa.util.spotifyInstructions"
+91-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:56:7-47
+92            android:exported="true"
+92-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:55:7-30
+93            android:screenOrientation="portrait" />
+93-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:57:7-43
+94        <activity
+94-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:58:5-63:46
+95            android:name="com.libreAlexa.Ls9Sac.GoogleCastUpdateAfterSac"
+95-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:62:7-54
+96            android:exported="true"
+96-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:59:7-30
+97            android:label="@string/title_activity_google_cast_update_after_sac"
+97-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:60:7-74
+98            android:launchMode="singleTask"
+98-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:61:7-38
+99            android:screenOrientation="portrait" />
+99-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:63:7-43
+100        <activity
+100-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:64:5-69:46
+101            android:name="com.libreAlexa.Ls9Sac.GcastUpdateStatusAvailableListView"
+101-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:68:7-64
+102            android:exported="true"
+102-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:65:7-30
+103            android:label="@string/title_activity_gcast_update_status_available"
+103-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:66:7-75
+104            android:launchMode="singleTask"
+104-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:67:7-38
+105            android:screenOrientation="portrait" />
+105-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:69:7-43
+106        <activity
+106-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:70:5-74:55
+107            android:name="com.cumulations.libreV2.activity.CTSplashScreenActivityV2"
+107-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:73:7-79
+108            android:exported="true"
+108-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:71:7-30
+109            android:label="@string/title_activity_welcome"
+109-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:72:7-53
+110            android:screenOrientation="portrait" />
+110-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:74:7-43
+111        <activity
+111-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:75:5-79:46
+112            android:name="com.cumulations.libreV2.activity.CTConnectToWifiActivity"
+112-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:78:7-78
+113            android:exported="true"
+113-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:76:7-30
+114            android:launchMode="singleTask"
+114-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:77:7-38
+115            android:screenOrientation="portrait" />
+115-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:79:7-43
+116        <activity
+116-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:80:5-84:46
+117            android:name="com.cumulations.libreV2.activity.CTWifiListActivity"
+117-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:83:7-73
+118            android:exported="true"
+118-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:81:7-30
+119            android:launchMode="singleTask"
+119-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:82:7-38
+120            android:screenOrientation="portrait" />
+120-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:84:7-43
+121        <activity
+121-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:85:5-89:46
+122            android:name="com.cumulations.libreV2.activity.CTConnectingToMainNetwork"
+122-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:88:7-80
+123            android:exported="true"
+123-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:86:7-30
+124            android:launchMode="singleTask"
+124-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:87:7-38
+125            android:screenOrientation="portrait" />
+125-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:89:7-43
+126        <activity
+126-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:90:5-94:46
+127            android:name="com.cumulations.libreV2.activity.CTAmazonInfoActivity"
+127-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:93:7-75
+128            android:exported="true"
+128-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:91:7-30
+129            android:launchMode="singleTask"
+129-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:92:7-38
+130            android:screenOrientation="portrait" />
+130-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:94:7-43
+131        <activity
+131-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:95:5-99:46
+132            android:name="com.cumulations.libreV2.activity.CTAmazonLoginActivity"
+132-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:98:7-76
+133            android:exported="true"
+133-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:96:7-30
+134            android:launchMode="singleTask"
+134-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:97:7-38
+135            android:screenOrientation="portrait" />
+135-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:99:7-43
+136        <activity
+136-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:100:5-116:16
+137            android:name="com.amazon.identity.auth.device.authorization.AuthorizationActivity"
+137-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:104:7-89
+138            android:allowTaskReparenting="true"
+138-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:101:7-42
+139            android:exported="true"
+139-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:102:7-30
+140            android:launchMode="singleTask"
+140-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:103:7-38
+141            android:theme="@android:style/Theme.NoDisplay" >
+141-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:105:7-53
+142            <intent-filter>
+142-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:106:7-115:23
+143                <action android:name="android.intent.action.VIEW" />
+143-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:107:9-61
+143-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:107:17-58
+144
+145                <category android:name="android.intent.category.DEFAULT" />
+145-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:109:9-68
+145-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:109:19-65
+146                <category android:name="android.intent.category.BROWSABLE" />
+146-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:110:9-70
+146-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:110:19-67
+147
+148                <data
+148-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:112:9-114:35
+149                    android:host="${applicationId}"
+149-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:113:11-42
+150                    android:scheme="amzn" />
+150-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:114:11-32
+151            </intent-filter>
+152        </activity>
+153        <activity
+153-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:117:5-121:46
+154            android:name="com.cumulations.libreV2.activity.CTAlexaThingsToTryActivity"
+154-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:120:7-81
+155            android:exported="true"
+155-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:118:7-30
+156            android:launchMode="singleTask"
+156-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:119:7-38
+157            android:screenOrientation="portrait" />
+157-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:121:7-43
+158        <activity
+158-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:123:5-128:49
+159            android:name="com.cumulations.libreV2.activity.CTDeviceSettingsActivity"
+159-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:126:7-79
+160            android:exported="true"
+160-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:124:7-30
+161            android:launchMode="singleTask"
+161-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:125:7-38
+162            android:screenOrientation="portrait"
+162-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:127:7-43
+163            android:windowSoftInputMode="adjustPan" />
+163-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:128:7-46
+164        <activity
+164-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:129:5-133:46
+165            android:name="com.cumulations.libreV2.activity.CTSetupFailedActivity"
+165-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:132:7-76
+166            android:exported="true"
+166-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:130:7-30
+167            android:launchMode="singleTask"
+167-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:131:7-38
+168            android:screenOrientation="portrait" />
+168-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:133:7-43
+169        <activity
+169-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:134:5-138:46
+170            android:name="com.cumulations.libreV2.activity.CTHomeTabsActivity"
+170-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:137:7-73
+171            android:exported="true"
+171-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:135:7-30
+172            android:launchMode="singleTask"
+172-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:136:7-38
+173            android:screenOrientation="portrait" />
+173-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:138:7-43
+174        <activity
+174-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:139:5-143:46
+175            android:name="com.cumulations.libreV2.activity.CTMediaSourcesActivity"
+175-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:142:7-77
+176            android:exported="true"
+176-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:140:7-30
+177            android:launchMode="singleTask"
+177-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:141:7-38
+178            android:screenOrientation="portrait" />
+178-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:143:7-43
+179        <activity
+179-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:145:5-149:46
+180            android:name="com.cumulations.libreV2.activity.CTNowPlayingActivity"
+180-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:148:7-75
+181            android:exported="true"
+181-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:146:7-30
+182            android:launchMode="singleTask"
+182-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:147:7-38
+183            android:screenOrientation="portrait" />
+183-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:149:7-43
+184        <activity
+184-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:150:5-154:46
+185            android:name="com.cumulations.libreV2.activity.CTDMSBrowserActivityV2"
+185-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:153:7-77
+186            android:exported="true"
+186-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:151:7-30
+187            android:launchMode="singleTask"
+187-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:152:7-38
+188            android:screenOrientation="portrait" />
+188-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:154:7-43
+189        <activity
+189-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:155:5-159:46
+190            android:name="com.cumulations.libreV2.activity.CTLocalDMSActivity"
+190-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:158:7-73
+191            android:exported="true"
+191-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:156:7-30
+192            android:launchMode="singleTask"
+192-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:157:7-38
+193            android:screenOrientation="portrait" />
+193-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:159:7-43
+194        <activity
+194-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:160:5-164:46
+195            android:name="com.cumulations.libreV2.activity.CTUpnpFileBrowserActivity"
+195-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:163:7-80
+196            android:exported="true"
+196-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:161:7-30
+197            android:launchMode="singleTask"
+197-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:162:7-38
+198            android:screenOrientation="portrait" />
+198-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:164:7-43
+199        <activity
+199-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:165:5-169:46
+200            android:name="com.cumulations.libreV2.activity.CTDeviceBrowserActivity"
+200-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:168:7-78
+201            android:exported="true"
+201-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:166:7-30
+202            android:launchMode="singleTask"
+202-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:167:7-38
+203            android:screenOrientation="portrait" />
+203-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:169:7-43
+204        <activity
+204-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:170:5-174:46
+205            android:name="com.cumulations.libreV2.activity.CTDMSDeviceListActivity"
+205-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:173:7-78
+206            android:exported="true"
+206-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:171:7-30
+207            android:launchMode="singleTask"
+207-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:172:7-38
+208            android:screenOrientation="portrait" />
+208-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:174:7-43
+209        <activity
+209-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:175:5-179:46
+210            android:name="com.cumulations.libreV2.activity.CTBluetoothSomethingWrong"
+210-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:178:7-80
+211            android:exported="true"
+211-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:176:7-30
+212            android:launchMode="singleTask"
+212-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:177:7-38
+213            android:screenOrientation="portrait" />
+213-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:179:7-43
+214
+215        <meta-data
+215-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:180:5-182:66
+216            android:name="io.fabric.ApiKey"
+216-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:181:7-38
+217            android:value="b0f91dc7a6f0d7ee35d247281ac32a618a418970" />
+217-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:182:7-63
+218
+219        <service
+219-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:183:5-185:69
+220            android:name="com.libreAlexa.app.dlna.dmc.processor.upnp.CoreUpnpService"
+220-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:185:7-66
+221            android:exported="false" />
+221-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:184:7-31
+222        <service
+222-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:186:5-188:77
+223            android:name="com.libreAlexa.app.dlna.dmc.processor.upnp.LoadLocalContentService"
+223-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:188:7-74
+224            android:exported="false" />
+224-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:187:7-31
+225        <service
+225-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:189:5-191:42
+226            android:name="com.libreAlexa.DMRPlayerService"
+226-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:191:7-39
+227            android:exported="false" />
+227-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:190:7-31
+228        <service
+228-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:193:5-195:76
+229            android:name="com.cumulations.libreV2.activity.BluetoothLeService"
+229-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:195:7-73
+230            android:exported="false" />
+230-->/Users/suma/Desktop/LibreOEM_SDK+FN_Changes/LibreVoiceOEMSDKTestFinal/libreoemsdk/src/main/AndroidManifest.xml:194:7-31
+231    </application>
+232
+233</manifest>

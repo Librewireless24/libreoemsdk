@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:weightSum="100"
+  android:background="@color/screen_bg"
+  android:orientation="vertical">
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:layout_weight="15"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/no_device_found"
+        android:textColor="@color/white" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="40"
+        android:scaleType="fitCenter"
+        app:srcCompat="@drawable/no_device_libre" />
+
+
+    <LinearLayout
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="45">
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:padding="16dp"
+            android:text="@string/make_sure_devices_connected_to_wifi"
+            android:textColor="@color/white" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_refresh"
+                android:background="@drawable/btn_enabled_round_bg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="32dp"
+                android:paddingTop="8dp"
+                android:paddingRight="32dp"
+                android:paddingBottom="8dp"
+                android:drawablePadding="8dp"
+                android:drawableLeft="@drawable/ic_refresh"
+                android:text="@string/refresh"
+                android:textColor="@color/app_text_color_enabled"
+                android:textSize="16sp" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:padding="12dp"
+            android:text="@string/using_speaker_first_time"
+            android:textColor="@color/white" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_setup_speaker"
+                android:background="@drawable/btn_enabled_round_bg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="24dp"
+                android:paddingTop="8dp"
+                android:paddingRight="24dp"
+                android:paddingBottom="8dp"
+                android:drawablePadding="8dp"
+                android:drawableLeft="@drawable/add_device_selected"
+                android:text="@string/setup_speaker"
+                android:textColor="@color/app_text_color_enabled"
+                android:textSize="16sp" />
+    </LinearLayout>
+
+</LinearLayout>
