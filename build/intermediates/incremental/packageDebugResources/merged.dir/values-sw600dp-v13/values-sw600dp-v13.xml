@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <dimen name="medium_text">21sp</dimen>
-    <dimen name="small_text">15sp</dimen>
-    <dimen name="top_margin">20dp</dimen>
-</resources>
