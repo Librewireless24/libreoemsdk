@@ -99,7 +99,7 @@ public class ScanningHandler {
     }
 
 
-    boolean findDupicateNode(LSSDPNodes mNode) {
+    public boolean findDupicateNode(LSSDPNodes mNode) {
         boolean found = false;
         int size = lssdpNodeDB.GetDB().size();
         /*preventing array index out of bound*/

@@ -6,6 +6,7 @@ import android.os.HandlerThread;
 import android.os.Message;
 import com.cumulations.libreV2.model.SceneObject;
 import com.libreAlexa.LibreApplication;
+import com.libreAlexa.LibreEntryPoint;
 import com.libreAlexa.Scanning.ScanningHandler;
 import com.libreAlexa.app.dlna.dmc.server.ContentTree;
 import com.libreAlexa.app.dlna.dmc.utility.PlaybackHelper;
@@ -14,6 +15,8 @@ import com.libreAlexa.constants.Constants;
 import com.libreAlexa.constants.LSSDPCONST;
 import com.libreAlexa.constants.LUCIMESSAGES;
 import com.libreAlexa.constants.MIDCONST;
+import com.libreAlexa.luci.LSSDPNodeDB;
+import com.libreAlexa.luci.LSSDPNodes;
 import com.libreAlexa.luci.LUCIControl;
 import com.libreAlexa.luci.LUCIPacket;
 import com.libreAlexa.util.LibreLogger;
@@ -22,7 +25,11 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
+
+import java.net.InetAddress;
 import java.net.SocketAddress;
+import java.net.UnknownHostException;
+
 import org.fourthline.cling.model.meta.RemoteDevice;
 
 
@@ -33,6 +40,7 @@ public class NettyClientHandler extends ChannelHandlerAdapter {
 
     private static final String TAG = "NettyClientHandler";
     public ChannelHandlerContext mChannelContext;
+    private ScanningHandler m_ScanningHandler = ScanningHandler.getInstance();
 
     private final String remotedevice;
     private Handler handler;
@@ -77,7 +85,8 @@ public class NettyClientHandler extends ChannelHandlerAdapter {
 
                             if (mChannelContext != null && isSocketToBeRemovedFromTheTCPMap(mChannelContext, remotedevice)) {
                                 if (handler.hasMessages(Constants.CHECK_ALIVE))
-                                    handler.removeMessages(Constants.CHECK_ALIVE);
+                           // *suma  comented before
+                            handler.removeMessages(Constants.CHECK_ALIVE);
                                 BusProvider.getInstance().post(new RemovedLibreDevice(remotedevice));
                             }
 
@@ -114,7 +123,7 @@ public class NettyClientHandler extends ChannelHandlerAdapter {
             });
 */
 
-            LibreLogger.d(TAG, "Channel Is Connected or Not " + mChannelContext.channel().isActive());
+            LibreLogger.d(TAG, "Channel Is Connected or Not " + mChannelContext.channel().isActive()+"remote device\n"+remotedevice);
 //            mChannelContext.pipeline().fireChannelRead("1");
             try {
                 mChannelContext.channel().writeAndFlush(byteBufMsg).sync();
@@ -238,19 +247,99 @@ public class NettyClientHandler extends ChannelHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        LibreLogger.d(TAG, TAG + " exception Exception " + remotedevice);
+        LibreLogger.d(TAG, TAG + "addToNodeDb inside  exception Exception caught " + cause.getMessage()+"check\n"+cause.getMessage().contains("SSL")+"for IP\n"+remotedevice);
         cause.printStackTrace();
-        ctx.close();
-        /*
-         * LatestDiscoveryChanges
-         */
-        ScanningHandler.getInstance().setSecureIpaddress(remotedevice);
-        if (LUCIControl.luciSocketMap.containsKey(remotedevice)) {
-            if (isSocketToBeRemovedFromTheTCPMap(ctx, remotedevice)) {
-                BusProvider.getInstance().post(new RemovedLibreDevice(remotedevice));
-                LUCIControl.luciSocketMap.remove(remotedevice);
+
+        if(cause.getMessage().contains("SSL")){
+                    LibreLogger.d(TAG, "Socket Creating for Ip get my value wts my IP\n " + remotedevice);
+
+        LSSDPNodes mToBeUpdateNode = ScanningHandler.getInstance().getLSSDPNodeFromCentralDB(remotedevice);
+        LibreLogger.d(TAG, "Socket Creating for Ip get my value\n " + mToBeUpdateNode);
+
+        LUCIControl.luciSocketMap.put(remotedevice, NettyAndroidClient.getDummyInstance());
+//        LibreLogger.d(TAG, "Socket Creating for Ip " + mToBeUpdateNode.getIP() + " as a DummyInstance ");
+        LibreLogger.d(TAG,"android developer luci socket map THREE adding \n"+LUCIControl.luciSocketMap.toString());
+        //secure nonsecure  judging place **&
+        if(mToBeUpdateNode!=null) {
+            NettyAndroidClient tcpSocketSendCtr = null;
+            try {
+                tcpSocketSendCtr = new NettyAndroidClient(mToBeUpdateNode.getNodeAddress(), 7777, false);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+
+            LibreLogger.d(TAG, "Socket Created for Ip " + mToBeUpdateNode.getIP() +
+                    " Printing From NettyAndroidClient Socket  " + tcpSocketSendCtr.getRemotehost());
+
+            tcpSocketSendCtr.setLastNotifiedTime(System.currentTimeMillis());
+
+            LUCIControl.luciSocketMap.put(mToBeUpdateNode.getIP(), tcpSocketSendCtr);
+            LibreLogger.d(TAG, "android developer luci socket map FOUR adding \n" + LUCIControl.luciSocketMap.toString());
+
+            new LUCIControl(mToBeUpdateNode.getIP()).sendAsynchronousCommandSpecificPlaces();
+            if ((mToBeUpdateNode != null) && (mToBeUpdateNode.getIP() != null) &&
+                    (mToBeUpdateNode.getDeviceState() != null) && (!m_ScanningHandler.findDupicateNode(mToBeUpdateNode))) {
+                LibreLogger.d(TAG, "New Node is Found For the ipAddress " + mToBeUpdateNode.getIP());
+
+                boolean isFilteredSpeaker = LSSDPNodeDB.getInstance().hasFilteredModels(mToBeUpdateNode);
+                LibreLogger.d(TAG, "addToNodeDb, " + mToBeUpdateNode.getFriendlyname() + " isFilteredSpeaker = " + isFilteredSpeaker);
+
+                if (!mToBeUpdateNode.getUSN().isEmpty() /*&& isFilteredSpeaker*/) {
+                    BusProvider.getInstance().post(mToBeUpdateNode);
+                    m_ScanningHandler.lssdpNodeDB.addToNodeDb(mToBeUpdateNode);
+                    LibreLogger.d(TAG, "addToNodeDb inside clientHandler loop, " + mToBeUpdateNode.getFriendlyname() + " isFilteredSpeaker = " + isFilteredSpeaker);
+
+                } else {
+                    LibreLogger.d(TAG, "USN is Empty " + mToBeUpdateNode.getIP());
+                }
             }
         }
+        }
+        else{
+            if(cause.getMessage().contains("reset")){
+                            ctx.close();
+                LibreLogger.d(TAG, TAG + "addToNodeDb inside  exception Exception caught else\n " + cause.getMessage()+"check\n"+cause.getMessage().contains("SSL")+"for IP\n"+remotedevice);
+
+//
+//            /**
+//             * LatestDiscoveryChanges
+//             */
+            if (LUCIControl.luciSocketMap.containsKey(remotedevice)) {
+                if (isSocketToBeRemovedFromTheTCPMap(ctx, remotedevice)) {
+                    BusProvider.getInstance().post(new RemovedLibreDevice(remotedevice));
+                    LUCIControl.luciSocketMap.remove(remotedevice);
+                    LibreApplication.securecertExchangeSucessDevices.clear();
+                }
+            }
+            }
+//            ctx.close();
+//
+//            /**
+//             * LatestDiscoveryChanges
+//             */
+//            if (LUCIControl.luciSocketMap.containsKey(remotedevice)) {
+//                if (isSocketToBeRemovedFromTheTCPMap(ctx, remotedevice)) {
+//                    BusProvider.getInstance().post(new RemovedLibreDevice(remotedevice));
+//                    LUCIControl.luciSocketMap.remove(remotedevice);
+//                    LibreApplication.securecertExchangeSucessDevices.clear();
+//                }
+//            }
+
+        }
+//        ctx.close();
+///*SUMA: for now not removing dis commments untill final qa verified on multidevice support
+// */
+//        /**
+//         * LatestDiscoveryChanges
+//         */
+//        if (LUCIControl.luciSocketMap.containsKey(remotedevice)) {
+//            if (isSocketToBeRemovedFromTheTCPMap(ctx, remotedevice)) {
+//                BusProvider.getInstance().post(new RemovedLibreDevice(remotedevice));
+//                LUCIControl.luciSocketMap.remove(remotedevice);
+//            }
+//        }
+
+
     }
 
     public void channelActive(ChannelHandlerContext ctx) {
@@ -282,6 +371,7 @@ public class NettyClientHandler extends ChannelHandlerAdapter {
         if (LUCIControl.luciSocketMap.containsKey(remotedevice)) {
             if (isSocketToBeRemovedFromTheTCPMap(ctx, remotedevice)) {
                 LUCIControl.luciSocketMap.remove(remotedevice);
+                LibreApplication.securecertExchangeSucessDevices.clear();
             }
         }
     }
@@ -310,7 +400,7 @@ public class NettyClientHandler extends ChannelHandlerAdapter {
             });
 */
 
-            LibreLogger.d(TAG, "Channel Is Connected or Not " + mChannelContext.channel().isActive());
+            LibreLogger.d(TAG, "Channel Is Connected or " + mChannelContext.channel().isActive()+"***remote devices"+remotedevice);
 //            mChannelContext.pipeline().fireChannelRead("1");
             try {
                 mChannelContext.channel().writeAndFlush(byteBufMsg).sync();
@@ -349,16 +439,27 @@ public class NettyClientHandler extends ChannelHandlerAdapter {
                     msg.what = Constants.CHECK_ALIVE;
                     msg.setData(b);
                     handler.sendMessageDelayed(msg, Constants.CHECK_ALIVE_TIMEOUT);
+                    /*LibreApplication.nettyActiveWriteDevices have not removed ,in future may be usuable */
+                    LibreApplication.nettyActiveWriteDevices.put("active",remotedevice);
+                  LibreLogger.d(TAG,"addToNodeDb inside NettyCLientHandler writing to MAP\n"+LibreApplication.nettyActiveWriteDevices.get("active"));
 //                    handler.sendEmptyMessageDelayed(Constants.CHECK_ALIVE, Constants.CHECK_ALIVE_TIMEOUT);
                 } else {
                     LibreLogger.d(TAG, "Amit + NettyClient handler is  Not Started " + mMessageBox + " :: Value :: " + getCommandType(sbytes));
                 }
-            } catch (InterruptedException e) {
+            }
+            catch (InterruptedException e) {
                 e.printStackTrace();
                 LibreLogger.d(TAG, "InterruptedException happened in Writing the Data, Dont Know What is the Issue ");
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 e.printStackTrace();
-                LibreLogger.d(TAG, "Exception happened in Writing the Data, Pending Write Issues Have been Cancelled, Device Got Rebooted ");
+                LibreLogger.d(TAG, "Exception happened in Writing the Data, Device Got Rebooted \n"+remotedevice+"netty active write devices\n"+LibreApplication.nettyActiveWriteDevices.toString());
+
+                //friday suma changes
+//                if (LUCIControl.luciSocketMap.containsKey(remotedevice)) {
+//                        LUCIControl.luciSocketMap.remove(remotedevice);
+//                        LibreApplication.securecertExchangeSucessDevices.clear();
+//                    }
             }
 
         }
@@ -390,17 +491,33 @@ public class NettyClientHandler extends ChannelHandlerAdapter {
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         super.channelInactive(ctx);
+
         LibreLogger.d(TAG, "Channel is broken " + remotedevice + "id as " + ctx.channel().id());
+
         if (handler.hasMessages(Constants.CHECK_ALIVE))
             handler.removeMessages(Constants.CHECK_ALIVE);
         /**
          * LatestDiscoveryChanges
          */
+//                ctx.close();
+
         if (LUCIControl.luciSocketMap.containsKey(remotedevice)) {
             if (isSocketToBeRemovedFromTheTCPMap(ctx, remotedevice)) {
+                //BusProvider.getInstance().post(new RemovedLibreDevice(remotedevice));
                 LUCIControl.luciSocketMap.remove(remotedevice);
+                LibreApplication.securecertExchangeSucessDevices.clear();
             }
         }
+
+//    for now not removing this commment untill final qa test report submitted
+
+//    if (LUCIControl.luciSocketMap.containsKey(remotedevice)) {
+//            if (isSocketToBeRemovedFromTheTCPMap(ctx, remotedevice)) {
+//                LUCIControl.luciSocketMap.remove(remotedevice);
+//
+//                LibreApplication.securecertExchangeSucessDevices.clear();
+//            }
+//        }
         try {
             ctx.close();
         } catch (Exception e) {

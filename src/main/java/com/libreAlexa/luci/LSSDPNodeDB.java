@@ -12,7 +12,6 @@ import android.util.Log;
 import com.cumulations.libreV2.tcp_tunneling.TunnelingControl;
 import com.cumulations.libreV2.tcp_tunneling.enums.ModelId;
 import com.libreAlexa.Scanning.ScanningHandler;
-import com.libreAlexa.serviceinterface.LSDeviceClient;
 import com.libreAlexa.util.LibreLogger;
 import java.util.ArrayList;
 
@@ -47,16 +46,14 @@ public class LSSDPNodeDB {
         return false;
     }
 
-    public boolean addToNodeDb(LSSDPNodes node) {/* USN may be Empty When Device is transiting From SA State to Another State*/
+    public void addToNodeDb(LSSDPNodes node) {/* USN may be Empty When Device is transiting From SA State to Another State*/
         if(node.getUSN().isEmpty()){
-            return false;
+            return;
         }
 
         if (!checkDataIsAvailable(node.getUSN())) {
             nodelist.add(node);
-            return true;
         }
-        return false;
     }
 
     public void removeFromDB(LSSDPNodes node) {

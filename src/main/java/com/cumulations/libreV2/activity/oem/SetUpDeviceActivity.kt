@@ -6,6 +6,7 @@ import android.view.View
 import androidx.lifecycle.lifecycleScope
 import com.cumulations.libreV2.activity.CTAmazonInfoActivity
 import com.cumulations.libreV2.activity.CTDeviceDiscoveryActivity
+import com.cumulations.libreV2.roomdatabase.CastLiteUUIDDataClass
 import com.cumulations.libreV2.roomdatabase.LibreVoiceDatabase
 import com.libreAlexa.R
 import com.libreAlexa.alexa.DeviceProvisioningInfo
@@ -27,6 +28,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.json.JSONObject
+import java.util.UUID
 
 /**
  * Created by SHAIK
@@ -64,33 +66,28 @@ class SetUpDeviceActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionL
             val deviceProvisioningInfo = intent.getSerializableExtra(AppConstants.DEVICE_PROVISIONING_INFO) as DeviceProvisioningInfo
             speakerNode?.mdeviceProvisioningInfo = deviceProvisioningInfo
         }
+        binding.layLoader.visibility = View.VISIBLE
         if (speakerIpAddress != null) {
             fetchUUIDFromDB(speakerIpAddress!!)
         } else {
             showToast(getString(R.string.somethingWentWrong))
             intentToHome(this)
         }
-        LibreLogger.d(TAG, "onCreate:speakerIpAddress $speakerIpAddress\n and DeviceName: $speakerName\n" + " from $from\n and uuid $deviceUUID avsEnabled: ${
-            speakerNode!!.getmDeviceCap().getmSource().isAlexaAvsSource
-        } castEnabled: ${speakerNode!!.getmDeviceCap().getmSource().isGoogleCast}")
+        /*LibreLogger.d(TAG, "onCreate:speakerIpAddress $speakerIpAddress\n and DeviceName: $speakerName\n" + " from $from\n and uuid $deviceUUID avsEnabled: ${speakerNode!!.getmDeviceCap().getmSource().isAlexaAvsSource} castEnabled: ${speakerNode!!.getmDeviceCap().getmSource().isGoogleCast}")*/
         val speakerSetUpString = getString(R.string.speaker) + speakerName + getString(R.string.successfully_setup)
         binding.txtSpeakerName.text = speakerSetUpString
         if (!from.isNullOrEmpty() && from.equals(OpenGHomeAppActivity::class.java.simpleName, ignoreCase = true) ) {
             binding.layLoader.visibility = View.VISIBLE
             lifecycleScope.launch {
-                delay(2000)
-                val postData = JSONObject()
-                postData.put(LUCIMESSAGES.REQUEST_TYPE, "get")
-                postData.put(LUCIMESSAGES.ID, "status")
-                postData.put(LUCIMESSAGES.DEVICE_UUID, deviceUUID)
-                sendLuciCommand(postData.toString())
+                delay(5000)
+                checkCastActivateStatus(speakerIpAddress)
+                delay(1000)
+                binding.layLoader.visibility = View.GONE
             }
             lifecycleScope.launch {
                 initiateJob()
             }
 
-        }else {
-            binding.layLoader.visibility = View.GONE
         }
         binding.btnSetupChromecast.setOnClickListener {
             val goToCastTOSActivity = Intent(this, CastToSActivity::class.java)
@@ -118,8 +115,26 @@ class SetUpDeviceActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionL
     override fun onResume() {
         super.onResume()
         registerForDeviceEvents(this)
+        binding.layLoader.visibility = View.VISIBLE
+        if(speakerIpAddress!=null) {
+            lifecycleScope.launch {
+                delay(5000)
+                checkCastActivateStatus(speakerIpAddress)
+                delay(1000)
+                binding.layLoader.visibility = View.GONE
+            }
+        }else{
+            intentToHome(this)
+        }
     }
-
+    private fun checkCastActivateStatus(currentIpAddress: String?) {
+        val postData = JSONObject()
+        postData.put(LUCIMESSAGES.REQUEST_TYPE, "get")
+        postData.put(LUCIMESSAGES.ID, "status")
+        postData.put(LUCIMESSAGES.DEVICE_UUID, deviceUUID)
+        val control = LUCIControl(currentIpAddress)
+        control.SendCommand(MIDCONST.TOS_ACCEPT_REQUEST, postData.toString(), LSSDPCONST.LUCI_SET)
+    }
     override fun onStop() {
         super.onStop()
         unRegisterForDeviceEvents()
@@ -127,7 +142,17 @@ class SetUpDeviceActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionL
 
     private fun fetchUUIDFromDB(speakerIpAddress: String) {
         lifecycleScope.launch(Dispatchers.IO) {
-            deviceUUID = libreVoiceDatabaseDao.getDeviceUUID(speakerIpAddress).deviceUuid
+            delay(1000)
+            try {
+                deviceUUID = libreVoiceDatabaseDao.getDeviceUUID(speakerIpAddress).deviceUuid
+            } catch (e: NullPointerException) {
+                e.printStackTrace()
+                val uuid: String = UUID.randomUUID().toString()
+                val addDeviceDate = CastLiteUUIDDataClass(0, speakerIpAddress, speakerName!!, uuid)
+                libreVoiceDatabaseDao.addDeviceUUID(addDeviceDate)
+                delay(2000)
+                fetchUUIDFromDB(speakerIpAddress)
+            }
         }
     }
 
@@ -143,18 +168,18 @@ class SetUpDeviceActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionL
     }
 
     override fun deviceGotRemoved(ipaddress: String?) {
-        LibreLogger.d(TAG_DEVICE_REMOVED, "deviceGotRemoved called SetUPDevice $ipaddress and speakerIpAddress $speakerIpAddress")
 
     }
 
     override fun messageRecieved(nettyData: NettyData?) {
-        binding.layLoader.visibility = View.GONE
         lifecycleScope.launch {
             cancelJob()
         }
         val remoteDeviceIp = nettyData!!.getRemotedeviceIp()
-        val packet = LUCIPacket(nettyData.getMessage())/*  LibreLogger.d(TAG, "messageReceived: " + remoteDeviceIp + ", command is " + packet.command + "msg" + " is\n" + String(packet.payload))*/
+        val packet = LUCIPacket(nettyData.getMessage())
+        LibreLogger.d(TAG, "messageReceived: " + remoteDeviceIp + ", command is " + packet.command + "msg" + " is\n" + String(packet.payload))
         if (packet.command == MIDCONST.CAST_ACCEPT_STATUS || packet.command == MIDCONST.CAST_ACCEPT_STATUS_572) {
+            binding.layLoader.visibility = View.GONE
             val message = String(packet.getpayload())
             val root = JSONObject(message)
             val tosStatus = root.getString("tos")

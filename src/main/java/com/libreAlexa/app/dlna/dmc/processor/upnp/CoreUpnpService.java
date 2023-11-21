@@ -34,6 +34,7 @@ import com.libreAlexa.luci.LSSDPNodes;
 import com.libreAlexa.luci.LUCIControl;
 import com.libreAlexa.luci.LUCIPacket;
 import com.libreAlexa.netty.BusProvider;
+import com.libreAlexa.netty.LibreDeviceInteractionListner;
 import com.libreAlexa.netty.NettyData;
 import com.libreAlexa.netty.RemovedLibreDevice;
 import com.libreAlexa.util.LibreLogger;
@@ -56,9 +57,11 @@ import org.fourthline.cling.registry.Registry;
 import org.fourthline.cling.registry.RegistryListener;
 import org.json.JSONObject;
 
-public class CoreUpnpService extends AndroidUpnpServiceImpl {
+public class CoreUpnpService extends AndroidUpnpServiceImpl implements LibreDeviceInteractionListner {
     private UpnpService upnpService;
     private Binder binder = new Binder();
+    private   LibreDeviceInteractionListner libreDeviceListener = null;
+
     String TAG = CoreUpnpService.class.getSimpleName();
     @Override
     protected AndroidRouter createRouter(UpnpServiceConfiguration configuration, ProtocolFactory protocolFactory, Context context) {
@@ -71,6 +74,7 @@ public class CoreUpnpService extends AndroidUpnpServiceImpl {
         LibreLogger.d(TAG, "CoreUpnpService is getting created");
         //startDmrPlayerService();
 
+        registerforDeviceEvents(this);
         upnpService = new UpnpServiceImpl(createConfiguration());
         try {
             BusProvider.getInstance().register(busEventListener);
@@ -91,6 +95,7 @@ public class CoreUpnpService extends AndroidUpnpServiceImpl {
     @Override
     public void onDestroy() {
         //unregisterReceiver(((AndroidWifiSwitchableRouter) upnpService.getRouter()).getBroadcastReceiver());
+        unregisterDeviceEvents();
         try {
 
             /*Gets called after screen lock and no activity is binding to service*/
@@ -131,6 +136,26 @@ public class CoreUpnpService extends AndroidUpnpServiceImpl {
 
     protected boolean isListeningForConnectivityChanges() {
         return true;
+    }
+
+    @Override
+    public void deviceDiscoveryAfterClearingTheCacheStarted() {
+
+    }
+
+    @Override
+    public void newDeviceFound(LSSDPNodes node) {
+
+    }
+
+    @Override
+    public void deviceGotRemoved(String ipaddress) {
+
+    }
+
+    @Override
+    public void messageRecieved(NettyData packet) {
+
     }
 
     public class Binder extends android.os.Binder implements AndroidUpnpService {
@@ -175,6 +200,9 @@ public class CoreUpnpService extends AndroidUpnpServiceImpl {
     public void removeDeviceSceneFromRepo(String ipadddress) {
         if (ipadddress != null) {
             LUCIControl.luciSocketMap.remove(ipadddress);
+
+            LibreApplication.securecertExchangeSucessDevices.clear();
+
             BusProvider.getInstance().post(new RemovedLibreDevice(ipadddress));
             try {
                 if (ScanningHandler.getInstance().isIpAvailableInCentralSceneRepo(ipadddress)) {
@@ -197,10 +225,15 @@ public class CoreUpnpService extends AndroidUpnpServiceImpl {
             LibreLogger.d(TAG, "newDeviceFound, node = " + nodes.getFriendlyname());
             CTDeviceDiscoveryActivity ctDeviceDiscoveryActivity = new CTDeviceDiscoveryActivity();
             ctDeviceDiscoveryActivity.insertDeviceIntoDbFromCoreUPNP(nodes);
+
+//            if (libreDeviceListener != null) {
+//                libreDeviceListener.newDeviceFound(nodes);
+//            }
             /* This below if loop is introduced to handle the case where Device state from the DUT could be Null sometimes
              * Ideally the device state should not be null but we are just handling it to make sure it will not result in any crash!
              *
              * */
+
             new Handler().post(new Runnable() {
                 @Override
                 public void run() {
@@ -332,6 +365,9 @@ public class CoreUpnpService extends AndroidUpnpServiceImpl {
                     +"\tMB:" + dummyPacket.getCommand()
                     + "\tmsg:" + new String(dummyPacket.getpayload()));
 
+//            if (nettyData != null) {
+//                libreDeviceListener.messageRecieved(nettyData);
+//            }
             /*Updating the last notified Time for all the Device*/
             if (nettyData != null) {
                 if (LUCIControl.luciSocketMap.containsKey(nettyData.getRemotedeviceIp()))
@@ -671,6 +707,14 @@ if command type 2 and command status is 1 , then data will be empty., at that ti
         }
     }
 
+      public void registerforDeviceEvents(LibreDeviceInteractionListner libreDeviceInteractionListner){
+          this.libreDeviceListener = libreDeviceInteractionListner;
+
+      }
+
+      public void unregisterDeviceEvents(){
+          libreDeviceListener=null;
+      }
     private void stopDmrPlayerService(){
         stopService(new Intent(this, DMRPlayerService.class));
     }

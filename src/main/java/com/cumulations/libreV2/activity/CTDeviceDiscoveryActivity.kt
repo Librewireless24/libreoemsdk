@@ -1697,8 +1697,13 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                 val alertDialogBuilder = AlertDialog.Builder(this@CTDeviceDiscoveryActivity)
                 alertDialogBuilder.setTitle(getString(R.string.deviceNotAvailable))
                 alertDialogBuilder.setMessage(getString(R.string.removeDeviceMsg) + " " + mNode.friendlyname + " " + getString(R.string.removeDeviceMsg2)).setCancelable(false).setPositiveButton(getString(R.string.ok)) { dialog, id ->
+//                    alertDialog1!!.dismiss()
+//                    removeTheDeviceFromRepo(mNode.ip)
+//                    intentToHome(this)
                     alertDialog1!!.dismiss()
                     removeTheDeviceFromRepo(mNode.ip)
+                    LUCIControl.luciSocketMap.remove(mNode.ip)
+                    LibreApplication.securecertExchangeSucessDevices.clear()
                     intentToHome(this)
                 }
                 if (alertDialog1 == null) alertDialog1 = alertDialogBuilder.create()
@@ -1746,12 +1751,13 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                 ScanThread.getInstance().mDatagramSocketForSendingMSearch = null
                 ScanningHandler.getInstance().clearSceneObjectsFromCentralRepo()
 
-                LUCIControl.luciSocketMap.clear()
-                LUCIControl.channelHandlerContextMap.clear()
-                LSSDPNodeDB.getInstance().clearDB()
-                ensureDMRPlaybackStopped()
-                LibreEntryPoint.getInstance().clearApplicationCollections()
-                LibreApplication().micTcpClose()
+            LUCIControl.luciSocketMap.clear()
+            LibreApplication.securecertExchangeSucessDevices.clear()
+            LUCIControl.channelHandlerContextMap.clear()
+            LSSDPNodeDB.getInstance().clearDB()
+            ensureDMRPlaybackStopped()
+            LibreEntryPoint.getInstance().clearApplicationCollections()
+            LibreApplication().micTcpClose()
 
                 if (upnpBinder == null) return
 
@@ -1809,7 +1815,10 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
         }
 
         fun setMessageProgressDialog(message: String) {
-            showProgressDialog(message)
+            //suma remove
+            if(!((this)).isFinishing()) {
+                showProgressDialog(message)
+            }
         }
 
         private fun checkForTheSACDeviceSuccessDialog(node: LSSDPNodes?) {

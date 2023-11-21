@@ -927,6 +927,7 @@ string save
 string scanning
 string screen2_tv1
 string sdcard
+string sdk_version_number
 string searchText
 string searchTextPlaceHolder
 string searching_renderer

@@ -1,2 +1,2 @@
 Libre Voice OEM SDK   
-Version:- 1.0(1.0)
+Version:- 1.0

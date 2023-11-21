@@ -12,7 +12,9 @@ import com.libreAlexa.LibreEntryPoint;
 import com.libreAlexa.constants.Constants;
 import com.libreAlexa.constants.LSSDPCONST;
 import com.libreAlexa.constants.MIDCONST;
+import com.libreAlexa.netty.BusProvider;
 import com.libreAlexa.netty.NettyAndroidClient;
+import com.libreAlexa.netty.RemovedLibreDevice;
 import com.libreAlexa.util.GoogleTOSTimeZone;
 import com.libreAlexa.util.LibreLogger;
 import java.io.IOException;
@@ -20,7 +22,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
-import kotlin.io.LineReader;
 import org.jboss.netty.channel.ChannelHandlerContext;
 
 /**
@@ -32,6 +33,8 @@ public class LUCIControl {
     private String SERVER_IP;
     public static final int LUCI_RESP_PORT = 3333;
     public static ConcurrentHashMap<String, NettyAndroidClient> luciSocketMap = new ConcurrentHashMap<>();
+    public static ConcurrentHashMap<String, String> secureCertDevices = new ConcurrentHashMap<>();
+
     public static ConcurrentHashMap<String, ChannelHandlerContext> channelHandlerContextMap = new ConcurrentHashMap<>();
     private boolean isDataSent;
 
@@ -190,7 +193,9 @@ public class LUCIControl {
 
                     if (!(luciSocketMap.containsKey(SERVER_IP))) {
 
-                        LibreLogger.d(TAG,"SCAN_NETTY Socket not present for " + SERVER_IP + " " + luciPacket.getCommand());
+                        LibreLogger.d(TAG,"SCAN_NETTY Socket not present one  for " + SERVER_IP + " " + luciPacket.getCommand());
+                        LUCIControl.luciSocketMap.remove(SERVER_IP);
+                        LibreApplication.securecertExchangeSucessDevices.clear();
 
                         /*       try {
                             tcpSocketSendCtrl = new NettyAndroidClient(local, server_port);
@@ -319,7 +324,21 @@ public class LUCIControl {
         }
 
     }
+    private boolean isSocketToBeRemovedFromTheTCPMap(ChannelHandlerContext ctx, String mIpAddress) {
+        NettyAndroidClient mAndroidClient = LUCIControl.luciSocketMap.get(mIpAddress);
+        /* If Hashmap is returning Null that means Hashmap is Empty for the that particular AP , So we can return it as False */
+        if (mAndroidClient == null || mAndroidClient.getHandler() == null || mAndroidClient.getHandler().mChannelContext == null)
+            return false;
 
+        if (ctx != null) {
+            ctx.getChannel().getId();
+            mAndroidClient.getHandler().mChannelContext.channel().id();
+        }
+        LibreLogger.d(TAG, "BROKEN" + SERVER_IP
+                + "id DID NOT MATCH " + ctx.getChannel().getId() + " "
+                + LUCIControl.luciSocketMap.get(SERVER_IP).getHandler().mChannelContext.channel().id());
+        return false;
+    }
 
 }
 

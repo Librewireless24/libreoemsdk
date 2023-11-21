@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.libreAlexa.LibreApplication;
 import com.libreAlexa.luci.LSSDPNodeDB;
+import com.libreAlexa.luci.LUCIControl;
 import com.libreAlexa.util.LibreLogger;
 
 import io.netty.bootstrap.Bootstrap;
@@ -79,7 +80,7 @@ public class NettyAndroidClient {
         return dummyCLient;
     }
 
-    public NettyAndroidClient(InetAddress host, int port) throws Exception {
+    public NettyAndroidClient(InetAddress host, int port,Boolean secureValue) throws Exception {
 
         handler = new NettyClientHandler(host.getHostAddress());
         remotehost = host.getHostAddress();
@@ -96,10 +97,10 @@ public class NettyAndroidClient {
         b.handler(new ChannelInitializer<SocketChannel>() {
             @Override
             public void initChannel(SocketChannel ch) throws Exception {
-                LibreLogger.d(TAG,"suma in luci SECURE Value\n**"+isLuciSecure);
+                LibreLogger.d(TAG,"suma in luci SECURE Value\n**"+secureValue);
 /* SUMA : If Secure Luci is supported in respective device make isLUCISecure value to true else false*/
 
-                if(isLuciSecure) {
+                if(secureValue) {
                     // /*SUMA */Set up key manager factory to use our key store and DERRIVED FROM .P12
                       LibreLogger.d(TAG,"suma in luci SECURE**");
                     KeyStore keyStore = null;
@@ -143,7 +144,12 @@ public class NettyAndroidClient {
                                         LibreLogger.d(TAG, "suma in getting cert from .p12 NETTY CLIENT on Init 4***\n" + aliases);
 
                                         X509Certificate cert = (X509Certificate) keyStore.getCertificate(alias);
-                                        LibreLogger.d(TAG, "suma in getting cert from .p12 NETTY CLIENT***\n" + cert + "ISSUER DN\n" + cert.getIssuerDN());
+                                        LibreLogger.d(TAG, "suma in getting cert .p12 NETTY CLIENT***\n" + cert + "ISSUER IP\n" + remotehost);
+                                       // LUCIControl.luciSocketMap.put(remotehost, dummyCLient);
+                                       LibreApplication.securecertExchangeSucessDevices.put("cert",remotehost);
+
+                                       LUCIControl.secureCertDevices.put("certip",remotehost);
+
                                         if (new Date().after(cert.getNotAfter())) {
                                             return;
                                         }
@@ -178,12 +184,20 @@ public class NettyAndroidClient {
                     SslHandler sslHandler = new SslHandler(sslEngine);
                     sslHandler.engine().setEnabledProtocols(new String[]{"TLSv1.2"});
                     ch.pipeline().addFirst(sslHandler);
-                    LibreLogger.d(TAG, "suma in getting cert from .p12 NETTY CLIENT on Init 12***\n");
+//                    LibreLogger.d(TAG, "suma in getting cert from .p12 NETTY CLIENT on Init 12***\n"
+
+                    LibreLogger.d(TAG, "suma in getting cert from .p12 NETTY CLIENT on Init 12***\n"+LibreApplication.securecertExchangeSucessDevices.get("cert"));
+                    ch.pipeline().addLast("IdleChecker", new IdleStateHandler(10, 10, 10));
+                    ch.pipeline().addLast("IdleDisconnecter", new HeartbeatHandler(remotehost));
+                    ch.pipeline().addLast(new NettyDecoder(), handler);
+
                 }
-                LibreLogger.d(TAG,"suma in luci NonSecure**");
-                ch.pipeline().addLast("IdleChecker", new IdleStateHandler(10, 10, 10));
-                ch.pipeline().addLast("IdleDisconnecter", new HeartbeatHandler(remotehost));
-                ch.pipeline().addLast(new NettyDecoder(), handler);
+                else {
+                    LibreLogger.d(TAG, "suma in luci NonSecure**");
+                    ch.pipeline().addLast("IdleChecker", new IdleStateHandler(10, 10, 10));
+                    ch.pipeline().addLast("IdleDisconnecter", new HeartbeatHandler(remotehost));
+                    ch.pipeline().addLast(new NettyDecoder(), handler);
+                }
             }
         });
 
@@ -287,7 +301,7 @@ public class NettyAndroidClient {
                 public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
                     LibreLogger.d(TAG, "suma in netty server trusted certi");
                     LibreLogger.d(TAG,"suma in getting cert from .p12 NETTY CLIENT on Init 10***\n");
-                    convertToX509Cert(LibreApplication.getMYPEMstring);
+                  //  convertToX509Cert(LibreApplication.getMYPEMstring);
 
                 }
             }
@@ -305,7 +319,7 @@ public class NettyAndroidClient {
 
             cf = CertificateFactory.getInstance("X509");
             certificate = (X509Certificate) cf.generateCertificate(new ByteArrayInputStream(certificateData));
-            LibreLogger.d(TAG,"suma in generate "+certificate);
+          //  LibreLogger.d(TAG,"suma in generate "+certificate);
         } catch (CertificateException e) {
             throw new CertificateException(e);
         }

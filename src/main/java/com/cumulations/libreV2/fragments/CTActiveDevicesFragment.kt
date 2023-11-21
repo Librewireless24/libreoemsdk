@@ -159,7 +159,8 @@ class CTActiveDevicesFragment:Fragment(),LibreDeviceInteractionListner,Tunneling
                 val sceneObject = ScanningHandler.getInstance().getSceneObjectFromCentralRepo(sceneIp)
                 sceneObject?.clearBatteryStats()
                 deviceListAdapter.addDeviceToList(sceneObject)
-                (activity as CTDeviceDiscoveryActivity).requestLuciUpdates(sceneIp)
+                //(activity as CTDeviceDiscoveryActivity).requestLuciUpdates(sceneIp)
+             //   LibreLogger.d(TAG,"requestLuciUpdates ONE ")
                 /*Get Tunneling Data*/
                 TunnelingControl(sceneIp).sendDataModeCommand()
             }
@@ -180,7 +181,8 @@ class CTActiveDevicesFragment:Fragment(),LibreDeviceInteractionListner,Tunneling
         LibreLogger.d(TAG,"newDeviceFound device found ip ${node.ip} Device State ${node.deviceState}")
         mDeviceFound = true
 
-        (activity as CTDeviceDiscoveryActivity).requestLuciUpdates(node.ip)
+      // (activity as CTDeviceDiscoveryActivity).requestLuciUpdates(node.ip)
+       // LibreLogger.d(TAG,"requestLuciUpdates TWO ")
 
         val sceneObject = SceneObject(" ", node.friendlyname, 0f, node.ip)
         if (!mScanHandler.isIpAvailableInCentralSceneRepo(node.ip)) {
@@ -238,7 +240,9 @@ class CTActiveDevicesFragment:Fragment(),LibreDeviceInteractionListner,Tunneling
                             mScanHandler.putSceneObjectToCentralRepo(node.ip, newSceneObject)
                         }
                         deviceListAdapter.addDeviceToList(newSceneObject)
-                        (activity as CTDeviceDiscoveryActivity).requestLuciUpdates(nettyData.remotedeviceIp)
+                       // suma (activity as CTDeviceDiscoveryActivity).requestLuciUpdates(nettyData.remotedeviceIp)
+                        LibreLogger.d(TAG,"requestLuciUpdates THREE ")
+
                     }
 
                     val ipKeySet = mScanHandler.sceneObjectMapFromRepo.keys.toTypedArray()

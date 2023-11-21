@@ -77,7 +77,7 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
     private String fwInternetUpgradeMessage = "";
     private AppCompatImageView setupProgressImage;
     private boolean mb223TimerRunning;
-    public static final long OOPS_TIMEOUT = 60000; //45*1000;
+    public static final long OOPS_TIMEOUT = 45*1000; //45*1000;
     public static final String TAG = CTConnectingToMainNetwork.class.getSimpleName();
 
     @Override
@@ -178,7 +178,7 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
                 case Constants.TIMEOUT_FOR_SEARCHING_DEVICE:
                 case Constants.CONNECTED_TO_MAIN_SSID_FAIL:
                 case Constants.FW_UPGRADE_REBOOT_TIMER:
-                    LibreLogger.d(TAG,"mHandler TIMEOUT_FOR_SEARCHING_DEVICE||FW_UPGRADE_REBOOT_TIMER");
+                    LibreLogger.d(TAG,"newDeviceFound, node =  mHandler TIMEOUT_FOR_SEARCHING_DEVICE||FW_UPGRADE_REBOOT_TIMER");
                     closeProgressDialog();
                     openOOPSScreen();
                     break;
@@ -298,7 +298,7 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
 
     @Override
     public void newDeviceFound(final LSSDPNodes node) {
-      //  LibreLogger.d(TAG, "New Device Found CTConnect, friendlyName = " + node.getFriendlyname() +", gCastVersion = "+ node.getgCastVerision()+ " IPAddress: "+node.getIP());
+       LibreLogger.d(TAG, "New Device Found CTConnect, friendlyName = " + node.getFriendlyname() +", gCastVersion = "+ node.getgCastVerision()+ " IPAddress: "+node.getIP());
       //  insertDeviceIntoDb(node,"CT");
         configuredDeviceFound(node);
     }
@@ -449,6 +449,9 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
                             setSetupInfoTexts(getString(R.string.now_rebooting), getString(R.string.indicating_light));
                             Log.d(TAG, "messageRecieved: "+fwInternetUpgradeMessage);
                             mHandler.sendEmptyMessageDelayed(Constants.FW_UPGRADE_REBOOT_TIMER, 3 * 60 * 1000);
+                            //suma remove later
+                           // mHandler.sendEmptyMessageDelayed(Constants.FW_UPGRADE_REBOOT_TIMER, 50000);
+
                         }
                     }
                     break;

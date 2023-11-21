@@ -36,7 +36,7 @@ class CTHomeTabsActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractionLis
     private var tabSelected: String = ""
     private var loadFragmentName:String? = null
     private var isDoubleTap: Boolean = false
-
+    private var speakerNode: LSSDPNodes? = null
     private val mTaskHandlerForSendingMSearch = Handler(Looper.getMainLooper())
     private val mMyTaskRunnableForMSearch = Runnable {
         showLoader(false)
@@ -229,7 +229,11 @@ class CTHomeTabsActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractionLis
 
             runOnUiThread {
                 val sceneKeySet = ScanningHandler.getInstance().sceneObjectMapFromRepo.keys.toTypedArray()
+
                 LibreLogger.d(TAG,"showScreenAfterDelay, sceneKeySet size = ${sceneKeySet.size}")
+                if(speakerNode!=null) {
+                    requestLuciUpdates(speakerNode!!.ip)
+                }
                 if (LSSDPNodeDB.getInstance().GetDB().size > 0) {
                     openFragment(CTActiveDevicesFragment::class.java.simpleName,animate = false)
                 } /*else {
@@ -319,8 +323,10 @@ class CTHomeTabsActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractionLis
     override fun deviceDiscoveryAfterClearingTheCacheStarted() {}
 
     override fun newDeviceFound(node: LSSDPNodes?) {
-        LibreLogger.d(TAG,"newDeviceFound ${node?.friendlyname}")
+        LibreLogger.d(TAG,"newDeviceFound  CTHomeTABS${node?.friendlyname}")
         mTaskHandlerForSendingMSearch.removeCallbacks(mMyTaskRunnableForMSearch)
+        speakerNode = LSSDPNodeDB.getInstance().getTheNodeBasedOnTheIpAddress(node!!.ip)
+
         val sceneKeySet = ScanningHandler.getInstance().sceneObjectMapFromRepo.keys.toTypedArray()
         LibreLogger.d(TAG,"sceneKeySet size = ${sceneKeySet.size}")
         if (/*sceneKeySet.isNotEmpty()*/LSSDPNodeDB.getInstance().GetDB().size>0) {

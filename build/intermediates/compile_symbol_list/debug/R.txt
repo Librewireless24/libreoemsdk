@@ -925,6 +925,7 @@ int string save 0x0
 int string scanning 0x0
 int string screen2_tv1 0x0
 int string sdcard 0x0
+int string sdk_version_number 0x0
 int string searchText 0x0
 int string searchTextPlaceHolder 0x0
 int string searching_renderer 0x0

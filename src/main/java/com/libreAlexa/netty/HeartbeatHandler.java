@@ -1,5 +1,6 @@
 package com.libreAlexa.netty;
 
+import com.libreAlexa.LibreApplication;
 import com.libreAlexa.Scanning.EchoServerHandler;
 import com.libreAlexa.luci.LSSDPNodeDB;
 import com.libreAlexa.luci.LSSDPNodes;
@@ -180,13 +181,15 @@ public class HeartbeatHandler extends ChannelDuplexHandler {
                 }
 
                 /* If we are Missing 6 Alive notification */
-                if ((System.currentTimeMillis() - (nettyAndroidClient.getLastNotifiedTime())) > 60000) {
+                if ((System.currentTimeMillis() - (nettyAndroidClient.getLastNotifiedTime())) > 30000) {
 //                    LibreLogger.d(HeartbeatHandler.class.getSimpleName(), ipadddress + "Socket removed because we did not get notification since last 11 second");
                     LibreLogger.d(HeartbeatHandler.class.getSimpleName(), ipadddress + "Missed 6 Alive Notifications ( >60 sec )");
+                    BusProvider.getInstance().post(new RemovedLibreDevice(ipadddress));
 
                     if (LUCIControl.luciSocketMap.containsKey(ipadddress)) {
                         if (isSocketToBeRemovedFromTheTCPMap(channelHandlerContext)) {
                             LUCIControl.luciSocketMap.remove(ipadddress);
+                            LibreApplication.securecertExchangeSucessDevices.clear();
                             BusProvider.getInstance().post(new RemovedLibreDevice(ipadddress));
                         }
                     }

@@ -18,6 +18,7 @@ class CustomProgressDialog(context: Context) {
     fun start(title: String = "") {
         cpTitle.text = title
         dialog.setCancelable(false)
+
         if( !dialog.isShowing)
         dialog.show()
     }

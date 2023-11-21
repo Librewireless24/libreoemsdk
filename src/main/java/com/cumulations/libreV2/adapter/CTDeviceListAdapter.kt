@@ -72,6 +72,8 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
         val ipAddress = sceneObjectMap.keys.toTypedArray()[position]
         val sceneObject = sceneObjectMap[ipAddress]
         viewHolder.bindSceneObject(sceneObject, position)
+        LibreLogger.d(TAG, "onBindViewHolder scenObject ${sceneObject!!.currentSource}")
+
     }
 
     override fun getItemCount(): Int {

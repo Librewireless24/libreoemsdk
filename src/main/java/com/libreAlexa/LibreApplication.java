@@ -50,6 +50,8 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.concurrent.ConcurrentHashMap;
+
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import org.fourthline.cling.controlpoint.ControlPoint;
@@ -62,7 +64,10 @@ public class LibreApplication extends Application implements
   public static boolean isWifiON = false;
   public static InputStream openRawandroidp12;
   public static boolean isUSBSrc=false;
+  public static final HashMap<String, String> fnFlowPassed = new HashMap<>();
+  public static final HashMap<String, String> nettyActiveWriteDevices = new HashMap<>();
 
+  public static  HashMap<String, String> securecertExchangeSucessDevices = new HashMap<>();
   public static String getMYPEMstring = "";
   public static Activity ContextActivity;
   public static int disconnectedCount = 0, betweenDisconnectedCount = 0;
@@ -93,8 +98,6 @@ public class LibreApplication extends Application implements
   public static HashMap<String, Integer> INDIVIDUAL_VOLUME_MAP = new HashMap<>();
 
   public static HashMap<String, GoogleTOSTimeZone> GOOGLE_TIMEZONE_MAP = new HashMap<>();
-  public static HashMap<String, String> secureIp = new HashMap<>();
-
   public static LinkedHashMap<String, FwUpgradeData> FW_UPDATE_AVAILABLE_LIST = new LinkedHashMap<>();
 
   /*this map is having zone volume(219) only for master to avoid flickering in active scene*/

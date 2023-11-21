@@ -207,7 +207,7 @@
   <string name="login_with_amazon_warn">You need to login to Amazon to enable speech commands</string>
   <string name="riva_tutorial_url">https://rivaaudio.com/alexa-tutorial/en/index.html</string>
   <string name="version_only">SDK Version</string>
-  <string name="sdk_version_number">1.0(1.0)</string>
+  <string name="sdk_version_number">1.0(1.1)</string>
 
   <string name="language">Language</string>
   <string name="english">English</string>

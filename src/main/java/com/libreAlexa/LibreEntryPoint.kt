@@ -184,6 +184,7 @@ class LibreEntryPoint() {
             ZONE_VOLUME_MAP.clear()
             TunnelingControl.clearTunnelingClients()
             LUCIControl.luciSocketMap.clear()
+            LibreApplication.securecertExchangeSucessDevices.clear()
             LSSDPNodeDB.getInstance().clearDB()
             ScanningHandler.getInstance().clearSceneObjectsFromCentralRepo()
         } catch (e: java.lang.Exception) {

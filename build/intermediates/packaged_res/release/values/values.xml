@@ -370,7 +370,7 @@ By clicking Confirm, Device will be removed and you will be redirected to Home. 
     <string name="scanning">Finding BLE devices</string>
     <string name="screen2_tv1">Here are some of the many things \n you can ask Alexa</string>
     <string name="sdcard">SDCard</string>
-    <string name="sdk_version_number">1.0(1.0)</string>
+    <string name="sdk_version_number">1.0(1.1)</string>
     <string name="searchText">Please enter text to search</string>
     <string name="searchTextPlaceHolder">Please enter text to search</string>
     <string name="searching_renderer">Searching the renderer…</string>

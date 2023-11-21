@@ -356,6 +356,7 @@ public class GoogleCastUpdateAfterSac extends CTDeviceDiscoveryActivity implemen
     public void removeTheDeviceFromRepo(String ipadddress) {
         if(LUCIControl.luciSocketMap.containsKey(ipadddress)) {
             LUCIControl.luciSocketMap.remove(ipadddress);
+            LibreApplication.securecertExchangeSucessDevices.clear();
             BusProvider.getInstance().post(new RemovedLibreDevice(ipadddress));
 
             LSSDPNodeDB mNodeDB1 = LSSDPNodeDB.getInstance();
