@@ -51,9 +51,6 @@ public class NettyAndroidClient {
     String remotehost;
     int port;
     long lastNotifiedTime;
-    //isLuciSecure =true is SECURE DEVICE
-    //isLuciSecure =false is NON SECURE DEVICE
-    boolean isLuciSecure=true;
     public long getCreationTime() {
         return creationTime;
     }
@@ -103,70 +100,14 @@ public class NettyAndroidClient {
                 if(secureValue) {
                     // /*SUMA */Set up key manager factory to use our key store and DERRIVED FROM .P12
                       LibreLogger.d(TAG,"suma in luci SECURE**");
-                    KeyStore keyStore = null;
-                    try {
-                        keyStore = KeyStore.getInstance("PKCS12");
-                        LibreLogger.d(TAG, "suma in getting cert from .p12 NETTY CLIENT on Init 1 ***\n" + LibreApplication.openRawandroidp12);
-
-                    } catch (KeyStoreException e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        LibreLogger.d(TAG, "suma in getting cert from .p12 NETTY CLIENT on Init before try ***\n" + keyStore);
-
-                        try {
-                            LibreLogger.d(TAG, "suma in getting cert from .p12 NETTY CLIENT on Init before 2nd try\n" + keyStore);
-
-                            if (keyStore != null) {
-                                LibreLogger.d(TAG, "suma in getting cert from .p12 NETTY CLIENT on Init keystore not NULL\n" + keyStore);
-                                keyStore.load(LibreApplication.openRawandroidp12, "12345678".toCharArray());
-                                LibreLogger.d(TAG, "suma in getting cert from .p12 NETTY CLIENT on Init 2 ***\n" + keyStore);
-
-                            }
-                        } catch (NoSuchAlgorithmException | CertificateException e) {
-                            e.printStackTrace();
-                        }
-                        Enumeration<String> aliases = null;
-                        try {
-                            if (keyStore != null) {
-                                aliases = keyStore.aliases();
-                            }
-                            LibreLogger.d(TAG, "suma in getting cert from .p12 NETTY CLIENT on Init 3 ***\n" + aliases);
-
-                        } catch (KeyStoreException e) {
-                            e.printStackTrace();
-                        }
-                        if (aliases != null) {
-                            while (aliases.hasMoreElements()) {
-                                String alias = aliases.nextElement();
-                                try {
-                                    if (keyStore.getCertificate(alias).getType().equals("X.509")) {
-                                        LibreLogger.d(TAG, "suma in getting cert from .p12 NETTY CLIENT on Init 4***\n" + aliases);
-
-                                        X509Certificate cert = (X509Certificate) keyStore.getCertificate(alias);
-                                        LibreLogger.d(TAG, "suma in getting cert .p12 NETTY CLIENT***\n" + cert + "ISSUER IP\n" + remotehost);
-                                       // LUCIControl.luciSocketMap.put(remotehost, dummyCLient);
-                                       LibreApplication.securecertExchangeSucessDevices.put("cert",remotehost);
-
-                                       LUCIControl.secureCertDevices.put("certip",remotehost);
-
-                                        if (new Date().after(cert.getNotAfter())) {
-                                            return;
-                                        }
-                                    }
-                                } catch (KeyStoreException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                    } catch (IOException ioe) {
-                        // This occurs when there is an incorrect password for the certificate
-                        return;
-                    }
 
                     // /*SUMA */Set up key manager factory to use our key store and DERRIVED FROM .P12
+
                     KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-                    kmf.init(keyStore, "12345678".toCharArray());
+                    if(kmf!=null) {
+                        kmf.init(LibreApplication.keystoreclient, "12345678".toCharArray());
+                    }
+                    LibreApplication.securecertExchangeSucessDevices.put("cert",remotehost);
                     TrustManagerFactory tmFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
                     KeyStore tmpKS = null;
                     tmFactory.init(tmpKS);
@@ -184,8 +125,6 @@ public class NettyAndroidClient {
                     SslHandler sslHandler = new SslHandler(sslEngine);
                     sslHandler.engine().setEnabledProtocols(new String[]{"TLSv1.2"});
                     ch.pipeline().addFirst(sslHandler);
-//                    LibreLogger.d(TAG, "suma in getting cert from .p12 NETTY CLIENT on Init 12***\n"
-
                     LibreLogger.d(TAG, "suma in getting cert from .p12 NETTY CLIENT on Init 12***\n"+LibreApplication.securecertExchangeSucessDevices.get("cert"));
                     ch.pipeline().addLast("IdleChecker", new IdleStateHandler(10, 10, 10));
                     ch.pipeline().addLast("IdleDisconnecter", new HeartbeatHandler(remotehost));

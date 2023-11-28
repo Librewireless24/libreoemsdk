@@ -202,6 +202,7 @@ public class CoreUpnpService extends AndroidUpnpServiceImpl implements LibreDevi
             LUCIControl.luciSocketMap.remove(ipadddress);
 
             LibreApplication.securecertExchangeSucessDevices.clear();
+            LUCIControl.handshake.clear();
 
             BusProvider.getInstance().post(new RemovedLibreDevice(ipadddress));
             try {

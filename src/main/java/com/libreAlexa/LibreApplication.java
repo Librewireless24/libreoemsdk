@@ -45,15 +45,26 @@ import com.libreAlexa.util.GoogleTOSTimeZone;
 import com.libreAlexa.util.LibreLogger;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+
 import org.fourthline.cling.controlpoint.ControlPoint;
 
 
@@ -103,6 +114,8 @@ public class LibreApplication extends Application implements
   /*this map is having zone volume(219) only for master to avoid flickering in active scene*/
   public static HashMap<String, Integer> ZONE_VOLUME_MAP = new HashMap<>();
   public static int mTcpPortInUse = -1;
+  public static X509Certificate certStore;
+  public static KeyStore keystoreclient;
   private MicTcpServer micTcpServer;
   /**
    * This hashmap stores the DMRplayback helper for a udn
@@ -144,6 +157,103 @@ public class LibreApplication extends Application implements
    // LibreEntryPoint.Companion.getInstance().init(this);
     AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     LibreApplication.openRawandroidp12 = getApplicationContext().getResources().openRawResource(R.raw.android);
+
+
+    KeyStore keyStore = null;
+    try {
+      keyStore = KeyStore.getInstance("PKCS12");
+      LibreLogger.d(TAG, "suma in getting cert from .p12 NETTY CLIENT on Init 1 ***\n" + LibreApplication.openRawandroidp12);
+
+    } catch (KeyStoreException e) {
+      e.printStackTrace();
+    }
+    try {
+      LibreLogger.d(TAG, "suma in getting cert from .p12 NETTY CLIENT on Init before try ***\n" + keyStore);
+
+      try {
+        LibreLogger.d(TAG, "suma in getting cert from .p12 NETTY CLIENT on Init before 2nd try\n" + keyStore);
+
+        if (keyStore != null) {
+          LibreLogger.d(TAG, "suma in getting cert from .p12 NETTY CLIENT on Init keystore not NULL\n" + keyStore);
+          keyStore.load(LibreApplication.openRawandroidp12, "12345678".toCharArray());
+          LibreLogger.d(TAG, "suma in getting cert from .p12 NETTY CLIENT on Init 2 ***\n" + keyStore);
+
+        }
+      } catch (NoSuchAlgorithmException | CertificateException e) {
+        e.printStackTrace();
+      }
+      Enumeration<String> aliases = null;
+      try {
+        if (keyStore != null) {
+          aliases = keyStore.aliases();
+        }
+        LibreLogger.d(TAG, "suma in getting cert from .p12 NETTY CLIENT on Init 3 ***\n" + aliases);
+
+      } catch (KeyStoreException e) {
+        e.printStackTrace();
+      }
+      if (aliases != null) {
+        while (aliases.hasMoreElements()) {
+          String alias = aliases.nextElement();
+          try {
+            if (keyStore.getCertificate(alias).getType().equals("X.509")) {
+              LibreLogger.d(TAG, "suma in getting cert from .p12 NETTY CLIENT on Init 4***\n" + aliases);
+
+              X509Certificate cert = (X509Certificate) keyStore.getCertificate(alias);
+              LibreApplication.certStore=cert;
+              LibreLogger.d(TAG, "suma in getting cert .p12 NETTY CLIENT LibreApplication***\n" + cert + "ISSUER IP\n" );
+
+              // LUCIControl.luciSocketMap.put(remotehost, dummyCLient);
+             // LibreApplication.securecertExchangeSucessDevices.put("cert",remotehost);
+
+            //  LUCIControl.secureCertDevices.put("certip",remotehost);
+
+//                                        if (new Date().after(cert.getNotAfter())) {
+//                                            suma saibaba return;
+//                                        }
+            }
+          } catch (KeyStoreException e) {
+            e.printStackTrace();
+          }
+        }
+      }
+    } catch (IOException ioe) {
+      // This occurs when there is an incorrect password for the certificate
+      //  return;
+    }
+    KeyManagerFactory kmf = null;
+    try {
+      kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+    } catch (NoSuchAlgorithmException e) {
+      throw new RuntimeException(e);
+    }
+    try {
+      kmf.init(keyStore, "12345678".toCharArray());
+      LibreApplication.keystoreclient=keyStore;
+    }
+    catch (KeyStoreException e) {
+      throw new RuntimeException(e);
+    } catch (NoSuchAlgorithmException e) {
+      throw new RuntimeException(e);
+    } catch (UnrecoverableKeyException e) {
+      throw new RuntimeException(e);
+    }
+    TrustManagerFactory tmFactory = null;
+    try {
+      tmFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+    } catch (NoSuchAlgorithmException e) {
+      throw new RuntimeException(e);
+    }
+    KeyStore tmpKS = null;
+    try {
+      tmFactory.init(tmpKS);
+    } catch (KeyStoreException e) {
+      throw new RuntimeException(e);
+    }
+    KeyManager[] km = kmf.getKeyManagers();
+    TrustManager[] tm = tmFactory.getTrustManagers();
+    LibreLogger.d(TAG, "suma in getting cert from .p12 NETTY CLIENT on Init 7***\n");
+
 
     if (BuildConfig.DEBUG) {
       LibreLogger.d(TAG, "DEBUG mode called");
@@ -256,9 +366,8 @@ public class LibreApplication extends Application implements
 
   public boolean initLUCIServices() {
     try {
-    /*  LibreLogger.d(TAG,
-          "initLUCIServices Running:- " + mLuciThreadInitiated + " isKeyAliasGenerated:- "
-              + isKeyAliasGenerated);*/
+      LibreLogger.d(TAG,
+          "initLUCIServices Running:- " + mLuciThreadInitiated);
       if (!LibreApplication.mLuciThreadInitiated) {
         wt = ScanThread.getInstance();
         scanThread = new Thread(wt);

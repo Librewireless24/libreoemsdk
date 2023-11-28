@@ -250,69 +250,118 @@ public class NettyClientHandler extends ChannelHandlerAdapter {
         LibreLogger.d(TAG, TAG + "addToNodeDb inside  exception Exception caught " + cause.getMessage()+"check\n"+cause.getMessage().contains("SSL")+"for IP\n"+remotedevice);
         cause.printStackTrace();
 
-        if(cause.getMessage().contains("SSL")){
-                    LibreLogger.d(TAG, "Socket Creating for Ip get my value wts my IP\n " + remotedevice);
+        LibreLogger.d(TAG, "SSL HandShake added hashmap\n " + LUCIControl.handshake.toString());
 
-        LSSDPNodes mToBeUpdateNode = ScanningHandler.getInstance().getLSSDPNodeFromCentralDB(remotedevice);
-        LibreLogger.d(TAG, "Socket Creating for Ip get my value\n " + mToBeUpdateNode);
+        if(cause.getMessage().contains("SSLHandshakeException")){
+                    LibreLogger.d(TAG, "Socket Creating for Ip get my value wts my IP SSL HandShake\n " + remotedevice);
 
-        LUCIControl.luciSocketMap.put(remotedevice, NettyAndroidClient.getDummyInstance());
-//        LibreLogger.d(TAG, "Socket Creating for Ip " + mToBeUpdateNode.getIP() + " as a DummyInstance ");
-        LibreLogger.d(TAG,"android developer luci socket map THREE adding \n"+LUCIControl.luciSocketMap.toString());
-        //secure nonsecure  judging place **&
-        if(mToBeUpdateNode!=null) {
-            NettyAndroidClient tcpSocketSendCtr = null;
-            try {
-                tcpSocketSendCtr = new NettyAndroidClient(mToBeUpdateNode.getNodeAddress(), 7777, false);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+       if(LUCIControl.handshake.get("handshake")!=null&&!LUCIControl.handshake.get("handshake").contains(remotedevice)) {
 
-            LibreLogger.d(TAG, "Socket Created for Ip " + mToBeUpdateNode.getIP() +
-                    " Printing From NettyAndroidClient Socket  " + tcpSocketSendCtr.getRemotehost());
+           LSSDPNodes mToBeUpdateNode = ScanningHandler.getInstance().getLSSDPNodeFromCentralDB(remotedevice);
+           LibreLogger.d(TAG, "Socket Creating for Ip get my value SSL HandShake\n " + mToBeUpdateNode);
+           LUCIControl.handshake.put("handshake",remotedevice);
 
-            tcpSocketSendCtr.setLastNotifiedTime(System.currentTimeMillis());
+           LUCIControl.luciSocketMap.put(remotedevice, NettyAndroidClient.getDummyInstance());
+           LibreLogger.d(TAG, "android developer luci socket map THREE adding SSL HandShake \n" + LUCIControl.luciSocketMap.toString());
 
-            LUCIControl.luciSocketMap.put(mToBeUpdateNode.getIP(), tcpSocketSendCtr);
-            LibreLogger.d(TAG, "android developer luci socket map FOUR adding \n" + LUCIControl.luciSocketMap.toString());
 
-            new LUCIControl(mToBeUpdateNode.getIP()).sendAsynchronousCommandSpecificPlaces();
-            if ((mToBeUpdateNode != null) && (mToBeUpdateNode.getIP() != null) &&
-                    (mToBeUpdateNode.getDeviceState() != null) && (!m_ScanningHandler.findDupicateNode(mToBeUpdateNode))) {
-                LibreLogger.d(TAG, "New Node is Found For the ipAddress " + mToBeUpdateNode.getIP());
+           if (mToBeUpdateNode != null) {
+               NettyAndroidClient tcpSocketSendCtr = null;
+               try {
+                   tcpSocketSendCtr = new NettyAndroidClient(mToBeUpdateNode.getNodeAddress(), 7777, true);
+                   LUCIControl.handshake.put("handshake", remotedevice);
 
-                boolean isFilteredSpeaker = LSSDPNodeDB.getInstance().hasFilteredModels(mToBeUpdateNode);
-                LibreLogger.d(TAG, "addToNodeDb, " + mToBeUpdateNode.getFriendlyname() + " isFilteredSpeaker = " + isFilteredSpeaker);
+               } catch (Exception e) {
+                   throw new RuntimeException(e);
+               }
 
-                if (!mToBeUpdateNode.getUSN().isEmpty() /*&& isFilteredSpeaker*/) {
-                    BusProvider.getInstance().post(mToBeUpdateNode);
-                    m_ScanningHandler.lssdpNodeDB.addToNodeDb(mToBeUpdateNode);
-                    LibreLogger.d(TAG, "addToNodeDb inside clientHandler loop, " + mToBeUpdateNode.getFriendlyname() + " isFilteredSpeaker = " + isFilteredSpeaker);
+               LibreLogger.d(TAG, "Socket Created for Ip " + mToBeUpdateNode.getIP() +
+                       " Printing From NettyAndroidClient Socket  " + tcpSocketSendCtr.getRemotehost());
 
-                } else {
-                    LibreLogger.d(TAG, "USN is Empty " + mToBeUpdateNode.getIP());
-                }
-            }
-        }
+               tcpSocketSendCtr.setLastNotifiedTime(System.currentTimeMillis());
+
+               LUCIControl.luciSocketMap.put(mToBeUpdateNode.getIP(), tcpSocketSendCtr);
+               LibreLogger.d(TAG, "android developer luci socket map FOUR adding \n" + LUCIControl.luciSocketMap.toString());
+
+               new LUCIControl(mToBeUpdateNode.getIP()).sendAsynchronousCommandSpecificPlaces();
+               if (mToBeUpdateNode.getIP() != null && /*mToBeUpdateNode.getDeviceState() != null && */!m_ScanningHandler.findDupicateNode(mToBeUpdateNode)) {
+                   LibreLogger.d(TAG, "New Node is Found For the ipAddress " + mToBeUpdateNode.getIP());
+
+                   boolean isFilteredSpeaker = LSSDPNodeDB.getInstance().hasFilteredModels(mToBeUpdateNode);
+                   LibreLogger.d(TAG, "addToNodeDb, " + mToBeUpdateNode.getFriendlyname() + " isFilteredSpeaker = " + isFilteredSpeaker);
+
+                   if (!mToBeUpdateNode.getUSN().isEmpty() /*&& isFilteredSpeaker*/) {
+                       BusProvider.getInstance().post(mToBeUpdateNode);
+                       m_ScanningHandler.lssdpNodeDB.addToNodeDb(mToBeUpdateNode);
+                       LibreLogger.d(TAG, "addToNodeDb inside clientHandler loop, " + mToBeUpdateNode.getFriendlyname() + " isFilteredSpeaker = " + isFilteredSpeaker);
+
+                   }
+                   else {
+                       LibreLogger.d(TAG, "USN is Empty " + mToBeUpdateNode.getIP());
+                   }
+               }
+           }
+       }
         }
         else{
-            if(cause.getMessage().contains("reset")){
-                            ctx.close();
-                LibreLogger.d(TAG, TAG + "addToNodeDb inside  exception Exception caught else\n " + cause.getMessage()+"check\n"+cause.getMessage().contains("SSL")+"for IP\n"+remotedevice);
+            if(cause.getMessage().contains("SSL/TLS")){
+                            //ctx.close();
+                LibreLogger.d(TAG, TAG + "addToNodeDb inside  exception Exception caught else else\n " + cause.getMessage()+"check\n"+cause.getMessage().contains("SSL")+"for IP\n"+remotedevice);
+                LSSDPNodes mToBeUpdateNode = ScanningHandler.getInstance().getLSSDPNodeFromCentralDB(remotedevice);
+                LibreLogger.d(TAG, "Socket Creating for Ip get my value\n " + mToBeUpdateNode);
 
+                LUCIControl.luciSocketMap.put(remotedevice, NettyAndroidClient.getDummyInstance());
+                LibreLogger.d(TAG,"android developer luci socket map THREE adding \n"+LUCIControl.luciSocketMap.toString());
+
+                if(mToBeUpdateNode!=null) {
+                    NettyAndroidClient tcpSocketSendCtr = null;
+                    try {
+                        tcpSocketSendCtr = new NettyAndroidClient(mToBeUpdateNode.getNodeAddress(), 7777, false);
+                    } catch (Exception e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    LibreLogger.d(TAG, "Socket Created for Ip " + mToBeUpdateNode.getIP() +
+                            " Printing From NettyAndroidClient Socket  " + tcpSocketSendCtr.getRemotehost());
+
+                    tcpSocketSendCtr.setLastNotifiedTime(System.currentTimeMillis());
+
+                    LUCIControl.luciSocketMap.put(mToBeUpdateNode.getIP(), tcpSocketSendCtr);
+                    LibreLogger.d(TAG, "android developer luci socket map FOUR adding \n" + LUCIControl.luciSocketMap.toString());
+
+                    new LUCIControl(mToBeUpdateNode.getIP()).sendAsynchronousCommandSpecificPlaces();
+                    if (mToBeUpdateNode.getIP() != null /*&& mToBeUpdateNode.getDeviceState() != null */&& !m_ScanningHandler.findDupicateNode(mToBeUpdateNode)) {
+                        LibreLogger.d(TAG, "New Node is Found For the ipAddress " + mToBeUpdateNode.getIP());
+
+                        boolean isFilteredSpeaker = LSSDPNodeDB.getInstance().hasFilteredModels(mToBeUpdateNode);
+                        LibreLogger.d(TAG, "addToNodeDb, " + mToBeUpdateNode.getFriendlyname() + " isFilteredSpeaker = " + isFilteredSpeaker);
+
+                        if (!mToBeUpdateNode.getUSN().isEmpty() /*&& isFilteredSpeaker*/) {
+                            BusProvider.getInstance().post(mToBeUpdateNode);
+                            m_ScanningHandler.lssdpNodeDB.addToNodeDb(mToBeUpdateNode);
+                            LibreLogger.d(TAG, "addToNodeDb inside clientHandler loop, " + mToBeUpdateNode.getFriendlyname() + " isFilteredSpeaker = " + isFilteredSpeaker);
+
+                        }
+                        else {
+                            LibreLogger.d(TAG, "USN is Empty " + mToBeUpdateNode.getIP());
+                        }
+                    }
+                }
 //
 //            /**
 //             * LatestDiscoveryChanges
 //             */
+
             if (LUCIControl.luciSocketMap.containsKey(remotedevice)) {
                 if (isSocketToBeRemovedFromTheTCPMap(ctx, remotedevice)) {
                     BusProvider.getInstance().post(new RemovedLibreDevice(remotedevice));
                     LUCIControl.luciSocketMap.remove(remotedevice);
                     LibreApplication.securecertExchangeSucessDevices.clear();
+
                 }
             }
             }
-//            ctx.close();
+
 //
 //            /**
 //             * LatestDiscoveryChanges
@@ -372,6 +421,8 @@ public class NettyClientHandler extends ChannelHandlerAdapter {
             if (isSocketToBeRemovedFromTheTCPMap(ctx, remotedevice)) {
                 LUCIControl.luciSocketMap.remove(remotedevice);
                 LibreApplication.securecertExchangeSucessDevices.clear();
+                LUCIControl.handshake.clear();
+
             }
         }
     }
@@ -506,10 +557,11 @@ public class NettyClientHandler extends ChannelHandlerAdapter {
                 //BusProvider.getInstance().post(new RemovedLibreDevice(remotedevice));
                 LUCIControl.luciSocketMap.remove(remotedevice);
                 LibreApplication.securecertExchangeSucessDevices.clear();
+
             }
         }
 
-//    for now not removing this commment untill final qa test report submitted
+//    for now not removing this commment untill final qa test report on multidevice support submitted
 
 //    if (LUCIControl.luciSocketMap.containsKey(remotedevice)) {
 //            if (isSocketToBeRemovedFromTheTCPMap(ctx, remotedevice)) {
@@ -518,6 +570,7 @@ public class NettyClientHandler extends ChannelHandlerAdapter {
 //                LibreApplication.securecertExchangeSucessDevices.clear();
 //            }
 //        }
+
         try {
             ctx.close();
         } catch (Exception e) {

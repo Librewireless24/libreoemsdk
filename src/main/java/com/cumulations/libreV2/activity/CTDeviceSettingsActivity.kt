@@ -757,12 +757,8 @@ class CTDeviceSettingsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInterac
         deviceName=mDeviceName
         val mToBeUpdateNode: LSSDPNodes = mScanHandler.getLSSDPNodeFromCentralDB(ipaddress)
         val mNodeDB = LSSDPNodeDB.getInstance()
-        if (mToBeUpdateNode != null) {
-            mToBeUpdateNode.friendlyname = mDeviceName
-            mNodeDB.renewLSSDPNodeDataWithNewNode(mToBeUpdateNode)
-        } else {
-            LibreLogger.d(TAG, "Node null while updating the device name else condition")
-        }
+        mToBeUpdateNode.friendlyname = mDeviceName
+        mNodeDB.renewLSSDPNodeDataWithNewNode(mToBeUpdateNode)
     }
 
     fun utf8truncate(input: String, length: Int): String {

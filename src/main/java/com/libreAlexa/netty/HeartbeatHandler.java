@@ -172,6 +172,7 @@ public class HeartbeatHandler extends ChannelDuplexHandler {
                 if (nettyAndroidClient == null) {
                     return;
                 }
+
                 if (mNode != null) {
                     LibreLogger.d(TAG, "Last Notified Time " + nettyAndroidClient.getLastNotifiedTime() +
                             " For the Ip " + nettyAndroidClient.getRemotehost() + " Device Name " + mNode.getFriendlyname());
@@ -181,7 +182,7 @@ public class HeartbeatHandler extends ChannelDuplexHandler {
                 }
 
                 /* If we are Missing 6 Alive notification */
-                if ((System.currentTimeMillis() - (nettyAndroidClient.getLastNotifiedTime())) > 30000) {
+                if ((System.currentTimeMillis() - (nettyAndroidClient.getLastNotifiedTime())) > 20000) {
 //                    LibreLogger.d(HeartbeatHandler.class.getSimpleName(), ipadddress + "Socket removed because we did not get notification since last 11 second");
                     LibreLogger.d(HeartbeatHandler.class.getSimpleName(), ipadddress + "Missed 6 Alive Notifications ( >60 sec )");
                     BusProvider.getInstance().post(new RemovedLibreDevice(ipadddress));
@@ -190,6 +191,8 @@ public class HeartbeatHandler extends ChannelDuplexHandler {
                         if (isSocketToBeRemovedFromTheTCPMap(channelHandlerContext)) {
                             LUCIControl.luciSocketMap.remove(ipadddress);
                             LibreApplication.securecertExchangeSucessDevices.clear();
+                           /// LUCIControl.handshake.clear();
+
                             BusProvider.getInstance().post(new RemovedLibreDevice(ipadddress));
                         }
                     }

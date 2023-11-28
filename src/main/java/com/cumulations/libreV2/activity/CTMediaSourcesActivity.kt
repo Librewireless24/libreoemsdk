@@ -32,8 +32,6 @@ import com.libreAlexa.R
 import com.libreAlexa.Scanning.ScanningHandler
 import com.libreAlexa.alexa.AlexaUtils
 import com.libreAlexa.constants.Constants
-import com.libreAlexa.constants.Constants.CURRENT_DEVICE_IP
-import com.libreAlexa.constants.Constants.FROM_ACTIVITY
 import com.libreAlexa.constants.LSSDPCONST
 import com.libreAlexa.constants.LUCIMESSAGES
 import com.libreAlexa.constants.MIDCONST
@@ -253,22 +251,31 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
 
             if (mNode.getmDeviceCap().getmSource().isAlexaAvsSource) {
                 if (mNode.alexaRefreshToken == null || mNode.alexaRefreshToken.isEmpty()
-                    || mNode.alexaRefreshToken == "0") {
+                    || mNode.alexaRefreshToken == "0"
+                ) {
                     startActivity(Intent(this@CTMediaSourcesActivity, CTAmazonLoginActivity::class.java).apply {
                         flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                        putExtra(CURRENT_DEVICE_IP, currentIpAddress)
-                        putExtra(FROM_ACTIVITY, CTMediaSourcesActivity::class.java.simpleName)
+                        putExtra(Constants.CURRENT_DEVICE_IP, currentIpAddress)
+                        putExtra(Constants.FROM_ACTIVITY, CTMediaSourcesActivity::class.java.simpleName)
                     })
                 } else {
-                    val i = Intent(this@CTMediaSourcesActivity, CTAlexaThingsToTryActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    i.putExtra(CURRENT_DEVICE_IP, currentIpAddress)
-                    i.putExtra(FROM_ACTIVITY, CTConnectingToMainNetwork::class.java.simpleName)
+                    val i = Intent(
+                        this@CTMediaSourcesActivity,
+                        CTAlexaThingsToTryActivity::class.java
+                    )
+                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    i.putExtra(Constants.CURRENT_DEVICE_IP, currentIpAddress)
+                    i.putExtra(
+                        Constants.FROM_ACTIVITY,
+                        CTConnectingToMainNetwork::class.java.simpleName
+                    )
                     startActivity(i)
                     finish()
                 }
-            } else{
+            }
+            else{
                 /* SUMA : For Alexa not suported doing this transition  for now , add respective CAST OEM related Changes here*/
-                LibreLogger.d(TAG,"suma alexa login not supported")
+                    LibreLogger.d(TAG,"suma alexa login not supported")
                 showToast(getString(R.string.alexa_not_supported))
             }
         }
@@ -348,7 +355,7 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
         } else binding.ivVolumeMute.setImageResource(R.drawable.volume_low_enabled)
 
         val ssid = AppUtils.getConnectedSSID(this)
-        if (ssid != null && !isConnectedToSAMode(ssid) && lssdpNodes.getmDeviceCap().getmSource().isAlexaAvsSource) {
+        if (ssid != null && !isConnectedToSAMode(ssid)) {
             binding.ivAlexaSettings.visibility = View.VISIBLE
             if (lssdpNodes?.alexaRefreshToken.isNullOrEmpty()|| lssdpNodes?.alexaRefreshToken ==
                 "0" && !SharedPreferenceHelper.getInstance(this).isAlexaLoginAlertDontAskChecked
@@ -371,6 +378,7 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
 //            setTitle(R.string.alexa_not_connected)
 //            setMessage(getString(R.string.sign_in_az))
             //val checkBoxView = View.inflate(this@CTMediaSourcesActivity,R.layout.alert_checkbox,null)
+
             val binding = AlertCheckboxBinding.inflate(layoutInflater)
             binding.cbDont.setOnCheckedChangeListener { compoundButton, b ->
                 val sharedPreferenceHelper = SharedPreferenceHelper.getInstance(this@CTMediaSourcesActivity)
@@ -474,9 +482,9 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
                         currentSceneObject = ScanningHandler.getInstance().getSceneObjectFromCentralRepo(currentIpAddress)
                         // ActiveSceneAdapter.mMasterSpecificSlaveAndFreeDeviceMap.get(currentIpAddress);
                         currentSceneObject = AppUtils.updateSceneObjectWithPlayJsonWindow(window, currentSceneObject!!)
-                        if(currentSceneObject!=null) {
-                            updateMusicPlayViews(currentSceneObject)
-                        }
+//                        if(currentSceneObject!=null) {
+//                      suma comment      updateMusicPlayViews(currentSceneObject)
+//                        }
                         if (cmd_id == 3) {
                              if(sceneObject!=null) {
                                  LibreLogger.d(TAG, "Handle Play Json UI" + sceneObject.trackName)
@@ -615,11 +623,12 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
                 MIDCONST.MID_CURRENT_SOURCE.toInt() -> {
                     val currentSource = String(luciPacket.getpayload())
                     LibreLogger.d(TAG, " message 50 is $currentSource")
-                    if (sceneObject != null) {
+                    if (sceneObject != null)
+                    {
                         sceneObject.currentSource = currentSource.toInt()
                         mScanHandler.putSceneObjectToCentralRepo(nettyData.remotedeviceIp, sceneObject)
                         LibreLogger.d(TAG, "suma in current source")
-                        updateMusicPlayViews(sceneObject)
+                      //suma comment  updateMusicPlayViews(sceneObject)
                     }
                     when {
                         currentSource.contains(Constants.AUX_SOURCE.toString())
@@ -830,7 +839,7 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
        val sceneObject = mScanHandler.getSceneObjectFromCentralRepo(currentIpAddress)
         //            updateMusicPlayViews(currentsceneObject) before
         if(sceneObject!=null) {
-            updateMusicPlayViews(sceneObject)
+          //suma comment  updateMusicPlayViews(sceneObject)
             handleAlexaViews(sceneObject)
         }
     }

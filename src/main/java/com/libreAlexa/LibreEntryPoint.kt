@@ -76,6 +76,9 @@ class LibreEntryPoint() {
     fun init(context: Context) {
         appContext = context
         Log.d(TAG, "LibreEntryPoint Init on App Create Method Called")
+        LibreApplication.openRawandroidp12 =
+            context.getResources().openRawResource(R.raw.android)
+
         val connection_manager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         var input: InputStream? = null
         try {
@@ -185,6 +188,8 @@ class LibreEntryPoint() {
             TunnelingControl.clearTunnelingClients()
             LUCIControl.luciSocketMap.clear()
             LibreApplication.securecertExchangeSucessDevices.clear()
+            LUCIControl.handshake.clear()
+
             LSSDPNodeDB.getInstance().clearDB()
             ScanningHandler.getInstance().clearSceneObjectsFromCentralRepo()
         } catch (e: java.lang.Exception) {

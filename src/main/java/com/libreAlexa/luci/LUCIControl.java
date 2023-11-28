@@ -33,6 +33,8 @@ public class LUCIControl {
     private String SERVER_IP;
     public static final int LUCI_RESP_PORT = 3333;
     public static ConcurrentHashMap<String, NettyAndroidClient> luciSocketMap = new ConcurrentHashMap<>();
+    public static ConcurrentHashMap<String, String> handshake = new ConcurrentHashMap<>();
+
     public static ConcurrentHashMap<String, String> secureCertDevices = new ConcurrentHashMap<>();
 
     public static ConcurrentHashMap<String, ChannelHandlerContext> channelHandlerContextMap = new ConcurrentHashMap<>();
@@ -196,6 +198,7 @@ public class LUCIControl {
                         LibreLogger.d(TAG,"SCAN_NETTY Socket not present one  for " + SERVER_IP + " " + luciPacket.getCommand());
                         LUCIControl.luciSocketMap.remove(SERVER_IP);
                         LibreApplication.securecertExchangeSucessDevices.clear();
+                        LUCIControl.handshake.clear();
 
                         /*       try {
                             tcpSocketSendCtrl = new NettyAndroidClient(local, server_port);

@@ -159,8 +159,8 @@ class CTActiveDevicesFragment:Fragment(),LibreDeviceInteractionListner,Tunneling
                 val sceneObject = ScanningHandler.getInstance().getSceneObjectFromCentralRepo(sceneIp)
                 sceneObject?.clearBatteryStats()
                 deviceListAdapter.addDeviceToList(sceneObject)
-                //(activity as CTDeviceDiscoveryActivity).requestLuciUpdates(sceneIp)
-             //   LibreLogger.d(TAG,"requestLuciUpdates ONE ")
+                (activity as CTDeviceDiscoveryActivity).requestLuciUpdates(sceneIp)
+             //  enabling  LibreLogger.d(TAG,"requestLuciUpdates ONE ")
                 /*Get Tunneling Data*/
                 TunnelingControl(sceneIp).sendDataModeCommand()
             }
@@ -181,8 +181,8 @@ class CTActiveDevicesFragment:Fragment(),LibreDeviceInteractionListner,Tunneling
         LibreLogger.d(TAG,"newDeviceFound device found ip ${node.ip} Device State ${node.deviceState}")
         mDeviceFound = true
 
-      // (activity as CTDeviceDiscoveryActivity).requestLuciUpdates(node.ip)
-       // LibreLogger.d(TAG,"requestLuciUpdates TWO ")
+       //(activity as CTDeviceDiscoveryActivity).requestLuciUpdates(node.ip)
+       // enabling LibreLogger.d(TAG,"requestLuciUpdates TWO ")
 
         val sceneObject = SceneObject(" ", node.friendlyname, 0f, node.ip)
         if (!mScanHandler.isIpAvailableInCentralSceneRepo(node.ip)) {
@@ -240,7 +240,9 @@ class CTActiveDevicesFragment:Fragment(),LibreDeviceInteractionListner,Tunneling
                             mScanHandler.putSceneObjectToCentralRepo(node.ip, newSceneObject)
                         }
                         deviceListAdapter.addDeviceToList(newSceneObject)
-                       // suma (activity as CTDeviceDiscoveryActivity).requestLuciUpdates(nettyData.remotedeviceIp)
+
+                        // enabling
+                         (activity as CTDeviceDiscoveryActivity).requestLuciUpdates(nettyData.remotedeviceIp)
                         LibreLogger.d(TAG,"requestLuciUpdates THREE ")
 
                     }

@@ -1068,6 +1068,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                 playPauseView?.visibility = View.INVISIBLE
                 albumArtView?.visibility = View.GONE
                 LibreLogger.d(TAG, "suma in handle alexaplay icon currently stopped12" + sceneObject.playstatus)
+                if(node.getmDeviceCap().getmSource()!=null)
                 if (node.getmDeviceCap().getmSource().isAlexaAvsSource) {
                     if (node?.alexaRefreshToken.isNullOrEmpty()) {
                         trackNameView?.text = getText(R.string.login_to_enable_cmds)
@@ -1273,7 +1274,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                         if (sceneObject != null) {
                             sceneObject.currentSource = mSource
                             ScanningHandler.getInstance().putSceneObjectToCentralRepo(nettyData?.getRemotedeviceIp(), sceneObject)
-                            updateMusicPlayViews(sceneObject)
+                           //suma comment updateMusicPlayViews(sceneObject)
                             if (sceneObject.trackName != null) {
                                 currentTrackName = sceneObject.trackName
                             }
@@ -1294,9 +1295,9 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                             mNode.alexaRefreshToken = token
                         }
 //                    handleAlexaViews(sceneObject)
-                        if (sceneObject != null) {
-                            updateMusicPlayViews(sceneObject)
-                        }
+//                        if (sceneObject != null) {
+//                          suma comment  updateMusicPlayViews(sceneObject)
+//                        }
                     }
                 }
 
@@ -1307,7 +1308,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                         sceneObject.currentPlaybackSeekPosition = longDuration.toFloat()
                         ScanningHandler.getInstance().putSceneObjectToCentralRepo(nettyData?.getRemotedeviceIp(), sceneObject)
 
-                        updateMusicPlayViews(sceneObject)
+                       //suma comment updateMusicPlayViews(sceneObject)
                     }
                 }
                 MIDCONST.MUTE_UNMUTE_STATUS -> {
@@ -1704,6 +1705,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                     removeTheDeviceFromRepo(mNode.ip)
                     LUCIControl.luciSocketMap.remove(mNode.ip)
                     LibreApplication.securecertExchangeSucessDevices.clear()
+                    LUCIControl.handshake.clear()
                     intentToHome(this)
                 }
                 if (alertDialog1 == null) alertDialog1 = alertDialogBuilder.create()
@@ -1753,7 +1755,9 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
 
             LUCIControl.luciSocketMap.clear()
             LibreApplication.securecertExchangeSucessDevices.clear()
-            LUCIControl.channelHandlerContextMap.clear()
+                LUCIControl.handshake.clear()
+
+                LUCIControl.channelHandlerContextMap.clear()
             LSSDPNodeDB.getInstance().clearDB()
             ensureDMRPlaybackStopped()
             LibreEntryPoint.getInstance().clearApplicationCollections()

@@ -1235,6 +1235,7 @@ override fun messageRecieved(nettyData: NettyData) {
             /**For Spotify Podcasts PlayBackCommands like Repeat,Shuffle,Next & Previous will not
              * support so we are making visibility Gone
              */
+            if(currentSceneObject!!.playUrl!=null)
             if (currentSceneObject!!.playUrl != null && currentSceneObject!!.playUrl.contains("spotify:episode") || currentSceneObject!!.playUrl.contains("spotify:show")) {
                 binding.mediaBtnSkipNext.visibility = View.VISIBLE
                 binding.mediaBtnSkipPrev.visibility = View.VISIBLE

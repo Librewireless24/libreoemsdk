@@ -231,9 +231,9 @@ class CTHomeTabsActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractionLis
                 val sceneKeySet = ScanningHandler.getInstance().sceneObjectMapFromRepo.keys.toTypedArray()
 
                 LibreLogger.d(TAG,"showScreenAfterDelay, sceneKeySet size = ${sceneKeySet.size}")
-                if(speakerNode!=null) {
-                    requestLuciUpdates(speakerNode!!.ip)
-                }
+//                if(speakerNode!=null) {
+//                    requestLuciUpdates(speakerNode!!.ip)
+//                }
                 if (LSSDPNodeDB.getInstance().GetDB().size > 0) {
                     openFragment(CTActiveDevicesFragment::class.java.simpleName,animate = false)
                 } /*else {
