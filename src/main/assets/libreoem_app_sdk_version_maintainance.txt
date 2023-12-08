@@ -12,3 +12,14 @@ Standard App Release version with respect to libreoem SDK version:\
 > 28 Nov App Version : 1.4(1.5) with OEM SDK 1.0(1.2)
 \f1\fs26 \cf2 \cb3 \
 }
+
+
+===SHAIk====
+1. Internal App release with EAP Issues ->06-12-2023
+    AppVersion:- 1.4(1.6)
+    SDKVersion:- 1.0(1.2)
+
+2. Internal App release with BLE Improvements -> 07-12-2023
+    AppVersion:- 1.4(1.7)
+    SDKVersion:- 1.0(1.2)
+

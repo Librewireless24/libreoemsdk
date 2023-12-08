@@ -24,7 +24,6 @@ import android.net.NetworkRequest;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.StrictMode;
-import android.util.Log;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.AppLaunchChecker;
 
@@ -56,7 +55,6 @@ import java.util.Base64;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
@@ -94,6 +92,7 @@ public class LibreApplication extends Application implements
 
   public static boolean isSacFlowStarted = false;
   public static boolean isBackPressed = false;
+  public static boolean isUSBBackPressed = false;
 
   public static boolean hideErrorMessage;
   private static final String TAG = LibreApplication.class.getSimpleName();
@@ -103,7 +102,7 @@ public class LibreApplication extends Application implements
   public static String currentTrackName = "-1";
   public static String currentArtistName = "-1";
   public static String currentAlbumnName = "-1";
-  public static String currentAlbumArtView = "-1";
+  public static String AlbumArtURL = "-1";
   public static final String GLOBAL_TAG = "GLOBAL_TAG";
   /*this map is having all devices volume(64) based on IP address*/
   public static HashMap<String, Integer> INDIVIDUAL_VOLUME_MAP = new HashMap<>();

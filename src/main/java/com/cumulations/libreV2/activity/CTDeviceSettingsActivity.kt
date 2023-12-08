@@ -50,6 +50,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.util.Locale
+import java.util.UUID
 
 
 /**
@@ -716,10 +717,19 @@ class CTDeviceSettingsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInterac
         else binding.llTunnelingControls.visibility = View.GONE
     }
 
-    private fun fetchUUIDFromDB(speakerIpAddress: String) {
+    private fun fetchUUIDFromDB(speakerIpAddress: String) {{}
         lifecycleScope.launch(Dispatchers.IO) {
-            savedDeviceUUIDList = libreVoiceDatabaseDao.getAllDeviceUUID()
-            LibreLogger.d(TAG, "fetchUUIDFromDB:uuid size ${savedDeviceUUIDList.size}")
+            try {
+                savedDeviceUUIDList = libreVoiceDatabaseDao.getAllDeviceUUID()
+                LibreLogger.d(TAG, "fetchUUIDFromDB:uuid size ${savedDeviceUUIDList.size}")
+            }catch (e: Exception) {
+                //Bad case
+                val uuid: String = UUID.randomUUID().toString()
+                deviceUUID=uuid
+                LibreLogger.d(TAG, "Error fetching UUID from DB, ${e.message}")
+                e.printStackTrace()
+
+            }
         }
     }
 

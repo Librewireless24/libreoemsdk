@@ -189,14 +189,13 @@ object AppUtils {
         if (window.has("Current Source")) {
             oldSceneObject.currentSource = window.getInt("Current Source")
         }
-        if (oldSceneObject.currentSource == Constants.AUX_SOURCE
-                /*|| oldSceneObject?.currentSource == Constants.EXTERNAL_SOURCE*/) {
+        if (oldSceneObject.currentSource == Constants.AUX_SOURCE || oldSceneObject.currentSource == Constants.EXTERNAL_SOURCE) {
             oldSceneObject.artist_name = "Aux Playing"
         }
 
-        if (oldSceneObject.currentSource == Constants.BT_SOURCE) {
+        /*if (oldSceneObject.currentSource == Constants.BT_SOURCE) {
             oldSceneObject.artist_name = "Bluetooth Playing"
-        }
+        }*/
         parseControlJsonForAlexa(window,oldSceneObject)
 
         return oldSceneObject
@@ -266,7 +265,7 @@ object AppUtils {
     }
 
     fun isActivePlaylistNotAvailable(sceneObject: SceneObject?):Boolean{
-        LibreLogger.d(TAG, "isActivePlaylistNotAvailable, ${sceneObject?.sceneName}")
+        LibreLogger.d(TAG, "isActivePlaylistNotAvailable, ${sceneObject?.currentSource}")
         /* For Playing , If DMR is playing then we should give control for Play/Pause*/
         return sceneObject?.currentSource == Constants.NO_SOURCE
                 || sceneObject?.currentSource == Constants.DDMSSLAVE_SOURCE
@@ -390,5 +389,7 @@ object AppUtils {
         if (pInfo != null) version = pInfo.versionName
         return version
     }
+
+
 
 }

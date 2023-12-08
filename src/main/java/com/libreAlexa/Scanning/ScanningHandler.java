@@ -238,9 +238,30 @@ public class ScanningHandler {
 
 
 
-    public Sources getSources(String hexString) {
-        LibreLogger.d(TAG, "getSource hexString " + hexString);//f7ffffff - Hex Decimal
-        String mHexString = hexString;
+    public Sources getSources(String mInputString) {
+       // mInputString="LS10::7FFFFFFF";
+        String beforeHexValue="";
+        String mToBeOutput = null;
+        try {
+            int indexOfSemiColon = mInputString.indexOf("::");
+            mToBeOutput = mInputString.substring(indexOfSemiColon + 2, mInputString.length());
+            beforeHexValue = mInputString.substring(0, indexOfSemiColon);
+        }catch (IndexOutOfBoundsException ex){
+            LibreLogger.d(TAG, "Source list parse IndexOutOfBoundsException:-  " + ex.getMessage());
+            mToBeOutput=mInputString;
+        } catch (Exception ex){
+            LibreLogger.d(TAG, "Source list parse Exception:-  " + ex.getMessage());
+        }
+
+        int loopPosition;
+        if (beforeHexValue != null && beforeHexValue.length() > 0 && beforeHexValue.equals("LS10")) {
+            loopPosition = 1;
+        } else {
+            loopPosition = 0;
+        }
+        LibreLogger.d(TAG, "Source list parse hexString " + mToBeOutput +" and loopPosition "+loopPosition);//f7ffffff - Hex Decimal
+
+        String mHexString = mToBeOutput;
         LibreLogger.d(TAG, "getSource hexSrtring to String " + mHexString); //f7ffffff
         Sources mNewSources = new Sources();
         HashMap<String, Boolean> sourceList= new HashMap<>();
@@ -271,13 +292,13 @@ public class ScanningHandler {
         input1 = input1.reverse();
         LibreLogger.d(TAG, "getSource after reverse " + input1); //11111111111111111111111111101111
         LibreLogger.d(TAG, "getSources, hex:" + mHexString + ",for 0:  " + valueBin.charAt(0) + ",for 28:  " + valueBin.charAt(28));//hex:f7ffffff,for 0:  1,for 28:  1
-        for (int position = 0; position < input1.length(); position++) {
+        for (int position = loopPosition; position < input1.length(); position++) {
             boolean mResult = false;
             if (input1.charAt(position) == '1') {
                 mResult = true;
             }
             try {
-                switch (position + 1) {
+                switch (position) {
                     case Constants.AIRPLAY_SOURCE:
                         mNewSources.setAirplay(mResult);
                         sourceList.put("Airplay",mResult);
@@ -290,7 +311,7 @@ public class ScanningHandler {
                         break;
                     case Constants.DMP_SOURCE:
                         mNewSources.setDmp(mResult);
-                        sourceList.put("DMP",mResult);
+                        sourceList.put("Dmp",mResult);
                         mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.SPOTIFY_SOURCE:
@@ -328,14 +349,17 @@ public class ScanningHandler {
                         sourceList.put("Miracast",mResult);
                         mNewSources.setCapitalCities(sourceList);
                         break;
+                    case Constants.PLAY_LIST:
+                        mNewSources.setPlaylist(mResult);
+                        sourceList.put("Playlist",mResult);
+                        mNewSources.setCapitalCities(sourceList);
+                        break;
                     case Constants.DDMSSLAVE_SOURCE:
                         mNewSources.setDDMS_Slave(mResult);
                         sourceList.put("DDMS SLAVE",mResult);
                         mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.AUX_SOURCE:
-//                    case Constants.EXTERNAL_SOURCE:
-                        //DOUBT 13 in the excel sheet
                         mNewSources.setAuxIn(mResult);
                         sourceList.put("AuxIn",mResult);
                         mNewSources.setCapitalCities(sourceList);
@@ -348,6 +372,11 @@ public class ScanningHandler {
                     case Constants.DIRECTURL_SOURCE:
                         mNewSources.setDirect_URL(mResult);
                         sourceList.put("Direct URL",mResult);
+                        mNewSources.setCapitalCities(sourceList);
+                        break;
+                    case Constants.QPLAY:
+                        mNewSources.setQPlay(mResult);
+                        sourceList.put("QPlay",mResult);
                         mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.BT_SOURCE:
@@ -374,18 +403,32 @@ public class ScanningHandler {
                         mNewSources.setGoogleCast(mResult);
                         sourceList.put("Google Cast",mResult);
                         mNewSources.setCapitalCities(sourceList);
-                        LibreLogger.d(TAG,"getSource value cast enabled\n"+mResult);
                         break;
-                    /*case Constants.EXTERNAL_SOURCE:
+                    case Constants.EXTERNAL_SOURCE:
                         mNewSources.setExternalSource(mResult);
-                        break;*/
+                        sourceList.put("External ",mResult);
+                        mNewSources.setCapitalCities(sourceList);
+                        break;
+                    case Constants.RTSP:
+                        mNewSources.setRTSP(mResult);
+                        sourceList.put("RTSP",mResult);
+                        mNewSources.setCapitalCities(sourceList);
+                        break;
+                    case Constants.ROON:
+                        mNewSources.setRoon(mResult);
+                        sourceList.put("Roon",mResult);
+                        mNewSources.setCapitalCities(sourceList);
+                        break;
                     case Constants.ALEXA_SOURCE:
                         LibreLogger.d(TAG, "getSource FOR:-Alexa " + position+ " and position+1 "+(position+1) +" result "+mResult);
                         mNewSources.setAlexaAvsSource(mResult);
                         sourceList.put("Alexa Source",mResult);
                         mNewSources.setCapitalCities(sourceList);
-                        LibreLogger.d(TAG,"getSource value alexasource enabled\n"+mResult);
-
+                        break;
+                    case Constants.AIRABLE:
+                        mNewSources.setAirable(mResult);
+                        sourceList.put("Airable",mResult);
+                        mNewSources.setCapitalCities(sourceList);
                         break;
 
                 }
@@ -458,7 +501,7 @@ public class ScanningHandler {
 
         if (sourceList != null) {
             String[] mSplitUpDeviceCap = sourceList.split("::");
-            lssdpNodes.createDeviceCap(mSplitUpDeviceCap[0], (mSplitUpDeviceCap[1]), getSources(mParseHexFromDeviceCap(sourceList)));
+            lssdpNodes.createDeviceCap(mSplitUpDeviceCap[0], (mSplitUpDeviceCap[1]), getSources(sourceList));
         }
 
         if (wifiband != null) {
@@ -490,7 +533,7 @@ public class ScanningHandler {
 
             if (sourceList != null) {
                 String[] mSplitUpDeviceCap = sourceList.split("::");
-                lssdpNodes.createDeviceCap(mSplitUpDeviceCap[0], (mSplitUpDeviceCap[1]), getSources(mParseHexFromDeviceCap(sourceList)));
+                lssdpNodes.createDeviceCap(mSplitUpDeviceCap[0], (mSplitUpDeviceCap[1]), getSources(sourceList));
             }
 
             if (wifiband != null) {

@@ -3,16 +3,20 @@ package com.cumulations.libreV2.com.cumulations.libreV2.BLE
 import android.Manifest.permission
 import android.app.Activity
 import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothManager
 import android.bluetooth.le.BluetoothLeScanner
 import android.bluetooth.le.ScanCallback
+import android.bluetooth.le.ScanRecord
 import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
 import android.content.Context
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Build.VERSION
 import android.os.Handler
 import android.os.Looper
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import com.cumulations.libreV2.activity.CTBluetoothDeviceListActivity
 import com.libreAlexa.util.LibreLogger
@@ -40,17 +44,6 @@ class ScannerBLE(private val mBLActivity: CTBluetoothDeviceListActivity,
 
     fun start(activity: Activity) {
         scanLeDevice(true)
-        /**
-         * Commented By Shaik becuase before this only we are checking BT enable or not
-         */
-    /*if (!BLEUtils.checkBluetooth(activity)) {
-            mBLActivity.requestUserBluetooth()
-            LibreLogger.d(TAG, "Bt not enabled ")
-            mBLActivity.stopScan()
-        } else {
-            LibreLogger.d(TAG, "Bt not enabled and start Scanning")
-            scanLeDevice(true)
-        }*/
     }
 
     fun stop() {
@@ -120,9 +113,11 @@ class ScannerBLE(private val mBLActivity: CTBluetoothDeviceListActivity,
 
     companion object {
         private val TAG = ScannerBLE::class.java.simpleName
+        private val TAG_BLE = "Mansoor"
     }
 
     private val scanCallback = object : ScanCallback() {
+        @RequiresApi(Build.VERSION_CODES.TIRAMISU)
         override fun onScanResult(callbackType: Int, result: ScanResult) {
             if (VERSION.SDK_INT >= 31) {
                 if (ActivityCompat.checkSelfPermission(mBLActivity, permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
@@ -139,8 +134,22 @@ class ScannerBLE(private val mBLActivity: CTBluetoothDeviceListActivity,
             }
             if (result.device.name != null) {
                 mBLActivity.runOnUiThread {
-                    mBLActivity.addDevice(result.device, result.rssi)
-                    LibreLogger.d(TAG, "Shaik Device Name available ${result.device.name}")
+                    val scanRecord = result.scanRecord
+                    val device: BluetoothDevice = result.device
+                    val deviceName = device.name ?: "Unknown Device"
+                    val rssi = result.rssi
+
+                    // Extract the Shortened Local Name from the advertisement data
+                    val shortenedLocalName = extractShortenedLocalName(scanRecord)
+
+
+                    // Print the Shortened Local Name
+                    if(shortenedLocalName.contains("LSAA")) {
+                        mBLActivity.addDevice(result.device, result.rssi)
+                        LibreLogger.d(TAG_BLE, "Shaik Device Name starts with LSAA $deviceName, " + "RSSI:$rssi, Shortened Local Name: $shortenedLocalName")
+                    }else{
+                        LibreLogger.d(TAG_BLE,"Shaik Device Name:not starts LSAA  $deviceName, " + "RSSI:$rssi, " + "Shortened Local Name: $shortenedLocalName")
+                    }
                 }
             } else {
                 LibreLogger.d(TAG, "Shaik BT device name not available ")
@@ -150,6 +159,46 @@ class ScannerBLE(private val mBLActivity: CTBluetoothDeviceListActivity,
         override fun onScanFailed(errorCode: Int) {
             LibreLogger.d(TAG, "Shaik onScanFailed $errorCode")
         }
+    }
+
+    private fun extractShortenedLocalName(scanRecord: ScanRecord?): String {
+        val adData = scanRecord?.bytes ?: return "No Advertisement Data"
+
+        /**
+         * Length: The length of the data field, including the type byte.
+         * Type: The type of data, specifying what kind of information is present.
+         * Data: The actual data, which can vary in length.
+         */
+
+        // Advertisement data format: Length - Type - Data
+        var index = 0
+
+        //The loop stops when it reaches the end of the data or encounters a length of 0, indicating the end of the advertisement data.
+        while (index < adData.size) {
+            //It extracts the length byte at the current index. The and 0xFF operation is used to ensure that the value is treated as an unsigned byte (8 bits), preventing negative values.
+            val length = adData[index].toInt() and 0xFF
+            if (length == 0) {
+                break
+            }
+            /**
+             *              ---> val type = adData[index + 1].toInt() and 0xFF
+             * It extracts the type byte, which follows the length byte in the advertisement data.
+             *              --->type == 8
+             * It checks if the type is equal to 8, which is typically associated with the Shortened Local Name in BLE advertisement data.
+             *              --->return String(adData.copyOfRange(index + 2, index + 1 + length))
+             * If the type is 8, it means the Shortened Local Name is found. The function returns
+             * the Shortened Local Name by converting the corresponding portion of the
+             * advertisement data to a String. The copyOfRange method is used to create a subarray from index + 2 to index + 1 + length.
+             */
+            val type = adData[index + 1].toInt() and 0xFF
+            if (type == 8 /* Shortened Local Name */) {
+                return String(adData.copyOfRange(index + 2, index + 1 + length))
+            }
+
+            index += length + 1
+        }
+        return "No Shortened Local Name"
+
     }
 
 }

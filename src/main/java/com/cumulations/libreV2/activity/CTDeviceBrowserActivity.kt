@@ -4,27 +4,29 @@ import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
 import android.text.TextUtils
 import android.util.Log
-import android.view.MotionEvent
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
-import android.widget.FrameLayout
-import android.widget.LinearLayout
 import android.widget.Toast
+import android.window.OnBackInvokedDispatcher
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cumulations.libreV2.AppUtils
 import com.cumulations.libreV2.adapter.CTDeviceBrowserListAdapter
 import com.cumulations.libreV2.closeKeyboard
 import com.cumulations.libreV2.model.DataItem
+import com.cumulations.libreV2.model.SceneObject
 import com.libreAlexa.LErrorHandeling.LibreError
 import com.libreAlexa.LibreApplication
+import com.libreAlexa.LibreApplication.isUSBBackPressed
 import com.libreAlexa.R
 import com.libreAlexa.Scanning.ScanningHandler
 import com.libreAlexa.constants.Constants
@@ -34,9 +36,11 @@ import com.libreAlexa.constants.LUCIMESSAGES
 import com.libreAlexa.constants.LUCIMESSAGES.BACK
 import com.libreAlexa.constants.MIDCONST
 import com.libreAlexa.databinding.CtActivityDeviceBrowserBinding
+import com.libreAlexa.luci.LSSDPNodeDB
 import com.libreAlexa.luci.LSSDPNodes
 import com.libreAlexa.luci.LUCIControl
 import com.libreAlexa.luci.LUCIPacket
+import com.libreAlexa.netty.BusProvider
 import com.libreAlexa.netty.LibreDeviceInteractionListner
 import com.libreAlexa.netty.NettyData
 import com.libreAlexa.util.LibreLogger
@@ -81,7 +85,8 @@ class CTDeviceBrowserActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteract
     private var presentJsonHashCode: Int = 0
     //searchOptionClicked is true when user clicks on search option. And then we calculate hash code for search JSON result
     private var searchOptionClicked = false
-    private var TAG = CTDeviceBrowserActivity::class.java.simpleName
+    private val mScanHandler = ScanningHandler.getInstance()
+    private var TAG = "==CTDeviceBrowserActivity=="
     @SuppressLint("HandlerLeak")
     internal var handler: Handler = object : Handler(Looper.getMainLooper()) {
         override fun handleMessage(msg: Message) {
@@ -104,11 +109,27 @@ class CTDeviceBrowserActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteract
         super.onCreate(savedInstanceState)
         binding = CtActivityDeviceBrowserBinding.inflate(layoutInflater)
         setContentView(binding.root)
-      //  setContentView(R.layout.ct_activity_device_browser)
 
         currentIpaddress = intent.getStringExtra(Constants.CURRENT_DEVICE_IP)
         current_source_index_selected = intent.getIntExtra(Constants.CURRENT_SOURCE_INDEX_SELECTED, -1)
         setTitleForTheBrowser(current_source_index_selected)
+
+        binding.layData.visibility=View.INVISIBLE
+        binding.layShimmer.startShimmer()
+
+        if (Build.VERSION.SDK_INT >= 33) {
+            //Android 13 and Above
+            onBackInvokedDispatcher.registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT) {
+                exitOnBackPressed()
+            }
+        } else {
+            //Android 12 and below
+            onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    exitOnBackPressed()
+                }
+            })
+        }
 
         if (current_source_index_selected < 0) {
             showToast(R.string.sourceIndexWrong)
@@ -124,7 +145,8 @@ class CTDeviceBrowserActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteract
 
         luciControl = LUCIControl(currentIpaddress)
         luciControl!!.SendCommand(MIDCONST.MID_REMOTE_UI.toInt(), LUCIMESSAGES.SELECT_ITEM + ":" + current_source_index_selected, LSSDPCONST.LUCI_SET)
-
+        luciControl!!.SendCommand(MIDCONST.MID_CURRENT_SOURCE.toInt(), null, LSSDPCONST.LUCI_GET)
+        luciControl!!.SendCommand(MIDCONST.MID_CURRENT_PLAY_STATE.toInt(), null, LSSDPCONST.LUCI_GET)
         showLoader(R.string.loading_next_items)
         LibreLogger.d(TAG,"ItemCLick showloader9")
 
@@ -140,8 +162,10 @@ class CTDeviceBrowserActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteract
         deviceBrowserListAdapter = CTDeviceBrowserListAdapter(this, dataItems)
         binding.rvDeviceBrowser.layoutManager = mLayoutManager
         binding.rvDeviceBrowser.adapter = deviceBrowserListAdapter
-
-        binding.rvDeviceBrowser.setOnTouchListener(object : View.OnTouchListener {
+        /**
+         * Commented, discuss with Suma
+         */
+        /*binding.rvDeviceBrowser.setOnTouchListener(object : View.OnTouchListener {
             var beginY = 0f
             var endY = 0f
 
@@ -168,38 +192,94 @@ class CTDeviceBrowserActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteract
 
                 return false
             }
-        })
+        })*/
 
 
         ///////////////////////////////////////////////////////////////// limit end //////////////////////////////
 
-        binding.ibBack.setOnClickListener { onBackPressed() }
+        binding.ibBack.setOnClickListener {
+           exitOnBackPressed()
+        }
 
-        binding.ibHome.setOnClickListener(object : View.OnClickListener {
+        binding.ibHome.setOnClickListener {
+            LibreLogger.d(TAG, "user pressed home button ")
+            unRegisterForDeviceEvents()
+            //   luciControl.SendCommand(MIDCONST.MID_REMOTE_UI, GET_HOME, LSSDPCONST.LUCI_SET);
 
-            override fun onClick(v: View) {
+            val intent = Intent(this@CTDeviceBrowserActivity, CTMediaSourcesActivity::class.java)
+            intent.putExtra(Constants.CURRENT_DEVICE_IP, currentIpaddress)
+            val currentSceneObject = ScanningHandler.getInstance().getSceneObjectFromCentralRepo(currentIpaddress)
+            intent.putExtra(Constants.CURRENT_SOURCE, "" + currentSceneObject?.currentSource)
+            startActivity(intent)
+            finish()
+        }
+        val musicSceneObject = ScanningHandler.getInstance().getSceneObjectFromCentralRepo(currentIpaddress)
+        val mNodeWeGotForControl = LSSDPNodeDB.getInstance().getTheNodeBasedOnTheIpAddress(currentIpaddress)
+        binding.idMusicWidget.ivPlayPause.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(view: View) {
+                if (musicSceneObject.currentSource == Constants.AUX_SOURCE
+                    /*|| musicSceneObject?.currentSource == EXTERNAL_SOURCE*/
+                    || musicSceneObject.currentSource == Constants.VTUNER_SOURCE
+                    || musicSceneObject.currentSource == Constants.TUNEIN_SOURCE
+                    /*|| musicSceneObject.currentSource == BT_SOURCE*/
+                    && ((mNodeWeGotForControl?.getgCastVerision() == null
+                            && (mNodeWeGotForControl?.bT_CONTROLLER == SceneObject.CURRENTLY_NOTPLAYING
+                            || mNodeWeGotForControl?.bT_CONTROLLER == SceneObject.CURRENTLY_PLAYING))
+                            || (mNodeWeGotForControl.getgCastVerision() != null
+                            && mNodeWeGotForControl.bT_CONTROLLER < SceneObject.CURRENTLY_PAUSED))) {
+                    val error = LibreError("", resources.getString(R.string.PLAY_PAUSE_NOT_ALLOWED), 1)
+                    BusProvider.getInstance().post(error)
+                    return
 
-                LibreLogger.d(TAG,"user pressed home button ")
-                unRegisterForDeviceEvents()
-                //   luciControl.SendCommand(MIDCONST.MID_REMOTE_UI, GET_HOME, LSSDPCONST.LUCI_SET);
+                }
+                if (musicSceneObject.currentSource == Constants.NO_SOURCE || (musicSceneObject.currentSource == Constants.DMR_SOURCE && (musicSceneObject.playstatus == SceneObject.CURRENTLY_STOPPED || musicSceneObject.playstatus == SceneObject.CURRENTLY_NOTPLAYING))) {
+                    LibreLogger.d(TAG, "currently not playing, so take user to sources option activity")
+                    gotoSourcesOption(musicSceneObject.ipAddress, musicSceneObject.currentSource)
+                    return
+                }
 
-                val intent = Intent(this@CTDeviceBrowserActivity, CTMediaSourcesActivity::class.java)
-                intent.putExtra(Constants.CURRENT_DEVICE_IP, currentIpaddress)
-                val currentSceneObject = ScanningHandler.getInstance().getSceneObjectFromCentralRepo(currentIpaddress)
-                intent.putExtra(Constants.CURRENT_SOURCE, "" + currentSceneObject?.currentSource)
-                startActivity(intent)
-                finish()
+                if (musicSceneObject.playstatus == SceneObject.CURRENTLY_PLAYING) {
+                    LUCIControl.SendCommandWithIp(MIDCONST.MID_PLAYCONTROL.toInt(), LUCIMESSAGES.PAUSE, LSSDPCONST.LUCI_SET, musicSceneObject.ipAddress)
+                } else {
+                    if (musicSceneObject.currentSource == Constants.BT_SOURCE) {
+                        LUCIControl.SendCommandWithIp(MIDCONST.MID_PLAYCONTROL.toInt(), LUCIMESSAGES.PLAY, LSSDPCONST.LUCI_SET, musicSceneObject.ipAddress)
+                    } else {
+                        LUCIControl.SendCommandWithIp(MIDCONST.MID_PLAYCONTROL.toInt(), LUCIMESSAGES.RESUME, LSSDPCONST.LUCI_SET, musicSceneObject.ipAddress)
+                    }
+                }
             }
         })
+
+        binding.idMusicWidget.flMusicPlayWidget.setOnClickListener {
+            if (binding.idMusicWidget.tvTrackName.text?.toString()?.contains(getString(R.string.app_name))!! || binding.idMusicWidget.tvTrackName.text?.toString()?.contains(getString(R.string.login_to_enable_cmds))!! || binding.idMusicWidget.ivPlayPause.visibility == View.GONE) {
+                return@setOnClickListener
+            }
+
+            if (!musicSceneObject.trackName.isNullOrEmpty() || !musicSceneObject.album_art.isNullOrEmpty() || musicSceneObject.playstatus == SceneObject.CURRENTLY_PLAYING ) {
+                    isUSBBackPressed=true
+                    startActivity(Intent(this, CTNowPlayingActivity::class.java).apply {
+                    putExtra(Constants.CURRENT_DEVICE_IP, currentIpaddress)
+                })
+            }
+        }
     }
 
+    private fun gotoSourcesOption(ipaddress: String, currentSource: Int) {
+        val mActiveScenesList = Intent(this, CTMediaSourcesActivity::class.java)
+        mActiveScenesList.putExtra(Constants.CURRENT_DEVICE_IP, ipaddress)
+        mActiveScenesList.putExtra(Constants.CURRENT_SOURCE, "" + currentSource)
+        val error = LibreError("", resources.getString(R.string.no_active_playlist), 1)
+        BusProvider.getInstance().post(error)
+        startActivity(mActiveScenesList)
+    }
     override fun onStart() {
         super.onStart()
         if (isSongSelected){
             deviceBrowserListAdapter?.dataItemList?.clear()
             deviceBrowserListAdapter?.notifyDataSetChanged()
             isSongSelected = false
-            onBackPressed()
+           // onBackPressed()
+            exitOnBackPressed()
         }
     }
 
@@ -207,8 +287,9 @@ class CTDeviceBrowserActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteract
         super.onResume()
         /*Registering to receive messages*/
         registerForDeviceEvents(this)
-        val musicPlayerView = findViewById<LinearLayout>(R.id.fl_music_play_widget)
-        setMusicPlayerWidget(musicPlayerView, currentIpaddress!!)
+
+       /* val musicPlayerView = findViewById<LinearLayout>(R.id.fl_music_play_widget)
+        setMusicPlayerWidget(musicPlayerView, currentIpaddress!!)*/
     }
 
     private fun sendScrollUp() {
@@ -332,6 +413,7 @@ class CTDeviceBrowserActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteract
         val ipaddressRecieved = dataRecived.getRemotedeviceIp()
 
         LibreLogger.d(TAG,"Message recieved for ipaddress $ipaddressRecieved")
+        val sceneObject = mScanHandler.getSceneObjectFromCentralRepo(ipaddressRecieved)
 
         if (currentIpaddress!!.equals(ipaddressRecieved, ignoreCase = true)) {
             val packet = LUCIPacket(dataRecived.getMessage())
@@ -339,45 +421,68 @@ class CTDeviceBrowserActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteract
 
                 MIDCONST.SET_UI -> {
                     val message = String(packet.getpayload())
-                    LibreLogger.d(TAG," message 42 recieved  $message")
+                    LibreLogger.d(TAG, " message 42 recieved  $message")
 
-//                    try {
-//                        presentJsonHashCode = message.hashCode()
-//                        LibreLogger.d(TAG, " present hash code : the hash code for $message is$presentJsonHashCode")
-//                        parseJsonAndReflectInUI(message)
-//
-//                        if(LibreApplication.isUSBSrc==true){
-//                            parseJsonAndReflectInUIUSB(message)
-//                        }
-//                        else{
-//                            parseJsonAndReflectInUI(message)
-//                        }
-//
-//                    } catch (e: JSONException) {
-//                        e.printStackTrace()
-//                        LibreLogger.d(TAG," Json exception ")
-//                        closeLoader()
-//                    }
                     try {
                         presentJsonHashCode = message.hashCode()
-                        LibreLogger.d(
-                            TAG,
-                            " present hash code : the hash code for $message is $presentJsonHashCode"
-                        )
-                        if(LibreApplication.isUSBSrc==true){
+                        LibreLogger.d(TAG, " present hash code : the hash code for $message is $presentJsonHashCode")
+
+                        LibreLogger.d(TAG,"==trackName==  ${sceneObject.trackName}")
+                        setCurrentAlbumArt(sceneObject, binding.idMusicWidget.ivAlbumArt)
+                        setCurrentTrackName(sceneObject, binding.idMusicWidget.tvTrackName)
+                        setCurrentAlbumArtistName(sceneObject, binding.idMusicWidget.tvAlbumName)
+                        if (LibreApplication.isUSBSrc == true) {
                             parseJsonAndReflectInUIUSB(message)
-                        }
-                        else{
+                            /*binding.idMusicWidget.tvTrackName.text = getText(R.string.title_libre_caps)*/
+                        } else {
                             parseJsonAndReflectInUI(message)
                         }
-
+                        binding.layShimmer.stopShimmer()
+                        binding.layData.visibility = View.VISIBLE
                     } catch (e: JSONException) {
+                        binding.layShimmer.stopShimmer()
+                        binding.layData.visibility = View.VISIBLE
                         e.printStackTrace()
                         LibreLogger.d(TAG, " Json exception ")
                         closeLoader()
                     }
 
                 }
+                MIDCONST.MID_CURRENT_PLAY_STATE.toInt() -> {
+                    val message = String(packet.getpayload())
+                    LibreLogger.d(TAG,"==trackName== message 51 recieved  $message")
+                    setCurrentPlayPauseIcon(sceneObject, binding.idMusicWidget.ivPlayPause,binding.layData,binding.layShimmer)
+                }
+                MIDCONST.MID_CURRENT_SOURCE.toInt() -> {
+                    val message = String(packet.getpayload())
+
+                    setCurrentSourceIcon(sceneObject, binding.idMusicWidget.ivCurrentSource)
+                    /**
+                     * If no source setting the default text and album art
+                     */
+                    handleAlexaViews(sceneObject,13,binding.idMusicWidget)
+                    LibreLogger.d(TAG,"==trackName== message 50 recieved  $message")
+                }
+                MIDCONST.MID_PLAYTIME.toInt() -> {
+                    val msg=String(packet.getpayload())
+                    LibreLogger.d(TAG, "current duration of song $msg")
+                    try {
+                        if(msg.isNotEmpty()) {
+                            val longDuration = java.lang.Long.parseLong(msg)
+                            sceneObject.currentPlaybackSeekPosition = longDuration.toFloat()
+                            ScanningHandler.getInstance().putSceneObjectToCentralRepo(dataRecived.getRemotedeviceIp(), sceneObject)
+                            /**
+                             * The below function will take care for setting the playback seek
+                             * position
+                             */
+                            setCurrentPlaybackSeekPosition(sceneObject,binding.idMusicWidget.seekBarSong)
+                        }
+                    } catch (ex: Exception) {
+                        LibreLogger.d(TAG, "current duration Exception ${ex.message}")
+                        ex.printStackTrace()
+                    }
+                }
+
                 MIDCONST.MID_DEVICE_ALERT_STATUS.toInt() -> {
                     val message = String(packet.getpayload())
                     LibreLogger.d(TAG," message 54 recieved  $message")
@@ -436,14 +541,14 @@ class CTDeviceBrowserActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteract
 
                     val mScanHandler = ScanningHandler.getInstance()
                     var currentSceneObject = mScanHandler.getSceneObjectFromCentralRepo(currentIpaddress)
-                    currentSceneObject = AppUtils.updateSceneObjectWithPlayJsonWindow(window,
-                        currentSceneObject!!)
+                    currentSceneObject = AppUtils.updateSceneObjectWithPlayJsonWindow(window, currentSceneObject!!)
 
                     if (mScanHandler!!.isIpAvailableInCentralSceneRepo(currentIpaddress)) {
                         mScanHandler.putSceneObjectToCentralRepo(currentIpaddress, currentSceneObject)
                     }
 
                     //Intent intent = new Intent(RemoteSourcesList.this, ActiveScenesListActivity.class);
+                    LibreLogger.d("==BACK==","parseJsonAndReflectInUI 3")
                     val intent = Intent(this@CTDeviceBrowserActivity, CTNowPlayingActivity::class.java)
                     intent.putExtra(Constants.CURRENT_DEVICE_IP, currentIpaddress)
                     startActivity(intent)
@@ -554,11 +659,7 @@ class CTDeviceBrowserActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteract
         Log.v("LuciMessageSent", "Send Data :" + str)
         val devicIp = intent.getStringExtra(Constants.CURRENT_DEVICE_IP)
         //currentSourceIndexSelected = 3
-        LUCIControl(devicIp).SendCommand(
-            MIDCONST.MID_REMOTE_UI.toInt(),
-            str,
-            LSSDPCONST.LUCI_SET
-        )
+        LUCIControl(devicIp).SendCommand(MIDCONST.MID_REMOTE_UI.toInt(), str, LSSDPCONST.LUCI_SET)
         //showLoader()
     }
     private fun showNextPreviousButtons(window: JSONObject) {
@@ -670,11 +771,11 @@ class CTDeviceBrowserActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteract
                     LibreLogger.d(TAG,"suma in get the cnd id 3 value\n"+currentSceneObject.currentSource)
 
                     if (mScanHandler!!.isIpAvailableInCentralSceneRepo(currentIpaddress)) {
-                        mScanHandler!!.putSceneObjectToCentralRepo(currentIpaddress, currentSceneObject)
+                        mScanHandler.putSceneObjectToCentralRepo(currentIpaddress, currentSceneObject)
                     }
 
                     //Intent intent = new Intent(RemoteSourcesList.this, ActiveScenesListActivity.class);
-                    Log.i(CTDeviceBrowserActivity::class.simpleName, "Trigger  ")
+                    LibreLogger.d("==BACK==","parseJsonAndReflectInUIUSB 3")
                     val intent = Intent(this@CTDeviceBrowserActivity, CTNowPlayingActivity::class.java)
                     intent.putExtra(Constants.CURRENT_DEVICE_IP, currentIpaddress)
                     startActivity(intent)
@@ -808,11 +909,12 @@ class CTDeviceBrowserActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteract
         unRegisterForDeviceEvents()
     }
 
-    override fun onBackPressed() {
+     fun exitOnBackPressed() {
         /* Sends the back command issues*/
-        showLoader(R.string.loading_prev_items)
+        //showLoader(R.string.loading_prev_items)
         luciControl!!.SendCommand(MIDCONST.MID_REMOTE_UI.toInt(), BACK, LSSDPCONST.LUCI_SET)
 
+        // finish()
         //////////// timeout for dialog - showLoader() ///////////////////
         if (current_source_index_selected == 0) {
             /*increasing timeout for media servers only*/

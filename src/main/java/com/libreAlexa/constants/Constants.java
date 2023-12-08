@@ -181,20 +181,25 @@ public class Constants {
     public static final int VTUNER_SOURCE = 8;
     public static final int TUNEIN_SOURCE = 9;
     public static final int MIRACAST_SOURCE = 10;
+    public static final int PLAY_LIST = 11;
     public static final int DDMSSLAVE_SOURCE = 12;
     public static final int AUX_SOURCE = 14;
     public static final int APPLEDEVICE_SOURCE = 16;
     public static final int DIRECTURL_SOURCE = 17;
+    public static final int QPLAY = 18;
     public static final int BT_SOURCE = 19;
     public static final int DEEZER_SOURCE = 21;
     public static final int TIDAL_SOURCE = 22;
     public static final int FAVOURITES_SOURCE = 23;
     public static final int GCAST_SOURCE = 24;
     public static final int EXTERNAL_SOURCE = 25;
+    public static final int RTSP = 26;
+    public static final int ROON = 27;
     public static final int ALEXA_SOURCE = 28;
-    public static final int QPLAY_SOURCE = 18;
     public static final int OPTICAL_SOURCE = 29;
     public static final int TUNNELING_WIFI_SOURCE = 30;
+    //Added from the Excel sheet
+    public static final int AIRABLE = 30;
 
     public static final String ERROR_FAIL = FAIL_ALERT_TEXT;
     public static final String ERROR_NOURL = NO_URL_ALERT_TEXT;
