@@ -132,16 +132,16 @@ public class BluetoothLeService extends Service {
                         final BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(mBluetoothDeviceAddress);
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                             mBluetoothGatt = device.connectGatt(getApplicationContext(), true, mGattCallback, BluetoothDevice.TRANSPORT_LE);
-                            LibreLogger.d(TAG, "suma in disconnection inside if");
+                            LibreLogger.d(TAG, "Disconnected inside if");
 
                         }
 
                         fireOnBLEDisConnectionSuccess(status);
                         close();
-                        LibreLogger.d(TAG, "suma in disconnection outside");
+                        LibreLogger.d(TAG, "Disconnected outside");
 
                     } else {
-                        LibreLogger.d(TAG, "suma in disconnection outside else reached 5 attempts");
+                        LibreLogger.d(TAG, "Disconnected outside else reached 5 attempts");
                         //  broadcastUpdate(intentAction);
                         fireOnBLEDisConnectionSuccess(status);
                     }

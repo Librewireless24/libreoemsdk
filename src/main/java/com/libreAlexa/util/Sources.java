@@ -16,17 +16,22 @@ public class Sources {
     boolean vTuner;
     boolean TuneIn;
     boolean Miracast;
+    boolean Playlist;
     boolean DDMS_Slave;
     boolean AuxIn;
     boolean AppleDevice;
     boolean Direct_URL;
+    boolean QPlay;
     boolean Bluetooth;
     boolean Deezer;
     boolean Tidal;
     boolean Favourites;
     boolean GoogleCast;
     boolean ExternalSource;
+    boolean RTSP;
+    boolean Roon;
     boolean AlexaAvsSource;
+    boolean Airable;
     HashMap<String, Boolean> capitalCities = new HashMap<String, Boolean>();
 
     public HashMap<String, Boolean> getCapitalCities() {
@@ -49,17 +54,22 @@ public class Sources {
                 "VTuner :" + vTuner + "\t " +
                 "TuneIn :" + TuneIn + "\t " +
                 "Miracast :" + Miracast + "\t " +
+                "Playlist :" + Playlist + "\t " +
                 "DDMS_SLAVE :" + DDMS_Slave + "\t " +
                 "AuxIn :" + AuxIn + "\t " +
                 "AppleDevice :" + AppleDevice + "\t " +
                 "Direct_URL :" + Direct_URL + "\t " +
+                "QPlay :" + QPlay + "\t " +
                 "BT :" + Bluetooth + "\t " +
                 "Deezer :" + Deezer + "\t " +
                 "Tial :" + Tidal + "\t " +
                 "Fav :" + Favourites + "\t " +
                 "Gcast :" + GoogleCast + "\t " +
                 "ExternalSource :" + ExternalSource + "\t " +
-                "AlexaAvsSource :" + AlexaAvsSource + "\t ";
+                "RTSP :" + RTSP + "\t " +
+                "Roon :" + Roon + "\t " +
+                "AlexaAvsSource :" + AlexaAvsSource + "\t "+
+                "Airable :" + Airable + "\t ";
 
     }
 
@@ -229,6 +239,46 @@ public class Sources {
 
     public void setAlexaAvsSource(boolean alexaAvsSource) {
         AlexaAvsSource = alexaAvsSource;
+    }
+
+    public boolean isPlaylist() {
+        return Playlist;
+    }
+
+    public void setPlaylist(boolean playlist) {
+        Playlist = playlist;
+    }
+
+    public boolean isQPlay() {
+        return QPlay;
+    }
+
+    public void setQPlay(boolean QPlay) {
+        this.QPlay = QPlay;
+    }
+
+    public boolean isRTSP() {
+        return RTSP;
+    }
+
+    public void setRTSP(boolean RTSP) {
+        this.RTSP = RTSP;
+    }
+
+    public boolean isRoon() {
+        return Roon;
+    }
+
+    public void setRoon(boolean roon) {
+        Roon = roon;
+    }
+
+    public boolean isAirable() {
+        return Airable;
+    }
+
+    public void setAirable(boolean airable) {
+        Airable = airable;
     }
 
     public Sources() {

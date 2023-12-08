@@ -360,7 +360,7 @@ class CTActiveDevicesFragment:Fragment(),LibreDeviceInteractionListner,Tunneling
 
                         LibreApplication.currentAlbumnName = sceneObject.album_name
                         LibreApplication.currentArtistName = sceneObject.artist_name
-                        LibreApplication.currentAlbumArtView = sceneObject.album_art
+                        LibreApplication.AlbumArtURL = sceneObject.album_art
                         LibreApplication.currentTrackName =  sceneObject.trackName
                         /* this is done to avoid  image refresh everytime the 42 message is recieved and the song playing back is the same */
                         LibreLogger.d(TAG, "Invalidating the scene name for  = " + sceneObject.ipAddress + "/" + "coverart.jpg")

@@ -1,6 +1,7 @@
 <resources>
-  <string name="app_name">LibreVoice</string>
-  <string name="title_activity_welcome">LibreVoice</string>
+  <string name="app_name">Libre</string>
+  <string name="title_activity_welcome">Libre</string>
+  <string name="title_libre_caps">LIBRE</string>
   <string name="hello_world">Hello world!</string>
   <string name="action_settings">Settings</string>
   <string name="play_music">Play music from…</string>
@@ -138,6 +139,7 @@
   <string name="spainLang">Spain</string>
   <string name="alexaText">amazon alexa</string>
   <string name="somethingWentWrong">Something went wrong , please try again later.</string>
+  <string name="somethingWentWrong_tryAgain">Something went wrong, please try again</string>
 
 
   <string name="enableRecordPermit">Permission to record audio is required to instruct Alexa, please goto app settings and enable
@@ -199,7 +201,7 @@
   <string name="connected_speakers">Connected Speakers</string>
   <string name="speaker_ready_cmds">Speaker is ready for commands</string>
   <string name="logout">Logout</string>
-  <string name="libre_voice">LibreVoice</string>
+  <string name="libre_voice">Libre</string>
   <string name="login_to_enable_cmds">Login to enable voice commands</string>
   <string name="speaker_ready_for_cmds">Speaker is ready for commands</string>
   <string name="speaker_ready_for_use">Speaker is ready to use</string>
@@ -292,7 +294,7 @@
   <string name="did_u_hear_sound">Did you hear the sound ?</string>
   <string name="yes">Yes</string>
   <string name="retry_hearsound">Retry</string>
-  <string name="setup_name">LibreVoice</string>
+  <string name="setup_name">Libre</string>
   <string name="notification_content_text">Speaker playing locally</string>
 
   <string name="localDmsNotReady">Oops! Local server not ready</string>
@@ -381,25 +383,31 @@ By clicking Confirm, Device will be removed and you will be redirected to Home. 
   <string name="v_tuner">VTuner</string>
   <string name="tune_in">TuneIn</string>
   <string name="miracast">Miracast</string>
+  <string name="playlist">Playlist</string>
   <string name="ddms_salve">DDMS SLAVE</string>
   <string name="aux_in">AuxIn</string>
   <string name="apple_device">AppleDevice</string>
   <string name="direct_url">Direct URL</string>
+  <string name="q_play">QPlay</string>
   <string name="bluetooth">Bluetooth</string>
   <string name="deezer">Deezer</string>
   <string name="tidal">Tidal</string>
   <string name="favourites">Favourites</string>
   <string name="google_cast">Google Cast</string>
-  <string name="external_source">External Source</string>
+  <string name="external_source">External</string>
+  <string name="rtsp">RTSP</string>
+  <string name="roon">Roon</string>
+  <string name="alexa_source">Alexa Source</string>
+  <string name="airable">Airable</string>
   <string name="devices_are_available">"&#x20;"Devices are available to setup</string>
   <string name="device_are_available">"&#x20;"Device are available to setup</string>
-  <string name="alexa_source">Alexa Source</string>
   <string name="permission_required">Permission required</string>
   <string name="permission_connect">Bluetooth scan and connect permissions are required to scan and connect to Bluetooth devices</string>
   <string name="permission_denied">Permission Denied</string>
   <string name="open_settings">Open Settings</string>
   <string name="save">Save</string>
   <string name="trackname_not_available">TrackName Not Available</string>
+  <string name="aux_playing">Aux Playing</string>
   <string name="albumname_not_available">AlbumName Not Available</string>
   <string name="issues">Issues</string>
   <string name="report_issues">Report Issues</string>
@@ -417,6 +425,9 @@ By clicking Confirm, Device will be removed and you will be redirected to Home. 
 
 
   <string name="hello_blank_fragment">Hello blank fragment</string>
+  <string name="back_button_description">Back\n</string>
+  <string name="settings_button_description">Settings\n</string>
+  <string name="device_connection_los">Device Connection Lost</string>
   <string-array name="audio_output_array">
     <item>Stereo (S)</item>
     <item>Left Speaker (L)</item>

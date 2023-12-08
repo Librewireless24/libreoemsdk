@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
 import android.os.IBinder;
-import android.util.Log;
 import android.widget.Toast;
 import androidx.core.content.ContextCompat;
 import com.cumulations.libreV2.AppUtils;
@@ -21,7 +20,6 @@ import com.libreAlexa.DMRPlayerService;
 import com.libreAlexa.LibreApplication;
 import com.libreAlexa.Ls9Sac.FwUpgradeData;
 import com.libreAlexa.Scanning.ScanningHandler;
-import com.libreAlexa.alexa.AudioRecordUtil;
 import com.libreAlexa.app.dlna.dmc.server.MusicServer;
 import com.libreAlexa.app.dlna.dmc.utility.PlaybackHelper;
 import com.libreAlexa.app.dlna.dmc.utility.UpnpDeviceManager;
@@ -245,7 +243,7 @@ public class CoreUpnpService extends AndroidUpnpServiceImpl implements LibreDevi
             createOrUpdateTunnelingClients(nodes);
 
             if (nodes == null || nodes.getDeviceState() == null) {
-                Toast.makeText(CoreUpnpService.this, "Alert! Device State is null " + nodes.getDeviceState(), Toast.LENGTH_SHORT).show();
+               /* Toast.makeText(CoreUpnpService.this, "Alert! Device State is null " + nodes.getDeviceState(), Toast.LENGTH_SHORT).show();*/
             } else if (nodes.getDeviceState() != null) {
                 FwUpgradeData mGCastData = LibreApplication.FW_UPDATE_AVAILABLE_LIST.get(nodes.getIP());
                 if (mGCastData != null) {
@@ -423,7 +421,7 @@ public class CoreUpnpService extends AndroidUpnpServiceImpl implements LibreDevi
 
                         LibreApplication.currentAlbumnName =mSceneObj.getAlbum_name();
                         LibreApplication. currentArtistName=mSceneObj.getArtist_name();
-                        LibreApplication.currentAlbumArtView=mSceneObj.getAlbum_art();
+                        LibreApplication.AlbumArtURL =mSceneObj.getAlbum_art();
                         LibreApplication.currentTrackName=mSceneObj.getTrackName();
 
                     }

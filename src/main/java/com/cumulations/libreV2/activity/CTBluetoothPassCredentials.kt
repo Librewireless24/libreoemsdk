@@ -65,6 +65,7 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
     private var btCharacteristic: BluetoothGattCharacteristic? = null
     private var taskJob: Job? = null
     private var scanListLength: Int? = null
+    private var isDisconnectionHandled = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -316,6 +317,7 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
         scanListMap.clear()
         try {
             val mainObj = JSONObject(scanList!!)
+            LibreLogger.d(TAG_SCAN, "populateScanListMap scanList " + scanList)
             val scanListArray = mainObj.getJSONArray("Items")
             for (i in 0 until scanListArray.length()) {
                 val obj = scanListArray[i] as JSONObject
@@ -358,6 +360,13 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
     }
 
     override fun onDisconnectionSuccess(status: Int) {
+        if (!isDisconnectionHandled) {
+            isDisconnectionHandled = true
+
+            runOnUiThread {
+                showAlertDialog(getString(R.string.somethingWentWrong_tryAgain), getString(R.string.ok), 0, true)
+            }
+        }
 
     }
 
@@ -610,15 +619,19 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
     }
 
     private fun getPWDWithDeviceSSID(deviceSsid: String): String? {
-        for (i in savePwdList.indices) {
-            if (savePwdList[i].deviceSSID == deviceSsid) {
-                passphrase = savePwdList[i].password
-                break
-            } else {
-                passphrase = ""
+        return if (::savePwdList.isInitialized) {
+            for (i in savePwdList.indices) {
+                if (savePwdList[i].deviceSSID == deviceSsid) {
+                    passphrase = savePwdList[i].password
+                    break
+                } else {
+                    passphrase = ""
+                }
             }
+            passphrase
+        }else {
+            passphrase
         }
-        return passphrase
     }
 
     private fun getAllSSIDWithPWD() {

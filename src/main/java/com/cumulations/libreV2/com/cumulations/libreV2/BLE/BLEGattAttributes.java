@@ -24,8 +24,13 @@ import java.util.UUID;
 public class BLEGattAttributes {
     //Shaik Increased the MTU size
     public static final int MTU_SIZE = 517;
-    public static UUID RIVA_BLE_SERVICE = convertFromInteger(0xAAAA); //UUID.fromString("0000aaaa-0000-1000-8000-00805f9b34fb");
-    public static UUID RIVA_BLE_CHARACTERISTICS = convertFromInteger(0x1111); //UUID.fromString("00001111-0000-1000-8000-00805f9b34fb");
+    //public static UUID RIVA_BLE_SERVICE = convertFromInteger(0xAAAA);
+   public static UUID RIVA_BLE_SERVICE = UUID.fromString("b8313268-90dc-5a30-bfb1-a814e7c6dbba");
+   //UUID.fromString("0000aaaa-0000-1000-8000-00805f9b34fb");
+
+    public static UUID RIVA_BLE_CHARACTERISTICS = UUID.fromString("04b5d61d-7d20-5122-ae91-fdc306471497");
+    //public static UUID RIVA_BLE_CHARACTERISTICS = convertFromInteger(0x1111);
+    //UUID.fromString("00001111-0000-1000-8000-00805f9b34fb");
     public static UUID RIVA_BLE_DESCRIPTOR = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
     public static UUID convertFromInteger(int i) {
         final long MSB = 0x0000000000001000L;

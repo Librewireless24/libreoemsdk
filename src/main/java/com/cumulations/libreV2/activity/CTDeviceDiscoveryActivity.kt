@@ -32,6 +32,8 @@ import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.cumulations.libreV2.*
 import com.cumulations.libreV2.AppUtils.providesSharedPreference
 import com.cumulations.libreV2.AppUtils.setPlayPauseLoader
@@ -49,6 +51,7 @@ import com.cumulations.libreV2.roomdatabase.LibreVoiceDatabase
 import com.cumulations.libreV2.tcp_tunneling.TCPTunnelPacket
 import com.cumulations.libreV2.tcp_tunneling.TunnelingControl
 import com.cumulations.libreV2.tcp_tunneling.TunnelingData
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.LocationRequest
@@ -85,6 +88,7 @@ import com.libreAlexa.constants.LSSDPCONST
 import com.libreAlexa.constants.LUCIMESSAGES
 import com.libreAlexa.constants.MIDCONST
 import com.libreAlexa.constants.MIDCONST.MID_BLUETOOTH_STATUS
+import com.libreAlexa.databinding.MusicPlayingWidgetBinding
 import com.libreAlexa.luci.*
 import com.libreAlexa.netty.BusProvider
 import com.libreAlexa.netty.LibreDeviceInteractionListner
@@ -152,6 +156,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
     private var albumNameView: AppCompatTextView? = null
     private var listeningView: AppCompatTextView? = null
     private var playinLayout: LinearLayout? = null
+    private var shimmerView: ShimmerFrameLayout? = null
     private var currentTrackName = "-1"
     private var audioRecordUtil: AudioRecordUtil? = null
     private var micTcpServer: MicTcpServer? = null
@@ -436,7 +441,8 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                 AppUtils.requestPermission(this, Manifest.permission.ACCESS_FINE_LOCATION, LOCATION_PERMISSION_REQUEST_CODE)
             } else {
                 // showAlertForLocationPermissionRequired()
-                showAlertDialog(getString(R.string.enableLocationPermit), getString(R.string.action_settings),  LOCATION_PERM_SETTINGS_REQUEST_CODE)
+                showAlertDialog(getString(R.string.enableLocationPermit), getString(R.string
+                    .action_settings),  LOCATION_PERM_SETTINGS_REQUEST_CODE,false)
             }
 
         }
@@ -583,7 +589,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
     @SuppressLint("ClickableViewAccessibility")
     fun setMusicPlayerWidget(musicPlayerWidget: ViewGroup, musicPlayerIp: String) {
         try {
-            LibreLogger.d(TAG, "setMusicPlayerWidget, class = ${this::class.java.simpleName}")
+            LibreLogger.d(TAG, "setMusicPlayerWidget, class = ${this::class.java.simpleName} and $musicPlayerIp")
             this.musicPlayerWidget = musicPlayerWidget
             this.musicPlayerIp = musicPlayerIp
             audioRecordUtil = AudioRecordUtil.getAudioRecordUtil()
@@ -598,13 +604,17 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
             alexaButton = musicPlayerWidget.findViewById(R.id.ib_alexa_avs_btn)
             listeningView = musicPlayerWidget.findViewById(R.id.tv_alexa_listening)
             playinLayout = musicPlayerWidget.findViewById(R.id.ll_playing_layout)
+            /*shimmerView = musicPlayerWidget.findViewById(R.id.shimmer_View)
+            musicPlayerWidget.visibility=View.INVISIBLE
+            shimmerView?.startShimmer()*/
             setMusicPlayerListeners()
 
-            val sceneObject = ScanningHandler.getInstance().getSceneObjectFromCentralRepo(musicPlayerIp)
+            /*val sceneObject = ScanningHandler.getInstance().getSceneObjectFromCentralRepo(musicPlayerIp)
             if (sceneObject != null) {
-                updateMusicPlayViews(sceneObject)
+                LibreLogger.d(TAG, "updateMusicPlayViews: called from  $musicPlayerIp")
+                updateMusicPlayViews(sceneObject,1,musicPlayerIp)
                 LibreLogger.d(TAG, "suma in main scene object" + sceneObject.playUrl)
-            }
+            }*/
         } catch (e: KotlinNullPointerException) {
             e.printStackTrace()
         }
@@ -669,7 +679,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
             } else {
                 musicSceneObject.isAlexaBtnLongPressed = false
                 toggleAVSViews(false)
-                showToast("Ip not available")
+
             }
             true
         })
@@ -688,7 +698,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
         }
 
         musicPlayerWidget?.setOnClickListener {
-            if (trackNameView?.text?.toString()?.contains(getString(R.string.app_name))!! || trackNameView?.text?.toString()?.contains(getString(R.string.login_to_enable_cmds))!! || playPauseView?.visibility == View.GONE) {
+            if (trackNameView?.text?.toString()?.contains(getString(R.string.app_name))!! || trackNameView?.text?.toString()?.contains(getString(R.string.login_to_enable_cmds))!!) {
                 return@setOnClickListener
             }
 
@@ -709,32 +719,31 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
             playinLayout?.visibility = View.VISIBLE
         }
     }
-    fun updateMusicPlayViews(sceneObject: SceneObject?) {
-        if (sceneObject == null) {
-            return
-        }
-        try {
-            LibreLogger.d(TAG, "updateMusicPlayViews, Ip address: " + sceneObject.ipAddress)
-            val lsdpNodes = LSSDPNodeDB.getInstance().getTheNodeBasedOnTheIpAddress(sceneObject.ipAddress)
-            /**
-             * Commented because Ramya & Sathish confirmed no need to show any icon in the
-             * discovery screen
-             */
-            /*if (lsdpNodes.getmDeviceCap().getmSource().isAlexaAvsSource) {
-                alexaButton!!.visibility = View.VISIBLE
-            } else {
-                alexaButton!!.visibility = View.GONE
-            }*/
-            LibreLogger.d(TAG, "suma in device discovery activity update music player scene object1\n" + sceneObject.trackName + "convert url\n" + sceneObject.playUrl + "album name\n" + sceneObject.album_name)
-            if (musicPlayerWidget?.id == R.id.fl_alexa_widget || AppUtils.isActivePlaylistNotAvailable(sceneObject)) {
-                handleAlexaViews(sceneObject)
+    fun updateMusicPlayViews(sceneObject: SceneObject?, i: Int, deviceIP: String) {
+        if(musicPlayerIp.equals(deviceIP)) {
+            LibreLogger.d(TAG, "updateMusicPlayViews: $musicPlayerIp called from " +
+                    "$i and musicPlayerIp $deviceIP")
+            if (sceneObject == null) {
                 return
             }
+            try {
+                val sceneObject = ScanningHandler.getInstance().getSceneObjectFromCentralRepo(this.musicPlayerIp)
+                /*LibreLogger.d(TAG, "updateMusicPlayViews, Ip address: " + sceneObject.ipAddress + " called from $i")*/
+                if (musicPlayerWidget?.id == R.id.fl_alexa_widget || AppUtils.isActivePlaylistNotAvailable(sceneObject)) {
+                   // handleAlexaViews(sceneObject, 1, null)
+                    return
+                }
+               /* musicPlayerWidget!!.visibility=View.VISIBLE
+                shimmerView!!.visibility=View.INVISIBLE
+                shimmerView!!.stopShimmer()*/
+                   //   setCurrentTrackName(sceneObject, trackNameView)
+               // setAlbumArtistName(sceneObject, albumNameView)
 
-            if (!sceneObject.trackName.isNullOrEmpty() && !sceneObject.trackName.equals("NULL", ignoreCase = true)) {
+
+                /*if (!sceneObject.trackName.isNullOrEmpty() && !sceneObject.trackName.equals("NULL", ignoreCase = true)) {
                 var trackname = sceneObject.trackName
 
-                /* This change is done to handle the case of deezer where the song name is appended by radio or skip enabled */
+                *//* This change is done to handle the case of deezer where the song name is appended by radio or skip enabled *//*
                 if (trackname.contains(DEZER_RADIO)) trackname = trackname.replace(DEZER_RADIO, "")
 
                 if (trackname.contains(DEZER_SONGSKIP)) trackname = trackname.replace(DEZER_SONGSKIP, "")
@@ -753,245 +762,456 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
             } else {
                 LibreLogger.d(TAG, "updateMusicPlayViews else")
                 handleAlexaViews(sceneObject)
-            }
+            }*/
 
-            /*Handling album art*//*this is to show loading dialog while we are preparing to play*/
-            if (sceneObject.currentSource != AUX_SOURCE/*&& sceneObject!!.currentSource != EXTERNAL_SOURCE*/ && sceneObject.currentSource != BT_SOURCE /*&& sceneObject.currentSource != GCAST_SOURCE*/) {
+                /*Handling album art*/
+                /*this is to show loading dialog while we are preparing to play*/
+//                if (sceneObject.currentSource != AUX_SOURCE/*&& sceneObject!!.currentSource != EXTERNAL_SOURCE*/ && sceneObject.currentSource != BT_SOURCE /*&& sceneObject.currentSource != GCAST_SOURCE*/) {
+//
+//                    /*Album Art For All other Sources Except */
+//                    if (!sceneObject.album_art.isNullOrEmpty() && sceneObject.album_art.equals("coverart.jpg", ignoreCase = true)) {
+//                        val albumUrl = "http://" + sceneObject.ipAddress + "/" + "coverart.jpg"/* If Track Name is Different just Invalidate the Path And if we are resuming the Screen(Screen OFF and Screen ON) , it will not re-download it */
+//
+//                        if (sceneObject.trackName != null && !currentTrackName.equals(sceneObject.trackName, ignoreCase = true)) {
+//                            if (sceneObject == null) {
+//                                return
+//                            }
+//                            // currentTrackName = sceneObject.trackName!!
+////                        if (sceneObject.album_name != null) {
+////                            currentAlbumnName = sceneObject.album_name!!
+////                        }
+////                        currentArtistName = sceneObject.artist_name!!
+//                            LibreLogger.d("==Albumart==", " 1 ${sceneObject.currentSource} and ip ${sceneObject.ipAddress}")
+//                            AlbumArtURL = sceneObject.album_art!!
+//
+//                            val mInvalidated = mInvalidateTheAlbumArt(sceneObject, albumUrl)
+//                            LibreLogger.d(TAG, "Invalidated the URL $albumUrl Status $mInvalidated")
+//                        }
+//
+//                        if (albumArtView != null) {
+//                            LibreLogger.d("==Albumart==", " 2 ${sceneObject.currentSource} and ip " + "${sceneObject.ipAddress}")
+//                            LibreLogger.d("==Albumart==333", "  ${Glide.with(this).load(albumUrl).isMemoryCacheable}")
+//                            Glide.with(this)
+//                                .load(sceneObject.album_art)
+//                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                                .centerCrop()
+//                                .placeholder(R.mipmap.album_art)
+//                                .into(albumArtView!!)
+//
+//                        }
+//                    } else {
+//                        when {
+//                            !sceneObject.album_art.isNullOrEmpty() && !sceneObject.album_art.equals("null", ignoreCase = true) -> {
+//                                if (sceneObject.trackName != null && !currentTrackName.equals(sceneObject.trackName, ignoreCase = true)) {
+//                                    if (sceneObject == null) {
+//                                        return
+//                                    }
+//                                    // currentTrackName = sceneObject.trackName!!
+//                                    /*if (sceneObject.album_name != null) {
+//                                    currentAlbumnName = sceneObject.album_name!!
+//                                }*/
+//                                    // currentArtistName = sceneObject.artist_name!!
+//
+//                                    val mInvalidated = mInvalidateTheAlbumArt(sceneObject, sceneObject.album_art)
+//                                    LibreLogger.d("==Albumart==", " 3 ${sceneObject.currentSource} and" + " ip ${sceneObject.ipAddress}")
+//                                    AlbumArtURL = sceneObject.album_art!!
+//                                    LibreLogger.d(TAG, "Invalidated the URL $sceneObject.album_art " + "Status: $mInvalidated")
+//
+//                                }
+//
+//                                if (albumArtView != null) {
+//                                    LibreLogger.d("==Albumart==", " 4 ${sceneObject.currentSource} and" + " ip ${sceneObject.ipAddress}")
+//                                    albumArtView!!.visibility = View.VISIBLE
+//                                    Glide.with(this)
+//                                        .load(sceneObject.album_art)
+//                                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                                        .centerCrop()
+//                                        .placeholder(R.mipmap.album_art)
+//                                        .into(albumArtView!!)
+//                                }
+//                            }
+//
+//                            else -> {
+//                                LibreLogger.d("==Albumart==", " 5 ${sceneObject.currentSource} and ip " + "${sceneObject.ipAddress}")
+//                                albumArtView?.setImageResource(R.mipmap.album_art)
+//                            }
+//                        }
+//                    }
+//
+//                } else {
+//                    LibreLogger.d("==Albumart==", " 5.5 ${sceneObject.currentSource} and ip ${sceneObject.ipAddress}")
+//                }
 
-                /*Album Art For All other Sources Except */
-                if (!sceneObject.album_art.isNullOrEmpty() && sceneObject.album_art.equals("coverart.jpg", ignoreCase = true)) {
-                    val albumUrl = "http://" + sceneObject.ipAddress + "/" + "coverart.jpg"/* If Track Name is Different just Invalidate the Path And if we are resuming the Screen(Screen OFF and Screen ON) , it will not re-download it */
 
-                    if (sceneObject.trackName != null && !currentTrackName.equals(sceneObject.trackName, ignoreCase = true)) {
-                        if (sceneObject == null) {
-                            return
-                        }
-                        currentTrackName = sceneObject.trackName!!
-                        if (sceneObject.album_name != null) {
-                            currentAlbumnName = sceneObject.album_name!!
-                        }
-                        currentArtistName = sceneObject.artist_name!!
-                        currentAlbumArtView = sceneObject.album_art!!
-
-                        val mInvalidated = mInvalidateTheAlbumArt(sceneObject, albumUrl)
-                        LibreLogger.d(TAG, "Invalidated the URL $albumUrl Status $mInvalidated")
-                    }
-
-                    if (albumArtView != null) {
-                        PicassoTrustCertificates.getInstance(this).load(albumUrl)/*.memoryPolicy(MemoryPolicy.NO_CACHE).networkPolicy(NetworkPolicy.NO_CACHE)*/.placeholder(R.mipmap.album_art).error(R.mipmap.album_art).into(albumArtView)
-                    }
+                if (currentSourceView != null) {
+                    currentSourceView?.visibility = View.GONE
+                    //setCurrentSourceIcon(currentSourceView!!, sceneObject)
                 } else {
-                    when {
-                        !sceneObject.album_art.isNullOrEmpty() && !sceneObject.album_art.equals("null", ignoreCase = true) -> {
-                            if (sceneObject.trackName != null && !currentTrackName.equals(sceneObject.trackName, ignoreCase = true)) {
-                                if (sceneObject == null) {
-                                    return
-                                }
-                                currentTrackName = sceneObject.trackName!!
-                                if (sceneObject.album_name != null) {
-                                    currentAlbumnName = sceneObject.album_name!!
-                                }
-                                currentArtistName = sceneObject.artist_name!!
+                    LibreLogger.d(TAG, "currentSourceView is null")
+                }
 
-                                val mInvalidated = mInvalidateTheAlbumArt(sceneObject, sceneObject.album_art)
-                                currentAlbumArtView = sceneObject.album_art!!
-                                LibreLogger.d(TAG, "Invalidated the URL $sceneObject.album_art " + "Status: $mInvalidated")
+                when (sceneObject.currentSource) {
+                    NO_SOURCE, DDMSSLAVE_SOURCE -> {
+                        LibreLogger.d(TAG, "SHAIK playPauseView 6 ${sceneObject.currentSource}")
+                        playPauseView?.isClickable = false
+                        if (sceneObject.currentSource == NO_SOURCE) {
+                           // handleAlexaViews(sceneObject, 2, null)
+                        }
+                    }
 
+                    VTUNER_SOURCE, TUNEIN_SOURCE -> {
+                        LibreLogger.d(TAG, "SHAIK playPauseView 8 ${sceneObject.currentSource}")
+                        playPauseView?.setImageResource(R.drawable.play_white)
+                        songSeekBar?.visibility = View.VISIBLE
+                        songSeekBar?.progress = 0
+                        songSeekBar?.isEnabled = false
+                    }/*For Riva Tunneling, When switched to Aux, its External Source*/
+                    AUX_SOURCE/*, EXTERNAL_SOURCE */ -> {
+                       // handleAlexaViews(sceneObject, 3, null)
+                    }
+
+                    BT_SOURCE -> {
+                        //handleAlexaViews(sceneObject, 4, null)
+                    }
+
+                    GCAST_SOURCE -> {
+                        trackNameView?.text = sceneObject.trackName
+                        songSeekBar?.progress = 0
+                        songSeekBar?.isEnabled = false
+                    }
+
+                    ALEXA_SOURCE -> {
+                        albumNameView?.text = sceneObject.artist_name
+                        currentSourceView?.visibility = View.VISIBLE
+                        when {
+                            sceneObject.playUrl?.contains("Spotify", true)!! -> currentSourceView?.setImageResource(R.mipmap.spotify)
+                            sceneObject.playUrl?.contains("Deezer", true)!! -> currentSourceView?.setImageResource(R.mipmap.riva_deezer_icon)
+                            sceneObject.playUrl?.contains("Pandora", true)!! -> currentSourceView?.setImageResource(R.mipmap.riva_pandora_icon)
+                            sceneObject.playUrl?.contains("SiriusXM", true)!! -> currentSourceView?.setImageResource(R.drawable.small_sirius_logo)
+                            sceneObject.playUrl?.contains("TuneIn", true)!! -> currentSourceView?.setImageResource(R.drawable.smal_tunein_logo)
+                            sceneObject.playUrl?.contains("iHeartRadio", true)!! -> currentSourceView?.setImageResource(R.drawable.second_iheartradio_image2)
+                            sceneObject.playUrl?.contains("Amazon Music", true)!! -> currentSourceView?.setImageResource(R.drawable.amazon_music_small)
+                            else -> currentSourceView?.visibility = View.GONE
+                        }
+                    }
+
+                    DMR_SOURCE, DMP_SOURCE -> {
+                        if (sceneObject.currentSource == SPOTIFY_SOURCE) {
+                            if (currentArtistName != null) {
+                                if (currentArtistName != "-1") {
+                                    albumNameView?.text = currentArtistName
+                                    trackNameView?.isSelected = true
+                                }
                             }
+                            if (currentAlbumnName != null) {
+                                if (!currentAlbumnName.isEmpty()) {
+                                    LibreLogger.d("==Albumart==", " 6 ${sceneObject.currentSource} and" + " ip ${sceneObject.ipAddress}")
+                                    albumArtView?.visibility = View.VISIBLE
 
-                            if (albumArtView != null) {
-                                PicassoTrustCertificates.getInstance(this).load(sceneObject.album_art)/*   .memoryPolicy(MemoryPolicy.NO_CACHE).networkPolicy(NetworkPolicy.NO_CACHE)*/.placeholder(R.mipmap.album_art).error(R.mipmap.album_art).into(albumArtView)
+                                    if (albumArtView != null) {
+                                        LibreLogger.d("==Albumart==", " 6 ${sceneObject.currentSource}" + " and ip ${sceneObject.ipAddress}")
+                                        if (AlbumArtURL != null) {
+                                            if (!AlbumArtURL.isEmpty()) {
+                                                LibreLogger.d("==Albumart==", " 7 ${
+                                                    sceneObject.currentSource
+                                                } and ip ${sceneObject.ipAddress}")
+                                                PicassoTrustCertificates.getInstance(this).load(AlbumArtURL)
+                                                    //.memoryPolicy(MemoryPolicy.NO_CACHE).networkPolicy(NetworkPolicy.NO_CACHE)
+                                                    .placeholder(R.mipmap.album_art).error(R.mipmap.album_art).into(albumArtView)
+                                            }
+                                        } else {
+                                            LibreLogger.d("==Albumart==", " 8 ${
+                                                sceneObject.currentSource
+                                            } and ip ${sceneObject.ipAddress}")
+                                        }
+                                    }
+                                } else {
+                                    albumArtView?.visibility = View.GONE
+                                    LibreLogger.d("==Albumart==", " 9 ${sceneObject.currentSource} and" + " ip ${sceneObject.ipAddress}")
+                                }
+                            }
+                        }
+
+                    }
+
+                    USB_SOURCE -> {
+                        if (sceneObject != null) {
+                            if (!sceneObject.trackName.isNullOrEmpty() && !sceneObject.trackName.equals("null", ignoreCase = true)) {
+                                LibreLogger.d(TAG, "SHAIK playPauseView 10 ${sceneObject.currentSource}")
+                                playPauseView?.visibility = View.VISIBLE
+                                trackNameView?.visibility = View.VISIBLE
+                                if (sceneObject.album_name != null) {
+                                    if ((!sceneObject.album_name.isEmpty() && !sceneObject.album_name.equals("null", ignoreCase = true)) || (!sceneObject.artist_name.isEmpty() && !sceneObject.artist_name.equals("null", ignoreCase = true))) {
+                                        albumNameView?.visibility = View.VISIBLE
+                                    }
+                                }
+                                if (!sceneObject.album_art.isEmpty() && !sceneObject.album_art.equals("null", ignoreCase = true)) {
+                                    LibreLogger.d("==Albumart==", " 10 ${sceneObject.currentSource} " + "and ip ${sceneObject.ipAddress}")
+                                    albumArtView?.visibility = View.VISIBLE
+                                }
+
+                                if (sceneObject.totalTimeOfTheTrack > 0 && sceneObject.currentPlaybackSeekPosition >= 0) {
+                                    songSeekBar?.visibility = View.VISIBLE
+                                    songSeekBar?.isEnabled = true
+                                }
+                            }
+                        } else {
+                            //handleAlexaViews(sceneObject,5)
+                        }
+                    }
+                    //else -> handleAlexaViews(sceneObject,6)
+                }
+                if (sceneObject.currentSource == VTUNER_SOURCE || sceneObject.currentSource == TUNEIN_SOURCE || sceneObject.currentSource == BT_SOURCE || sceneObject.currentSource == AUX_SOURCE/*|| sceneObject.currentSource == EXTERNAL_SOURCE*/ || sceneObject.currentSource == NO_SOURCE || sceneObject.currentSource == GCAST_SOURCE) {
+                    songSeekBar?.progress = 0
+                    songSeekBar?.secondaryProgress = 0
+                    songSeekBar?.max = 100
+                    songSeekBar?.isEnabled = false
+                }
+
+               /*
+                LibreLogger.d(TAG, "playStatus : " + sceneObject.playstatus)
+                if (playPauseView != null) {
+                    when (sceneObject.playstatus) {
+                        CURRENTLY_BUFFERING -> {
+                            LibreLogger.d(TAG, "SHAIK playPauseView 11 ${sceneObject.currentSource}")
+                            setPlayPauseLoader(playPauseView!!, isEnabled = false, isLoader = true, image = 0)
+                        }
+
+                        CURRENTLY_PLAYING -> {
+                            if (playPauseNextPrevAllowed(sceneObject)) {
+                                LibreLogger.d(TAG, "SHAIK playPauseView 12 ${sceneObject.currentSource}")
+                                setPlayPauseLoader(playPauseView!!, isEnabled = true, isLoader = false, image = R.drawable.pause_orange)
+                            } else {
+                                LibreLogger.d(TAG, "SHAIK playPauseView 13 ${sceneObject.currentSource}")
+                                if (sceneObject.currentSource != EXTERNAL_SOURCE) {
+                                    setPlayPauseLoader(playPauseView!!, isEnabled = false, isLoader = false, image = R.drawable.play_white)
+                                } else {
+                                    setPlayPauseLoader(playPauseView!!, isEnabled = false, isLoader = false, image = 0)
+                                }
+                            }
+                        }
+
+                        CURRENTLY_STOPPED, CURRENTLY_PAUSED -> {
+                            if (playPauseNextPrevAllowed(sceneObject)) {
+                                LibreLogger.d(TAG, "SHAIK playPauseView 14 ${sceneObject.currentSource}")
+                                setPlayPauseLoader(playPauseView!!, isEnabled = true, isLoader = false, image = R.drawable.play_orange)
+                            } else {
+                                LibreLogger.d(TAG, "SHAIK playPauseView 15 ${sceneObject.currentSource}")
+                                setPlayPauseLoader(playPauseView!!, isEnabled = false, isLoader = false, image = R.drawable.play_white)
                             }
                         }
 
                         else -> {
-                            albumArtView?.setImageResource(R.mipmap.album_art)
+                            LibreLogger.d(TAG, "SHAIK playPauseView 4 ${sceneObject.currentSource}")
+                            setPlayPauseLoader(playPauseView!!, isEnabled = false, isLoader = false, image = 0)
+
                         }
+
                     }
+                } else {
+                    LibreLogger.d(TAG, "updateMusicPlayViews playPauseView is null")
+                }
+                if (sceneObject.currentSource == VTUNER_SOURCE || sceneObject.currentSource == TUNEIN_SOURCE *//*|| sceneObject.currentSource == BT_SOURCE*//* || sceneObject.currentSource == AUX_SOURCE || sceneObject.currentSource == NO_SOURCE) {
+                    LibreLogger.d(TAG, "SHAIK playPauseView 1 ${sceneObject.currentSource}")
+                    setPlayPauseLoader(playPauseView!!, isEnabled = false, isLoader = false, image = R.drawable.play_white)
+                }*/
+
+                /* Setting the current seekbar progress -Start*/
+               /* val duration = sceneObject.currentPlaybackSeekPosition
+                songSeekBar?.max = sceneObject.totalTimeOfTheTrack.toInt() / 1000
+                songSeekBar?.secondaryProgress = sceneObject.totalTimeOfTheTrack.toInt() / 1000
+                LibreLogger.d(TAG, "seek_bar_song Duration = " + duration / 1000)
+                songSeekBar?.progress = duration.toInt() / 1000*/
+
+                toggleAlexaBtnForSAMode()
+
+                if (AppUtils.isActivePlaylistNotAvailable(sceneObject)) {
+                    LibreLogger.d(TAG, "isActivePlaylistNotAvailable true")
+                  //  handleAlexaViews(sceneObject, 7, null)
                 }
 
+                if (AppUtils.isDMRPlayingFromOtherPhone(sceneObject)) {
+                    LibreLogger.d(TAG, "SHAIK currentPlayPauseIcon 2 ${sceneObject.currentSource}")
+                    playPauseView?.visibility = View.GONE
+                }
+
+                if (AppUtils.isLocalDMRPlaying(sceneObject)) {
+                    LibreLogger.d(TAG, "SHAIK currentPlayPauseIcon 3 ${sceneObject.currentSource}")
+                    playPauseView?.visibility = View.VISIBLE
+                }
+            } catch (e: KotlinNullPointerException) {
+                e.printStackTrace()
+                LibreLogger.d(TAG, "updateMusicPlayViews  KotlinNullPointerException ${e.message}")
             }
-            // Source icon  changes
-            if (currentSourceView != null) {
-                currentSourceView?.visibility = View.GONE
-                updateCurrentSourceIcon(currentSourceView!!, sceneObject)
-            } else {
-              LibreLogger.d(TAG, "currentSourceView is null")
-            }
-
-            when (sceneObject.currentSource) {
-                NO_SOURCE, DDMSSLAVE_SOURCE -> {
-                    playPauseView?.isClickable = false
-                    if (sceneObject.currentSource == NO_SOURCE) {
-                        handleAlexaViews(sceneObject)
-                    }
-                }
-                VTUNER_SOURCE, TUNEIN_SOURCE -> {
-                    playPauseView?.setImageResource(R.drawable.play_white)
-                    songSeekBar?.visibility = View.VISIBLE
-                    songSeekBar?.progress = 0
-                    songSeekBar?.isEnabled = false
-                }
-                /*For Riva Tunneling, When switched to Aux, its External Source*/
-                AUX_SOURCE/*, EXTERNAL_SOURCE */ -> {
-                    handleAlexaViews(sceneObject)
-                }
-                BT_SOURCE -> {
-                    handleAlexaViews(sceneObject)
-                }
-
-                GCAST_SOURCE -> {
-                    trackNameView?.text = sceneObject.trackName
-                    songSeekBar?.progress = 0
-                    songSeekBar?.isEnabled = false
-                }
-
-                ALEXA_SOURCE -> {
-                    albumNameView?.text = sceneObject.artist_name
-                    currentSourceView?.visibility = View.VISIBLE
-                    when {
-                        sceneObject.playUrl?.contains("Spotify", true)!! -> currentSourceView?.setImageResource(R.mipmap.spotify)
-                        sceneObject.playUrl?.contains("Deezer", true)!! -> currentSourceView?.setImageResource(R.mipmap.riva_deezer_icon)
-                        sceneObject.playUrl?.contains("Pandora", true)!! -> currentSourceView?.setImageResource(R.mipmap.riva_pandora_icon)
-                        sceneObject.playUrl?.contains("SiriusXM", true)!! -> currentSourceView?.setImageResource(R.drawable.small_sirius_logo)
-                        sceneObject.playUrl?.contains("TuneIn", true)!! -> currentSourceView?.setImageResource(R.drawable.smal_tunein_logo)
-                        sceneObject.playUrl?.contains("iHeartRadio", true)!! -> currentSourceView?.setImageResource(R.drawable.second_iheartradio_image2)
-                        sceneObject.playUrl?.contains("Amazon Music", true)!! -> currentSourceView?.setImageResource(R.drawable.amazon_music_small)
-                        else -> currentSourceView?.visibility = View.GONE
-                    }
-                }
-
-                DMR_SOURCE, DMP_SOURCE, SPOTIFY_SOURCE -> {
-                    if (sceneObject.currentSource == SPOTIFY_SOURCE) {
-                        if (currentArtistName != null) {
-                            if (currentArtistName != "-1") {
-                                albumNameView?.text = currentArtistName
-                                trackNameView?.isSelected = true
-                            }
-                        }
-                        if (currentAlbumnName != null) {
-                            if (!currentAlbumnName.isEmpty()) {
-                                albumArtView?.visibility = View.VISIBLE
-
-                                if (albumArtView != null) {
-                                    if (currentAlbumArtView != null) {
-                                        if (!currentAlbumArtView.isEmpty()) {
-                                            PicassoTrustCertificates.getInstance(this).load(currentAlbumArtView)
-                                                //.memoryPolicy(MemoryPolicy.NO_CACHE).networkPolicy(NetworkPolicy.NO_CACHE)
-                                                .placeholder(R.mipmap.album_art).error(R.mipmap.album_art).into(albumArtView)
-                                        }
-                                    }
-                                }
-                            } else {
-                                albumArtView?.visibility = View.GONE
-                            }
-                        }
-                    }
-
-                }
-
-                USB_SOURCE -> {
-                    if (sceneObject != null) {
-                        if (!sceneObject.trackName.isNullOrEmpty() && !sceneObject.trackName.equals("null", ignoreCase = true)) {
-                            playPauseView?.visibility = View.VISIBLE
-                            trackNameView?.visibility = View.VISIBLE
-                            if (sceneObject.album_name != null) {
-                                if ((!sceneObject.album_name.isEmpty() && !sceneObject.album_name.equals("null", ignoreCase = true)) || (!sceneObject.artist_name.isEmpty() && !sceneObject.artist_name.equals("null", ignoreCase = true))) {
-                                    albumNameView?.visibility = View.VISIBLE
-                                }
-                            }
-                            if (!sceneObject.album_art.isEmpty() && !sceneObject.album_art.equals("null", ignoreCase = true)) {
-                                albumArtView?.visibility = View.VISIBLE
-                            }
-
-                            if (sceneObject.totalTimeOfTheTrack > 0 && sceneObject.currentPlaybackSeekPosition >= 0) {
-                                songSeekBar?.visibility = View.VISIBLE
-                                songSeekBar?.isEnabled = true
-                            }
-                        }
-                    } else {
-                        handleAlexaViews(sceneObject)
-                    }
-                }
-                else -> handleAlexaViews(sceneObject)
-            }
-            if (sceneObject.currentSource == VTUNER_SOURCE || sceneObject.currentSource == TUNEIN_SOURCE || sceneObject.currentSource == BT_SOURCE || sceneObject.currentSource == AUX_SOURCE/*|| sceneObject.currentSource == EXTERNAL_SOURCE*/ || sceneObject.currentSource == NO_SOURCE || sceneObject.currentSource == GCAST_SOURCE) {
-                songSeekBar?.progress = 0
-                songSeekBar?.secondaryProgress = 0
-                songSeekBar?.max = 100
-                songSeekBar?.isEnabled = false}
-
-            /**
-             * SHAIK New setPlayPauseLoader changes
-             * Based playPauseNextPrevAllowed value we are setting the image and
-             * one more function is above commented because the below code will work properly
-             */
-            LibreLogger.d(TAG,"playStatus : "+sceneObject.playstatus)
-            if (playPauseView != null) {
-                when (sceneObject.playstatus) {
-                    CURRENTLY_BUFFERING -> {
-                        setPlayPauseLoader(playPauseView!!, isEnabled = false, isLoader = true, image = 0)
-                    }
-
-                    CURRENTLY_PLAYING -> {
-                        if (playPauseNextPrevAllowed(sceneObject)) {
-                            setPlayPauseLoader(playPauseView!!, isEnabled = true, isLoader = false, image = R.drawable.pause_orange)
-                        } else {
-                            setPlayPauseLoader(playPauseView!!, isEnabled = false, isLoader = false, image = R.drawable.play_white)
-                        }
-                    }
-
-                    CURRENTLY_STOPPED, CURRENTLY_PAUSED -> {
-                        if (playPauseNextPrevAllowed(sceneObject)) {
-                            setPlayPauseLoader(playPauseView!!, isEnabled = true, isLoader = false, image = R.drawable.play_orange)
-                        } else {
-                            setPlayPauseLoader(playPauseView!!, isEnabled = false, isLoader = false, image = R.drawable.play_white)
-                        }
-                    }
-
-                    else -> setPlayPauseLoader(playPauseView!!, isEnabled = false, isLoader = false, image = 0)
-
-                }
-            } else {
-                LibreLogger.d(TAG, "updateMusicPlayViews playPauseView is null")
-            }
-            if (sceneObject.currentSource == VTUNER_SOURCE || sceneObject.currentSource == TUNEIN_SOURCE /*|| sceneObject.currentSource == BT_SOURCE*/ || sceneObject.currentSource == AUX_SOURCE || sceneObject.currentSource == NO_SOURCE) {
-                setPlayPauseLoader(playPauseView!!, isEnabled = false, isLoader = false, image = R.drawable.play_white)
-            }
-
-            /* Setting the current seekbar progress -Start*/
-            val duration = sceneObject.currentPlaybackSeekPosition
-            songSeekBar?.max = sceneObject.totalTimeOfTheTrack.toInt() / 1000
-            songSeekBar?.secondaryProgress = sceneObject.totalTimeOfTheTrack.toInt() / 1000
-            LibreLogger.d(TAG, "seek_bar_song Duration = " + duration / 1000)
-            songSeekBar?.progress = duration.toInt() / 1000
-
-            toggleAlexaBtnForSAMode()
-
-            if (AppUtils.isActivePlaylistNotAvailable(sceneObject)) {
-                LibreLogger.d(TAG, "isActivePlaylistNotAvailable true")
-                handleAlexaViews(sceneObject)
-            }
-
-            if (AppUtils.isDMRPlayingFromOtherPhone(sceneObject)) {
-                playPauseView?.visibility = View.GONE
-            }
-
-            if (AppUtils.isLocalDMRPlaying(sceneObject)) {
-                playPauseView?.visibility = View.VISIBLE
-            }
-        } catch (e: KotlinNullPointerException) {
-            e.printStackTrace()
-            LibreLogger.d(TAG, "updateMusicPlayViews  KotlinNullPointerException ${e.message}")
         }
     }
 
-    private fun updateCurrentSourceIcon(currentSourceView: AppCompatImageView, sceneObject:SceneObject) {
-        if (currentSourceView.visibility == View.GONE) {
-            currentSourceView.visibility = View.VISIBLE
-            when (sceneObject.currentSource) {
+    fun setCurrentAlbumArt(currentSceneObject: SceneObject, currentIvAlbumArt: AppCompatImageView) {
+        LibreLogger.d("==Albumart==", " 2 ${currentSceneObject.currentSource} and ip " + "${currentSceneObject.ipAddress}")
+        if (currentSceneObject.currentSource != AUX_SOURCE
+            && currentSceneObject.currentSource != EXTERNAL_SOURCE
+            && currentSceneObject.currentSource != NO_SOURCE
+            && currentSceneObject.currentSource != BT_SOURCE) {
+            currentIvAlbumArt.visibility = View.VISIBLE
+            /*Album Art For All other Sources Except */
+            if (!currentSceneObject.album_art.isNullOrEmpty() && currentSceneObject.album_art.equals("coverart.jpg", ignoreCase = true)) {
+                val albumUrl = "http://" + currentSceneObject.ipAddress + "/" + "coverart.jpg"
+                /**
+                 * Commented Because we don't required this logic as we using GLide and
+                 * Cross checked with screen on and Off and song change also
+                 */
+                /* If Track Name is Different just Invalidate the Path And if we are resuming the Screen(Screen OFF and Screen ON) , it will not re-download it */
+
+                /*  if (currentSceneObject.trackName != null && !currentTrackName.equals(currentSceneObject.trackName, ignoreCase = true)) {
+                      if (currentSceneObject == null) {
+                          return
+                      }
+                      // currentTrackName = sceneObject.trackName!!
+  //                        if (sceneObject.album_name != null) {
+  //                            currentAlbumnName = sceneObject.album_name!!
+  //                        }
+  //                        currentArtistName = sceneObject.artist_name!!
+                      LibreLogger.d("==Albumart==", " 1 ${currentSceneObject.currentSource} and ip ${currentSceneObject.ipAddress}")
+                      AlbumArtURL = currentSceneObject.album_art!!
+
+                      val mInvalidated = mInvalidateTheAlbumArt(currentSceneObject, albumUrl)
+                      LibreLogger.d(TAG, "Invalidated the URL $albumUrl Status $mInvalidated")
+                  }*/
+                val mInvalidated = mInvalidateTheAlbumArt(currentSceneObject, albumUrl)
+                LibreLogger.d(TAG, "Invalidated the URL $albumUrl Status $mInvalidated")
+                LibreLogger.d("==Albumart==333", "  $albumUrl")
+                Glide.with(this).load(albumUrl).diskCacheStrategy(DiskCacheStrategy.ALL).centerCrop()
+                    .placeholder(R.mipmap.album_art).into(currentIvAlbumArt)
+
+            } else {
+                when {
+                    !currentSceneObject.album_art.isNullOrEmpty() && !currentSceneObject.album_art.equals("null", ignoreCase = true) -> {
+                        /*  if (currentSceneObject.trackName != null && !currentTrackName.equals(currentSceneObject.trackName, ignoreCase = true)) {
+                            if (currentSceneObject == null) {
+                                return
+                            }
+                            // currentTrackName = sceneObject.trackName!!
+                            *//*if (sceneObject.album_name != null) {
+                            currentAlbumnName = sceneObject.album_name!!
+                        }*//*
+                            // currentArtistName = sceneObject.artist_name!!
+
+                            val mInvalidated = mInvalidateTheAlbumArt(currentSceneObject, currentSceneObject.album_art)
+                            LibreLogger.d("==Albumart==", " 3 ${currentSceneObject.currentSource} and" + " ip ${currentSceneObject.ipAddress}")
+                            AlbumArtURL = currentSceneObject.album_art!!
+                            LibreLogger.d(TAG, "Invalidated the URL $currentSceneObject.album_art " + "Status: $mInvalidated")
+
+
+                        }*/
+                        LibreLogger.d("==Albumart==", " 4 ${currentSceneObject.currentSource} and" + " ip ${currentSceneObject.ipAddress}")
+
+                        Glide.with(this).load(currentSceneObject.album_art).diskCacheStrategy(DiskCacheStrategy.ALL).centerCrop().placeholder(R.mipmap.album_art).into(currentIvAlbumArt)
+
+
+                    }
+
+                    else -> {
+                        LibreLogger.d("==Albumart==", " 5 ${currentSceneObject.currentSource} and ip " + "${currentSceneObject.ipAddress}")
+                        currentIvAlbumArt.setImageResource(R.mipmap.album_art)
+                    }
+                }
+            }
+
+        } else  {
+            LibreLogger.d("==Albumart==", " 5.5 ${currentSceneObject.currentSource} and ip ${currentSceneObject.ipAddress}")
+        }
+    }
+
+    fun setCurrentPlaybackSeekPosition(currentSceneObject: SceneObject, currentSeekBarSong: AppCompatSeekBar) {
+        try {
+            val duration = currentSceneObject.currentPlaybackSeekPosition
+            currentSeekBarSong.max = currentSceneObject.totalTimeOfTheTrack.toInt() / 1000
+            currentSeekBarSong.secondaryProgress = currentSceneObject.totalTimeOfTheTrack.toInt() / 1000
+            LibreLogger.d(TAG, "seek_bar_song Duration = " + duration / 1000)
+            currentSeekBarSong.progress = duration.toInt() / 1000
+        }catch (ex:Exception){
+            LibreLogger.d(TAG, "setCurrentPlaybackSeekPosition Exception = " + ex.message)
+        }
+    }
+
+    fun setCurrentTrackName(currentSceneObject: SceneObject, trackNameView: AppCompatTextView?) {
+        LibreLogger.d(TAG,"setCurrentTrackName trackName:- ${currentSceneObject.trackName}  and sourceName:- ${currentSceneObject.currentSource} ")
+        if(currentSceneObject.currentSource!= NO_SOURCE ||currentSceneObject.currentSource!= AUX_SOURCE ) {
+            if (!currentSceneObject.trackName.isNullOrEmpty() && !currentSceneObject.trackName.equals("NULL", ignoreCase = true)) {
+                var trackname = currentSceneObject.trackName
+
+                /* This change is done to handle the case of deezer where the song name is appended by radio or skip enabled */
+                if (trackname.contains(DEZER_RADIO)) trackname = trackname.replace(DEZER_RADIO, "")
+
+                if (trackname.contains(DEZER_SONGSKIP)) trackname = trackname.replace(DEZER_SONGSKIP, "")
+                trackname = trackname.replace(DEZER_SONGSKIP, "")
+                if (trackNameView?.text.toString() != trackname) {
+                    trackNameView?.text = trackname
+                }
+                trackNameView!!.post {
+                    trackNameView.isSelected = true
+                }
+            } else {
+                if (currentSceneObject.currentSource == AUX_SOURCE
+                    || currentSceneObject.currentSource == EXTERNAL_SOURCE
+                    || currentSceneObject.tunnelingCurrentSource == AUX_SOURCE
+                    || currentSceneObject.tunnelingCurrentSource == EXTERNAL_SOURCE) {
+                    trackNameView!!.setText(R.string.aux_playing)
+                } else {
+                    if (currentSceneObject.currentSource == NO_SOURCE) {
+                       // handleAlexaViews(currentSceneObject, 17)
+                    } else {
+                        //Setting the not available because to debug the issue
+                        trackNameView?.setText(R.string.trackname_not_available)
+                    }
+                }
+            }
+        } else{
+          //  handleAlexaViews(currentSceneObject, 8, null)
+        }
+
+    }
+    fun setCurrentAlbumArtistName(currentSceneObject: SceneObject, currentAlbumName: AppCompatTextView) {
+        LibreLogger.d(TAG, "setAlbumArtistName :- ${currentSceneObject.album_name}  and sourceName:- ${currentSceneObject.artist_name} ")
+        if (currentSceneObject.currentSource != NO_SOURCE || currentSceneObject.currentSource != AUX_SOURCE) {
+            if (!currentSceneObject.album_name.isNullOrEmpty() && !currentSceneObject.album_name?.equals("NULL", ignoreCase = true)!! && !currentSceneObject.album_name?.equals(currentAlbumName.text?.toString())!!) {
+                currentAlbumName.text = currentSceneObject.album_name
+
+            }
+
+            if (!currentSceneObject.artist_name.isNullOrEmpty() && !currentSceneObject.artist_name?.equals("NULL", ignoreCase = true)!!) {
+                currentAlbumName.text = "${currentAlbumName.text}, ${currentSceneObject.artist_name}"
+            }
+            currentAlbumName.post {
+                currentAlbumName.isSelected = true
+            }
+        } else {
+            if (currentSceneObject.currentSource == AUX_SOURCE
+                || currentSceneObject.currentSource == EXTERNAL_SOURCE
+                || currentSceneObject.currentSource == NO_SOURCE
+                || currentSceneObject.tunnelingCurrentSource == AUX_SOURCE
+                || currentSceneObject.tunnelingCurrentSource == EXTERNAL_SOURCE) {
+                /**
+                 * When Aux is playing no need show the Album Name because we already
+                 * showing the trackName as "Aux is playing"
+                 */
+                //currentAlbumName.setText(R.string.aux_playing)
+            } else {
+                //Setting the not available because to debug the issue
+                currentAlbumName.setText(R.string.albumname_not_available)
+            }
+        }
+
+    }
+
+     fun setCurrentSourceIcon(currentSceneObject: SceneObject,
+         currentSourceView: AppCompatImageView) {
+         LibreLogger.d("-->SHAIK", "setCurrentSourceIcon  ${currentSceneObject.currentSource} " +
+                 "visibilty ${currentSourceView.visibility == View.GONE} ")
+
+            when (currentSceneObject.currentSource) {
                 NO_SOURCE -> currentSourceView.visibility = View.GONE
-                AIRPLAY_SOURCE -> currentSourceView.setImageResource(R.drawable.airplay)
+                AIRPLAY_SOURCE -> currentSourceView.setImageResource(R.drawable.airplay_no_bg)
                 DMR_SOURCE -> currentSourceView.setImageResource(R.drawable.my_device_enabled)
                 DMP_SOURCE -> currentSourceView.setImageResource(R.drawable.media_servers_enabled)
                 SPOTIFY_SOURCE -> currentSourceView.setImageResource(R.mipmap.spotify)
@@ -1010,14 +1230,74 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                 DEEZER_SOURCE -> currentSourceView.setImageResource(R.mipmap.deezer_logo)
                 TIDAL_SOURCE -> currentSourceView.setImageResource(R.mipmap.tidal_white_logo)
                 FAVOURITES_SOURCE -> currentSourceView.setImageResource(R.mipmap.ic_remote_favorite)
-                GCAST_SOURCE -> currentSourceView.setImageResource(R.drawable.chrome_cast_enabled)
-
-                EXTERNAL_SOURCE -> currentSourceView.visibility = View.GONE
+                GCAST_SOURCE -> currentSourceView.setImageResource(R.mipmap.ic_cast_white_24dp_2x)
+                ROON -> currentSourceView.setImageResource(R.drawable.roon)
+                EXTERNAL_SOURCE ->currentSourceView.setImageResource(R.drawable.ic_aux_in)
                 OPTICAL_SOURCE -> currentSourceView.visibility = View.GONE
                 TUNNELING_WIFI_SOURCE -> currentSourceView.visibility = View.GONE
             }
-        } else {
-            currentSourceView.visibility = View.GONE
+
+
+    }
+    fun setCurrentPlayPauseIcon(currentSceneObject: SceneObject,
+        currentPlayPauseIcon: ProgressButtonImageView,
+        layData: LinearLayout,
+        layShimmer: ShimmerFrameLayout) {
+
+        LibreLogger.d("==>SHAIK", "PlayPauseStatus: " + currentSceneObject.playstatus)
+        when (currentSceneObject.playstatus) {
+            CURRENTLY_BUFFERING -> {
+                //Start Shimmer Effect for loading
+                layData.visibility=View.INVISIBLE
+                layShimmer.startShimmer()
+
+                LibreLogger.d(TAG, "SHAIK currentPlayPauseIcon 11 ${currentSceneObject.currentSource}")
+                setPlayPauseLoader(currentPlayPauseIcon, isEnabled = false, isLoader = true, image = 0)
+            }
+            CURRENTLY_PLAYING -> {
+                //Stop Shimmer Effect for loading
+                layShimmer.stopShimmer()
+                layData.visibility = View.VISIBLE
+
+                if (playPauseNextPrevAllowed(currentSceneObject)) {
+                    LibreLogger.d(TAG, "SHAIK currentPlayPauseIcon 12 ${currentSceneObject.currentSource}")
+                    setPlayPauseLoader(currentPlayPauseIcon, isEnabled = true, isLoader = false, image = R.drawable.pause_orange)
+                } else {
+                    LibreLogger.d(TAG, "SHAIK currentPlayPauseIcon 13 ${currentSceneObject.currentSource}")
+                    if (currentSceneObject.currentSource != EXTERNAL_SOURCE) {
+                        setPlayPauseLoader(currentPlayPauseIcon, isEnabled = false, isLoader = false, image = R.drawable.play_white)
+                    } else {
+                        setPlayPauseLoader(currentPlayPauseIcon, isEnabled = false, isLoader = false, image = 0)
+                    }
+                }
+            }
+
+            CURRENTLY_STOPPED, CURRENTLY_PAUSED -> {
+                if (playPauseNextPrevAllowed(currentSceneObject)) {
+                    LibreLogger.d(TAG, "SHAIK currentPlayPauseIcon 14 ${currentSceneObject.currentSource}")
+                    setPlayPauseLoader(currentPlayPauseIcon, isEnabled = true, isLoader = false, image = R.drawable.play_orange)
+                } else {
+                    LibreLogger.d(TAG, "SHAIK currentPlayPauseIcon 15 ${currentSceneObject.currentSource}")
+                    if(currentSceneObject.currentSource== EXTERNAL_SOURCE){
+                        setPlayPauseLoader(currentPlayPauseIcon, isEnabled = false, isLoader = false, image = 0)
+                    }else {
+                        setPlayPauseLoader(currentPlayPauseIcon, isEnabled = false, isLoader = false, image = R.drawable.play_white)
+                    }
+                }
+            }else -> {
+                LibreLogger.d(TAG, "SHAIK currentPlayPauseIcon 4 ${currentSceneObject.currentSource}")
+                setPlayPauseLoader(currentPlayPauseIcon, isEnabled = false, isLoader = false, image = 0)
+
+            }
+
+        }
+        if (currentSceneObject.currentSource == VTUNER_SOURCE || currentSceneObject.currentSource == TUNEIN_SOURCE /*|| sceneObject.currentSource == BT_SOURCE*/ || currentSceneObject.currentSource == AUX_SOURCE || currentSceneObject.currentSource == NO_SOURCE) {
+            LibreLogger.d(TAG, "SHAIK currentPlayPauseIcon 1 ${currentSceneObject.currentSource}")
+            /**
+             * For No source no need image so
+             */
+            setPlayPauseLoader(currentPlayPauseIcon, isEnabled = false, isLoader = false, image = 0)
+            /*setPlayPauseLoader(currentPlayPauseIcon, isEnabled = false, isLoader = false, image = R.drawable.play_white)*/
         }
 
     }
@@ -1025,8 +1305,8 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
     private fun playPauseNextPrevAllowed(currentSceneObject: SceneObject?): Boolean {
         val mNodeWeGotForControl = ScanningHandler.getInstance().getLSSDPNodeFromCentralDB(currentSceneObject?.ipAddress)
         return (currentSceneObject!!.currentSource != AUX_SOURCE
-                /*&& currentSceneObject!!.currentSource != EXTERNAL_SOURCE*/
-             /*   && currentSceneObject.currentSource != GCAST_SOURCE*/
+                && currentSceneObject.currentSource != EXTERNAL_SOURCE
+             /*   && currentSceneObject.currentSource != GCAST_SOURCE*/ //Not Availble for cast
                 && currentSceneObject.currentSource != VTUNER_SOURCE
                 && currentSceneObject.currentSource != TUNEIN_SOURCE
                 && currentSceneObject.currentSource != NO_SOURCE
@@ -1038,128 +1318,167 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                 && mNodeWeGotForControl.bT_CONTROLLER >= CURRENTLY_PAUSED))
     }
 
-    fun handleAlexaViews(sceneObject: SceneObject) {
-        songSeekBar?.visibility = View.VISIBLE
-        LibreLogger.d(TAG, "handleAlexaViews " + sceneObject.currentSource)
-        val node = LSSDPNodeDB.getInstance().getTheNodeBasedOnTheIpAddress(sceneObject.ipAddress)
-        if (currentAlbumnName != null) {
-            if (!currentAlbumnName.isEmpty()) {
-                albumArtView?.visibility = View.VISIBLE
-            } else {
-                albumArtView?.visibility = View.GONE
-            }
-        }
-        if (sceneObject.playstatus == CURRENTLY_STOPPED || node?.alexaRefreshToken == "" || node?.alexaRefreshToken == null) {
-            if (sceneObject.currentSource == SPOTIFY_SOURCE || sceneObject.currentSource == DMR_SOURCE || sceneObject.currentSource == DMP_SOURCE || sceneObject.currentSource == USB_SOURCE || sceneObject.currentSource == ALEXA_SOURCE) {
-                albumNameView?.visibility = View.VISIBLE
-                trackNameView?.visibility = View.VISIBLE
-                trackNameView?.text = LibreApplication.currentTrackName
-                playPauseView?.visibility = View.VISIBLE
-                albumArtView?.visibility = View.VISIBLE
-                LibreLogger.d(TAG, "suma in handle alexaplay icon currently stopped1" + sceneObject.playstatus)
+    fun handleAlexaViews(sceneObject: SceneObject, i: Int, ilMusicPlayingWidget: MusicPlayingWidgetBinding) {
+        LibreLogger.d(TAG, "==>SHAIK setCurrentTrackName handleAlexaViews  and ${AppUtils
+            .isActivePlaylistNotAvailable(sceneObject)} and coming from $i and ${sceneObject.currentSource}")
+        if (AppUtils.isActivePlaylistNotAvailable(sceneObject)) {
+
+            ilMusicPlayingWidget.seekBarSong.visibility = View.VISIBLE
+            LibreLogger.d(TAG, "SHAIk ivPlayPause 10 ${sceneObject.ipAddress}")
+            ilMusicPlayingWidget.ivPlayPause.visibility = View.GONE
+            ilMusicPlayingWidget.tvTrackName.text = getText(R.string.title_libre_caps)
+
+            /**
+             * Commented by Shiak Because Shiva/RK told to change it for now, once requirement come
+             * we can enable it ->https://jira-librewireless.atlassian.net/browse/LCB2-970
+             * https://jira-librewireless.atlassian.net/browse/LCB2-969
+             */
+          /*  val node = LSSDPNodeDB.getInstance().getTheNodeBasedOnTheIpAddress(sceneObject?.ipAddress)
+            if (node.getmDeviceCap().getmSource().isAlexaAvsSource) {
                 if (node?.alexaRefreshToken.isNullOrEmpty()) {
-                    trackNameView?.text = getText(R.string.login_to_enable_cmds)
-
+                    ilMusicPlayingWidget.tvTrackName.visibility = View.VISIBLE
+                    ilMusicPlayingWidget.tvTrackName.text = getText(R.string.login_to_enable_cmds)
+                    ilMusicPlayingWidget.tvAlbumName.visibility = View.GONE
                 } else {
-                    trackNameView?.text = getText(R.string.speaker_ready_for_cmds)
+                    LibreLogger.d(TAG, "SHAIk ivPlayPause 22 ${sceneObject.trackName}")
+                    ilMusicPlayingWidget.tvTrackName.visibility = View.VISIBLE
+                    ilMusicPlayingWidget.tvTrackName.text = getText(R.string.app_name)
+                    ilMusicPlayingWidget.tvAlbumName.visibility = View.VISIBLE
+                    ilMusicPlayingWidget.tvAlbumName.text = getText(R.string.speaker_ready_for_cmds)
+                    ilMusicPlayingWidget.ivAlbumArt.visibility = View.GONE
+
                 }
             } else {
-                trackNameView?.text = getText(R.string.app_name)
-                playPauseView?.visibility = View.INVISIBLE
-                albumArtView?.visibility = View.GONE
-                LibreLogger.d(TAG, "suma in handle alexaplay icon currently stopped12" + sceneObject.playstatus)
-                if(node.getmDeviceCap().getmSource()!=null)
-                if (node.getmDeviceCap().getmSource().isAlexaAvsSource) {
-                    if (node?.alexaRefreshToken.isNullOrEmpty()) {
-                        trackNameView?.text = getText(R.string.login_to_enable_cmds)
-                    } else {
-                        trackNameView?.text = getText(R.string.app_name)
-                        albumNameView?.text = getText(R.string.speaker_ready_for_cmds)
-                       // trackNameView?.text = getText(R.string.speaker_ready_for_cmds)
-                    }
-                } else {
-                    trackNameView?.visibility = View.VISIBLE
-                    trackNameView?.text = getText(R.string.app_name)
-                    albumNameView?.visibility = View.VISIBLE
-                    albumNameView?.text = getText(R.string.speaker_ready_for_use)
-                }
-            }
+                LibreLogger.d(TAG, "SHAIk ivPlayPause 23 ${sceneObject.trackName}")
+                ilMusicPlayingWidget.tvTrackName.visibility = View.VISIBLE
+                ilMusicPlayingWidget.tvTrackName.text = getText(R.string.app_name)
+                ilMusicPlayingWidget.tvAlbumName.visibility = View.VISIBLE
+                ilMusicPlayingWidget.tvAlbumName.text = getText(R.string.speaker_ready_for_use)
+            }*/
 
-
-        } else {
-            if (sceneObject.currentSource == AUX_SOURCE || sceneObject.currentSource == EXTERNAL_SOURCE || sceneObject.currentSource == NO_SOURCE) {
-                if (node.alexaRefreshToken.isNullOrEmpty()) {
-                    albumNameView?.visibility = View.GONE
-                    playPauseView?.visibility = View.GONE
-                    albumArtView?.visibility = View.GONE
-                    trackNameView?.text = getText(R.string.login_to_enable_cmds)
-                    LibreLogger.d(TAG, "suma in handle alexaplay icon BT  & Aux if refreshtoken" + sceneObject.currentSource)
-                } else {
-                    albumNameView?.visibility = View.GONE
-                    playPauseView?.visibility = View.GONE
-                    albumArtView?.visibility = View.GONE
-                    trackNameView?.text = getText(R.string.speaker_ready_for_cmds)
-                    LibreLogger.d(TAG, "suma in handle alexaplay icon BT  & Aux else refreshtoken" + sceneObject.currentSource)
-
-                }
-                LibreLogger.d(TAG, "suma in handle alexaplay icon BT  & Aux" + sceneObject.currentSource)
-
-            } else {
-                LibreLogger.d(TAG, "suma in handle LibreApplication.currentTrackName " +LibreApplication.currentTrackName)
-                if (LibreApplication.currentTrackName != null) {
-                    if (LibreApplication.currentTrackName.isNotEmpty()) {
-                        LibreLogger.d(TAG, "suma in handle sceneObject.trackName " +sceneObject.trackName)
-                        trackNameView?.text = sceneObject.trackName
-                        if (node.alexaRefreshToken.isNullOrEmpty()) {
-                            trackNameView?.text = getText(R.string.login_to_enable_cmds)
-                        } else {
-                            if(sceneObject.trackName!=null && !sceneObject.trackName.isNullOrEmpty()) {
-                                trackNameView?.text = sceneObject.trackName
-                            }else{
-                                trackNameView?.text = getText(R.string.speaker_ready_for_cmds)
-                            }
-                        }
-                    } else {
-                        if (node.alexaRefreshToken.isNullOrEmpty()) {
-                            trackNameView?.text = getText(R.string.login_to_enable_cmds)
-
-                        } else {
-                            trackNameView?.text = getText(R.string.speaker_ready_for_cmds)
-                        }
-                    }
-                }
-                if (currentArtistName != null) {
-                    if (!currentArtistName.isEmpty()) {
-                        albumNameView?.visibility = View.VISIBLE
-
-                    } else {
-                        albumNameView?.visibility = View.GONE
-
-                    }
-                }
-                songSeekBar?.visibility = View.VISIBLE
-
-                if (sceneObject.album_art != null) {
-                    albumArtView?.visibility = View.VISIBLE
-                    if (albumArtView != null) {
-//                                   if (sceneObject != null) {
-//                                       PicassoTrustCertificates.getInstance(this)
-//                                               .load(sceneObject!!.album_art)
-//                                               /*   .memoryPolicy(MemoryPolicy.NO_CACHE).networkPolicy(NetworkPolicy.NO_CACHE)*/
-//                                               .placeholder(R.mipmap.album_art)
-//                                               .error(R.mipmap.album_art)
-//                                               .into(albumArtView)
-//                                   }
-                    }
-                } else {
-                    albumArtView?.visibility = View.GONE
-
-                }
-                LibreLogger.d(TAG, "suma in handle alexaplay icon BT  & Aux else" + sceneObject.currentSource)
-
-            }
         }
-        toggleAlexaBtnForSAMode()
+
+//        songSeekBar?.visibility = View.VISIBLE
+//        LibreLogger.d(TAG, "handleAlexaViews " + sceneObject.currentSource)
+//        val node = LSSDPNodeDB.getInstance().getTheNodeBasedOnTheIpAddress(sceneObject.ipAddress)
+//        if (currentAlbumnName != null) {
+//            if (!currentAlbumnName.isEmpty()) {
+//                albumArtView?.visibility = View.VISIBLE
+//            } else {
+//                albumArtView?.visibility = View.GONE
+//            }
+//        }
+//        if (sceneObject.playstatus == CURRENTLY_STOPPED || node?.alexaRefreshToken == "" || node?.alexaRefreshToken == null) {
+//            if (sceneObject.currentSource == SPOTIFY_SOURCE || sceneObject.currentSource == DMR_SOURCE || sceneObject.currentSource == DMP_SOURCE || sceneObject.currentSource == USB_SOURCE || sceneObject.currentSource == ALEXA_SOURCE) {
+//                albumNameView?.visibility = View.VISIBLE
+//                trackNameView?.visibility = View.VISIBLE
+//                trackNameView?.text = LibreApplication.currentTrackName
+//                playPauseView?.visibility = View.VISIBLE
+//                albumArtView?.visibility = View.VISIBLE
+//                LibreLogger.d(TAG, "suma in handle alexaplay icon currently stopped1" + sceneObject.playstatus)
+//                if (node?.alexaRefreshToken.isNullOrEmpty()) {
+//                    trackNameView?.text = getText(R.string.login_to_enable_cmds)
+//
+//                } else {
+//                    trackNameView?.text = getText(R.string.speaker_ready_for_cmds)
+//                }
+//            } else {
+//                trackNameView?.text = getText(R.string.app_name)
+//                playPauseView?.visibility = View.INVISIBLE
+//                albumArtView?.visibility = View.GONE
+//                LibreLogger.d(TAG, "suma in handle alexaplay icon currently stopped12" + sceneObject.playstatus)
+//                if(node.getmDeviceCap().getmSource()!=null)
+//                if (node.getmDeviceCap().getmSource().isAlexaAvsSource) {
+//                    if (node?.alexaRefreshToken.isNullOrEmpty()) {
+//                        trackNameView?.text = getText(R.string.login_to_enable_cmds)
+//                    } else {
+//                        trackNameView?.text = getText(R.string.app_name)
+//                        albumNameView?.text = getText(R.string.speaker_ready_for_cmds)
+//                       // trackNameView?.text = getText(R.string.speaker_ready_for_cmds)
+//                    }
+//                } else {
+//                    trackNameView?.visibility = View.VISIBLE
+//                    trackNameView?.text = getText(R.string.app_name)
+//                    albumNameView?.visibility = View.VISIBLE
+//                    albumNameView?.text = getText(R.string.speaker_ready_for_use)
+//                }
+//            }
+//
+//
+//        } else {
+//            if (sceneObject.currentSource == AUX_SOURCE || sceneObject.currentSource == EXTERNAL_SOURCE || sceneObject.currentSource == NO_SOURCE) {
+//                if (node.alexaRefreshToken.isNullOrEmpty()) {
+//                    albumNameView?.visibility = View.GONE
+//                    playPauseView?.visibility = View.GONE
+//                    albumArtView?.visibility = View.GONE
+//                    trackNameView?.text = getText(R.string.login_to_enable_cmds)
+//                    LibreLogger.d(TAG, "suma in handle alexaplay icon BT  & Aux if refreshtoken" + sceneObject.currentSource)
+//                } else {
+//                    albumNameView?.visibility = View.GONE
+//                    playPauseView?.visibility = View.GONE
+//                    albumArtView?.visibility = View.GONE
+//                    trackNameView?.text = getText(R.string.speaker_ready_for_cmds)
+//                    LibreLogger.d(TAG, "suma in handle alexaplay icon BT  & Aux else refreshtoken" + sceneObject.currentSource)
+//
+//                }
+//                LibreLogger.d(TAG, "suma in handle alexaplay icon BT  & Aux" + sceneObject.currentSource)
+//
+//            } else {
+//                LibreLogger.d(TAG, "suma in handle LibreApplication.currentTrackName " +LibreApplication.currentTrackName)
+//                if (LibreApplication.currentTrackName != null) {
+//                    if (LibreApplication.currentTrackName.isNotEmpty()) {
+//                        LibreLogger.d(TAG, "suma in handle sceneObject.trackName " +sceneObject.trackName)
+//                        trackNameView?.text = sceneObject.trackName
+//                        if (node.alexaRefreshToken.isNullOrEmpty()) {
+//                            trackNameView?.text = getText(R.string.login_to_enable_cmds)
+//                        } else {
+//                            if(sceneObject.trackName!=null && !sceneObject.trackName.isNullOrEmpty()) {
+//                                trackNameView?.text = sceneObject.trackName
+//                            }else{
+//                                trackNameView?.text = getText(R.string.speaker_ready_for_cmds)
+//                            }
+//                        }
+//                    } else {
+//                        if (node.alexaRefreshToken.isNullOrEmpty()) {
+//                            trackNameView?.text = getText(R.string.login_to_enable_cmds)
+//
+//                        } else {
+//                            trackNameView?.text = getText(R.string.speaker_ready_for_cmds)
+//                        }
+//                    }
+//                }
+//                if (currentArtistName != null) {
+//                    if (!currentArtistName.isEmpty()) {
+//                        albumNameView?.visibility = View.VISIBLE
+//
+//                    } else {
+//                        albumNameView?.visibility = View.GONE
+//
+//                    }
+//                }
+//                songSeekBar?.visibility = View.VISIBLE
+//
+//                if (sceneObject.album_art != null) {
+//                    albumArtView?.visibility = View.VISIBLE
+//                    if (albumArtView != null) {
+////                                   if (sceneObject != null) {
+////                                       PicassoTrustCertificates.getInstance(this)
+////                                               .load(sceneObject!!.album_art)
+////                                               /*   .memoryPolicy(MemoryPolicy.NO_CACHE).networkPolicy(NetworkPolicy.NO_CACHE)*/
+////                                               .placeholder(R.mipmap.album_art)
+////                                               .error(R.mipmap.album_art)
+////                                               .into(albumArtView)
+////                                   }
+//                    }
+//                } else {
+//                    albumArtView?.visibility = View.GONE
+//
+//                }
+//                LibreLogger.d(TAG, "suma in handle alexaplay icon BT  & Aux else" + sceneObject.currentSource)
+//
+//            }
+//        }
+
     }
 
         private fun toggleAlexaBtnForSAMode() {
@@ -1191,7 +1510,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
         }
 
         private fun parseMessageForMusicPlayer(nettyData: NettyData?) {
-            musicPlayerIp = nettyData?.remotedeviceIp
+           // musicPlayerIp = nettyData?.remotedeviceIp
           /*  LibreLogger.d(TAG, "parseForMusicPlayer musicIp = $musicPlayerIp, nettyData Ip = " + "${nettyData?.remotedeviceIp}")*/
             if (musicPlayerIp == null || !musicPlayerIp?.equals(nettyData?.remotedeviceIp)!!) {
                 LibreLogger.d(TAG, "parseForMusicPlayer returning musicPlayerIp $musicPlayerIp " + "remotedeviceIp ${nettyData?.remotedeviceIp}")
@@ -1221,7 +1540,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                         val window = root.getJSONObject(LUCIMESSAGES.ALEXA_KEY_WINDOW_CONTENT)
                         LibreLogger.d(TAG, "PLAY JSON is \n= $msg")
                         if (cmdId == 3) {
-                            LibreLogger.d(TAG, "Handle Play Json UI" + sceneObject.trackName)
+                            LibreLogger.d(TAG, "c" + sceneObject.trackName)
                             sceneObject.playUrl = window.getString("PlayUrl").lowercase(Locale.getDefault())
                             sceneObject.album_art = window.getString("CoverArtUrl")
                             sceneObject.artist_name = window.getString("Artist")
@@ -1229,15 +1548,16 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                             sceneObject.trackName = window.getString("TrackName")
                             sceneObject.album_name = window.getString("Album")
 
-                            updateMusicPlayViews(sceneObject)
+                           // updateMusicPlayViews(sceneObject,2,nettyData?.remotedeviceIp!!)
 
                             currentTrackName = sceneObject.trackName
                             currentArtistName = sceneObject.artist_name
                             currentAlbumnName = sceneObject.album_name
-                            currentAlbumArtView = sceneObject.album_art
+                            LibreLogger.d("==Albumart=="," 11 ${sceneObject.currentSource} and ip" + " ${sceneObject.ipAddress}")
+                            AlbumArtURL = sceneObject.album_art
                             handlePlayJsonUi(window, sceneObject)
                             LibreLogger.d(TAG, "Handle Play Json UI" + sceneObject.trackName + "PLAY URL\n" + sceneObject.playUrl + "ARTIST NAME" + sceneObject.artist_name)
-                            handleAlexaViews(sceneObject)
+                           // handleAlexaViews(sceneObject,9)
                             //MID_STOP_PREV_SOURCE
                         }
                     } catch (e: Exception) {
@@ -1262,7 +1582,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                         if (sceneObject != null) {
                             sceneObject.playstatus = playStatus
                             ScanningHandler.getInstance().putSceneObjectToCentralRepo(nettyData?.getRemotedeviceIp(), sceneObject)
-                            updateMusicPlayViews(sceneObject)
+                            //updateMusicPlayViews(sceneObject,3,nettyData?.remotedeviceIp!!)
                         }
                     }
                 }
@@ -1274,13 +1594,16 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                         if (sceneObject != null) {
                             sceneObject.currentSource = mSource
                             ScanningHandler.getInstance().putSceneObjectToCentralRepo(nettyData?.getRemotedeviceIp(), sceneObject)
-                           //suma comment updateMusicPlayViews(sceneObject)
+                           //suma comment
+                           //  updateMusicPlayViews(sceneObject,4,nettyData?.remotedeviceIp!!)
                             if (sceneObject.trackName != null) {
                                 currentTrackName = sceneObject.trackName
                             }
                             currentArtistName = sceneObject.artist_name
                             currentAlbumnName = sceneObject.album_name
-                            currentAlbumArtView = sceneObject.album_art
+                            LibreLogger.d("==Albumart=="," 12 ${sceneObject.currentSource} and " +
+                                    "ip" + " ${sceneObject.ipAddress} and ${sceneObject.album_art}")
+                            AlbumArtURL = sceneObject.album_art
                         }
                     } catch (e: Exception) {
                         e.printStackTrace()
@@ -1296,7 +1619,8 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                         }
 //                    handleAlexaViews(sceneObject)
 //                        if (sceneObject != null) {
-//                          suma comment  updateMusicPlayViews(sceneObject)
+//                          suma comment
+ //                                             updateMusicPlayViews(sceneObject,5,nettyData?.remotedeviceIp!!)
 //                        }
                     }
                 }
@@ -1304,11 +1628,12 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                 MIDCONST.MID_PLAYTIME.toInt() -> {
                     if (msg.isNotEmpty()) {
                         val longDuration = java.lang.Long.parseLong(msg)
-                        LibreLogger.d(TAG, "MID_PLAYTIME: $longDuration")
+                        LibreLogger.d(TAG, "MID_PLAYTIME: $longDuration ")
                         sceneObject.currentPlaybackSeekPosition = longDuration.toFloat()
                         ScanningHandler.getInstance().putSceneObjectToCentralRepo(nettyData?.getRemotedeviceIp(), sceneObject)
 
-                       //suma comment updateMusicPlayViews(sceneObject)
+                       //suma comment
+                     //updateMusicPlayViews(sceneObject,6,nettyData?.remotedeviceIp!!)
                     }
                 }
                 MIDCONST.MUTE_UNMUTE_STATUS -> {
@@ -1333,7 +1658,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
             if (updatedSceneObject != null) {
                 ScanningHandler.getInstance().putSceneObjectToCentralRepo(sceneObject.ipAddress, updatedSceneObject)
 
-                updateMusicPlayViews(updatedSceneObject)
+ //               updateMusicPlayViews(updatedSceneObject,7,musicPlayerIp!!)
             }
         }
 
@@ -2038,7 +2363,8 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                     /*LibreLogger.d(TAG,"==mandateDialog==21", "Displaying Record permission Else showAlertDialog")*/
                     //showAlertForRecordPermissionRequired()
                     //   if (mandateDialog != null && mandateDialog!!.isShowing) mandateDialog!!.dismiss()
-                    showAlertDialog(getString(R.string.enableRecordPermit), getString(R.string.action_settings),  MICROPHONE_PERM_SETTINGS_REQUEST_CODE)
+                    showAlertDialog(getString(R.string.enableRecordPermit), getString(R.string
+                        .action_settings),  MICROPHONE_PERM_SETTINGS_REQUEST_CODE,false)
                 }
 
             }
@@ -2077,22 +2403,32 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
         /**
          * Created By Shaik Mansoor
          */
-        private fun showAlertDialog(message: String, positiveButtonString: String, requestCode: Int) {
+        fun showAlertDialog(message: String,
+            positiveButtonString: String,
+            requestCode: Int,
+            b: Boolean) {
             LibreLogger.d(TAG, "showAlertDialog and requestCode: $requestCode")
             if (mandateDialog != null && mandateDialog!!.isShowing) mandateDialog!!.dismiss()
             else mandateDialog = null
 
             if (mandateDialog == null) {
                 val builder = AlertDialog.Builder(this)
+                if(b) {
+                    builder.setTitle(getString(R.string.device_connection_los))
+                }
                 builder.setMessage(message)
                 builder.setCancelable(false)
                 builder.setPositiveButton(positiveButtonString) { dialogInterface, i ->
                     mandateDialog!!.dismiss()
-                    customStartActivityForResult(requestCode, Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
-                        .setData(Uri.fromParts("package", packageName, null))
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                        .addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
-                        .addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS))
+                    if(b){
+                        intentToHome(this)
+                    }else {
+                        customStartActivityForResult(requestCode, Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                            .setData(Uri.fromParts("package", packageName, null))
+                            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            .addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+                            .addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS))
+                    }
                 }
                /* builder.setNegativeButton(negativeButtonString) { dialogInterface, i ->
                     mandateDialog!!.dismiss()

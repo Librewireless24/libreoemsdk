@@ -51,6 +51,7 @@ class SetUpDeviceActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionL
     private val libreVoiceDatabaseDao by lazy { LibreVoiceDatabase.getDatabase(this).castLiteDao() }
     private var deviceUUID: String? = null
     private var taskJob: Job? = null
+    private var tosStatus: String? = null
     companion object {
         @JvmField
         var TAG: String = SetUpDeviceActivity::class.java.simpleName
@@ -182,7 +183,11 @@ class SetUpDeviceActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionL
             binding.layLoader.visibility = View.GONE
             val message = String(packet.getpayload())
             val root = JSONObject(message)
-            val tosStatus = root.getString("tos")
+             tosStatus = if (root.has("tos")) {
+                root.getString("tos")
+            } else {
+                ""
+            }
             if (tosStatus == "activated") {
                 binding.btnSetupChromecast.text = getString(R.string.cast_enabled)
                 binding.btnSetupChromecast.isEnabled = false
