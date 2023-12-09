@@ -29,6 +29,7 @@ import com.libreAlexa.luci.LSSDPNodes
 import com.libreAlexa.netty.LibreDeviceInteractionListner
 import com.libreAlexa.netty.NettyData
 import com.libreAlexa.util.LibreLogger
+import java.io.File
 
 
 class CTHomeTabsActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractionListner {

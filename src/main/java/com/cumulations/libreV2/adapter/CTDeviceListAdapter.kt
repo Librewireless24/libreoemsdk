@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -60,6 +61,7 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
     var audioRecordUtil: AudioRecordUtil? = null
     private var micTcpServer: MicTcpServer? = null
     private val TAG = CTDeviceListAdapter::class.java.simpleName
+    private var isUserSeeking: Boolean = false
 
     init {
         audioRecordUtil = AudioRecordUtil.getAudioRecordUtil()
@@ -96,146 +98,174 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
                 val ipAddress = sceneObject.ipAddress
                 //Shaik Commented to see for long and if not found it as unusable remove it
                clearViews()
-                if (sceneObject != null) {
-                    if (!sceneObject.sceneName.isNullOrEmpty() && !sceneObject.sceneName.equals("NULL", ignoreCase = true)) {
-                        if (itemBinding.tvDeviceName.text.toString() != sceneObject.sceneName) {
-                            itemBinding.tvDeviceName.text = sceneObject.sceneName
-                            itemBinding.tvDeviceName.isSelected = true
-                        }
-                    } else {
-                        itemBinding.tvDeviceName.text = ""
+
+                if (!sceneObject.sceneName.isNullOrEmpty() && !sceneObject.sceneName.equals("NULL", ignoreCase = true)) {
+                    if (itemBinding.tvDeviceName.text.toString() != sceneObject.sceneName) {
+                        itemBinding.tvDeviceName.text = sceneObject.sceneName
+                        itemBinding.tvDeviceName.isSelected = true
                     }
-                    setCurrentTrackName(sceneObject,itemBinding.ilMusicPlayingWidget.tvTrackName)
-                    setAlbumArtistName(sceneObject,itemBinding.ilMusicPlayingWidget.tvAlbumName)
-
-                    /*this is to show loading dialog while we are preparing to play*/
-                    if (sceneObject.currentSource != AUX_SOURCE && sceneObject.currentSource != EXTERNAL_SOURCE && sceneObject.currentSource != BT_SOURCE && sceneObject.currentSource != GCAST_SOURCE) {
-
-                        /*Album Art For All other Sources Except */
-                        if (!sceneObject.album_art.isNullOrEmpty() && sceneObject.album_art.equals("coverart.jpg", ignoreCase = true)) {
-                            val albumUrl = "http://" + sceneObject.ipAddress + "/" + "coverart.jpg"/* If Track Name is Different just Invalidate the Path And if we are resuming the Screen(Screen OFF and Screen ON) , it will not re-download it */
-
-                            if (sceneObject.trackName != null && !currentTrackName.equals(sceneObject.trackName, ignoreCase = true)) {
-                                currentTrackName = sceneObject.trackName!!
-                                val mInvalidated =
-                                    (context as CTDeviceDiscoveryActivity).mInvalidateTheAlbumArt(sceneObject, albumUrl)
-                                LibreLogger.d(TAG, "Invalidated the URL $albumUrl Status $mInvalidated")
-                            }
-                            PicassoTrustCertificates.getInstance(context)
-                                .load(albumUrl)
-                                .placeholder(R.mipmap.album_art).error(R.mipmap.album_art)
-                                .into(itemBinding.ilMusicPlayingWidget.ivAlbumArt)
-
-                        } else {
-                            when {
-                                !sceneObject.album_art.isNullOrEmpty() -> {
-
-                                    if (sceneObject.trackName != null && !currentTrackName.equals(sceneObject.trackName, ignoreCase = true)) {
-                                        currentTrackName = sceneObject.trackName!!
-                                        val mInvalidated =
-                                            (context as CTDeviceDiscoveryActivity).mInvalidateTheAlbumArt(sceneObject, sceneObject.album_art)
-                                        LibreLogger.d(TAG, "Invalidated the URL ${sceneObject.album_art} Status $mInvalidated")
-                                    }
-                                    PicassoTrustCertificates.getInstance(context)
-                                        .load(sceneObject.album_art)/*   .memoryPolicy(MemoryPolicy.NO_CACHE).networkPolicy(NetworkPolicy.NO_CACHE)*/
-                                        .placeholder(R.mipmap.album_art).error(R.mipmap.album_art)
-                                        .into(itemBinding.ilMusicPlayingWidget.ivAlbumArt)
-                                }
-
-                                else -> {
-                                    itemBinding.ilMusicPlayingWidget.ivAlbumArt.visibility=View.VISIBLE
-                                    itemBinding.ilMusicPlayingWidget.ivAlbumArt.setImageResource(R.mipmap.album_art)
-                                }
-                            }
-                        }
-                    }else {
-                        if (itemBinding.ilMusicPlayingWidget.ivAlbumArt.visibility != View.VISIBLE) {
-                            itemBinding.ilMusicPlayingWidget.ivAlbumArt.visibility=View.VISIBLE
-                        }
-                        if (sceneObject.album_art != null) {
-                            PicassoTrustCertificates.getInstance(context).load(sceneObject.album_art).placeholder(R.mipmap.album_art).error(R.mipmap.album_art).into(itemBinding.ilMusicPlayingWidget.ivAlbumArt)
-                        }else{
-                            itemBinding.ilMusicPlayingWidget.ivAlbumArt.setImageResource(R.mipmap.album_art)
-                        }
-                    }
-                    LibreLogger.d(TAG, "Album art visibility Status " + sceneObject.playstatus)
-                    /**
-                     * Commented by Shaik, Because  handleThePlayIconsForGrayOutOption
-                     * (sceneObject) function will take care every thing, after some time if the
-                     * handleThePlayIconsForGrayOutOption function worked fine for all the source
-                     * we can remove the blow code
-                     * ADDED FOR DEBUG and Watch
-                     */
-                    /*when (sceneObject.playstatus) {
-                        CURRENTLY_BUFFERING -> {
-                            setPlayPauseLoader(itemBinding.ilMusicPlayingWidget.ivPlayPause, isEnabled = false, isLoader = true, image = 0)
-                        }
-                        CURRENTLY_PLAYING -> {
-                            setPlayPauseLoader(itemBinding.ilMusicPlayingWidget.ivPlayPause, isEnabled = true, isLoader = false, image = R.drawable.pause_orange)
-                        }
-                         CURRENTLY_PAUSED -> {
-                            setPlayPauseLoader(itemBinding.ilMusicPlayingWidget.ivPlayPause, isEnabled = true, isLoader = false, image = R.drawable.play_orange)
-                        }
-                        else -> setPlayPauseLoader(itemBinding.ilMusicPlayingWidget.ivPlayPause, isEnabled = false, isLoader = false, image = 0)
-                    }*/
-
-                    if (sceneObject.currentSource == ALEXA_SOURCE) {
-                        LibreLogger.d(TAG,"SHAIk ivPlayPause 1 ${sceneObject.ipAddress}")
-                        setControlIconsForAlexa(sceneObject, itemBinding.ilMusicPlayingWidget.ivPlayPause)
-                    }
-
-                    val lsdpNodes = LSSDPNodeDB.getInstance().getTheNodeBasedOnTheIpAddress(sceneObject.ipAddress)
-                    /**
-                     * Commented because Ramya & Sathish confirmed no need to show any icon in the
-                     * discovery screen
-                     */
-                    /*if(lsdpNodes.getmDeviceCap().getmSource().isAlexaAvsSource){
-                        itemBinding.ilMusicPlayingWidget.ibAlexaAvsBtn.visibility=View.VISIBLE
-                    }else{
-                        itemBinding.ilMusicPlayingWidget.ibAlexaAvsBtn.visibility=View.GONE
-                    }*/
-
-                    /* Setting the current seekbar progress -Start*/
-                    val duration = sceneObject.currentPlaybackSeekPosition
-                    itemBinding.ilMusicPlayingWidget.seekBarSong.max =
-                        sceneObject.totalTimeOfTheTrack.toInt() / 1000
-                    itemBinding.ilMusicPlayingWidget.seekBarSong.secondaryProgress =
-                        sceneObject.totalTimeOfTheTrack.toInt() / 1000
-                    LibreLogger.d(TAG,"seek_bar_song Duration = " + duration / 1000)
-                    itemBinding.ilMusicPlayingWidget.seekBarSong.progress = duration.toInt() / 1000
-
-                    /*For free speakers irrespective of the state use Individual volume*/
-                    if (LibreApplication.INDIVIDUAL_VOLUME_MAP.containsKey(ipAddress)) {
-                        itemBinding.seekBarVolume.progress = LibreApplication.INDIVIDUAL_VOLUME_MAP[ipAddress]!!
-                    } else {
-                        LUCIControl(ipAddress).SendCommand(MIDCONST.VOLUME_CONTROL, null, LSSDPCONST.LUCI_GET)
-                        if (sceneObject.volumeValueInPercentage >= 0) {
-                            itemBinding.seekBarVolume.progress = sceneObject.volumeValueInPercentage
-                        }
-                    }
-
-                    if (itemBinding.seekBarVolume.progress == 0) {
-                        itemBinding.ivVolumeMute.setImageResource(R.drawable.ic_volume_mute)
-                    } else {
-                        itemBinding.ivVolumeMute.setImageResource(R.drawable.volume_low_enabled)
-                    }
-
-                    //Seeting the Mute and UnMute status
-                    if(sceneObject.mute_status==LUCIMESSAGES.MUTE){
-                        itemBinding.ivVolumeMute.setImageResource(R.drawable.ic_volume_mute)
-                    }else{
-                        itemBinding.ivVolumeMute.setImageResource(R.drawable.volume_low_enabled)
-                    }
-                    updateViews(sceneObject)
-                 //   updatePlayPause(sceneObject)
-                    if (sceneObject.currentSource != EXTERNAL_SOURCE) {
-                        handleThePlayIconsForGrayOutOption(sceneObject)
-                    }
-                    setBatteryViews(sceneObject)
-                    handleClickListeners(sceneObject, position)
-                }else{
-                    LibreLogger.d(TAG,"SceneObject is null")
+                } else {
+                    itemBinding.tvDeviceName.text = ""
                 }
+                setCurrentTrackName(sceneObject,itemBinding.ilMusicPlayingWidget.tvTrackName)
+                setAlbumArtistName(sceneObject,itemBinding.ilMusicPlayingWidget.tvAlbumName)
+
+                /*this is to show loading dialog while we are preparing to play*/
+                if (sceneObject.currentSource != AUX_SOURCE && sceneObject.currentSource != EXTERNAL_SOURCE && sceneObject.currentSource != BT_SOURCE && sceneObject.currentSource != GCAST_SOURCE) {
+
+                    /*Album Art For All other Sources Except */
+                    if (!sceneObject.album_art.isNullOrEmpty() && sceneObject.album_art.equals("coverart.jpg", ignoreCase = true)) {
+                        val albumUrl = "http://" + sceneObject.ipAddress + "/" + "coverart.jpg"/* If Track Name is Different just Invalidate the Path And if we are resuming the Screen(Screen OFF and Screen ON) , it will not re-download it */
+
+                        if (sceneObject.trackName != null && !currentTrackName.equals(sceneObject.trackName, ignoreCase = true)) {
+                            currentTrackName = sceneObject.trackName!!
+                            val mInvalidated =
+                                (context as CTDeviceDiscoveryActivity).mInvalidateTheAlbumArt(sceneObject, albumUrl)
+                            LibreLogger.d(TAG, "Invalidated the URL $albumUrl Status $mInvalidated")
+                        }
+                        PicassoTrustCertificates.getInstance(context)
+                            .load(albumUrl)
+                            .placeholder(R.mipmap.album_art).error(R.mipmap.album_art)
+                            .into(itemBinding.ilMusicPlayingWidget.ivAlbumArt)
+
+                    } else {
+                        when {
+                            !sceneObject.album_art.isNullOrEmpty() -> {
+
+                                if (sceneObject.trackName != null && !currentTrackName.equals(sceneObject.trackName, ignoreCase = true)) {
+                                    currentTrackName = sceneObject.trackName!!
+                                    val mInvalidated =
+                                        (context as CTDeviceDiscoveryActivity).mInvalidateTheAlbumArt(sceneObject, sceneObject.album_art)
+                                    LibreLogger.d(TAG, "Invalidated the URL ${sceneObject.album_art} Status $mInvalidated")
+                                }
+                                PicassoTrustCertificates.getInstance(context)
+                                    .load(sceneObject.album_art)/*   .memoryPolicy(MemoryPolicy.NO_CACHE).networkPolicy(NetworkPolicy.NO_CACHE)*/
+                                    .placeholder(R.mipmap.album_art).error(R.mipmap.album_art)
+                                    .into(itemBinding.ilMusicPlayingWidget.ivAlbumArt)
+                            }
+
+                            else -> {
+                                itemBinding.ilMusicPlayingWidget.ivAlbumArt.visibility=View.VISIBLE
+                                itemBinding.ilMusicPlayingWidget.ivAlbumArt.setImageResource(R.mipmap.album_art)
+                            }
+                        }
+                    }
+                }else {
+                    if (itemBinding.ilMusicPlayingWidget.ivAlbumArt.visibility != View.VISIBLE) {
+                        itemBinding.ilMusicPlayingWidget.ivAlbumArt.visibility=View.VISIBLE
+                    }
+                    if (sceneObject.album_art != null) {
+                        PicassoTrustCertificates.getInstance(context).load(sceneObject.album_art).placeholder(R.mipmap.album_art).error(R.mipmap.album_art).into(itemBinding.ilMusicPlayingWidget.ivAlbumArt)
+                    }else{
+                        itemBinding.ilMusicPlayingWidget.ivAlbumArt.setImageResource(R.mipmap.album_art)
+                    }
+                }
+                LibreLogger.d(TAG, "Album art visibility Status " + sceneObject.playstatus)
+                /**
+                 * Commented by Shaik, Because  handleThePlayIconsForGrayOutOption
+                 * (sceneObject) function will take care every thing, after some time if the
+                 * handleThePlayIconsForGrayOutOption function worked fine for all the source
+                 * we can remove the blow code
+                 * ADDED FOR DEBUG and Watch
+                 */
+                /*when (sceneObject.playstatus) {
+                CURRENTLY_BUFFERING -> {
+                    setPlayPauseLoader(itemBinding.ilMusicPlayingWidget.ivPlayPause, isEnabled = false, isLoader = true, image = 0)
+                }
+                CURRENTLY_PLAYING -> {
+                    setPlayPauseLoader(itemBinding.ilMusicPlayingWidget.ivPlayPause, isEnabled = true, isLoader = false, image = R.drawable.pause_orange)
+                }
+                 CURRENTLY_PAUSED -> {
+                    setPlayPauseLoader(itemBinding.ilMusicPlayingWidget.ivPlayPause, isEnabled = true, isLoader = false, image = R.drawable.play_orange)
+                }
+                else -> setPlayPauseLoader(itemBinding.ilMusicPlayingWidget.ivPlayPause, isEnabled = false, isLoader = false, image = 0)
+            }*/
+
+                if (sceneObject.currentSource == ALEXA_SOURCE) {
+                    LibreLogger.d(TAG,"SHAIk ivPlayPause 1 ${sceneObject.ipAddress}")
+                    setControlIconsForAlexa(sceneObject, itemBinding.ilMusicPlayingWidget.ivPlayPause)
+                }
+
+                val lsdpNodes = LSSDPNodeDB.getInstance().getTheNodeBasedOnTheIpAddress(sceneObject.ipAddress)
+
+                /**
+                 * Commented because Ramya & Sathish confirmed no need to show any icon in the
+                 * discovery screen
+                 */
+                /*if(lsdpNodes.getmDeviceCap().getmSource().isAlexaAvsSource){
+                    itemBinding.ilMusicPlayingWidget.ibAlexaAvsBtn.visibility=View.VISIBLE
+                }else{
+                    itemBinding.ilMusicPlayingWidget.ibAlexaAvsBtn.visibility=View.GONE
+                }*/
+
+                /* Setting the current seekbar progress -Start*/
+                val duration = sceneObject.currentPlaybackSeekPosition
+                itemBinding.ilMusicPlayingWidget.seekBarSong.max =
+                    sceneObject.totalTimeOfTheTrack.toInt() / 1000
+                itemBinding.ilMusicPlayingWidget.seekBarSong.secondaryProgress =
+                    sceneObject.totalTimeOfTheTrack.toInt() / 1000
+                LibreLogger.d(TAG,"seek_bar_song Duration = " + duration / 1000)
+                itemBinding.ilMusicPlayingWidget.seekBarSong.progress = duration.toInt() / 1000
+
+                /*For free speakers irrespective of the state use Individual volume*/
+//                    if (LibreApplication.INDIVIDUAL_VOLUME_MAP.containsKey(ipAddress)) {
+//                        itemBinding.seekBarVolume.progress = LibreApplication.INDIVIDUAL_VOLUME_MAP[ipAddress]!!
+//                    } else {
+//                        LUCIControl(ipAddress).SendCommand(MIDCONST.VOLUME_CONTROL, null, LSSDPCONST.LUCI_GET)
+//                        if (sceneObject.volumeValueInPercentage >= 0) {
+//                            itemBinding.seekBarVolume.progress = sceneObject.volumeValueInPercentage
+//                        }
+//                    }
+
+                if (LibreApplication./*ZONE_VOLUME_MAP*/INDIVIDUAL_VOLUME_MAP.containsKey(
+                        ipAddress
+                    )
+                ) {
+                    if (!isUserSeeking) {
+                        LibreLogger.d(TAG, "atul in user1 is not seeking")
+
+                        itemBinding.seekBarVolume.progress =
+                            LibreApplication.INDIVIDUAL_VOLUME_MAP[ipAddress]!!
+                    } else {
+                        LibreLogger.d(TAG, "atul in user2 is seeking")
+                    }
+                } else {
+                    LUCIControl(ipAddress).SendCommand(
+                        MIDCONST./*ZONE_VOLUME*/VOLUME_CONTROL,
+                        null,
+                        LSSDPCONST.LUCI_GET
+                    )
+                    if (sceneObject.volumeValueInPercentage >= 0)
+                        if (!isUserSeeking) {
+                            LibreLogger.d(TAG, "atul in user3 is not seeking")
+                            itemBinding.seekBarVolume.progress =
+                                sceneObject.volumeValueInPercentage
+                        } else {
+                            LibreLogger.d(TAG, "atul in user4 is seeking")
+                        }
+                }
+
+                if (itemBinding.seekBarVolume.progress == 0||sceneObject.mute_status==LUCIMESSAGES.MUTE) {
+                    itemBinding.ivVolumeMute.setImageResource(R.drawable.ic_volume_mute)
+                } else {
+                    itemBinding.ivVolumeMute.setImageResource(R.drawable.volume_low_enabled)
+                }
+
+
+//                    //Seeting the Mute and UnMute status
+//                    if(sceneObject.mute_status==LUCIMESSAGES.MUTE){
+//      SUMA comment                  itemBinding.ivVolumeMute.setImageResource(R.drawable.ic_volume_mute)
+//                 }else{
+//                        itemBinding.ivVolumeMute.setImageResource(R.drawable.volume_low_enabled)
+//                    }
+
+                updateViews(sceneObject)
+                //   updatePlayPause(sceneObject)
+                if (sceneObject.currentSource != EXTERNAL_SOURCE) {
+                    handleThePlayIconsForGrayOutOption(sceneObject)
+                }
+                setBatteryViews(sceneObject)
+                handleClickListeners(sceneObject, position)
 
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -359,25 +389,63 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
             }
 
 
-            itemBinding.seekBarVolume.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+//            itemBinding.seekBarVolume.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+//                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+//                }
+//
+//                override fun onStartTrackingTouch(seekBar: SeekBar) {
+//                }
+//
+//                override fun onStopTrackingTouch(seekBar: SeekBar) {
+//                    if (seekBar.progress == 0) {
+//                        itemBinding.ivVolumeMute.setImageResource(R.drawable.ic_volume_mute)
+//                    } else itemBinding.ivVolumeMute.setImageResource(R.drawable.volume_low_enabled)
+//
+//                    LUCIControl.SendCommandWithIp(MIDCONST.VOLUME_CONTROL, "" + seekBar.progress, LSSDPCONST.LUCI_SET, sceneObject?.ipAddress)
+//                    if(sceneObject!=null) {
+//                        sceneObject.volumeValueInPercentage = seekBar.progress
+//                        sceneObject.mute_status=LUCIMESSAGES.UNMUTE
+//                        ScanningHandler.getInstance().putSceneObjectToCentralRepo(sceneObject.ipAddress, sceneObject)
+//                    }
+//                   /* LibreLogger.d(TAG, "seekBarVolume  AT last ${sceneObject!!.volumeValueInPercentage}")*/
+//                }
+//            })
+
+            itemBinding.seekBarVolume.setOnSeekBarChangeListener(object :
+                SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                    Log.d("onProgresChanged$progress", "" + position + "isUser: " + fromUser)
+                    isUserSeeking = fromUser
                 }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar) {
+                    Log.d("onStartTracking", "" + position)
                 }
 
                 override fun onStopTrackingTouch(seekBar: SeekBar) {
-                    if (seekBar.progress == 0) {
-                        itemBinding.ivVolumeMute.setImageResource(R.drawable.ic_volume_mute)
-                    } else itemBinding.ivVolumeMute.setImageResource(R.drawable.volume_low_enabled)
+                    isUserSeeking = false
+                    LibreLogger.d("onStopTracking", "" + position)
 
-                    LUCIControl.SendCommandWithIp(MIDCONST.VOLUME_CONTROL, "" + seekBar.progress, LSSDPCONST.LUCI_SET, sceneObject?.ipAddress)
-                    if(sceneObject!=null) {
-                        sceneObject.volumeValueInPercentage = seekBar.progress
-                        sceneObject.mute_status=LUCIMESSAGES.UNMUTE
-                        ScanningHandler.getInstance().putSceneObjectToCentralRepo(sceneObject.ipAddress, sceneObject)
+                    if (sceneObject != null) {
+
+                            LUCIControl.SendCommandWithIp(
+                                MIDCONST.VOLUME_CONTROL,
+                                "" + seekBar.progress,
+                                LSSDPCONST.LUCI_SET,
+                                sceneObject?.ipAddress
+                            )
+
+                        sceneObject!!.setvolumeZoneInPercentage(seekBar.progress)
+                        sceneObjectMap.put(sceneObject.ipAddress, sceneObject)
                     }
-                   /* LibreLogger.d(TAG, "seekBarVolume  AT last ${sceneObject!!.volumeValueInPercentage}")*/
+
+                    val sceneObjectFromCentralRepo = ScanningHandler.getInstance()
+                        .getSceneObjectFromCentralRepo(sceneObject?.ipAddress)
+                    if (sceneObjectFromCentralRepo != null) {
+                        sceneObjectFromCentralRepo!!.setvolumeZoneInPercentage(seekBar.progress)
+                    }
+
+
                 }
             })
 
@@ -434,11 +502,13 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
                     putExtra(FROM_ACTIVITY, CTActiveDevicesFragment::class.java.simpleName)
                 })
             }
+
             itemBinding.ivVolumeMute.setOnClickListener {
                 if (sceneObject != null && sceneObject.mute_status!=null) {
                     if (sceneObject.mute_status == LUCIMESSAGES.UNMUTE) {
                         LUCIControl.SendCommandWithIp(MIDCONST.MID_PLAYCONTROL.toInt(), LUCIMESSAGES.MUTE, LSSDPCONST.LUCI_SET, sceneObject.ipAddress)
-                    } else {
+                    }
+                    else {
                         LUCIControl.SendCommandWithIp(MIDCONST.MID_PLAYCONTROL.toInt(), LUCIMESSAGES.UNMUTE, LSSDPCONST.LUCI_SET, sceneObject.ipAddress)
                     }
                 }else{
@@ -790,6 +860,13 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
                 itemBinding.ilMusicPlayingWidget.seekBarSong.visibility = View.GONE
                 itemBinding.ilMusicPlayingWidget.ivPlayPause.visibility = View.GONE
                 itemBinding.ilMusicPlayingWidget.tvTrackName.text = context.getText(R.string.title_libre_caps)
+                if(sceneObject.currentSource==0){
+                    itemBinding.ilMusicPlayingWidget.ivCurrentSource.visibility=View.GONE
+                }
+                else{
+                    itemBinding.ilMusicPlayingWidget.ivCurrentSource.visibility=View.VISIBLE
+
+                }
             }
             /**
              * Commented by Shiak Because Shiva/RK told to change it for now, once requirement come
@@ -896,10 +973,11 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
      *  Device team we can enable or dependents on customer requirement
      */
     private fun updateCurrentSourceIcon(itemBinding: MusicPlayingWidgetBinding, sceneObject: SceneObject?) {
-        LibreLogger.d(TAG,"updateCurrentSourceIcon source is :- "+sceneObject?.currentSource+" " +
-                "tunnle "+sceneObject!!.tunnelingCurrentSource)
-        try {
-                when (sceneObject?.currentSource) {
+        LibreLogger.d(TAG,"updateCurrentSourceIcon source is :- "+sceneObject?.currentSource+"Current_IP\n "+ sceneObject!!.ipAddress )
+
+
+         try {
+                when (sceneObject!!.currentSource) {
                     NO_SOURCE -> itemBinding.ivCurrentSource.visibility = View.GONE
                     AIRPLAY_SOURCE -> itemBinding.ivCurrentSource.setImageResource(R.drawable.airplay_no_bg)
                     DMR_SOURCE -> itemBinding.ivCurrentSource.setImageResource(R.drawable.my_device_enabled)
@@ -920,7 +998,7 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
                     DEEZER_SOURCE -> itemBinding.ivCurrentSource.setImageResource(R.mipmap.deezer_logo)
                     TIDAL_SOURCE -> itemBinding.ivCurrentSource.setImageResource(R.mipmap.tidal_white_logo)
                     FAVOURITES_SOURCE -> itemBinding.ivCurrentSource.setImageResource(R.mipmap.ic_remote_favorite)
-                    GCAST_SOURCE -> itemBinding.ivCurrentSource.setImageResource(R.mipmap.ic_cast_white_24dp_2x)
+                    GCAST_SOURCE -> itemBinding.ivCurrentSource.setImageResource(R.drawable.chrome_cast_enabled)
                     EXTERNAL_SOURCE -> itemBinding.ivCurrentSource.setImageResource(R.drawable.ic_aux_in)
                     ROON -> itemBinding.ivCurrentSource.setImageResource(R.drawable.roon)
                     OPTICAL_SOURCE -> itemBinding.ivCurrentSource.visibility = View.GONE

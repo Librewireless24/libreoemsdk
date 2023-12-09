@@ -295,12 +295,12 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
 
             val sceneObject = ScanningHandler.getInstance().getSceneObjectFromCentralRepo(tunnelingData.remoteClientIp) ?: return
 
-            if (tcpTunnelPacket.volume >= 0) {
-                LibreLogger.d(TAG, "tunnelDataReceived, ip ${tunnelingData.remoteClientIp}, volume = ${tcpTunnelPacket.volume}")/*Fucking don't multiply by 5 again, we are handling it from packet only*/
-                sceneObject.volumeValueInPercentage = tcpTunnelPacket.volume
-                INDIVIDUAL_VOLUME_MAP[sceneObject.ipAddress] = sceneObject.volumeValueInPercentage
-                ScanningHandler.getInstance().putSceneObjectToCentralRepo(sceneObject.ipAddress, sceneObject)
-            }
+//            if (tcpTunnelPacket.volume >= 0) {
+//                LibreLogger.d(TAG, "tunnelDataReceived, ip ${tunnelingData.remoteClientIp}, volume = ${tcpTunnelPacket.volume}")/*Fucking don't multiply by 5 again, we are handling it from packet only*/
+//        SUMA VOLUME COMMENT        sceneObject.volumeValueInPercentage = tcpTunnelPacket.volume
+//                INDIVIDUAL_VOLUME_MAP[sceneObject.ipAddress] = sceneObject.volumeValueInPercentage
+//                ScanningHandler.getInstance().putSceneObjectToCentralRepo(sceneObject.ipAddress, sceneObject)
+//            }
 
         }
     }
@@ -2437,7 +2437,9 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                 }*/
                 mandateDialog = builder.create()
             }
-            if (!mandateDialog!!.isShowing) mandateDialog!!.show()
+            if(!((this)).isFinishing()) {
+                if (!mandateDialog!!.isShowing) mandateDialog!!.show()
+            }
 
         }
 

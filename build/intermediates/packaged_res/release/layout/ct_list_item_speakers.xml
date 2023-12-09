@@ -45,7 +45,7 @@
                     android:marqueeRepeatLimit="marquee_forever"
                     android:scrollHorizontally="true"
                     android:singleLine="true"
-                    android:textAllCaps="true"
+
                     android:textColor="@android:color/white"
                     android:textSize="16sp"
                     app:fontFamily="sans-serif-medium"
@@ -62,7 +62,7 @@
                 android:visibility="gone"
                 app:srcCompat="@drawable/riva_battery_medium_charging" />
 
-                <androidx.appcompat.widget.AppCompatImageView
+               <!-- <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/iv_aux_bt"
                 android:layout_width="wrap_content"
                 android:scaleType="fitCenter"
@@ -71,7 +71,7 @@
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
                 android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_aux_in" />
+                app:srcCompat="@drawable/ic_aux_in" />-->
             <androidx.appcompat.widget.AppCompatImageView
               android:id="@+id/iv_device_cast"
               android:layout_width="40dp"

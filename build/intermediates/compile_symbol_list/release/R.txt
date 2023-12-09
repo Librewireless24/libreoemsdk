@@ -75,6 +75,7 @@ int color help_close_mark 0x0
 int color help_web_view_bg 0x0
 int color issue_report_card_color 0x0
 int color light_gray 0x0
+int color loader_grey 0x0
 int color rb_locale_textcolor_selector 0x0
 int color riva_logo_bg 0x0
 int color screen_bg 0x0
@@ -106,9 +107,11 @@ int dimen top_margin 0x0
 int dimen wifi_router_padding 0x0
 int drawable add_device_selected 0x0
 int drawable add_device_unselected 0x0
+int drawable airable 0x0
 int drawable airable_amazon_music 0x0
 int drawable airplay 0x0
 int drawable airplay_logo 0x0
+int drawable airplay_no_bg 0x0
 int drawable album_borderless 0x0
 int drawable albums_border 0x0
 int drawable alexa_account 0x0
@@ -220,6 +223,8 @@ int drawable riva_logo_opaque_bg 0x0
 int drawable riva_splash_1080p 0x0
 int drawable riva_stop_all 0x0
 int drawable riva_voice_logo_opaque_bg 0x0
+int drawable roon 0x0
+int drawable roon_nowplaying 0x0
 int drawable rounded_white_bg 0x0
 int drawable second_iheartradio_image2 0x0
 int drawable settings_selected 0x0
@@ -298,6 +303,7 @@ int id btn_wifi_settings 0x0
 int id btn_yesImIn 0x0
 int id card_view 0x0
 int id cb_dont 0x0
+int id childLayout 0x0
 int id choosesong 0x0
 int id chromecast_login_progress_bar 0x0
 int id clockwise 0x0
@@ -346,7 +352,6 @@ int id item_title 0x0
 int id iv_album_art 0x0
 int id iv_alexa_account 0x0
 int id iv_alexa_settings 0x0
-int id iv_aux_bt 0x0
 int id iv_back 0x0
 int id iv_battery_status 0x0
 int id iv_bledevicelist 0x0
@@ -378,9 +383,14 @@ int id lay_Alexa 0x0
 int id lay_Header 0x0
 int id lay_Item 0x0
 int id lay_Loader 0x0
+int id lay_MiniPlayer 0x0
+int id lay_OtherTypes 0x0
 int id lay_Play 0x0
+int id lay_PlayControls 0x0
+int id lay_Shimmer 0x0
 int id lay_buttons 0x0
 int id lay_card 0x0
+int id lay_data 0x0
 int id lay_deviceCount 0x0
 int id lay_editDeviceName 0x0
 int id lay_issuesReport 0x0
@@ -537,6 +547,7 @@ int id txt_heading 0x0
 int id txt_improve_Chromecast 0x0
 int id txt_learn_more 0x0
 int id txt_message 0x0
+int id txt_playMusic 0x0
 int id txt_second_String 0x0
 int id txt_send_device 0x0
 int id txt_setUpVoice 0x0
@@ -549,6 +560,7 @@ int id txt_timeZoneName 0x0
 int id txt_timeframe 0x0
 int id user_name 0x0
 int id user_password 0x0
+int id view 0x0
 int id view_pager_tabs 0x0
 int id web_View 0x0
 int id web_view 0x0
@@ -613,6 +625,7 @@ int layout gcast_seekbar_layout_listitem 0x0
 int layout generic_alert_dialogbox 0x0
 int layout layout_bottom_sheet 0x0
 int layout music_playing_widget 0x0
+int layout music_playing_widget_placeholder 0x0
 int layout progress_bar 0x0
 int layout progress_button 0x0
 int layout report_issue_timeframe_list 0x0
@@ -669,6 +682,7 @@ int string action_settings 0x0
 int string activate_cast 0x0
 int string add 0x0
 int string after_connecting_to_libre_device 0x0
+int string airable 0x0
 int string airplay 0x0
 int string albumname_not_available 0x0
 int string alexaText 0x0
@@ -695,7 +709,9 @@ int string audio_output 0x0
 int string aux 0x0
 int string aux_in 0x0
 int string aux_label 0x0
+int string aux_playing 0x0
 int string away_mode_info 0x0
+int string back_button_description 0x0
 int string bass 0x0
 int string bluetooth 0x0
 int string bluetooth_access 0x0
@@ -749,6 +765,7 @@ int string deviceRebooting 0x0
 int string device_are_available 0x0
 int string device_blinking_colors 0x0
 int string device_blinking_white 0x0
+int string device_connection_los 0x0
 int string device_light_white 0x0
 int string device_name 0x0
 int string device_name_empty 0x0
@@ -900,6 +917,7 @@ int string permission_required 0x0
 int string play_music 0x0
 int string play_tone 0x0
 int string play_tone_request 0x0
+int string playlist 0x0
 int string pleaseWait 0x0
 int string please_selecte_wifi 0x0
 int string please_share_details 0x0
@@ -907,6 +925,7 @@ int string posting_cred 0x0
 int string power 0x0
 int string power_on_libre_device 0x0
 int string powered_text 0x0
+int string q_play 0x0
 int string ready_play_music 0x0
 int string refresh 0x0
 int string remote_control 0x0
@@ -921,6 +940,8 @@ int string retry 0x0
 int string retry_hearsound 0x0
 int string right 0x0
 int string riva_tutorial_url 0x0
+int string roon 0x0
+int string rtsp 0x0
 int string save 0x0
 int string scanning 0x0
 int string screen2_tv1 0x0
@@ -940,6 +961,7 @@ int string set_up_voice_control 0x0
 int string set_up_voice_control_tab 0x0
 int string setting_up_device 0x0
 int string setting_up_speaker 0x0
+int string settings_button_description 0x0
 int string setup_amazon_login 0x0
 int string setup_chromecast 0x0
 int string setup_device 0x0
@@ -954,6 +976,7 @@ int string skip 0x0
 int string skip_to_home 0x0
 int string software_update 0x0
 int string somethingWentWrong 0x0
+int string somethingWentWrong_tryAgain 0x0
 int string something_wrong 0x0
 int string something_wrong_msg 0x0
 int string sourceIndexWrong 0x0
@@ -983,6 +1006,7 @@ int string title_activity_gcast_update_status_available 0x0
 int string title_activity_google_cast_update_after_sac 0x0
 int string title_activity_welcome 0x0
 int string title_error_sac_message 0x0
+int string title_libre_caps 0x0
 int string tos_accept 0x0
 int string trackname_not_available 0x0
 int string treble 0x0

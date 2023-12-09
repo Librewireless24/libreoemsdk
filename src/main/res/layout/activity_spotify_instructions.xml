@@ -1,156 +1,158 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="match_parent"
-  android:layout_height="match_parent"
-  xmlns:tools="http://schemas.android.com/tools"
-  android:background="@color/black">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/black">
     <androidx.appcompat.widget.Toolbar
-      android:id="@+id/toolbar"
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content"
-      android:background="@color/black"
-      android:minHeight="?attr/actionBarSize">
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/black"
+        android:minHeight="?attr/actionBarSize">
         <RelativeLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
             <ImageButton
-              android:id="@+id/back"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_alignParentLeft="true"
-              android:layout_centerVertical="true"
-              android:paddingLeft="4dp"
-              android:paddingRight="30dp"
-              android:paddingTop="10dp"
-              android:paddingBottom="10dp"
-              android:src="@drawable/ic_arrow_back_white"
-              android:background="@android:color/transparent"
-              />
+                android:id="@+id/back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:paddingLeft="4dp"
+                android:paddingRight="30dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:src="@drawable/ic_arrow_back_white"
+                android:background="@android:color/transparent"
+                />
 
             <TextView
-              android:id="@+id/choosesong"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:gravity="center"
-              android:padding="10dp"
-              android:text="@string/spotifyConnect"
-              android:textColor="@color/white"
-              android:textSize="21sp"
-              android:textStyle="bold" />
+                android:id="@+id/choosesong"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="@string/spotifyConnect"
+                android:textColor="@color/white"
+                android:textSize="21sp"
+                android:textStyle="bold" />
         </RelativeLayout>
     </androidx.appcompat.widget.Toolbar>
 
     <ScrollView
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:layout_below="@+id/toolbar"
-      android:orientation="vertical">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
+        android:orientation="vertical">
         <RelativeLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <ImageView
-              android:id="@+id/spotify_image"
-              android:layout_width="wrap_content"
-              android:layout_height="60dp"
-              android:layout_centerHorizontal="true"
-              android:layout_marginTop="50dp"
-              android:src="@drawable/spotify_logo_white">
+                android:id="@+id/spotify_image"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="50dp"
+                android:src="@drawable/spotify_logo_white">
 
             </ImageView>
 
             <TextView
-              android:id="@+id/textView2"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_below="@+id/spotify_image"
-              android:layout_centerHorizontal="true"
-              android:layout_marginTop="70dp"
-              android:layout_marginBottom="10dp"
-              android:gravity="center"
-              android:text="@string/ready_play_music"
-              android:textAppearance="?android:attr/textAppearanceMedium"
-              android:textColor="#ffffff"
-              android:textSize="20sp"
-              android:textStyle="bold" />
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/spotify_image"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="70dp"
+                android:layout_marginBottom="10dp"
+                android:gravity="center"
+                android:text="@string/ready_play_music"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#ffffff"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
 
             <TextView
-              android:id="@+id/txt_first_String"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_below="@+id/textView2"
-              android:layout_centerHorizontal="true"
-              android:layout_marginTop="10dp"
-              android:alpha="0.7"
-              android:background="@color/black"
-              android:gravity="center"
-              android:text="@string/listen_speakers_using_remote"
-              android:textColor="@color/white"
-              android:textSize="18sp" />
+                android:id="@+id/txt_first_String"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textView2"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:alpha="0.7"
+                android:background="@color/black"
+                android:gravity="center"
+                android:text="@string/listen_speakers_using_remote"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
 
 
             <TextView
-              android:id="@+id/txt_second_String"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_below="@+id/txt_first_String"
-              android:layout_centerHorizontal="true"
-              android:layout_marginTop="45dp"
-              android:background="@color/black"
-              android:text="@string/use_voice_control_spotify"
-              android:textAppearance="?android:attr/textAppearanceMedium"
-              android:textColor="@color/white"
-              android:textSize="20sp"
-              android:textStyle="bold" />
+                android:id="@+id/txt_second_String"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_first_String"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="45dp"
+                android:background="@color/black"
+                android:text="@string/use_voice_control_spotify"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:visibility="gone"
+                android:textStyle="bold" />
 
 
             <TextView
-              android:id="@+id/txt_third_String"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_below="@+id/txt_second_String"
-              android:layout_centerHorizontal="true"
-              android:layout_marginTop="15dp"
-              android:alpha="0.7"
-              android:lineSpacingExtra="2dp"
-              android:background="@color/black"
-              android:gravity="center_horizontal"
-              android:text="@string/ask_alexa"
-              android:textColor="@color/white"
-              android:textSize="18sp" />
+                android:id="@+id/txt_third_String"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_second_String"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="15dp"
+                android:alpha="0.7"
+                android:lineSpacingExtra="2dp"
+                android:background="@color/black"
+                android:gravity="center_horizontal"
+                android:visibility="gone"
+                android:text="@string/ask_alexa"
+                android:textColor="@color/white"
+                android:textSize="18sp" />
 
 
             <TextView
-              android:id="@+id/learnMore"
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_below="@+id/txt_third_String"
-              android:layout_centerHorizontal="true"
-              android:layout_marginTop="40dp"
-              android:autoLink="web"
-              android:background="@android:color/transparent"
-              android:clickable="true"
-              android:text="@string/learnMore"
-              android:textColor="@color/spotify_color"
-              android:textSize="18sp"
-              android:textStyle="bold" />
+                android:id="@+id/learnMore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_third_String"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="40dp"
+                android:autoLink="web"
+                android:background="@android:color/transparent"
+                android:clickable="true"
+                android:text="@string/learnMore"
+                android:textColor="@color/spotify_color"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <TextView
-              android:id="@+id/openSpotify"
-              style="?android:attr/buttonStyleSmall"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:layout_below="@+id/learnMore"
-              android:layout_centerInParent="true"
-              android:layout_marginHorizontal="40dp"
-              android:layout_marginTop="60dp"
-              android:layout_marginBottom="30dp"
-              android:background="@drawable/btn_enabled_round_bg_spotify"
-              android:textAllCaps="true"
-              android:textColor="@color/white"
-              android:textSize="18sp"
-              tools:text="@string/openspotifyapp" />
+                android:id="@+id/openSpotify"
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/learnMore"
+                android:layout_centerInParent="true"
+                android:layout_marginHorizontal="40dp"
+                android:layout_marginTop="60dp"
+                android:layout_marginBottom="30dp"
+                android:background="@drawable/btn_enabled_round_bg_spotify"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                tools:text="@string/openspotifyapp" />
         </RelativeLayout>
     </ScrollView>
 </RelativeLayout>

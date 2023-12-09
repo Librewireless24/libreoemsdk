@@ -72,16 +72,20 @@ public class BleCommunication {
         if(characteristic!=null) {
             LibreLogger.d("SUMA_BLESCAN","BLE Characteristics"+mPacket.Command);
             final int charaProp = characteristic.getProperties();
-            LibreLogger.d(TAG,"KARUNAKARAN" + charaProp);
+            LibreLogger.d(TAG,"SUMA_BLESCAN " + charaProp);
             if ((charaProp | BluetoothGattCharacteristic.PROPERTY_NOTIFY) > 0) {
-                LibreLogger.d(TAG,"sending Data "+ printDataSentValue(mPacket.getpayload()));
+                LibreLogger.d(TAG,"SUMA_BLESCAN sending Data "+ printDataSentValue(mPacket.getpayload()));
                 characteristic.setValue(mPacket.getpayload());
+                LibreLogger.d(TAG,"SUMA_BLESCAN sending Data "+ mPacket.getpayload());
+
                 if (Build.VERSION.SDK_INT >= 31) {
                     if (ActivityCompat.checkSelfPermission(LibreApplication.ContextActivity, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
                         //suma perm(check may change based on future target SDK)
                     }
                 }
                 if(mBluetoothGatt!=null) {
+                    LibreLogger.d(TAG,"SUMA_BLESCAN write characteristics "+ mPacket.getpayload());
+
                     mBluetoothGatt.writeCharacteristic(characteristic);
                 }
             }

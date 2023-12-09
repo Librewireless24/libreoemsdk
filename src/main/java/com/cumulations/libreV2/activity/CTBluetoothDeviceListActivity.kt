@@ -75,6 +75,7 @@ class CTBluetoothDeviceListActivity : CTDeviceDiscoveryActivity(), BLEServiceToA
         sharedPreference = SharedPreferenceHelper.getInstance(this)
         mBTLeScanner = ScannerBLE(this, 7000, -100)
         mBleCommunication = BleCommunication(this)
+
         binding.ivRefresh.setOnClickListener {
             handler.removeCallbacks(showWifiConfigurationScreen)
             startScan()
@@ -158,14 +159,18 @@ class CTBluetoothDeviceListActivity : CTDeviceDiscoveryActivity(), BLEServiceToA
             LibreLogger.d(TAG, "BLE STATE *** ACTION \n$action")
             if (BluetoothDevice.ACTION_ACL_CONNECTED == action) {
                 LibreLogger.d(TAG, "BLE STATE *** ACL_CONNECTED")
-            } else if (BluetoothDevice.ACTION_ACL_DISCONNECTED == action) {
+            }
+            else if (BluetoothDevice.ACTION_ACL_DISCONNECTED == action) {
                 LibreLogger.d(TAG, "BLE STATE *** ACL_DISCONNETED")
                 if (mBluetoothLeService != null) {
-                    mBluetoothLeService!!.close()
-                    mBluetoothLeService!!.disconnect()
-                    showToast("BLE_STATE: Disconnected")
+//          iN fUTURE we need to add logic of mulitple disconnection fixes
+                    //     mBluetoothLeService!!.close()
+//                    mBluetoothLeService!!.disconnect()
+
+                    LibreLogger.d(CTBluetoothPassCredentials.TAG,"BLE backpress 3")
+                    //showToast("BLE_STATE: Disconnected")
                     LibreLogger.d(TAG, "BLE STATE *** ACL_DISCONNETED CLOSE")
-                    intentToHome(this@CTBluetoothDeviceListActivity)
+                    //SUMA BACK PRESS intentToHome(this@CTBluetoothDeviceListActivity)
                 }
             }
         }

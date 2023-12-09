@@ -23,3 +23,6 @@ Standard App Release version with respect to libreoem SDK version:\
     AppVersion:- 1.4(1.7)
     SDKVersion:- 1.0(1.2)
 
+3.Internal App Release jira bug fixes on top of BLE changes => 9dec2023
+App Version : 1.4(1.9)
+SDK version: 1.0(1.3)
