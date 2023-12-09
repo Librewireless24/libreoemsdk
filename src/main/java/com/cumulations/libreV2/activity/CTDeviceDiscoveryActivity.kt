@@ -442,7 +442,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
             } else {
                 // showAlertForLocationPermissionRequired()
                 showAlertDialog(getString(R.string.enableLocationPermit), getString(R.string
-                    .action_settings),  LOCATION_PERM_SETTINGS_REQUEST_CODE,false)
+                    .action_settings),  LOCATION_PERM_SETTINGS_REQUEST_CODE, isDeviceLost = false)
             }
 
         }
@@ -2364,7 +2364,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                     //showAlertForRecordPermissionRequired()
                     //   if (mandateDialog != null && mandateDialog!!.isShowing) mandateDialog!!.dismiss()
                     showAlertDialog(getString(R.string.enableRecordPermit), getString(R.string
-                        .action_settings),  MICROPHONE_PERM_SETTINGS_REQUEST_CODE,false)
+                        .action_settings),  MICROPHONE_PERM_SETTINGS_REQUEST_CODE,isDeviceLost =false)
                 }
 
             }
@@ -2406,23 +2406,23 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
         fun showAlertDialog(message: String,
             positiveButtonString: String,
             requestCode: Int,
-            b: Boolean) {
+            isDeviceLost: Boolean) {
             LibreLogger.d(TAG, "showAlertDialog and requestCode: $requestCode")
             if (mandateDialog != null && mandateDialog!!.isShowing) mandateDialog!!.dismiss()
             else mandateDialog = null
 
             if (mandateDialog == null) {
                 val builder = AlertDialog.Builder(this)
-                if(b) {
+                if(isDeviceLost) {
                     builder.setTitle(getString(R.string.device_connection_los))
                 }
                 builder.setMessage(message)
                 builder.setCancelable(false)
                 builder.setPositiveButton(positiveButtonString) { dialogInterface, i ->
                     mandateDialog!!.dismiss()
-                    if(b){
+                    if(isDeviceLost) {
                         intentToHome(this)
-                    }else {
+                    } else {
                         customStartActivityForResult(requestCode, Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                             .setData(Uri.fromParts("package", packageName, null))
                             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -2430,8 +2430,10 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                             .addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS))
                     }
                 }
-               /* builder.setNegativeButton(negativeButtonString) { dialogInterface, i ->
-                    mandateDialog!!.dismiss()
+                /*if (isNetworkMisMatch) {
+                    builder.setNegativeButton("Cancel") { dialogInterface, i ->
+                        mandateDialog!!.dismiss()
+                    }
                 }*/
                 mandateDialog = builder.create()
             }

@@ -17,6 +17,7 @@ import android.view.View
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cumulations.libreV2.AppUtils
+import com.cumulations.libreV2.activity.CTBluetoothPassCredentials.Companion.fromHtml
 import com.cumulations.libreV2.adapter.CTWifiListAdapter
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEPacket
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEServiceToApplicationInterface
@@ -61,7 +62,7 @@ class CTWifiListActivity : CTDeviceDiscoveryActivity(), BLEServiceToApplicationI
     private var isItDying = false
     private var mBluetoothLeService: BluetoothLeService? = null
     private var constructJSonString = StringBuilder()
-    private var scanListMap: MutableMap<String, String> = TreeMap()
+    private var scanListMap: MutableMap<String, Pair<String, Int>> = TreeMap()
     private var scanListLength: Int? = null
     private var taskJob: Job? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -209,8 +210,8 @@ class CTWifiListActivity : CTDeviceDiscoveryActivity(), BLEServiceToApplicationI
         }
     }
 
-    private fun sortAndSaveScanResults(list: List<ScanResultItem>?) {/*Sorted in ascending order for keys*/
-
+    private fun sortAndSaveScanResults(list: List<ScanResultItem>?) {
+        /*Sorted in ascending order for keys*/
         val unSortedHashmap = HashMap<String, String>()
         for (item in list!!) {
             item.ssid = item.ssid.toHtmlSpanned().toString()
@@ -223,7 +224,7 @@ class CTWifiListActivity : CTDeviceDiscoveryActivity(), BLEServiceToApplicationI
 
         val sortedMap = unSortedHashmap.toSortedMap()
         sortedMap.forEach { (key, value) ->
-            WifiConnection.getInstance().putWifiScanResultSecurity(key, value)
+          //  WifiConnection.getInstance().putWifiScanResultSecurity(key, value, rssi)
         }
     }
 
@@ -306,15 +307,25 @@ class CTWifiListActivity : CTDeviceDiscoveryActivity(), BLEServiceToApplicationI
                 if (obj.getString("SSID") == null || obj.getString("SSID").isEmpty()) {
                     continue
                 }
-                scanListMap[CTBluetoothPassCredentials.fromHtml(obj.getString("SSID")).toString()
-                ] = CTBluetoothPassCredentials.fromHtml(obj.getString("Security")).toString()/*  LibreLogger.d(TAG, "populateScanListMap " + scanListMap[obj.getString("SSID")] + " ssid: " + obj.getString("SSID"))*/
+                val ssid = fromHtml(obj.getString("SSID")).toString()
+                val security = fromHtml(obj.getString("Security")).toString()
+                val rssi = obj.getInt("rssi")
+                scanListMap[ssid] = Pair(security, rssi)
+                /*scanListMap[CTBluetoothPassCredentials.fromHtml(obj.getString("SSID")).toString()] = CTBluetoothPassCredentials.fromHtml(obj.getString("Security")).toString()*//*  LibreLogger.d(TAG, "populateScanListMap " + scanListMap[obj.getString("SSID")] + " ssid: " + obj.getString("SSID"))*/
             }
         } catch (e: JSONException) {
             e.printStackTrace()
             LibreLogger.d(TAG, "populateScanListMap Exception " + e.message)
         }
-        for (str in scanListMap.keys) {
-            WifiConnection.getInstance().putWifiScanResultSecurity(str, scanListMap[str])
+        /*for (str in scanListMap.keys) {
+            WifiConnection.getInstance().putWifiScanResultSecurity(str, scanListMap[str], rssi)
+        }*/
+        for ((ssid, securityAndRssi) in scanListMap) {
+            val security = securityAndRssi.first
+            val rssi = securityAndRssi.second
+
+            LibreLogger.d(CTBluetoothPassCredentials.TAG_SCAN, "populateScanListMap  $ssid and $security and $rssi")
+            WifiConnection.getInstance().putWifiScanResultSecurity(ssid, security, rssi)
         }
         getScanResultsFromDevice()
     }
@@ -355,7 +366,7 @@ class CTWifiListActivity : CTDeviceDiscoveryActivity(), BLEServiceToApplicationI
                     binding.rvWifiList.visibility = View.VISIBLE
                     binding.tvNoData.visibility = View.GONE
 
-                    sortAndSaveScanResults(scanResultResponse.items)
+                  //  sortAndSaveScanResults(scanResultResponse.items)
                     wifiListAdapter?.updateList(filteredScanResults)
                 }
             }

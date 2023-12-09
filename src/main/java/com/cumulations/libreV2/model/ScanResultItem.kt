@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 data class ScanResultItem(@SerializedName("Security")
-                          var security: String = "",
-                          @SerializedName("SSID")
-                          var ssid: String = ""):Serializable
+var security: String = "",
+    @SerializedName("SSID")
+    var ssid: String = "",
+    @SerializedName("rsi")
+    var rssi: String = "") : Serializable

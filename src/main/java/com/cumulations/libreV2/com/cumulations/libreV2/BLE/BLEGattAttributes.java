@@ -32,6 +32,7 @@ public class BLEGattAttributes {
     //public static UUID RIVA_BLE_CHARACTERISTICS = convertFromInteger(0x1111);
     //UUID.fromString("00001111-0000-1000-8000-00805f9b34fb");
     public static UUID RIVA_BLE_DESCRIPTOR = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
+    public static UUID BLE_DEVICE_UUID = UUID.fromString("29320bdb-b9b4-53cd-aae9-b1da527728d1");
     public static UUID convertFromInteger(int i) {
         final long MSB = 0x0000000000001000L;
         final long LSB = 0x800000805f9b34fbL;

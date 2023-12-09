@@ -26,6 +26,7 @@ object AppConstants{
     const val GETTING_DEVICE_NAME = 1001
     const val DEVICE_NAME = "deviceName"
     const val GET_SELECTED_SSID_REQUEST_CODE = 2221
+    const val OPEN_PHONE_WIFI_REQUEST_CODE = 2424
     const val SELECTED_SSID = "selectedSsid"
     const val SAC_DATA = "data"
     const val SAC_SSID= "SSID"
