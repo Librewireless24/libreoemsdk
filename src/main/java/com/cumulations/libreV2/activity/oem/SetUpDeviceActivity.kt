@@ -182,11 +182,13 @@ class SetUpDeviceActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionL
         if (packet.command == MIDCONST.CAST_ACCEPT_STATUS || packet.command == MIDCONST.CAST_ACCEPT_STATUS_572) {
             binding.layLoader.visibility = View.GONE
             val message = String(packet.getpayload())
-            val root = JSONObject(message)
-             tosStatus = if (root.has("tos")) {
-                root.getString("tos")
-            } else {
-                ""
+            if(message.isNotEmpty()) {
+                val root = JSONObject(message)
+                tosStatus = if (root.has("tos")) {
+                    root.getString("tos")
+                } else {
+                    ""
+                }
             }
             if (tosStatus == "activated") {
                 binding.btnSetupChromecast.text = getString(R.string.cast_enabled)

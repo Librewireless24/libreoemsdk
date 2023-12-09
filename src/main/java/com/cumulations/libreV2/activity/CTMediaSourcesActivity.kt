@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -269,30 +270,32 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
             }
         }
 
+
         binding.seekBarVolume.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                LibreLogger.d(TAG,"onProgressChanged $progress fromUser $fromUser")
+                Log.d("onProgressChanged $progress", "fromUser $fromUser")
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {
-                LibreLogger.d(TAG,"onStartTracking ${seekBar.progress}")
+                Log.d("onStartTracking", "${seekBar.progress}")
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar) {
 
                 LibreLogger.d("onStopTracking", "${seekBar.progress}")
 
-                if (seekBar.progress==0){
+                if (seekBar.progress == 0) {
                     binding.ivVolumeMute.setImageResource(R.drawable.ic_volume_mute)
-                } else binding.ivVolumeMute.setImageResource(R.drawable.volume_low_enabled)
+                } else
+                    binding.ivVolumeMute.setImageResource(R.drawable.volume_low_enabled)
 
                 val sceneObject = mScanHandler.getSceneObjectFromCentralRepo(currentIpAddress)
                 LUCIControl.SendCommandWithIp(MIDCONST.VOLUME_CONTROL, "" + seekBar.progress, LSSDPCONST.LUCI_SET, sceneObject?.ipAddress)
                 sceneObject?.volumeValueInPercentage = seekBar.progress
-                sceneObject.mute_status=LUCIMESSAGES.UNMUTE
+  sceneObject.mute_status=LUCIMESSAGES.UNMUTE
                 mScanHandler.putSceneObjectToCentralRepo(sceneObject?.ipAddress, sceneObject)
 
-//                TunnelingControl(currentIpAddress).sendCommand(PayloadType.DEVICE_VOLUME,(seekBar.progress/5).toByte())
+//                TunnelingControl(currentIpAddress).sendCommand(PaysloadType.DEVICE_VOLUME,(seekBar.progress/5).toByte())
             }
         })
 
@@ -406,16 +409,20 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
             }
         }
 
-        /*For free speakers irrespective of the state use Individual volume*/
-        if (LibreApplication./*ZONE_VOLUME_MAP*/INDIVIDUAL_VOLUME_MAP.containsKey(currentIpAddress)) {
-            binding.seekBarVolume.progress = LibreApplication.INDIVIDUAL_VOLUME_MAP[currentIpAddress]!!
+        val sceneObject = mScanHandler.getSceneObjectFromCentralRepo(currentIpAddress)
+
+        if (LibreApplication.INDIVIDUAL_VOLUME_MAP.containsKey(sceneObject!!.ipAddress)) {
+            binding.seekBarVolume.progress = LibreApplication.INDIVIDUAL_VOLUME_MAP[sceneObject?.ipAddress!!]!!
+            binding.seekBarVolume.progress = sceneObject!!.volumeValueInPercentage
+
         } else {
-            LUCIControl(currentIpAddress).SendCommand(MIDCONST./*ZONE_VOLUME*/VOLUME_CONTROL, null, LSSDPCONST.LUCI_GET)
-            val sceneObject = mScanHandler.getSceneObjectFromCentralRepo(currentIpAddress)
-            if (sceneObject?.volumeValueInPercentage!! >= 0)
-                binding.seekBarVolume.progress = sceneObject.volumeValueInPercentage
+            val control = LUCIControl(sceneObject!!.ipAddress)
+            control.SendCommand(MIDCONST.VOLUME_CONTROL, null, LSSDPCONST.LUCI_GET)
+            if (sceneObject!!.volumeValueInPercentage >= 0)
+                binding.seekBarVolume!!.progress = sceneObject!!.volumeValueInPercentage
         }
-        if (binding.seekBarVolume.progress==0){
+
+        if ( binding.seekBarVolume.progress == 0||sceneObject.mute_status == LUCIMESSAGES.MUTE) {
             binding.ivVolumeMute.setImageResource(R.drawable.ic_volume_mute)
         } else binding.ivVolumeMute.setImageResource(R.drawable.volume_low_enabled)
 
@@ -836,7 +843,7 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
 
                             binding.seekBarVolume.progress = sceneObject?.volumeValueInPercentage!!
 
-                            if (binding.seekBarVolume.progress==0){
+                            if (binding.seekBarVolume.progress==0||sceneObject.mute_status == LUCIMESSAGES.MUTE){
                                 binding.ivVolumeMute.setImageResource(R.drawable.ic_volume_mute)
                             } else binding.ivVolumeMute.setImageResource(R.drawable.volume_low_enabled)
 
@@ -853,13 +860,15 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
                         if(msg.isNotEmpty()) {
                             sceneObject.mute_status = msg
                             mScanHandler.putSceneObjectToCentralRepo(nettyData.getRemotedeviceIp(), sceneObject)
-                            if (sceneObject.mute_status == LUCIMESSAGES.MUTE) {
-                                binding.ivVolumeMute.setImageResource(R.drawable.ic_volume_mute)
-                            } else {
-                                binding.ivVolumeMute.setImageResource(R.drawable.volume_low_enabled)
-                            }
+//                            if (sceneObject.mute_status == LUCIMESSAGES.MUTE) {
+//               SUMA                 binding.ivVolumeMute.setImageResource(R.drawable.ic_volume_mute)
+//                            }
+//                            else {
+//                                binding.ivVolumeMute.setImageResource(R.drawable.volume_low_enabled)
+//                            }
                         }
-                    } catch (ex: Exception) {
+                    }
+                    catch (ex: Exception) {
                         ex.printStackTrace()
                     }
                 }
@@ -1214,12 +1223,12 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
         if (tunnelingData.remoteClientIp == currentIpAddress && tunnelingData.remoteMessage.size >= 24) {
             val tcpTunnelPacket = TCPTunnelPacket(tunnelingData.remoteMessage)
 
-            val sceneObject = mScanHandler.getSceneObjectFromCentralRepo(currentIpAddress)
-            binding.seekBarVolume.progress = sceneObject?.volumeValueInPercentage!!
-
-            if (binding.seekBarVolume.progress == 0) {
-                binding.ivVolumeMute.setImageResource(R.drawable.ic_volume_mute)
-            } else binding.ivVolumeMute.setImageResource(R.drawable.volume_low_enabled)
+//            val sceneObject = mScanHandler.getSceneObjectFromCentralRepo(currentIpAddress)
+//            binding.seekBarVolume.progress = sceneObject?.volumeValueInPercentage!!
+//comment
+//            if (binding.seekBarVolume.progress == 0) {
+//                binding.ivVolumeMute.setImageResource(R.drawable.ic_volume_mute)
+//            } else binding.ivVolumeMute.setImageResource(R.drawable.volume_low_enabled)
             LibreLogger.d(AUXBT_TAG,"== message tcp ${tcpTunnelPacket.currentSource} ")
             when (tcpTunnelPacket.currentSource) {
                 Constants.BT_SOURCE -> {

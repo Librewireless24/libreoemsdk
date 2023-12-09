@@ -105,7 +105,7 @@
                     android:layout_gravity="center"
                     android:padding="6dp"
                     tools:src="@mipmap/spotify"
-                    android:visibility="visible" />
+                    android:visibility="gone" />
 
                 <com.cumulations.libreV2.ProgressButtonImageView
                   android:id="@+id/iv_play_pause"

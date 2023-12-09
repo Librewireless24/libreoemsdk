@@ -77,6 +77,7 @@ color help_close_mark
 color help_web_view_bg
 color issue_report_card_color
 color light_gray
+color loader_grey
 color rb_locale_textcolor_selector
 color riva_logo_bg
 color screen_bg
@@ -108,9 +109,11 @@ dimen top_margin
 dimen wifi_router_padding
 drawable add_device_selected
 drawable add_device_unselected
+drawable airable
 drawable airable_amazon_music
 drawable airplay
 drawable airplay_logo
+drawable airplay_no_bg
 drawable album_borderless
 drawable albums_border
 drawable alexa_account
@@ -222,6 +225,8 @@ drawable riva_logo_opaque_bg
 drawable riva_splash_1080p
 drawable riva_stop_all
 drawable riva_voice_logo_opaque_bg
+drawable roon
+drawable roon_nowplaying
 drawable rounded_white_bg
 drawable second_iheartradio_image2
 drawable settings_selected
@@ -300,6 +305,7 @@ id btn_wifi_settings
 id btn_yesImIn
 id card_view
 id cb_dont
+id childLayout
 id choosesong
 id chromecast_login_progress_bar
 id clockwise
@@ -348,7 +354,6 @@ id item_title
 id iv_album_art
 id iv_alexa_account
 id iv_alexa_settings
-id iv_aux_bt
 id iv_back
 id iv_battery_status
 id iv_bledevicelist
@@ -380,9 +385,14 @@ id lay_Alexa
 id lay_Header
 id lay_Item
 id lay_Loader
+id lay_MiniPlayer
+id lay_OtherTypes
 id lay_Play
+id lay_PlayControls
+id lay_Shimmer
 id lay_buttons
 id lay_card
+id lay_data
 id lay_deviceCount
 id lay_editDeviceName
 id lay_issuesReport
@@ -539,6 +549,7 @@ id txt_heading
 id txt_improve_Chromecast
 id txt_learn_more
 id txt_message
+id txt_playMusic
 id txt_second_String
 id txt_send_device
 id txt_setUpVoice
@@ -551,6 +562,7 @@ id txt_timeZoneName
 id txt_timeframe
 id user_name
 id user_password
+id view
 id view_pager_tabs
 id web_View
 id web_view
@@ -615,6 +627,7 @@ layout gcast_seekbar_layout_listitem
 layout generic_alert_dialogbox
 layout layout_bottom_sheet
 layout music_playing_widget
+layout music_playing_widget_placeholder
 layout progress_bar
 layout progress_button
 layout report_issue_timeframe_list
@@ -671,6 +684,7 @@ string action_settings
 string activate_cast
 string add
 string after_connecting_to_libre_device
+string airable
 string airplay
 string albumname_not_available
 string alexaText
@@ -697,7 +711,9 @@ string audio_output
 string aux
 string aux_in
 string aux_label
+string aux_playing
 string away_mode_info
+string back_button_description
 string bass
 string bluetooth
 string bluetooth_access
@@ -751,6 +767,7 @@ string deviceRebooting
 string device_are_available
 string device_blinking_colors
 string device_blinking_white
+string device_connection_los
 string device_light_white
 string device_name
 string device_name_empty
@@ -902,6 +919,7 @@ string permission_required
 string play_music
 string play_tone
 string play_tone_request
+string playlist
 string pleaseWait
 string please_selecte_wifi
 string please_share_details
@@ -909,6 +927,7 @@ string posting_cred
 string power
 string power_on_libre_device
 string powered_text
+string q_play
 string ready_play_music
 string refresh
 string remote_control
@@ -923,6 +942,8 @@ string retry
 string retry_hearsound
 string right
 string riva_tutorial_url
+string roon
+string rtsp
 string save
 string scanning
 string screen2_tv1
@@ -942,6 +963,7 @@ string set_up_voice_control
 string set_up_voice_control_tab
 string setting_up_device
 string setting_up_speaker
+string settings_button_description
 string setup_amazon_login
 string setup_chromecast
 string setup_device
@@ -956,6 +978,7 @@ string skip
 string skip_to_home
 string software_update
 string somethingWentWrong
+string somethingWentWrong_tryAgain
 string something_wrong
 string something_wrong_msg
 string sourceIndexWrong
@@ -985,6 +1008,7 @@ string title_activity_gcast_update_status_available
 string title_activity_google_cast_update_after_sac
 string title_activity_welcome
 string title_error_sac_message
+string title_libre_caps
 string tos_accept
 string trackname_not_available
 string treble

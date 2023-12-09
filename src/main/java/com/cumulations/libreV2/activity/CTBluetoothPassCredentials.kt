@@ -161,7 +161,7 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
                     val data = ByteArray(0)
                     val mBlePacketScanWIFI = BLEPacket(data, BLEUtils.BLE_SAC_APP2DEV_FRIENDLYNAME.toByte(), true)
                     BleCommunication.writeDataToBLEDevice(value, mBlePacketScanWIFI)
-                    // LibreLogger.d("SUMA_SCAN", "******** SUMA GET THE BLE PACKET INFO FriendlyNameBLEPASS")
+                     LibreLogger.d("SUMA_SCAN", "******** SUMA GET THE BLE PACKET INFO FriendlyNameBLEPASS")
 
                     //  getFriendlyNameThroBLE();
                 }, timeout.toLong())
@@ -191,6 +191,8 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
                         val data = ByteArray(0)
                         val mBlePacketScanWIFI = BLEPacket(data, BLEUtils.BLE_SAC_APP2DEV_SECURITY_CHECK.toByte(), true)
                         BleCommunication.writeDataToBLEDevice(value, mBlePacketScanWIFI)
+                        LibreLogger.d("SUMA_SCAN", "******** SUMA GET THE BLE PACKET INFO two")
+
                         LibreLogger.d(TAG, "Security check 27 writing SUMA GET THE BLE PACKET " + "INFO" + " " + "SECURITYCHECK_BLEPASS")
 
                         //  getFriendlyNameThroBLE();
@@ -203,7 +205,7 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
                         val data = ByteArray(0)
                         val mBlePacketScanWIFI = BLEPacket(data, BLEUtils.BLE_SAC_APP2DEV_SCAN_WIFI.toByte(), true)
                         BleCommunication.writeDataToBLEDevice(value, mBlePacketScanWIFI)
-                        // LibreLogger.d("SUMA_SCAN", "******** SUMA GET THE BLE PACKET INFO SCAN_WIFI_BLEPASS")
+                        LibreLogger.d("SUMA_SCAN", "******** SUMA GET THE BLE PACKET INFO THREE")
 
                         //  getFriendlyNameThroBLE();
                     }, (timeout + 1500).toLong())

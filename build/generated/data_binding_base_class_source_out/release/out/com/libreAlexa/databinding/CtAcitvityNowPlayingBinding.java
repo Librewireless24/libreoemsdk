@@ -67,6 +67,9 @@ public final class CtAcitvityNowPlayingBinding implements ViewBinding {
   public final LinearLayout layPlay;
 
   @NonNull
+  public final LinearLayout layPlayControls;
+
+  @NonNull
   public final ProgressBar loader;
 
   @NonNull
@@ -112,13 +115,13 @@ public final class CtAcitvityNowPlayingBinding implements ViewBinding {
       @NonNull AppCompatImageView ivPrevious, @NonNull AppCompatImageView ivRepeat,
       @NonNull AppCompatImageView ivShuffle, @NonNull AppCompatImageView ivSourceIcon,
       @NonNull AppCompatImageView ivVolumeDown, @NonNull LinearLayout layPlay,
-      @NonNull ProgressBar loader, @NonNull AppCompatImageView mediaBtnSkipNext,
-      @NonNull AppCompatImageView mediaBtnSkipPrev, @NonNull RelativeLayout mshuffleFavRepeat,
-      @NonNull AppCompatSeekBar seekBarSong, @NonNull AppCompatSeekBar seekBarVolume,
-      @NonNull Toolbar toolbar, @NonNull AppCompatTextView tvAlbumName,
-      @NonNull AppCompatTextView tvCurrentDuration, @NonNull AppCompatTextView tvDeviceName,
-      @NonNull AppCompatTextView tvSourceType, @NonNull AppCompatTextView tvTotalDuration,
-      @NonNull AppCompatTextView tvTrackName) {
+      @NonNull LinearLayout layPlayControls, @NonNull ProgressBar loader,
+      @NonNull AppCompatImageView mediaBtnSkipNext, @NonNull AppCompatImageView mediaBtnSkipPrev,
+      @NonNull RelativeLayout mshuffleFavRepeat, @NonNull AppCompatSeekBar seekBarSong,
+      @NonNull AppCompatSeekBar seekBarVolume, @NonNull Toolbar toolbar,
+      @NonNull AppCompatTextView tvAlbumName, @NonNull AppCompatTextView tvCurrentDuration,
+      @NonNull AppCompatTextView tvDeviceName, @NonNull AppCompatTextView tvSourceType,
+      @NonNull AppCompatTextView tvTotalDuration, @NonNull AppCompatTextView tvTrackName) {
     this.rootView = rootView;
     this.ilMusic = ilMusic;
     this.ivAlbumArt = ivAlbumArt;
@@ -133,6 +136,7 @@ public final class CtAcitvityNowPlayingBinding implements ViewBinding {
     this.ivSourceIcon = ivSourceIcon;
     this.ivVolumeDown = ivVolumeDown;
     this.layPlay = layPlay;
+    this.layPlayControls = layPlayControls;
     this.loader = loader;
     this.mediaBtnSkipNext = mediaBtnSkipNext;
     this.mediaBtnSkipPrev = mediaBtnSkipPrev;
@@ -253,6 +257,12 @@ public final class CtAcitvityNowPlayingBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.lay_PlayControls;
+      LinearLayout layPlayControls = ViewBindings.findChildViewById(rootView, id);
+      if (layPlayControls == null) {
+        break missingId;
+      }
+
       id = R.id.loader;
       ProgressBar loader = ViewBindings.findChildViewById(rootView, id);
       if (loader == null) {
@@ -333,7 +343,7 @@ public final class CtAcitvityNowPlayingBinding implements ViewBinding {
 
       return new CtAcitvityNowPlayingBinding((FrameLayout) rootView, ilMusic, ivAlbumArt,
           ivAlexaAccount, ivBack, ivBlurredAlbumArt, ivNext, ivPlayPause, ivPrevious, ivRepeat,
-          ivShuffle, ivSourceIcon, ivVolumeDown, layPlay, loader, mediaBtnSkipNext,
+          ivShuffle, ivSourceIcon, ivVolumeDown, layPlay, layPlayControls, loader, mediaBtnSkipNext,
           mediaBtnSkipPrev, mshuffleFavRepeat, seekBarSong, seekBarVolume, toolbar, tvAlbumName,
           tvCurrentDuration, tvDeviceName, tvSourceType, tvTotalDuration, tvTrackName);
     }

@@ -121,8 +121,10 @@ class HelpImproveChromeCastActivity : CTDeviceDiscoveryActivity(), LibreDeviceIn
     }
 
     private fun sendLuciCommand(data: String) {
-        val control = LUCIControl(currentSceneObject!!.ipAddress)
-        control.SendCommand(MIDCONST.TOS_ACCEPT_REQUEST, data, LSSDPCONST.LUCI_SET)
+        if(currentSceneObject!=null) {
+            val control = LUCIControl(currentSceneObject!!.ipAddress)
+            control.SendCommand(MIDCONST.TOS_ACCEPT_REQUEST, data, LSSDPCONST.LUCI_SET)
+        }
     }
 
 

@@ -16,10 +16,14 @@ import android.os.Build
 import android.os.Build.VERSION
 import android.os.Handler
 import android.os.Looper
+import android.os.ParcelUuid
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import com.cumulations.libreV2.activity.CTBluetoothDeviceListActivity
+import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEGattAttributes.BLE_DEVICE_UUID
 import com.libreAlexa.util.LibreLogger
+import java.util.UUID
 
 /**
  * This class is converted from java to kotlin 11/OCT/2023
@@ -88,7 +92,8 @@ class ScannerBLE(private val mBLActivity: CTBluetoothDeviceListActivity,
             if(mBluetoothScaneer!=null) {
                 LibreLogger.d(TAG, "Start Scan called with scanCallback")
                 mBluetoothScaneer!!.startScan(null, scanSettings, scanCallback)
-            }else{
+            }
+            else{
                 LibreLogger.d(TAG, "Bluetooth Scanner null so scan didn't called")
             }
 
@@ -98,6 +103,9 @@ class ScannerBLE(private val mBLActivity: CTBluetoothDeviceListActivity,
                 LibreLogger.d(TAG, "Stop Scan called with scanCallback")
                 mBluetoothScaneer!!.stopScan(scanCallback)
             }else{
+                val bluetoothManager = mBLActivity.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+                mBluetoothAdapter = bluetoothManager.adapter
+                mBluetoothScaneer = mBluetoothAdapter.bluetoothLeScanner
                 LibreLogger.d(TAG, "Bluetooth Scanner null so stopScan didn't called")
             }
         }
@@ -116,18 +124,57 @@ class ScannerBLE(private val mBLActivity: CTBluetoothDeviceListActivity,
         private val TAG_BLE = "Mansoor"
     }
 
+//    private val scanCallback = object : ScanCallback() {
+//        @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+//        override fun onScanResult(callbackType: Int, result: ScanResult) {
+//            if (VERSION.SDK_INT >= 31) {
+//                if (ActivityCompat.checkSelfPermission(mBLActivity, permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+//                    // TODO: Consider calling
+//                    //    ActivityCompat#requestPermissions
+//                    // here to request the missing permissions, and then overriding
+//                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//                    //                                          int[] grantResults)
+//                    // to handle the case where the user grants the permission. See the documentation
+//                    // for ActivityCompat#requestPermissions for more details.
+//                    LibreLogger.d(TAG, "Permissions are missing")
+//                    return
+//                }
+//            }
+//            if (result.device.name != null) {
+//                mBLActivity.runOnUiThread {
+//                    val scanRecord = result.scanRecord
+//                    val device: BluetoothDevice = result.device
+//                    val deviceName = device.name ?: "Unknown Device"
+//                    val rssi = result.rssi
+//
+//                    // Extract the Shortened Local Name from the advertisement data
+//                    val shortenedLocalName = extractShortenedLocalName(scanRecord)
+//
+//
+//                    // Print the Shortened Local Name
+//                    if(!shortenedLocalName.contains("LSAA")) {
+//                        mBLActivity.addDevice(result.device, result.rssi)
+//                        LibreLogger.d(TAG_BLE, "Shaik Device Name starts with LSAA $deviceName, " + "RSSI:$rssi, Shortened Local Name: $shortenedLocalName")
+//                    }else{
+//                        LibreLogger.d(TAG_BLE,"Shaik Device Name:not starts LSAA  $deviceName, " + "RSSI:$rssi, " + "Shortened Local Name: $shortenedLocalName")
+//                    }
+//                }
+//            } else {
+//                LibreLogger.d(TAG, "Shaik BT device name not available ")
+//            }
+//        }
+//
+//        override fun onScanFailed(errorCode: Int) {
+//            LibreLogger.d(TAG, "Shaik onScanFailed $errorCode")
+//        }
+//    }
+
     private val scanCallback = object : ScanCallback() {
         @RequiresApi(Build.VERSION_CODES.TIRAMISU)
         override fun onScanResult(callbackType: Int, result: ScanResult) {
             if (VERSION.SDK_INT >= 31) {
                 if (ActivityCompat.checkSelfPermission(mBLActivity, permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
+
                     LibreLogger.d(TAG, "Permissions are missing")
                     return
                 }
@@ -135,21 +182,37 @@ class ScannerBLE(private val mBLActivity: CTBluetoothDeviceListActivity,
             if (result.device.name != null) {
                 mBLActivity.runOnUiThread {
                     val scanRecord = result.scanRecord
+
                     val device: BluetoothDevice = result.device
-                    val deviceName = device.name ?: "Unknown Device"
-                    val rssi = result.rssi
+                    LibreLogger.d(TAG_BLE, "Shaik got Ble data  ${scanRecord!!.serviceData}")
+                    // Get the service data map
+                    val serviceData: Map<ParcelUuid, ByteArray> = scanRecord.serviceData
+                    // Iterate through the service data
+                    for ((serviceUuid, data) in serviceData) {
+                        // Process the service data
+                        Log.d(TAG, "Shaik ExtractServiceUUID: ${device.name}, " +
+                                "Address: ${device.address}, " +
+                                "Service UUID: ${serviceUuid.toString()}, " +
+                                "Service Data: ${bytesToHex(data)}")
 
-                    // Extract the Shortened Local Name from the advertisement data
-                    val shortenedLocalName = extractShortenedLocalName(scanRecord)
-
-
-                    // Print the Shortened Local Name
-                    if(shortenedLocalName.contains("LSAA")) {
-                        mBLActivity.addDevice(result.device, result.rssi)
-                        LibreLogger.d(TAG_BLE, "Shaik Device Name starts with LSAA $deviceName, " + "RSSI:$rssi, Shortened Local Name: $shortenedLocalName")
-                    }else{
-                        LibreLogger.d(TAG_BLE,"Shaik Device Name:not starts LSAA  $deviceName, " + "RSSI:$rssi, " + "Shortened Local Name: $shortenedLocalName")
+                        if (BLE_DEVICE_UUID == UUID.fromString(serviceUuid.toString()))
+                        {
+                            mBLActivity.addDevice(result.device, result.rssi)
+                        }
+                        else {
+                            LibreLogger.d(TAG_BLE, "Shaik Device UUID is not matching  ${result.scanRecord!!.serviceData}")
+                        }
                     }
+                    LibreLogger.d(TAG_BLE, "Shaik outside for loop")
+
+                    /* // Extract the Shortened Local Name from the advertisement data
+                    val shortenedLocalName = extractShortenedLocalName(scanRecord)
+                     if(shortenedLocalName.contains("LSAA")) {
+                         mBLActivity.addDevice(result.device, result.rssi)
+                         LibreLogger.d(TAG_BLE, "Shaik Device Name starts with   Shortened Local Name: $shortenedLocalName")
+                     }else{
+                         LibreLogger.d(TAG_BLE,"Shaik Device Name:not starts LSAA Shortened Local Name: $shortenedLocalName")
+                     }*/
                 }
             } else {
                 LibreLogger.d(TAG, "Shaik BT device name not available ")
@@ -160,7 +223,6 @@ class ScannerBLE(private val mBLActivity: CTBluetoothDeviceListActivity,
             LibreLogger.d(TAG, "Shaik onScanFailed $errorCode")
         }
     }
-
     private fun extractShortenedLocalName(scanRecord: ScanRecord?): String {
         val adData = scanRecord?.bytes ?: return "No Advertisement Data"
 
@@ -199,6 +261,14 @@ class ScannerBLE(private val mBLActivity: CTBluetoothDeviceListActivity,
         }
         return "No Shortened Local Name"
 
+    }
+
+    private fun bytesToHex(bytes: ByteArray): String {
+        val stringBuilder = StringBuilder()
+        for (b in bytes) {
+            stringBuilder.append(String.format("%02X ", b))
+        }
+        return stringBuilder.toString().trim { it <= ' ' }
     }
 
 }

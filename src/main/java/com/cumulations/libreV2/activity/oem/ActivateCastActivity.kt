@@ -95,6 +95,7 @@ class ActivateCastActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteraction
             intentToHome(this)
 
         }
+
         binding.imgRightArrow.setOnClickListener {
             val goToActivateCastActivity = Intent(this, CastToSActivity::class.java)
             goToActivateCastActivity.putExtra(Constants.CURRENT_DEVICE_IP, currentIpAddress)

@@ -84,7 +84,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
-        android:layout_above="@id/id_music_widget"
+        android:layout_above="@id/lay_MiniPlayer"
         android:weightSum="1">
 
         <TextView
@@ -107,10 +107,29 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.5" />
     </LinearLayout>
-    <include
-        android:id="@+id/id_music_widget"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        layout="@layout/music_playing_widget"/>
+    <RelativeLayout
+      android:id="@+id/lay_MiniPlayer"
+      android:layout_width="match_parent"
+     android:layout_alignParentBottom="true"
+      android:layout_height="wrap_content">
+        <com.facebook.shimmer.ShimmerFrameLayout
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:id="@+id/lay_Shimmer"
+          app:shimmer_auto_start="false">
+            <include
+              layout="@layout/music_playing_widget_placeholder"/>
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+        <LinearLayout
+          android:id="@+id/lay_data"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:visibility="invisible"
+          android:layout_gravity="bottom">
+            <include
+              android:id="@+id/id_music_widget"
+              layout="@layout/music_playing_widget"/>
+        </LinearLayout>
+    </RelativeLayout>
 </RelativeLayout>

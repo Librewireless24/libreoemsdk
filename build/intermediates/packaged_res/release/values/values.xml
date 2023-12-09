@@ -55,6 +55,7 @@
     <color name="help_web_view_bg">#FFFFFFFF</color>
     <color name="issue_report_card_color">#6F7787</color>
     <color name="light_gray">#C0C0C0</color>
+    <color name="loader_grey">#DDDDDD</color>
     <color name="riva_logo_bg">#292929</color>
     <color name="screen_bg">#1E1E1E</color>
     <color name="spotify_color">#1DB954</color>
@@ -109,6 +110,7 @@
     <string name="activate_cast">Activate Cast</string>
     <string name="add">Add</string>
     <string name="after_connecting_to_libre_device"><![CDATA[After connecting to the Libre speaker, return to the LibreVoice app & click next]]></string>
+    <string name="airable">Airable</string>
     <string name="airplay">Airplay</string>
     <string name="albumname_not_available">AlbumName Not Available</string>
     <string name="alexaText">amazon alexa</string>
@@ -123,7 +125,7 @@
     <string name="amazon_login">Amazon Login</string>
     <string name="amazon_login_caps">Amazon Login</string>
     <string name="ap_notfound">Speaker couldn\'t able to find AP</string>
-    <string name="app_name">LibreVoice</string>
+    <string name="app_name">Libre</string>
     <string name="app_not_installed">App Not Installed Alert</string>
     <string name="apple_device">AppleDevice</string>
     <string name="ask_alexa">Ask Alexa to play your\n favourite playlists, artists and genres.\n For example, just say, Alexa,\n play Today’s Top Hits.</string>
@@ -135,7 +137,9 @@
     <string name="aux">Aux In</string>
     <string name="aux_in">AuxIn</string>
     <string name="aux_label">Aux</string>
+    <string name="aux_playing">Aux Playing</string>
     <string name="away_mode_info">Away Mode Info</string>
+    <string name="back_button_description">Back\n</string>
     <string name="bass">Bass</string>
     <string name="bluetooth">Bluetooth</string>
     <string name="bluetooth_access">Bluetooth access is needed to improve the connection to your device, determine your location during setup, and discover and setup nearby devices. You can turn it back off when you\'re done with setup.</string>
@@ -189,6 +193,7 @@
     <string name="device_are_available">" "Device are available to setup</string>
     <string name="device_blinking_colors">If the speaker light is blinking colors.</string>
     <string name="device_blinking_white">If the speaker light is blinking white.</string>
+    <string name="device_connection_los">Device Connection Lost</string>
     <string name="device_light_white">If the speaker light is white.</string>
     <string name="device_name">Speaker Name</string>
     <string name="device_name_empty">Enter speaker name</string>
@@ -218,7 +223,7 @@
     <string name="enterText">Please enter text</string>
     <string name="enter_the_description">Enter the description of the issue faced.</string>
     <string name="entered_incorrect_wifi_pwd">You might have entered incorrect Wi-Fi password*</string>
-    <string name="external_source">External Source</string>
+    <string name="external_source">External</string>
     <string name="failed">FAILED</string>
     <string name="favorite_button">Favorites</string>
     <string name="favourites">Favourites</string>
@@ -263,7 +268,7 @@ By clicking Confirm, Device will be removed and you will be redirected to Home. 
     <string name="learn_more3"> Amazon Alexa App.</string>
     <string name="left">Left</string>
     <string name="less_than_5_minutes">Less Than 5 Minutes Ago</string>
-    <string name="libre_voice">LibreVoice</string>
+    <string name="libre_voice">Libre</string>
     <string name="listen_speakers_using_remote">Listen on your speakers or TV,\n <b>using the Spotify app as a remote</b></string>
     <string name="listening">Listening …</string>
     <string name="loadingLocalContent">Loading Local contents</string>
@@ -345,6 +350,7 @@ By clicking Confirm, Device will be removed and you will be redirected to Home. 
     <string name="play_music">Play music from…</string>
     <string name="play_tone">Play Tone</string>
     <string name="play_tone_request">Requesting to Play Tone</string>
+    <string name="playlist">Playlist</string>
     <string name="pleaseWait">Please wait…</string>
     <string name="please_selecte_wifi">Please select Wi-Fi</string>
     <string name="please_share_details">Please share details of the issues faced on</string>
@@ -352,6 +358,7 @@ By clicking Confirm, Device will be removed and you will be redirected to Home. 
     <string name="power">Power</string>
     <string name="power_on_libre_device">Power on Libre speaker</string>
     <string name="powered_text">Powered by DDMS technology</string>
+    <string name="q_play">QPlay</string>
     <string name="ready_play_music">Ready to play some music?</string>
     <string name="refresh">Refresh</string>
     <string name="remote_control">Remote Control</string>
@@ -366,11 +373,13 @@ By clicking Confirm, Device will be removed and you will be redirected to Home. 
     <string name="retry_hearsound">Retry</string>
     <string name="right">Right</string>
     <string name="riva_tutorial_url">https://rivaaudio.com/alexa-tutorial/en/index.html</string>
+    <string name="roon">Roon</string>
+    <string name="rtsp">RTSP</string>
     <string name="save">Save</string>
     <string name="scanning">Finding BLE devices</string>
     <string name="screen2_tv1">Here are some of the many things \n you can ask Alexa</string>
     <string name="sdcard">SDCard</string>
-    <string name="sdk_version_number">1.0(1.2)</string>
+    <string name="sdk_version_number">1.0(1.3)</string>
     <string name="searchText">Please enter text to search</string>
     <string name="searchTextPlaceHolder">Please enter text to search</string>
     <string name="searching_renderer">Searching the renderer…</string>
@@ -385,11 +394,12 @@ By clicking Confirm, Device will be removed and you will be redirected to Home. 
     <string name="set_up_voice_control_tab">Set up voice control and multiroom in the <u><font color="#FF3351F4">\nGoogle Home App</font></u></string>
     <string name="setting_up_device"><![CDATA[Setting up speaker & looking for update]]></string>
     <string name="setting_up_speaker">Setting up speaker and looking for update</string>
+    <string name="settings_button_description">Settings\n</string>
     <string name="setup_amazon_login">Setup Amazon Login</string>
     <string name="setup_chromecast">Setup Chromecast</string>
     <string name="setup_device">Setup Device</string>
     <string name="setup_instructions">Setup Instructions</string>
-    <string name="setup_name">LibreVoice</string>
+    <string name="setup_name">Libre</string>
     <string name="setup_speaker">Setup New Speaker</string>
     <string name="setup_voice_control">To setup voice control from a Google Assistant-enabled speaker and multiroom groups with Chromecast-enabled speakers, download the Google Home app</string>
     <string name="sign_in_az">Sign in to your Amazon account to enable Alexa Voice Service features.</string>
@@ -399,6 +409,7 @@ By clicking Confirm, Device will be removed and you will be redirected to Home. 
     <string name="skip_to_home">Skip to Home</string>
     <string name="software_update">Software Update</string>
     <string name="somethingWentWrong">Something went wrong , please try again later.</string>
+    <string name="somethingWentWrong_tryAgain">Something went wrong, please try again</string>
     <string name="something_wrong">Something is wrong</string>
     <string name="something_wrong_msg">If you are not hearing the sound , you may be attempting to setup the wrong device</string>
     <string name="sourceIndexWrong">Selected source index is worng</string>
@@ -426,10 +437,11 @@ By clicking Confirm, Device will be removed and you will be redirected to Home. 
     <string name="title_activity_ctbluetooth_setup_instructions">Bluetooth</string>
     <string name="title_activity_gcast_update_status_available">Firmware Update Status</string>
     <string name="title_activity_google_cast_update_after_sac">Firmware Upgrade</string>
-    <string name="title_activity_welcome">LibreVoice</string>
+    <string name="title_activity_welcome">Libre</string>
     <string name="title_error_sac_message">
         Please connect to speaker ssid
     </string>
+    <string name="title_libre_caps">LIBRE</string>
     <string name="tos_accept">Stream the music you love using your favorite apps on your phone, tablet, or laptop to this soundbar.\n\n\nBy clicking “Accept” below, you are indicating your agreement to the <u><b><font color="#FF3351F4">Google Terms of Service</font></b></u> and <u><b><font color="#FF3351F4">Google Privacy Policy</font></b></u>, which govern your use of Chromecast built-in.</string>
     <string name="trackname_not_available">TrackName Not Available</string>
     <string name="treble">Treble</string>
@@ -466,28 +478,28 @@ By clicking Confirm, Device will be removed and you will be redirected to Home. 
         <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
     </style>
     <style name="AppTextInputLayoutTheme" parent="Widget.Design.TextInputLayout">
-        <!-- Hint color and label color in FALSE state -->
+        
         <item name="android:textColorHint">@android:color/white</item>
         <item name="android:textSize">14sp</item>
-        <!-- Label color in TRUE state and bar color FALSE and TRUE State -->
+        
         <item name="colorAccent">@android:color/white</item>
         <item name="colorControlNormal">@color/white</item>
         <item name="colorControlActivated">@color/app_text_color_enabled</item>
     </style>
     <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
-        <!-- Customize your theme here. -->
+        
         <item name="android:windowSoftInputMode">stateHidden|adjustPan</item>
 
-        <!-- Active thumb color & Active track color(30% transparency) -->
+        
         <item name="colorControlActivated">@color/app_text_color_enabled</item>
-        <!-- Inactive thumb color -->
+        
         <item name="colorSwitchThumbNormal">@color/brand_dark_grey</item>
-        <!-- Inactive track color(30% transparency) -->
-        <!--<item name="android:colorForeground">@color/brand_dark_grey</item>-->
+        
+        
         <item name="android:textColor">@color/white</item>
         <item name="colorAccent">@color/transparent</item>
 
-        <!--Should be importing 'android.support.v7.app.AlertDialog' instead of 'android.app.AlertDialog'-->
+        
         <item name="alertDialogTheme">@style/AlertDialogTheme</item>
 
     </style>
@@ -498,9 +510,9 @@ By clicking Confirm, Device will be removed and you will be redirected to Home. 
     </style>
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
     <style name="CustomProgressDialogTheme" parent="Theme.AppCompat.Dialog.Alert">
-        <!-- Customize your theme here. -->
+        
         <item name="android:windowSoftInputMode">stateHidden|adjustPan</item>
-        <!-- Active thumb color & Active track color(30% transparency) -->
+        
         <item name="colorControlActivated">@color/app_text_color_enabled</item>
         <item name="colorAccent">@color/app_text_color_enabled</item>
     </style>
@@ -527,9 +539,9 @@ By clicking Confirm, Device will be removed and you will be redirected to Home. 
     <style name="GradientProgressBarStyle" parent="@style/Widget.AppCompat.ProgressBar.Horizontal">
         <item name="android:indeterminateDrawable">@drawable/gradient_progress_drawable</item>
         <item name="android:indeterminate">true</item>
-        <!--<item name="android:indeterminateTint" tools:targetApi="lollipop">@color/btn_app_dark_pink</item>-->
-        <!--<item name="android:indeterminateTintMode" tools:targetApi="lollipop">src_in</item>-->
-        <!--<item name="colorAccent">@color/btn_app_orange</item>-->
+        
+        
+        
         <item name="android:maxHeight">2dp</item>
         <item name="android:minHeight">2dp</item>
     </style>
@@ -572,19 +584,19 @@ By clicking Confirm, Device will be removed and you will be redirected to Home. 
         <item name="android:textAllCaps">true</item>
     </style>
     <style name="TextInputLayoutTheme" parent="Base.Theme.MaterialComponents">
-        <!-- Customize your theme here. -->
+        
         <item name="android:windowSoftInputMode">stateHidden|adjustPan</item>
 
-        <!-- Active thumb color & Active track color(30% transparency) -->
+        
         <item name="colorControlActivated">@color/app_text_color_enabled</item>
-        <!-- Inactive thumb color -->
+        
         <item name="colorSwitchThumbNormal">@color/brand_dark_grey</item>
-        <!-- Inactive track color(30% transparency) -->
-        <!--<item name="android:colorForeground">@color/brand_dark_grey</item>-->
+        
+        
         <item name="android:textColor">@color/white</item>
         <item name="colorAccent">@color/transparent</item>
 
-        <!--Should be importing 'android.support.v7.app.AlertDialog' instead of 'android.app.AlertDialog'-->
+        
         <item name="alertDialogTheme">@style/AlertDialogTheme</item>
 
     </style>

@@ -29,9 +29,6 @@ public final class CtListItemSpeakersBinding implements ViewBinding {
   public final MusicPlayingWidgetBinding ilMusicPlayingWidget;
 
   @NonNull
-  public final AppCompatImageView ivAuxBt;
-
-  @NonNull
   public final AppCompatImageView ivBatteryStatus;
 
   @NonNull
@@ -62,7 +59,7 @@ public final class CtListItemSpeakersBinding implements ViewBinding {
   public final AppCompatTextView tvDeviceName;
 
   private CtListItemSpeakersBinding(@NonNull CardView rootView, @NonNull CardView cvSpeaker,
-      @NonNull MusicPlayingWidgetBinding ilMusicPlayingWidget, @NonNull AppCompatImageView ivAuxBt,
+      @NonNull MusicPlayingWidgetBinding ilMusicPlayingWidget,
       @NonNull AppCompatImageView ivBatteryStatus, @NonNull AppCompatImageView ivDevice,
       @NonNull AppCompatImageView ivDeviceArrow, @NonNull AppCompatImageView ivDeviceCast,
       @NonNull AppCompatImageView ivDeviceSettings, @NonNull AppCompatImageView ivVolumeMute,
@@ -71,7 +68,6 @@ public final class CtListItemSpeakersBinding implements ViewBinding {
     this.rootView = rootView;
     this.cvSpeaker = cvSpeaker;
     this.ilMusicPlayingWidget = ilMusicPlayingWidget;
-    this.ivAuxBt = ivAuxBt;
     this.ivBatteryStatus = ivBatteryStatus;
     this.ivDevice = ivDevice;
     this.ivDeviceArrow = ivDeviceArrow;
@@ -119,12 +115,6 @@ public final class CtListItemSpeakersBinding implements ViewBinding {
         break missingId;
       }
       MusicPlayingWidgetBinding binding_ilMusicPlayingWidget = MusicPlayingWidgetBinding.bind(ilMusicPlayingWidget);
-
-      id = R.id.iv_aux_bt;
-      AppCompatImageView ivAuxBt = ViewBindings.findChildViewById(rootView, id);
-      if (ivAuxBt == null) {
-        break missingId;
-      }
 
       id = R.id.iv_battery_status;
       AppCompatImageView ivBatteryStatus = ViewBindings.findChildViewById(rootView, id);
@@ -187,9 +177,8 @@ public final class CtListItemSpeakersBinding implements ViewBinding {
       }
 
       return new CtListItemSpeakersBinding((CardView) rootView, cvSpeaker,
-          binding_ilMusicPlayingWidget, ivAuxBt, ivBatteryStatus, ivDevice, ivDeviceArrow,
-          ivDeviceCast, ivDeviceSettings, ivVolumeMute, ivVolumeUp, llSpeaker, seekBarVolume,
-          tvDeviceName);
+          binding_ilMusicPlayingWidget, ivBatteryStatus, ivDevice, ivDeviceArrow, ivDeviceCast,
+          ivDeviceSettings, ivVolumeMute, ivVolumeUp, llSpeaker, seekBarVolume, tvDeviceName);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

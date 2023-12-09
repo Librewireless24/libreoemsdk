@@ -236,9 +236,11 @@
           tools:text="Album Name" />
 
         <LinearLayout
+          android:id="@+id/lay_PlayControls"
           android:layout_width="match_parent"
           android:layout_height="60dp"
           android:background="#3f000000"
+          android:visibility="invisible"
           android:gravity="center"
           android:orientation="horizontal">
 

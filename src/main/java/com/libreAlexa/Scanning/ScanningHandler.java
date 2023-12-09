@@ -301,7 +301,7 @@ public class ScanningHandler {
                 switch (position) {
                     case Constants.AIRPLAY_SOURCE:
                         mNewSources.setAirplay(mResult);
-                        sourceList.put("Airplay",mResult);
+                        //sourceList.put("Airplay",mResult);
                         mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.DMR_SOURCE:
@@ -311,7 +311,7 @@ public class ScanningHandler {
                         break;
                     case Constants.DMP_SOURCE:
                         mNewSources.setDmp(mResult);
-                        sourceList.put("Dmp",mResult);
+                       // sourceList.put("Dmp",mResult);
                         mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.SPOTIFY_SOURCE:
@@ -326,37 +326,37 @@ public class ScanningHandler {
                         break;
                     case Constants.SDCARD_SOURCE:
                         mNewSources.setSDcard(mResult);
-                        sourceList.put("SDCard",mResult);
+                       // sourceList.put("SDCard",mResult);
                         mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.MELON_SOURCE:
                         mNewSources.setMelon(mResult);
-                        sourceList.put("Melon",mResult);
+                        //sourceList.put("Melon",mResult);
                         mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.VTUNER_SOURCE:
                         mNewSources.setvTuner(mResult);
-                        sourceList.put("VTuner",mResult);
+                       // sourceList.put("VTuner",mResult);
                         mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.TUNEIN_SOURCE:
                         mNewSources.setTuneIn(mResult);
-                        sourceList.put("TuneIn",mResult);
+                        //sourceList.put("TuneIn",mResult);
                         mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.MIRACAST_SOURCE:
                         mNewSources.setMiracast(mResult);
-                        sourceList.put("Miracast",mResult);
+                       // sourceList.put("Miracast",mResult);
                         mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.PLAY_LIST:
                         mNewSources.setPlaylist(mResult);
-                        sourceList.put("Playlist",mResult);
+                       // sourceList.put("Playlist",mResult);
                         mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.DDMSSLAVE_SOURCE:
                         mNewSources.setDDMS_Slave(mResult);
-                        sourceList.put("DDMS SLAVE",mResult);
+                      //  sourceList.put("DDMS SLAVE",mResult);
                         mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.AUX_SOURCE:
@@ -366,17 +366,17 @@ public class ScanningHandler {
                         break;
                     case Constants.APPLEDEVICE_SOURCE:
                         mNewSources.setAppleDevice(mResult);
-                        sourceList.put("AppleDevice",mResult);
+                      //  sourceList.put("AppleDevice",mResult);
                         mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.DIRECTURL_SOURCE:
                         mNewSources.setDirect_URL(mResult);
-                        sourceList.put("Direct URL",mResult);
+                       // sourceList.put("Direct URL",mResult);
                         mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.QPLAY:
                         mNewSources.setQPlay(mResult);
-                        sourceList.put("QPlay",mResult);
+                        //sourceList.put("QPlay",mResult);
                         mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.BT_SOURCE:
@@ -386,37 +386,37 @@ public class ScanningHandler {
                         break;
                     case Constants.DEEZER_SOURCE:
                         mNewSources.setDeezer(mResult);
-                        sourceList.put("Deezer",mResult);
+                       // sourceList.put("Deezer",mResult);
                         mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.TIDAL_SOURCE:
                         mNewSources.setTidal(mResult);
-                        sourceList.put("Tidal",mResult);
+                     //  sourceList.put("Tidal",mResult);
                         mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.FAVOURITES_SOURCE:
                         mNewSources.setFavourites(mResult);
-                        sourceList.put("Favourites",mResult);
+                       // sourceList.put("Favourites",mResult);
                         mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.GCAST_SOURCE:
                         mNewSources.setGoogleCast(mResult);
-                        sourceList.put("Google Cast",mResult);
+                      //  sourceList.put("Google Cast",mResult);
                         mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.EXTERNAL_SOURCE:
                         mNewSources.setExternalSource(mResult);
-                        sourceList.put("External ",mResult);
+                      //  sourceList.put("External ",mResult);
                         mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.RTSP:
                         mNewSources.setRTSP(mResult);
-                        sourceList.put("RTSP",mResult);
+                      //  sourceList.put("RTSP",mResult);
                         mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.ROON:
                         mNewSources.setRoon(mResult);
-                        sourceList.put("Roon",mResult);
+                        //sourceList.put("Roon",mResult);
                         mNewSources.setCapitalCities(sourceList);
                         break;
                     case Constants.ALEXA_SOURCE:

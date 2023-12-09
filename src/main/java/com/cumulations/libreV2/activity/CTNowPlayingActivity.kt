@@ -282,9 +282,16 @@ class CTNowPlayingActivity : CTDeviceDiscoveryActivity(), View.OnClickListener,
               finish()
             }
         }
+        val mNode = LSSDPNodeDB.getInstance().getTheNodeBasedOnTheIpAddress(currentIpAddress)
+        if(mNode!=null && mNode.getmDeviceCap()!=null && mNode.getmDeviceCap().getmSource().isAlexaAvsSource) {
+            binding.ivAlexaAccount.visibility=View.VISIBLE
+            //SUMA SATURDAY
+        }
+        else{
+            binding.ivAlexaAccount.visibility=View.GONE
 
+        }
         binding.ivAlexaAccount.setOnClickListener {
-            val mNode = LSSDPNodeDB.getInstance().getTheNodeBasedOnTheIpAddress(currentIpAddress)
             if (mNode?.alexaRefreshToken?.isEmpty()!!) {
                 startActivity(Intent(this@CTNowPlayingActivity, CTAmazonLoginActivity::class.java).apply {
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -437,7 +444,6 @@ class CTNowPlayingActivity : CTDeviceDiscoveryActivity(), View.OnClickListener,
         binding.seekBarVolume.isEnabled = enable
         binding.seekBarVolume.isClickable = enable
         binding.layPlayControls.visibility=View.VISIBLE
-
     }
 
     private fun playPauseNextPrevAllowed(): Boolean {
@@ -1408,7 +1414,8 @@ class CTNowPlayingActivity : CTDeviceDiscoveryActivity(), View.OnClickListener,
         }*/
 
         updateAlbumArt()
-        //setTheSourceIconFromCurrentSceneObject(5)
+       // setTheSourceIconFromCurrentSceneObject(5)
+
     }
 
     private fun hideShuffleRepeat() {
@@ -1516,7 +1523,7 @@ class CTNowPlayingActivity : CTDeviceDiscoveryActivity(), View.OnClickListener,
             AIRPLAY_SOURCE -> imgResId = R.drawable.airplay_no_bg
             DMR_SOURCE -> imgResId = R.drawable.my_device_enabled
             DMP_SOURCE -> imgResId = R.drawable.media_servers_enabled
-            SPOTIFY_SOURCE -> imgResId = R.mipmap.spotify
+            SPOTIFY_SOURCE -> imgResId = R.drawable.spotify_image2
             USB_SOURCE -> imgResId = R.drawable.usb_storage_enabled
             SDCARD_SOURCE -> imgResId = R.mipmap.sdcard
             MELON_SOURCE -> imgResId = 0
@@ -1569,7 +1576,7 @@ class CTNowPlayingActivity : CTDeviceDiscoveryActivity(), View.OnClickListener,
                 disableViews(currentSceneObject!!.currentSource, getString(R.string.aux_playing),12)
             }
             ROON ->{
-                imgResId = R.drawable.roon
+                imgResId = R.drawable.roon_nowplaying
             }
             OPTICAL_SOURCE -> imgResId = 0
             TUNNELING_WIFI_SOURCE -> imgResId = 0
@@ -1892,11 +1899,12 @@ class CTNowPlayingActivity : CTDeviceDiscoveryActivity(), View.OnClickListener,
         super.tunnelDataReceived(tunnelingData)
         if (tunnelingData.remoteClientIp == currentIpAddress && tunnelingData.remoteMessage.size >= 24) {
             val sceneObject = mScanHandler?.getSceneObjectFromCentralRepo(currentIpAddress)
-            binding.seekBarVolume.progress = sceneObject?.volumeValueInPercentage!!
-
-            if (binding.seekBarVolume.progress == 0) {
-                binding.ivVolumeDown.setImageResource(R.drawable.ic_volume_mute)
-            } else binding.ivVolumeDown.setImageResource(R.drawable.volume_low_enabled)
+//            binding.seekBarVolume.progress = sceneObject?.volumeValueInPercentage!!
+//
+//            if (binding.seekBarVolume.progress == 0) {
+//       Suma for now commenting on TCP tunneling
+//       binding.ivVolumeDown.setImageResource(R.drawable.ic_volume_mute)
+//            } else binding.ivVolumeDown.setImageResource(R.drawable.volume_low_enabled)
 
             //Added BY SHAIK , Have to TC  closeLoader() and timeOutHandler
             val tcpTunnelPacket = TCPTunnelPacket(tunnelingData.remoteMessage)

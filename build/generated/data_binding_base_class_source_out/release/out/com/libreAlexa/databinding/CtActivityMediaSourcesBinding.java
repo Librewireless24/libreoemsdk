@@ -4,7 +4,9 @@ package com.libreAlexa.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatImageButton;
@@ -12,11 +14,11 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatSeekBar;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.Toolbar;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
 import com.cumulations.libreV2.CheckableImageView;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.appbar.AppBarLayout;
 import com.libreAlexa.R;
 import java.lang.NullPointerException;
@@ -25,10 +27,13 @@ import java.lang.String;
 
 public final class CtActivityMediaSourcesBinding implements ViewBinding {
   @NonNull
-  private final CoordinatorLayout rootView;
+  private final RelativeLayout rootView;
 
   @NonNull
   public final AppBarLayout appbarLayout;
+
+  @NonNull
+  public final LinearLayout childLayout;
 
   @NonNull
   public final MusicPlayingWidgetBinding ilMusicPlayingWidget;
@@ -55,6 +60,18 @@ public final class CtActivityMediaSourcesBinding implements ViewBinding {
   public final AppCompatImageView ivVolumeUp;
 
   @NonNull
+  public final LinearLayout layData;
+
+  @NonNull
+  public final RelativeLayout layMiniPlayer;
+
+  @NonNull
+  public final RelativeLayout layOtherTypes;
+
+  @NonNull
+  public final ShimmerFrameLayout layShimmer;
+
+  @NonNull
   public final ProgressBar progressBar;
 
   @NonNull
@@ -72,17 +89,28 @@ public final class CtActivityMediaSourcesBinding implements ViewBinding {
   @NonNull
   public final AppCompatTextView tvInputLabel;
 
-  private CtActivityMediaSourcesBinding(@NonNull CoordinatorLayout rootView,
-      @NonNull AppBarLayout appbarLayout, @NonNull MusicPlayingWidgetBinding ilMusicPlayingWidget,
+  @NonNull
+  public final AppCompatTextView txtPlayMusic;
+
+  @NonNull
+  public final View view;
+
+  private CtActivityMediaSourcesBinding(@NonNull RelativeLayout rootView,
+      @NonNull AppBarLayout appbarLayout, @NonNull LinearLayout childLayout,
+      @NonNull MusicPlayingWidgetBinding ilMusicPlayingWidget,
       @NonNull AppCompatImageButton ivAlexaSettings, @NonNull AppCompatImageButton ivBack,
       @NonNull AppCompatImageButton ivDeviceSettings, @NonNull CheckableImageView ivToggleAux,
       @NonNull CheckableImageView ivToggleBluetooth, @NonNull AppCompatImageView ivVolumeMute,
-      @NonNull AppCompatImageView ivVolumeUp, @NonNull ProgressBar progressBar,
+      @NonNull AppCompatImageView ivVolumeUp, @NonNull LinearLayout layData,
+      @NonNull RelativeLayout layMiniPlayer, @NonNull RelativeLayout layOtherTypes,
+      @NonNull ShimmerFrameLayout layShimmer, @NonNull ProgressBar progressBar,
       @NonNull RecyclerView rvMediaSourcesList, @NonNull AppCompatSeekBar seekBarVolume,
       @NonNull Toolbar toolbar, @NonNull AppCompatTextView tvDeviceName,
-      @NonNull AppCompatTextView tvInputLabel) {
+      @NonNull AppCompatTextView tvInputLabel, @NonNull AppCompatTextView txtPlayMusic,
+      @NonNull View view) {
     this.rootView = rootView;
     this.appbarLayout = appbarLayout;
+    this.childLayout = childLayout;
     this.ilMusicPlayingWidget = ilMusicPlayingWidget;
     this.ivAlexaSettings = ivAlexaSettings;
     this.ivBack = ivBack;
@@ -91,17 +119,23 @@ public final class CtActivityMediaSourcesBinding implements ViewBinding {
     this.ivToggleBluetooth = ivToggleBluetooth;
     this.ivVolumeMute = ivVolumeMute;
     this.ivVolumeUp = ivVolumeUp;
+    this.layData = layData;
+    this.layMiniPlayer = layMiniPlayer;
+    this.layOtherTypes = layOtherTypes;
+    this.layShimmer = layShimmer;
     this.progressBar = progressBar;
     this.rvMediaSourcesList = rvMediaSourcesList;
     this.seekBarVolume = seekBarVolume;
     this.toolbar = toolbar;
     this.tvDeviceName = tvDeviceName;
     this.tvInputLabel = tvInputLabel;
+    this.txtPlayMusic = txtPlayMusic;
+    this.view = view;
   }
 
   @Override
   @NonNull
-  public CoordinatorLayout getRoot() {
+  public RelativeLayout getRoot() {
     return rootView;
   }
 
@@ -129,6 +163,12 @@ public final class CtActivityMediaSourcesBinding implements ViewBinding {
       id = R.id.appbarLayout;
       AppBarLayout appbarLayout = ViewBindings.findChildViewById(rootView, id);
       if (appbarLayout == null) {
+        break missingId;
+      }
+
+      id = R.id.childLayout;
+      LinearLayout childLayout = ViewBindings.findChildViewById(rootView, id);
+      if (childLayout == null) {
         break missingId;
       }
 
@@ -181,6 +221,30 @@ public final class CtActivityMediaSourcesBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.lay_data;
+      LinearLayout layData = ViewBindings.findChildViewById(rootView, id);
+      if (layData == null) {
+        break missingId;
+      }
+
+      id = R.id.lay_MiniPlayer;
+      RelativeLayout layMiniPlayer = ViewBindings.findChildViewById(rootView, id);
+      if (layMiniPlayer == null) {
+        break missingId;
+      }
+
+      id = R.id.lay_OtherTypes;
+      RelativeLayout layOtherTypes = ViewBindings.findChildViewById(rootView, id);
+      if (layOtherTypes == null) {
+        break missingId;
+      }
+
+      id = R.id.lay_Shimmer;
+      ShimmerFrameLayout layShimmer = ViewBindings.findChildViewById(rootView, id);
+      if (layShimmer == null) {
+        break missingId;
+      }
+
       id = R.id.progress_bar;
       ProgressBar progressBar = ViewBindings.findChildViewById(rootView, id);
       if (progressBar == null) {
@@ -217,10 +281,23 @@ public final class CtActivityMediaSourcesBinding implements ViewBinding {
         break missingId;
       }
 
-      return new CtActivityMediaSourcesBinding((CoordinatorLayout) rootView, appbarLayout,
+      id = R.id.txt_playMusic;
+      AppCompatTextView txtPlayMusic = ViewBindings.findChildViewById(rootView, id);
+      if (txtPlayMusic == null) {
+        break missingId;
+      }
+
+      id = R.id.view;
+      View view = ViewBindings.findChildViewById(rootView, id);
+      if (view == null) {
+        break missingId;
+      }
+
+      return new CtActivityMediaSourcesBinding((RelativeLayout) rootView, appbarLayout, childLayout,
           binding_ilMusicPlayingWidget, ivAlexaSettings, ivBack, ivDeviceSettings, ivToggleAux,
-          ivToggleBluetooth, ivVolumeMute, ivVolumeUp, progressBar, rvMediaSourcesList,
-          seekBarVolume, toolbar, tvDeviceName, tvInputLabel);
+          ivToggleBluetooth, ivVolumeMute, ivVolumeUp, layData, layMiniPlayer, layOtherTypes,
+          layShimmer, progressBar, rvMediaSourcesList, seekBarVolume, toolbar, tvDeviceName,
+          tvInputLabel, txtPlayMusic, view);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));
