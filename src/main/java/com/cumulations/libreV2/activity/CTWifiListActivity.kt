@@ -62,7 +62,7 @@ class CTWifiListActivity : CTDeviceDiscoveryActivity(), BLEServiceToApplicationI
     private var isItDying = false
     private var mBluetoothLeService: BluetoothLeService? = null
     private var constructJSonString = StringBuilder()
-    private var scanListMap: MutableMap<String, Pair<String, Int>> = TreeMap()
+    private var scanListMap: MutableMap<String, Pair<String, Int>> = LinkedHashMap()
     private var scanListLength: Int? = null
     private var taskJob: Job? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -310,16 +310,15 @@ class CTWifiListActivity : CTDeviceDiscoveryActivity(), BLEServiceToApplicationI
                 val ssid = fromHtml(obj.getString("SSID")).toString()
                 val security = fromHtml(obj.getString("Security")).toString()
                 val rssi = obj.getInt("rssi")
+                LibreLogger.d(CTBluetoothPassCredentials.TAG_SCAN, "populateScanListMap before " +
+                        "Map $ssid and $security and $rssi")
                 scanListMap[ssid] = Pair(security, rssi)
-                /*scanListMap[CTBluetoothPassCredentials.fromHtml(obj.getString("SSID")).toString()] = CTBluetoothPassCredentials.fromHtml(obj.getString("Security")).toString()*//*  LibreLogger.d(TAG, "populateScanListMap " + scanListMap[obj.getString("SSID")] + " ssid: " + obj.getString("SSID"))*/
             }
         } catch (e: JSONException) {
             e.printStackTrace()
             LibreLogger.d(TAG, "populateScanListMap Exception " + e.message)
         }
-        /*for (str in scanListMap.keys) {
-            WifiConnection.getInstance().putWifiScanResultSecurity(str, scanListMap[str], rssi)
-        }*/
+
         for ((ssid, securityAndRssi) in scanListMap) {
             val security = securityAndRssi.first
             val rssi = securityAndRssi.second
@@ -329,6 +328,42 @@ class CTWifiListActivity : CTDeviceDiscoveryActivity(), BLEServiceToApplicationI
         }
         getScanResultsFromDevice()
     }
+
+
+    /*  private fun populateScanListMap(scanList: String?) {
+          scanListMap.clear()
+          try {
+              val mainObj = JSONObject(scanList)
+              val scanListArray = mainObj.getJSONArray("Items")
+              for (i in 0 until scanListArray.length()) {
+                  val obj = scanListArray[i] as JSONObject
+                  if (obj.getString("SSID") == null || obj.getString("SSID").isEmpty()) {
+                      continue
+                  }
+                  val ssid = fromHtml(obj.getString("SSID")).toString()
+                  val security = fromHtml(obj.getString("Security")).toString()
+                  val rssi = obj.getInt("rssi")
+                  LibreLogger.d(CTBluetoothPassCredentials.TAG_SCAN, "populateScanListMap before " +
+                          "Map $ssid and $security and $rssi")
+                  scanListMap[ssid] = Pair(security, rssi)
+                  *//*scanListMap[CTBluetoothPassCredentials.fromHtml(obj.getString("SSID")).toString()] = CTBluetoothPassCredentials.fromHtml(obj.getString("Security")).toString()*//**//*  LibreLogger.d(TAG, "populateScanListMap " + scanListMap[obj.getString("SSID")] + " ssid: " + obj.getString("SSID"))*//*
+            }
+        } catch (e: JSONException) {
+            e.printStackTrace()
+            LibreLogger.d(TAG, "populateScanListMap Exception " + e.message)
+        }
+        *//*for (str in scanListMap.keys) {
+            WifiConnection.getInstance().putWifiScanResultSecurity(str, scanListMap[str], rssi)
+        }*//*
+        for ((ssid, securityAndRssi) in scanListMap) {
+            val security = securityAndRssi.first
+            val rssi = securityAndRssi.second
+
+            LibreLogger.d(CTBluetoothPassCredentials.TAG_SCAN, "populateScanListMap  $ssid and $security and $rssi")
+            WifiConnection.getInstance().putWifiScanResultSecurity(ssid, security, rssi)
+        }
+        getScanResultsFromDevice()
+    }*/
 
     override fun onBackPressed() {
         super.onBackPressed()

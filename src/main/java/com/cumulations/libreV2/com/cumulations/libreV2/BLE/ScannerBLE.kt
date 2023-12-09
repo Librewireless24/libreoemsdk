@@ -140,7 +140,7 @@ class ScannerBLE(private val mBLActivity: CTBluetoothDeviceListActivity,
                 mBLActivity.runOnUiThread {
                     val scanRecord = result.scanRecord
 
-                   /* val device: BluetoothDevice = result.device
+                    val device: BluetoothDevice = result.device
                     LibreLogger.d(TAG_BLE, "Shaik got Ble data  ${scanRecord!!.serviceData}")
                     if (scanRecord != null) {
                         // Get the service data map
@@ -162,16 +162,16 @@ class ScannerBLE(private val mBLActivity: CTBluetoothDeviceListActivity,
                         LibreLogger.d(TAG_BLE, "Shaik outside for loop")
                     } else {
                         LibreLogger.d(TAG_BLE, "Shaik scanRecord null")
-                    }*/
+                    }
 
                      // Extract the Shortened Local Name from the advertisement data
-                    val shortenedLocalName = extractShortenedLocalName(scanRecord)
+                    /*val shortenedLocalName = extractShortenedLocalName(scanRecord)
                      if(shortenedLocalName.contains("LSAA")) {
                          mBLActivity.addDevice(result.device, result.rssi)
-                         LibreLogger.d(TAG_BLE, "Shaik Device Name starts with   Shortened Local Name: $shortenedLocalName")
+                         *//*LibreLogger.d(TAG_BLE, "Shaik Device Name starts with   Shortened Local Name: $shortenedLocalName")*//*
                      }else{
-                         LibreLogger.d(TAG_BLE,"Shaik Device Name:not starts LSAA Shortened Local Name: $shortenedLocalName")
-                     }
+                         *//*LibreLogger.d(TAG_BLE,"Shaik Device Name:not starts LSAA Shortened Local Name: $shortenedLocalName")*//*
+                     }*/
                 }
             } else {
                 LibreLogger.d(TAG, "Shaik BT device name not available ")
