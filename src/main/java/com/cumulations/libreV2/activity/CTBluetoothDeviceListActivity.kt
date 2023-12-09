@@ -222,9 +222,9 @@ class CTBluetoothDeviceListActivity : CTDeviceDiscoveryActivity(), BLEServiceToA
             binding.layDeviceCount.visibility = View.VISIBLE
             binding.ivBledevicelist.visibility = View.VISIBLE
             if (mBleDevices.size > 1) {
-                binding.txtDeviceCount.text = mBleDevices.size.toString() + getString(R.string.devices_are_available)
+                binding.txtDeviceCount.text = mBleDevices.size.toString() + getString(R.string.devices_are_available_new)
             } else {
-                binding.txtDeviceCount.text = mBleDevices.size.toString() + getString(R.string.device_are_available)
+                binding.txtDeviceCount.text = mBleDevices.size.toString() + getString(R.string.device_are_available_new)
             }
         }
     }

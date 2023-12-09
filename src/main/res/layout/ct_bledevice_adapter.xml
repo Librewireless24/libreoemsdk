@@ -14,16 +14,25 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_bledevice_name"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:layout_marginTop="16dp"
-            android:gravity="center"
             android:paddingLeft="16dp"
+            android:layout_toLeftOf="@+id/img_arrow"
             android:layout_marginBottom="16dp"
             tools:text="BLE Device Name"
             android:textColor="@color/white"
             android:textSize="@dimen/medium_text" />
+        <ImageView
+          android:id="@+id/img_arrow"
+          android:layout_width="50dp"
+          android:layout_height="wrap_content"
+          android:layout_alignParentRight="true"
+          android:layout_centerVertical="true"
+          android:src="@drawable/ic_orange_right_arrow">
+
+        </ImageView>
 
         <Button
             android:id="@+id/btnPlayTone"

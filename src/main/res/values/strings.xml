@@ -154,8 +154,8 @@
   <string name="discovery">Discovery</string>
   <string name="add">Add</string>
   <string name="tutorials">Tutorials</string>
-  <string name="no_device_found">No speaker found</string>
-  <string name="make_sure_devices_connected_to_wifi">Make sure all of your speakers are connected to the same Wi-Fi and refresh</string>
+  <string name="no_device_found">No speakers found</string>
+  <string name="make_sure_devices_connected_to_wifi">Make sure all of your devices are connected to the same Wi-Fi and refresh</string>
   <string name="refresh">Refresh</string>
   <string name="using_speaker_first_time">Using the speaker for the first time?</string>
   <string name="setup_speaker">Setup New Speaker</string>
@@ -168,7 +168,7 @@
   <string name="three">3</string>
   <string name="after_connecting_to_libre_device"><![CDATA[After connecting to the Libre speaker, return to the LibreVoice app & click next]]></string>
   <string name="wifi_settings">Wi-Fi Settings</string>
-  <string name="device_name">Speaker Name</string>
+  <string name="device_name"><b>Speaker Name</b></string>
   <string name="connect_device_to_wifi">Connect speaker to Wi-Fi network</string>
   <string name="select_wifi">Select a Wi-Fi</string>
   <string name="wifi_pwd">Wi-Fi Password</string>
@@ -280,7 +280,7 @@
   <string name="configuration_timeout_msg">Timeout Happened , Retry </string>
   <string name="scanning">Finding BLE devices</string>
   <string name="choose_device">Choose the device you would like to setup</string>
-  <string name="looking_for_devices">Finding for devices...</string>
+  <string name="looking_for_devices">Looking for devices...</string>
   <string name="cred_received">Credentials received by the Speaker</string>
   <string name="cred_success">Credentials are passed</string>
   <string name="start_connecting">Speaker started connecting to Network</string>
@@ -358,6 +358,7 @@
   <string name="turn_on_ble">Please check if your device is in Setup mode and refresh </string>
   <string name="splashscreen_maintext">Multiroom Audio Systems</string>
   <string name="powered_text">Powered by DDMS technology</string>
+  <string name="powered_libre">Powered by Libre Wireless Technologies</string>
   <string name="brand_name">Libre Voice</string>
   <string name="forget_network">Forget Network</string>
   <string name="confirm">Confirm</string>
@@ -400,7 +401,9 @@ By clicking Confirm, Device will be removed and you will be redirected to Home. 
   <string name="alexa_source">Alexa Source</string>
   <string name="airable">Airable</string>
   <string name="devices_are_available">"&#x20;"Devices are available to setup</string>
+  <string name="devices_are_available_new">"&#x20;"Devices waiting for setup</string>
   <string name="device_are_available">"&#x20;"Device are available to setup</string>
+  <string name="device_are_available_new">"&#x20;"Device waiting for setup</string>
   <string name="permission_required">Permission required</string>
   <string name="permission_connect">Bluetooth scan and connect permissions are required to scan and connect to Bluetooth devices</string>
   <string name="permission_denied">Permission Denied</string>
@@ -428,6 +431,12 @@ By clicking Confirm, Device will be removed and you will be redirected to Home. 
   <string name="back_button_description">Back\n</string>
   <string name="settings_button_description">Settings\n</string>
   <string name="device_connection_los">Device Connection Lost</string>
+  <string name="password_hint">Enter Password</string>
+  <string name="password_should_8_char">Wi-Fi Password should be at least\n8 Characters</string>
+  <string name="error">Error!</string>
+  <string name="password_less_64_char">Wi-Fi Password should be less than 64 Characters</string>
+  <string name="network_mismatch">Network Mismatch</string>
+  <string name="continue_txt">Continue</string>
   <string-array name="audio_output_array">
     <item>Stereo (S)</item>
     <item>Left Speaker (L)</item>
