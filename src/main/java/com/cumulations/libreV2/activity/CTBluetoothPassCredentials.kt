@@ -343,7 +343,7 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
     private var mSecurityCheckEnabled = false
 
 
-    private var scanListMap: MutableMap<String, Pair<String, Int>> = TreeMap()
+    private var scanListMap: MutableMap<String, Pair<String, Int>> = LinkedHashMap()
 
     private fun populateScanListMap(scanList: String?) {
         scanListMap.clear()
@@ -608,23 +608,22 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
 
     override fun customOnActivityResult(data: Intent?, requestCode: Int, resultCode: Int) {
         super.customOnActivityResult(data, requestCode, resultCode)
+        LibreLogger.d(TAG_, "Shaik customOnActivityResult requestCode $requestCode")
         if (requestCode == AppConstants.GET_SELECTED_SSID_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 val mScanResultItem = data!!.getSerializableExtra(AppConstants.SELECTED_SSID) as ScanResultItem
                 setSsidPwd(mScanResultItem)
             }
         }else if(requestCode == AppConstants.OPEN_PHONE_WIFI_REQUEST_CODE){
-            if (resultCode == RESULT_OK) {
                 try {
                     val connectedPhoneSSID: Pair<String, String?> = AppUtils.getConnectedSSIDAndSecurityType(this)
                     binding.tvSelectedWifi.text = connectedPhoneSSID.first
-                    LibreLogger.d(TAG_, "customOnActivityResult setSsidPwd ${connectedPhoneSSID.first} and  Security" + "${connectedPhoneSSID.second}")
+                    LibreLogger.d(TAG_, "Shaik customOnActivityResult setSsidPwd " + "${connectedPhoneSSID.first} and  Security" + "${connectedPhoneSSID.second}")
                     val scanResultItem = ScanResultItem(connectedPhoneSSID.second!!,connectedPhoneSSID.first)
                     setSsidPwd(scanResultItem)
-                } catch (ex: Exception) {
+                  } catch (ex: Exception) {
                     LibreLogger.d(TAG_, "customOnActivityResult setSsidPwd Exception ${ex.message}")
                 }
-            }
         }
     }
 
@@ -782,7 +781,6 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
                 mandateDialog!!.dismiss()
                 if(isNetworkMisMatch){
                     val intent = Intent(Settings.ACTION_WIFI_SETTINGS)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                     customStartActivityForResult(AppConstants.OPEN_PHONE_WIFI_REQUEST_CODE, intent)
                 } else {
                     goToConnectToMainNetwork()
