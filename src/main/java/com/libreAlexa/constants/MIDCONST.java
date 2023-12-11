@@ -85,6 +85,7 @@ public class MIDCONST {
 
     public static final short GCAST_TOS_SHARE_COMMAND = 226;
     public static final short FW_UPGRADE_PROGRESS = 66;
+    public static final short REBOOT_REQUEST = 114;
     public static final short FW_UPGRADE_REQUEST = 65;
 
     public static final short ALEXA_COMMAND = 234;

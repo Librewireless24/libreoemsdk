@@ -12,6 +12,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
 import com.cumulations.libreV2.activity.CTDeviceDiscoveryActivity
 import com.cumulations.libreV2.activity.CTDeviceSettingsActivity
+import com.cumulations.libreV2.activity.GoToHomeActivity
 import com.libreAlexa.R
 import com.libreAlexa.constants.Constants
 import com.libreAlexa.constants.Constants.DEVICE_REMOVED
@@ -66,7 +67,13 @@ class OpenGHomeAppActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteraction
             })
         }
         binding.btnSkip.setOnClickListener {
-            intentToHome(this)
+            /*intentToHome(this)*/
+            val newIntent = Intent(this@OpenGHomeAppActivity, GoToHomeActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            newIntent.putExtra(Constants.FROM_ACTIVITY, OpenGHomeAppActivity::class.java.simpleName)
+            newIntent.putExtra(Constants.CURRENT_DEVICE_IP, currentIpAddress)
+            newIntent.putExtra(Constants.DEVICE_NAME, speakerName)
+            startActivity(newIntent)
+            finish()
         }
         binding.btnOpenHomeApp.setOnClickListener {
             val gHomeIntent = packageManager.getLaunchIntentForPackage("com.google.android.apps.chromecast.app")
@@ -94,6 +101,7 @@ class OpenGHomeAppActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteraction
 
     private fun exitOnBackPressed() {
         if (!from.isNullOrEmpty() && from!!.equals(CTDeviceSettingsActivity::class.java.simpleName, ignoreCase = true)) {
+            LibreLogger.d("GoToHomeActivity","android 13 Opne else")
             val newIntent = Intent(this@OpenGHomeAppActivity, CTDeviceSettingsActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             newIntent.putExtra(Constants.FROM_ACTIVITY, OpenGHomeAppActivity::class.java.simpleName)
             newIntent.putExtra(Constants.CURRENT_DEVICE_IP, currentIpAddress)
@@ -101,13 +109,24 @@ class OpenGHomeAppActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteraction
             startActivity(newIntent)
             finish()
         } else if (!from.isNullOrEmpty() && from!!.equals(SetUpDeviceActivity::class.java.simpleName, ignoreCase = true)) {
-            val newIntent = Intent(this@OpenGHomeAppActivity, SetUpDeviceActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            LibreLogger.d("GoToHomeActivity","android 13 Opne else if")
+           val newIntent = Intent(this@OpenGHomeAppActivity, SetUpDeviceActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             newIntent.putExtra(Constants.FROM_ACTIVITY, OpenGHomeAppActivity::class.java.simpleName)
             newIntent.putExtra(Constants.CURRENT_DEVICE_IP, currentIpAddress)
             newIntent.putExtra(Constants.DEVICE_NAME, speakerName)
             startActivity(newIntent)
             finish()
-        } else intentToHome(this)
+        } else {
+            LibreLogger.d("GoToHomeActivity","android 13 Opne else" )
+            //intentToHome(this)
+            val newIntent = Intent(this@OpenGHomeAppActivity, GoToHomeActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            newIntent.putExtra(Constants.FROM_ACTIVITY, OpenGHomeAppActivity::class.java.simpleName)
+            newIntent.putExtra(Constants.CURRENT_DEVICE_IP, currentIpAddress)
+            newIntent.putExtra(Constants.DEVICE_NAME, speakerName)
+            startActivity(newIntent)
+            finish()
+        }
+
     }
 
     override fun onResume() {

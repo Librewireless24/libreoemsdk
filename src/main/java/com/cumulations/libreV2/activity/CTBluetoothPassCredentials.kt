@@ -27,6 +27,8 @@ import com.cumulations.libreV2.AppUtils.networkMismatchSsidMessage
 import com.cumulations.libreV2.activity.BluetoothLeService.LocalBinder
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEPacket
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEPacket.BLEDataPacket
+import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEPacket.parseBleData
+
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEServiceToApplicationInterface
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEUtils
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BleCommunication
@@ -53,7 +55,6 @@ import org.json.JSONException
 import org.json.JSONObject
 import java.nio.charset.StandardCharsets
 import java.util.Locale
-import java.util.TreeMap
 
 class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToApplicationInterface,
     View.OnClickListener, LibreDeviceInteractionListner {
@@ -226,7 +227,7 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
                     }, (timeout + 1000).toLong())
 
                     LibreApplication.scanAlreadySent = true;
-                    showProgressDialog(getString(R.string.get_scan_results))
+                  //  showProgressDialog(getString(R.string.get_scan_results))
 
                     handler.postDelayed({
                         val data = ByteArray(0)
@@ -259,7 +260,12 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
     override fun receivedBLEDataPacket(packet: BLEDataPacket) {
         when (packet.command) {
             BLEUtils.BLE_SAC_APP2DEV_FRIENDLYNAME -> if (packet.getcompleteMessage().isNotEmpty()) {
+                LibreLogger.d(TAG_BLE_SHAIk,"receivedBLEDataPacket 5 packet $packet")
+                LibreLogger.d(TAG_BLE_SHAIk,"receivedBLEDataPacket 5 packet ${packet.message}")
+                LibreLogger.d(TAG_BLE_SHAIk,"receivedBLEDataPacket 5 packet ${packet.dataLength}")
+                LibreLogger.d(TAG_BLE_SHAIk,"receivedBLEDataPacket 5 packet ${packet.getcompleteMessage()}")
                 val mDeviceNameArray = ByteArray(packet.dataLength.toInt())
+                LibreLogger.d(TAG_BLE_SHAIk,"receivedBLEDataPacket 5 mDeviceNameArray $mDeviceNameArray")
                 var i = 0
                 while (i < packet.dataLength) {
                     mDeviceNameArray[i] = packet.message[i]
@@ -269,22 +275,58 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
                 runOnUiThread { binding.etDeviceName.setText(mDeviceName) }
             }
 
-            BLEUtils.BLE_SAC_DEV2APP_CRED_RECEIVED -> runOnUiThread { setMessageProgressDialog(getString(R.string.cred_received)) }
-            BLEUtils.BLE_SAC_DEV2APP_CRED_SUCCESS -> runOnUiThread { setMessageProgressDialog(getString(R.string.cred_success)) }
-            BLEUtils.BLE_SAC_DEV2APP_CRED_FAILURE -> runOnUiThread { showAlertMessageRegardingSAC(" ", getString(R.string.credientials_invalid)) }
-            BLEUtils.BLE_SAC_DEV2APP_WIFI_CONNECTING -> runOnUiThread { setMessageProgressDialog(getString(R.string.start_connecting)) }
+            /*  BLEUtils.BLE_SAC_DEV2APP_CRED_RECEIVED -> runOnUiThread { setMessageProgressDialog(getString(R.string.cred_received)) }
+              BLEUtils.BLE_SAC_DEV2APP_CRED_SUCCESS -> runOnUiThread { setMessageProgressDialog(getString(R.string.cred_success)) }*/
+            BLEUtils.BLE_SAC_DEV2APP_CRED_FAILURE -> runOnUiThread {
+                LibreLogger.d(TAG_,"receivedBLEDataPacket 22 ${packet.command} and ${packet
+                    .message}" +
+                        " and complete messgae ${packet.getcompleteMessage()}")
+                showAlertMessageRegardingSAC(" ", getString(R.string.credientials_invalid)) }
+            BLEUtils.BLE_SAC_DEV2APP_WIFI_CONNECTING -> runOnUiThread {
+                dismissDialog()
+                binding.laySsidPwdDetails.visibility = View.GONE
+                binding.laySpeakerSetupWithImage.visibility = View.VISIBLE
+                //setMessageProgressDialog(getString(R.string.connecting_wifi))
+                binding.laySpeakerSetup.tvSetupInfo.text = getString(R.string.connecting_wifi)
+            }
+
             BLEUtils.BLE_SAC_DEV2APP_WIFI_CONNECTED -> {
+                LibreLogger.d(TAG_BLE_SHAIk,"receivedBLEDataPacket 24 $packet")
                 lifecycleScope.launch {
                     cancelJob()
                 }
-                runOnUiThread { setMessageProgressDialog(getString(R.string.speaker_connected)) }
-                val data1 = ByteArray(0)
-                val mBleStop = BLEPacket(data1, BLEUtils.BLE_SAC_APP2DEV_STOP_M.toByte())
-                BleCommunication.writeDataToBLEDevice(mBleStop)
-                goToConnectToMainNetwork()
+                runOnUiThread {
+                    dismissDialog()
+                    binding.laySsidPwdDetails.visibility = View.GONE
+                    binding.laySpeakerSetupWithImage.visibility = View.VISIBLE
+                    try {
+                        val connectedSSID = AppUtils.getConnectedSSID(this)
+                        val message = getString(R.string.connected) +" " +connectedSSID +" " +getString(R.string.successfully)
+                        //setMessageProgressDialog(message)
+                        binding.laySpeakerSetup.tvSetupInfo.text = message
+                    } catch (ex: Exception) {
+                        binding.laySsidPwdDetails.visibility = View.GONE
+                        binding.laySpeakerSetupWithImage.visibility = View.VISIBLE
+                        setMessageProgressDialog(getString(R.string.speaker_connected))
+                        ex.printStackTrace()
+                    }
+                }
+                lifecycleScope.launch {
+                    delay(2000)
+                    val data1 = ByteArray(0)
+                    val mBleStop = BLEPacket(data1, BLEUtils.BLE_SAC_APP2DEV_STOP_M.toByte())
+                    BleCommunication.writeDataToBLEDevice(mBleStop)
+                    goToConnectToMainNetwork()
+                }
             }
 
             BLEUtils.BLE_SAC_DEV2APP_WIFI_CONNECTING_FAILED -> {
+
+                LibreLogger.d(TAG_BLE_SHAIk,"receivedBLEDataPacket 25 packet $packet")
+                LibreLogger.d(TAG_BLE_SHAIk,"receivedBLEDataPacket 25 packet ${packet.message}")
+                LibreLogger.d(TAG_BLE_SHAIk,"receivedBLEDataPacket 25 packet ${packet.dataLength}")
+                LibreLogger.d(TAG_BLE_SHAIk,"receivedBLEDataPacket 25 packet ${packet.getcompleteMessage()}")
+                LibreLogger.d(TAG_BLE_SHAIk,"receivedBLEDataPacket 25 parseBleData ${parseBleData(packet.message)}")
                 val mMessageInt = packet.getcompleteMessage()
                 val message = mMessageInt[3].toInt()
                 if (message == 26) {
@@ -424,6 +466,16 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
                     // BleCommunication.writeDataToBLEDevice(mBleWifiStatus);
                 }
                 dialog.dismiss()
+                dismissDialog()
+                try {
+                    binding.laySsidPwdDetails.visibility = View.VISIBLE
+                    binding.laySpeakerSetupWithImage.visibility = View.GONE
+                } catch (ex: Exception) {
+                    binding.laySsidPwdDetails.visibility = View.VISIBLE
+                    binding.laySpeakerSetupWithImage.visibility = View.GONE
+                    ex.printStackTrace()
+                }
+
             }
             //Creating dialog box
             val alert = builder.create()
@@ -516,7 +568,7 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
             delay(2000)
             if (!mSecurityCheckEnabled) {
                 val data = ByteArray(mSelectedPass.length + mSelectedSSID.length + 5 + mSelectedSecurity.length + binding.etDeviceName.text!!.length + mSelectedCountryCode.length)
-                LibreLogger.d(TAG, "btnNextClicked: mSecurityCheckEnabled if $data")
+                LibreLogger.d(TAG_, "btnNextClicked: mSecurityCheckEnabled if $data")
                 var i = 0
                 data[i++] = mSelectedSSID.length.toByte()
                 for (b in mSelectedSSID.toByteArray()) {
@@ -568,7 +620,7 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
                     lengthTocopy = encodedData.size
                 }
                 while (NumberOfPacketsToSplitted > 0) {
-                    LibreLogger.d(TAG, " KARUNAKARAN " + " NumberofPacketstoBeSplitted " + NumberOfPacketsToSplitted + " Offset " + offset + " LengthToCopy " + lengthTocopy + " EncodedData Length " + encodedData.size)
+                    LibreLogger.d(TAG_, " KARUNAKARAN " + " NumberofPacketstoBeSplitted " + NumberOfPacketsToSplitted + " Offset " + offset + " LengthToCopy " + lengthTocopy + " EncodedData Length " + encodedData.size)
                     NumberOfPacketsToSplitted--
                     val offsetEncodedData = configurationParameters.getByteArrayFromOffset(offset, lengthTocopy, encodedData)
                     val dataToSendToDevice = configurationParameters.createSacPackets(NumberOfPacketsToSplitted, offsetEncodedData, ivData)
@@ -580,9 +632,9 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
                 }
             }
         }
-        LibreLogger.d(TAG, "btnNextClicked: Before Posting credentials " + binding.etDeviceName.text.toString())
+        LibreLogger.d(TAG, "_btnNextClicked: Before Posting credentials " + binding.etDeviceName.text.toString())
         mDeviceName = binding.etDeviceName.text.toString()
-        setMessageProgressDialog(getString(R.string.posting_cred))
+        setMessageProgressDialog(getString(R.string.sending_cred))
         /**
          * Shaik initiateJob is for,If we didn't get the response from device we are going to
          * home screen for the re initiating the setup mode
@@ -708,6 +760,7 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
         const val TAG = "==CTBluetoothPass"
         const val TAG_SCAN = "TAG_SCAN"
         const val TAG_ = "Mansoor"
+        const val TAG_BLE_SHAIk = "TAG_BLE_SHAIk"
         fun fromHtml(html: String?): Spanned {
             return if (html == null) {
                 // return an empty spannable if the html is null

@@ -11,6 +11,9 @@
     android:name=".LibreApplication">
     <activity
       android:exported="false"
+      android:name="com.cumulations.libreV2.activity.GoToHomeActivity" />
+    <activity
+      android:exported="false"
       android:name="com.cumulations.libreV2.activity.IssuesReportActivity" />
     <activity
       android:exported="false"
@@ -71,7 +74,7 @@
       android:exported="true"
       android:label="@string/title_activity_welcome"
       android:name="com.cumulations.libreV2.activity.CTSplashScreenActivityV2"
-      android:screenOrientation="portrait"></activity>
+      android:screenOrientation="portrait" />
     <activity
       android:exported="true"
       android:launchMode="singleTask"
@@ -119,7 +122,6 @@
       android:launchMode="singleTask"
       android:name="com.cumulations.libreV2.activity.CTAlexaThingsToTryActivity"
       android:screenOrientation="portrait" />
-
     <activity
       android:exported="true"
       android:launchMode="singleTask"
@@ -141,7 +143,6 @@
       android:launchMode="singleTask"
       android:name="com.cumulations.libreV2.activity.CTMediaSourcesActivity"
       android:screenOrientation="portrait" />
-
     <activity
       android:exported="true"
       android:launchMode="singleTask"
@@ -177,9 +178,11 @@
       android:launchMode="singleTask"
       android:name="com.cumulations.libreV2.activity.CTBluetoothSomethingWrong"
       android:screenOrientation="portrait" />
+
     <meta-data
       android:name="io.fabric.ApiKey"
       android:value="b0f91dc7a6f0d7ee35d247281ac32a618a418970" />
+
     <service
       android:exported="false"
       android:name=".app.dlna.dmc.processor.upnp.CoreUpnpService" />
@@ -189,7 +192,6 @@
     <service
       android:exported="false"
       android:name=".DMRPlayerService" />
-
     <service
       android:exported="false"
       android:name="com.cumulations.libreV2.activity.BluetoothLeService" />
@@ -208,8 +210,9 @@
     android:name="android.hardware.touchscreen"
     android:required="false" />
   <uses-permission android:name="android.permission.BLUETOOTH" />
-  <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"
-      android:maxSdkVersion="30" />
+  <uses-permission
+    android:maxSdkVersion="30"
+    android:name="android.permission.BLUETOOTH_ADMIN" />
   <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
   <uses-permission android:name="android.permission.BLUETOOTH_SCAN" />
   <uses-permission android:name="android.permission.INTERNET" />

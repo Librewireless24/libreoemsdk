@@ -1,5 +1,9 @@
 package com.cumulations.libreV2.com.cumulations.libreV2.BLE;
 
+
+import static com.cumulations.libreV2.activity.CTBluetoothPassCredentials.TAG_BLE_SHAIk;
+
+import android.util.Log;
 import com.libreAlexa.util.LibreLogger;
 
 /**
@@ -113,8 +117,10 @@ public class BLEPacket {
     }
 
     public BLEDataPacket createBlePacketFromMessage(byte[] message){
+        LibreLogger.d(TAG_BLE_SHAIk,"Received BLE data dataPacket data $"+message);
         BLEDataPacket mDataPacket = new BLEDataPacket((byte)0,(short)0,null);
         mDataPacket.setmCompleteMessage(message);
+        LibreLogger.d(TAG_BLE_SHAIk,"Received BLE data dataPacket data $"+mDataPacket.message);
         if((byte)(message[0] & 0xFF )== START_DELIMITER) {
             mDataPacket.command = (byte)( message[1] & 0xFF);
             //Shaik Old code receiving the 23 bytes of data
@@ -132,6 +138,102 @@ public class BLEPacket {
         }
         return mDataPacket;
     }
+
+    private static final byte HEADER1 = (byte) 0xAB;
+    private static final byte HEADER2 = (byte) 0xCD;
+    private static final byte FOOTER1 = (byte) 0xCD;
+    private static final byte FOOTER2 = (byte) 0xAB;
+
+   /* public static String parseBleData(BLEPacket.BLEDataPacket dataPacket) {
+        LibreLogger.d(TAG_BLE_SHAIk,"Received BLE data parseBleData dataPacket $"+dataPacket);
+
+        // Assuming getmCompleteMessage returns a byte array
+        byte[] data = dataPacket.mCompleteMessage;
+        LibreLogger.d(TAG_BLE_SHAIk,"Received BLE datadata parseBleData Packet data $"+data);
+        if (isHeaderFooterPresent(data)) {
+            // Extract the event, length, and data bytes
+            byte event = data[2];
+            short length = (short) ((data[4] << 8) | (data[3] & 0xFF));
+            byte[] packetData = new byte[length];
+
+            // Check if there is enough data to contain the entire packet
+            if (data.length >= length + 6) {
+                // Copy the data bytes
+                System.arraycopy(data, 5, packetData, 0, length);
+
+                // Interpret the data byte
+                return interpretDataByte(packetData[0]);
+            }
+        }
+
+        // Header or footer not found
+        return null;
+    }
+
+
+    private static boolean isHeaderFooterPresent(byte[] data) {
+        return data.length >= 6 &&
+            data[0] == HEADER1 && data[1] == HEADER2 &&
+            data[data.length - 1] == FOOTER1 && data[data.length - 2] == FOOTER2;
+    }*/
+
+    private static String interpretDataByte(byte dataByte) {
+        switch (dataByte) {
+            case 0x00:
+                // Connection Fail
+                return "Connection Fail";
+            case 0x01:
+                // Wrong Password
+                return "Wrong Password";
+            case 0x02:
+                // Network Not Found
+                return "Network Not Found";
+            // Add more cases as needed
+
+            default:
+                // Unknown data byte
+                return "Unknown Data";
+        }
+    }
+
+
+
+
+    public static String parseBleData(byte[] data) {
+        // Convert the byte array to a hex string
+        String hexString = byteArrayToHexString(data);
+
+        // Check if the header and footer are present
+        if (isHeaderFooterPresent(hexString)) {
+            // Extract data
+            String extractedData = extractData(hexString);
+
+            // extractedData now contains the parsed information
+            return extractedData;
+        }
+
+        // Header or footer not found
+        return null;
+    }
+
+    private static boolean isHeaderFooterPresent(String hexString) {
+        // Check if the hex string contains the header and footer
+        return hexString.startsWith("ab") && hexString.endsWith("cd");
+    }
+
+    private static String extractData(String hexString) {
+        // Extract the data portion from the hex string
+        return hexString.substring(4, hexString.length() - 2);
+    }
+
+    private static String byteArrayToHexString(byte[] data) {
+        StringBuilder stringBuilder = new StringBuilder(data.length * 2);
+        for (byte b : data) {
+            stringBuilder.append(String.format("%02x", b));
+        }
+        return stringBuilder.toString();
+    }
+
 
 }
 
