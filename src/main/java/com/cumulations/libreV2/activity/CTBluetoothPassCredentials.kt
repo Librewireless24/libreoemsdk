@@ -363,18 +363,26 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
                 val rssi = obj.getInt("rssi")
 
                 scanListMap[ssid] = Pair(security, rssi)
+
+
+            }
+
+            // Add "Other Options" SSID with dummy security and RSSI
+            val otherOptionsSSID = "Other Options"
+            val otherOptionsSecurity = "WPA-PSK"
+            val otherOptionsRssi = 200
+            scanListMap[otherOptionsSSID] = Pair(otherOptionsSecurity, otherOptionsRssi)
+
+            for ((ssid, securityAndRssi) in scanListMap) {
+                val security = securityAndRssi.first
+                val rssi = securityAndRssi.second
+
+                LibreLogger.d(TAG_SCAN, "populateScanListMap  $ssid and $security and $rssi")
+                WifiConnection.getInstance().putWifiScanResultSecurity(ssid, security, rssi)
             }
         } catch (e: JSONException) {
             e.printStackTrace()
             LibreLogger.d(TAG_SCAN, "populateScanListMap exception " + e.message)
-        }
-
-        for ((ssid, securityAndRssi) in scanListMap) {
-            val security = securityAndRssi.first
-            val rssi = securityAndRssi.second
-
-            LibreLogger.d(TAG_SCAN, "populateScanListMap  $ssid and $security and $rssi")
-            WifiConnection.getInstance().putWifiScanResultSecurity(ssid, security, rssi)
         }
     }
 

@@ -189,6 +189,7 @@ class CTWifiListActivity : CTDeviceDiscoveryActivity(), BLEServiceToApplicationI
                 binding.rvWifiList.visibility = View.VISIBLE
                 binding.tvNoData.visibility = View.GONE
                 filteredScanResults = WifiConnection.getInstance().savedScanResults as ArrayList<ScanResultItem>?
+
                 wifiListAdapter?.updateList(filteredScanResults)
             }
         }
@@ -310,21 +311,25 @@ class CTWifiListActivity : CTDeviceDiscoveryActivity(), BLEServiceToApplicationI
                 val ssid = fromHtml(obj.getString("SSID")).toString()
                 val security = fromHtml(obj.getString("Security")).toString()
                 val rssi = obj.getInt("rssi")
-                LibreLogger.d(CTBluetoothPassCredentials.TAG_SCAN, "populateScanListMap before " +
-                        "Map $ssid and $security and $rssi")
+                LibreLogger.d(CTBluetoothPassCredentials.TAG_SCAN, "populateScanListMap before " + "Map $ssid and $security and $rssi")
                 scanListMap[ssid] = Pair(security, rssi)
+            }
+
+            // Add "Other Options" SSID with dummy security and RSSI
+            val otherOptionsSSID = "Other Options"
+            val otherOptionsSecurity = "WPA-PSK"
+            val otherOptionsRssi = 200
+            scanListMap[otherOptionsSSID] = Pair(otherOptionsSecurity, otherOptionsRssi)
+            for ((ssid, securityAndRssi) in scanListMap) {
+                val security = securityAndRssi.first
+                val rssi = securityAndRssi.second
+
+                LibreLogger.d(CTBluetoothPassCredentials.TAG_SCAN, "populateScanListMap  $ssid and $security and $rssi")
+                WifiConnection.getInstance().putWifiScanResultSecurity(ssid, security, rssi)
             }
         } catch (e: JSONException) {
             e.printStackTrace()
             LibreLogger.d(TAG, "populateScanListMap Exception " + e.message)
-        }
-
-        for ((ssid, securityAndRssi) in scanListMap) {
-            val security = securityAndRssi.first
-            val rssi = securityAndRssi.second
-
-            LibreLogger.d(CTBluetoothPassCredentials.TAG_SCAN, "populateScanListMap  $ssid and $security and $rssi")
-            WifiConnection.getInstance().putWifiScanResultSecurity(ssid, security, rssi)
         }
         getScanResultsFromDevice()
     }
