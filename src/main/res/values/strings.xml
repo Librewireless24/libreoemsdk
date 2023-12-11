@@ -30,6 +30,7 @@
   <string name="loadingLocalContent">Loading Local contents</string>
   <string name="restartAppManually">Loading of Local content failed! Auto restarting is failed.Please restart the app manually!</string>
   <string name="failed">FAILED</string>
+  <string name="software_failed">Software Update Failed, Something went wrong!!!</string>
   <string name="deviceNameChanging">Speaker Name Changing</string>
   <string name="deviceNameEmpty">Device name cannot be an empty</string>
   <string name="deviceNameNull">Device Name Cannot Be an Null</string>
@@ -197,7 +198,10 @@
   <string name="wifi_password_invalid">Invalid Wi-Fi password</string>
   <string name="device_name_empty">Enter speaker name</string>
   <string name="configuring_device">Configuring Speaker…</string>
-  <string name="setting_up_device"><![CDATA[Setting up speaker & looking for update]]></string>
+  <string name="setting_up_device">Checking for latest updates, it might take approximately 20 seconds</string>
+  <string name="checking_for_updates">Checking for Updates</string>
+  <string name="is_up_to_date">&#x20;is up to date</string>
+  <string name="it_taking_than_usual">It is taking more time than usual Please wait ...</string>
   <string name="connected_speakers">Connected Speakers</string>
   <string name="speaker_ready_cmds">Speaker is ready for commands</string>
   <string name="logout">Logout</string>
@@ -251,15 +255,20 @@
   <string name="power">Power</string>
   <string name="select_media_server">Please select the media server:</string>
   <string name="mb223_update_started">Internet firmware update started…</string>
-  <string name="mb223_update_download">Firmware image downloading started</string>
+  <string name="mb223_update_download">Firmware downloading started</string>
   <string name="mb223_update_image_available">Firmware image downloaded from server and ready to update speaker</string>
   <string name="mb223_download_fail">Downloading of firmware image from server failed</string>
   <string name="please_selecte_wifi">Please select Wi-Fi</string>
   <string name="setting_up_speaker">Setting up speaker and looking for update</string>
   <string name="now_rebooting">Now rebooting !</string>
   <string name="indicating_light">Indicating light will breath in blue and turn white at the end …</string>
+  <string name="installing_rebooting">Installing &amp; Rebooting</string>
+  <string name="your_device_currently_minutes">Your device is currently being upgraded which may take up to 1-2 minutes</string>
   <string name="updating_your_speaker">Updating your speaker</string>
+  <string name="firmware_verification_in_progress">Firmware verification in progress </string>
   <string name="updating_in_progress">Firmware Update in progress...</string>
+  <string name="updating_download_progress">Firmware download in progress...</string>
+  <string name="updating_download_successfully">Firmware downloaded successfully. Starting verification process...</string>
   <string name="you_will_see_flashing">You will see flashing red, blue and green lights …</string>
   <string name="your_device_is_currently">Your device is currently being upgraded which may take upto 5 minutes</string>
   <string name="open_wifi_settings">Open Wi-Fi settings</string>
@@ -284,7 +293,10 @@
   <string name="cred_received">Credentials received by the Speaker</string>
   <string name="cred_success">Credentials are passed</string>
   <string name="start_connecting">Speaker started connecting to Network</string>
+  <string name="connecting_wifi">Connecting to Wi-Fi</string>
   <string name="speaker_connected">Speaker connected to Network</string>
+  <string name="connected">Connected to&#x20;</string>
+  <string name="successfully">&#x20;successfully</string>
   <string name="ap_notfound">Speaker couldn\'t able to find AP</string>
   <string name="play_tone">Play Tone</string>
   <string name="play_tone_request">Requesting to Play Tone</string>
@@ -373,6 +385,7 @@ By clicking Confirm, Device will be removed and you will be redirected to Home. 
   <string name="time_zone">Time Zone</string>
   <string name="edit_speaker_name">Enter Device Name</string>
   <string name="posting_cred">Posting credentials ....</string>
+  <string name="sending_cred">Sending credentials</string>
 
   <string name="airplay">Airplay</string>
   <string name="dmr">Dmr</string>
@@ -437,6 +450,8 @@ By clicking Confirm, Device will be removed and you will be redirected to Home. 
   <string name="password_less_64_char">Wi-Fi Password should be less than 64 Characters</string>
   <string name="network_mismatch">Network Mismatch</string>
   <string name="continue_txt">Continue</string>
+  <string name="go_to_home">Go to Home</string>
+  <string name="has_been_successfully_setup">has been successfully setup.</string>
   <string-array name="audio_output_array">
     <item>Stereo (S)</item>
     <item>Left Speaker (L)</item>

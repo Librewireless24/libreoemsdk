@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:background="@color/screen_bg"
+  tools:context="com.cumulations.libreV2.activity.GoToHomeActivity">
+  <RelativeLayout
+    android:id="@+id/lay_backHead"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:background="@android:color/transparent">
+
+
+    <ImageView
+      android:id="@+id/back_button"
+      android:layout_width="60dp"
+      android:layout_height="56dp"
+      android:src="@drawable/ic_arrow_back_white"
+      android:visibility="visible"
+      android:padding="8dp"
+      android:background="@android:color/transparent"/>
+
+    <androidx.appcompat.widget.AppCompatTextView
+      android:id="@+id/header_text"
+      android:layout_width="match_parent"
+      android:layout_height="56dp"
+      android:layout_toRightOf="@+id/back_button"
+      android:background="@android:color/transparent"
+      android:gravity="center"
+      android:text="@string/setup_device"
+      android:textColor="@color/white"
+      android:textSize="@dimen/dimen_18" />
+
+  </RelativeLayout>
+
+  <androidx.appcompat.widget.AppCompatTextView
+    android:id="@+id/txt_setupDevice"
+    android:layout_width="match_parent"
+    android:layout_height="56dp"
+    android:paddingHorizontal="20dp"
+    android:layout_marginTop="80dp"
+    android:layout_below="@+id/lay_backHead"
+    android:background="@android:color/transparent"
+    tools:text="@string/has_been_successfully_setup"
+    android:textColor="@color/white"
+    android:textSize="@dimen/dimen_18" />
+
+  <androidx.appcompat.widget.AppCompatButton
+    android:id="@+id/btn_goHome"
+    android:layout_width="match_parent"
+    android:layout_height="60dp"
+    android:layout_centerInParent="true"
+    android:layout_marginHorizontal="100dp"
+    android:background="@drawable/ic_rectangle"
+    android:gravity="center"
+    android:text="@string/go_to_home"
+    android:textAllCaps="false"
+    android:textColor="@color/brand_orange"
+    android:textSize="@dimen/dimen_18" />
+
+ <!-- <Button
+    android:layout_width="wrap_content"
+    android:layout_height="56dp"
+    android:gravity="center_vertical"
+    android:text="Setup Device"
+    android:textColor="@color/white"
+    android:textSize="@dimen/dimen_18"
+    android:background="@android:color/transparent"/>-->
+</RelativeLayout>

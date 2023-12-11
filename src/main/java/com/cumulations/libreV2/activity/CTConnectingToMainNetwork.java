@@ -4,6 +4,7 @@ import static android.media.ExifInterface.TAG_MODEL;
 import static com.libreAlexa.constants.Constants.FW_FAILED;
 import static com.libreAlexa.constants.Constants.GCAST_COMPLETE;
 import static com.libreAlexa.constants.Constants.NO_UPDATE;
+import static com.libreAlexa.constants.Constants.TEXT_UPDATE;
 import static com.libreAlexa.constants.Constants.UPDATE_DOWNLOAD;
 import static com.libreAlexa.constants.Constants.UPDATE_IMAGE_AVAILABLE;
 import static com.libreAlexa.constants.Constants.UPDATE_STARTED;
@@ -77,6 +78,8 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
     private String fwInternetUpgradeMessage = "";
     private AppCompatImageView setupProgressImage;
     private boolean mb223TimerRunning;
+    AlertDialog.Builder builder;
+    AlertDialog alert;
     public static final long OOPS_TIMEOUT = 45*1000; //45*1000;
     public static final String TAG = CTConnectingToMainNetwork.class.getSimpleName();
 
@@ -95,6 +98,9 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
         setupProgressImage = findViewById(R.id.setup_progress_image);
 
         wifiUtil = new WifiUtil(this);
+        // Schedule the text change after 20 seconds
+        mHandler.sendEmptyMessageDelayed(Constants.TEXT_UPDATE, 20000);
+
     }
 
     @Override
@@ -172,7 +178,8 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
                     sendMSearchInIntervalOfTime();
                     mHandler.sendEmptyMessageDelayed(Constants.TIMEOUT_FOR_SEARCHING_DEVICE, OOPS_TIMEOUT);
                     LibreLogger.d(TAG, "Searching For The Device " + LibreApplication.sacDeviceNameSetFromTheApp);
-                    setSetupInfoTexts(getString(R.string.setting_up_speaker),getString(R.string.pleaseWait));
+                    setSetupInfoTexts(getString(R.string.setting_up_device),getString(R.string.pleaseWait));
+                    progressBar.setIndeterminate(true);
                     break;
 
                 case Constants.TIMEOUT_FOR_SEARCHING_DEVICE:
@@ -206,9 +213,13 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
                     mb223TimerRunning = false;
                     readAlexaToken(mSACConfiguredIpAddress);
                     break;
-                case FW_FAILED:
-                    LibreLogger.d(TAG, "FW_UPGRADE_INTERNET FW_FAILED ");
-                    goToNextScreen();
+                case TEXT_UPDATE:
+                    mainMsgText.setText(getString(R.string.checking_for_updates));
+                    subMsgText.setText(getString(R.string.it_taking_than_usual));
+                    progressBar.setIndeterminate(true);
+                    LibreLogger.d(TAG, "TEXT_UPDATE ");
+                    break;
+
             }
         }
     };
@@ -220,6 +231,7 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
 
     private final int MSEARCH_TIMEOUT_SEARCH = 2000;
     private final Handler mTaskHandlerForSendingMSearch = new Handler();
+    private Handler handler = new Handler();
     public boolean mBackgroundMSearchStoppedDeviceFound = false;
     private final Runnable mMyTaskRunnableForMSearch = new Runnable() {
         @Override
@@ -362,6 +374,7 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
                             mHandler.removeMessages(Constants.ALEXA_CHECK_TIMEOUT);
                             if (fwInternetUpgradeMessage.equals(NO_UPDATE) || fwInternetUpgradeMessage.equals(Constants.BATTERY_POWER)) {
                                 mHandler.sendEmptyMessage(Constants.CONFIGURED_DEVICE_FOUND);
+                                mHandler.removeMessages(TEXT_UPDATE);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -400,6 +413,7 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
                     break;
 
                 case MIDCONST.FW_UPGRADE_INTERNET_LS9:
+                    mHandler.removeMessages(Constants.TEXT_UPDATE);
                     if (message.isEmpty())
                         return;
                     fwInternetUpgradeMessage = message;
@@ -408,25 +422,26 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
                         mb223TimerRunning = false;
                         if(fwInternetUpgradeMessage!=null && fwInternetUpgradeMessage.matches("[0-9]+")){
                             progressBar.setProgress(Integer.parseInt(fwInternetUpgradeMessage));
+                            setSetupInfoTexts(getString(R.string.updating_your_speaker),getString(R.string.updating_download_progress));
                         }
                         switch (fwInternetUpgradeMessage) {
                             case NO_UPDATE:
                                 readAlexaToken(mSACConfiguredIpAddress);
                                 break;
                             case UPDATE_STARTED:
-                                break;
                             case UPDATE_DOWNLOAD:
                                 setSetupInfoTexts(getString(R.string.updating_your_speaker),getString(R.string.mb223_update_download));
                                 break;
                             case UPDATE_IMAGE_AVAILABLE:
-                                setSetupInfoTexts(getString(R.string.updating_in_progress), getString(R.string.your_device_is_currently));
+                                setSetupInfoTexts(getString(R.string.updating_your_speaker), getString(R.string.updating_download_successfully));
                                 break;
                             case Constants.CRC_CHECK_ERROR:
-                                showAlertDialogForFWError(getString(R.string.failed),getString(R.string.somethingWentWrong));
-                                break;
                             case Constants.DOWNLOAD_FAIL:
-                                showAlertDialogForFWError(getString(R.string.failed),getString(R.string.mb223_download_fail));
+                                showAlertDialogForFWError(getString(R.string.software_failed),getString(R.string.somethingWentWrong));
                                 break;
+                           /* case Constants.DOWNLOAD_FAIL:
+                                showAlertDialogForFWError(getString(R.string.failed),getString(R.string.mb223_download_fail));
+                                break;*/
                         }
                     }
                     break;
@@ -445,27 +460,60 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
                     if (!fwInternetUpgradeMessage.isEmpty()) {
                         mHandler.removeMessages(Constants.WAITING_FOR_223_MB);
                         mb223TimerRunning = false;
-                        if (fwInternetUpgradeMessage.equals(GCAST_COMPLETE)) {
-                            setSetupInfoTexts(getString(R.string.now_rebooting), getString(R.string.indicating_light));
-                            Log.d(TAG, "messageRecieved: "+fwInternetUpgradeMessage);
+                        if(fwInternetUpgradeMessage!=null && fwInternetUpgradeMessage.matches("[0-9]+")){
+                            setSetupInfoTexts(getString(R.string.updating_your_speaker), getString(R.string.firmware_verification_in_progress));
+                            progressBar.setProgress(Integer.parseInt(fwInternetUpgradeMessage));
+                        } else if (fwInternetUpgradeMessage != null && fwInternetUpgradeMessage.equals(GCAST_COMPLETE)) {
+                            setSetupInfoTexts(getString(R.string.installing_rebooting), getString(R.string.your_device_currently_minutes));
+                            /*setSetupInfoTexts(getString(R.string.updating_your_speaker), getString(R.string.firmware_verification_in_progress));*/
+                            Log.d(TAG, "messageRecieved: " + fwInternetUpgradeMessage);
                             mHandler.sendEmptyMessageDelayed(Constants.FW_UPGRADE_REBOOT_TIMER, 3 * 60 * 1000);
                             //suma remove later
-                           // mHandler.sendEmptyMessageDelayed(Constants.FW_UPGRADE_REBOOT_TIMER, 50000);
+                            // mHandler.sendEmptyMessageDelayed(Constants.FW_UPGRADE_REBOOT_TIMER, 50000);
 
                         }
                     }
+                    break;
+                case MIDCONST.REBOOT_REQUEST:
+                    setSetupInfoTexts(getString(R.string.installing_rebooting),getString(R.string.your_device_currently_minutes));
+                    LibreLogger.d(TAG, "MB:- 66 Firmware Update Progress Start and Message: "+message);
                     break;
             }
         }
     }
 
     public void showAlertDialogForFWError(String mainStr, String subStr) {
-        LibreLogger.d(TAG, "FW_UPGRADE_INTERNET showAlertDialogForFWError "+mainStr);
-        final AlertDialog.Builder dialog = new AlertDialog.Builder(this).setTitle(
-            mainStr).setMessage(subStr);
+        LibreLogger.d(TAG, "FW_UPGRADE_INTERNET showAlertDialogForFWError "+mainStr+" subStr ");
+
+        if(builder==null) {
+            builder = new AlertDialog.Builder(this);
+            builder.setMessage(mainStr)
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        if (alert != null && alert.isShowing()) {
+                            alert.dismiss();
+                        }
+                    }
+                });
+            alert = builder.create();
+            alert.show();
+            // Automatically dismiss the dialog after 10 seconds
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (alert != null && alert.isShowing()) {
+                        alert.dismiss();
+                    }
+                }
+            }, 10000); // 10 seconds
+
+       /* final AlertDialog.Builder dialog = new AlertDialog.Builder(this).setTitle("").setMessage(subStr);
         if (alertDialogFWFailed == null) {
             alertDialogFWFailed = dialog.create();
+
             alertDialogFWFailed.show();
+        }*/
         }
         mHandler.sendEmptyMessageDelayed(FW_FAILED,5000);
     }
@@ -475,12 +523,17 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
         mainMsgText.setText(mainMsg);
         subMsgText.setText(subMsg);
 
-        if (subMsg.equals(getString(R.string.pleaseWait))){
+        if (subMsg.equals(getString(R.string.pleaseWait))) {
             setupProgressImage.setImageResource(R.drawable.setup_progress1);
-        } else if (subMsg.equals(getString(R.string.you_will_see_flashing))){
+        } else if (subMsg.equals(getString(R.string.mb223_update_download))
+            || subMsg.equals(getString(R.string.updating_download_progress))
+            || subMsg.equals(getString(R.string.updating_download_successfully))) {
             setupProgressImage.setImageResource(R.drawable.setup_progress2);
-        } else if (subMsg.equals(getString(R.string.indicating_light))){
+            progressBar.setIndeterminate(true);
+        } else if (subMsg.equals(getString(R.string.firmware_verification_in_progress))
+            ||subMsg.equals(getString(R.string.your_device_currently_minutes))) {
             setupProgressImage.setImageResource(R.drawable.setup_progress3);
+            progressBar.setIndeterminate(true);
         }
     }
 
@@ -515,6 +568,12 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
 
     private void goToNextScreen() {
         LSSDPNodes mNode = ScanningHandler.getInstance().getLSSDPNodeFromCentralDB(mSACConfiguredIpAddress);
+        mainMsgText.setText(mNode.getFriendlyname()+" "+getString(R.string.is_up_to_date));
+        subMsgText.setText("");
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+
         if (mNode == null) {
             showToast("Device not available in central db");
             intentToHome(CTConnectingToMainNetwork.this);
@@ -535,7 +594,7 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
            finish();
        }else if (mNode.getmDeviceCap().getmSource().isGoogleCast()) {
            LibreLogger.d(TAG, "goToNextScreen CastSource " + mNode.getmDeviceCap().getmSource().isGoogleCast());
-           Intent goToCastTOSActivity = new Intent(this, CastToSActivity.class);
+           Intent goToCastTOSActivity = new Intent(CTConnectingToMainNetwork.this, CastToSActivity.class);
            goToCastTOSActivity.putExtra(Constants.CURRENT_DEVICE_IP, mSACConfiguredIpAddress);
            goToCastTOSActivity.putExtra(Constants.DEVICE_NAME, mNode.getFriendlyname());
            goToCastTOSActivity.putExtra(Constants.FROM_ACTIVITY, CTConnectingToMainNetwork.class.getSimpleName());
@@ -562,7 +621,8 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
            showToast(getString(R.string.configuration_successful));
            intentToHome(CTConnectingToMainNetwork.this);
        }
-
+            }
+    }, 2000); // 2 seconds delay
 
        /*else if (mNode.getmDeviceCap().getmSource().isGoogleCast() && mNode.getmDeviceCap().getmSource().isAlexaAvsSource()) {
             LibreLogger.d(TAG, "goToNextScreen BothSource " + mNode.getmDeviceCap().getmSource().isAlexaAvsSource() + " castSource:- " + mNode.getmDeviceCap().getmSource().isAlexaAvsSource());

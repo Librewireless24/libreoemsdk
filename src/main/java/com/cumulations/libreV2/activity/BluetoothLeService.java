@@ -2,6 +2,8 @@ package com.cumulations.libreV2.activity;
 
 import static android.bluetooth.BluetoothGattDescriptor.ENABLE_INDICATION_VALUE;
 import static android.bluetooth.BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE;
+import static com.cumulations.libreV2.activity.CTBluetoothPassCredentials.TAG_;
+import static com.cumulations.libreV2.activity.CTBluetoothPassCredentials.TAG_BLE_SHAIk;
 import static com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEGattAttributes.MTU_SIZE;
 import static com.libreAlexa.LibreApplication.betweenDisconnectedCount;
 import static com.libreAlexa.LibreApplication.disconnectedCount;
@@ -232,7 +234,7 @@ public class BluetoothLeService extends Service {
 
             try {
                 byte[] value = data;
-
+                LibreLogger.d(TAG_BLE_SHAIk, "Received BLE data "+value);
                 BLEPacket mPacket = new BLEPacket();
                 BLEPacket.BLEDataPacket mDataPacket = mPacket.createBlePacketFromMessage(value);
                 LibreLogger.d(TAG, "Received BLE data" + "Value received:  " + value.length +
@@ -246,8 +248,8 @@ public class BluetoothLeService extends Service {
         }
     };
 
-    private static String bytesToHex(byte[] hashInBytes) {
-
+     static String bytesToHex(byte[] hashInBytes) {
+         LibreLogger.d(TAG_BLE_SHAIk, "Received BLE hashInBytes "+hashInBytes);
         StringBuilder sb = new StringBuilder();
         for (byte b : hashInBytes) {
             // System.out.println(String.format("%02x", b));
