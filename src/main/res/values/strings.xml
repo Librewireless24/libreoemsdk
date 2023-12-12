@@ -16,6 +16,7 @@
   <string name="requestTimeout">Speaker response timed out. Please try again</string>
 
   <string name="pleaseWait">Please wait…</string>
+  <string name="pleaseWait_looking">Please wait…Looking for device in SetupMode</string>
 
   <!-- Error messages -->
 
@@ -173,6 +174,11 @@
   <string name="connect_device_to_wifi">Connect speaker to Wi-Fi network</string>
   <string name="select_wifi">Select a Wi-Fi</string>
   <string name="wifi_pwd">Wi-Fi Password</string>
+  <string name="manual_ssid_title">Enter Wi-Fi Name</string>
+  <string name="manual_ssid_hint">Enter Network Name</string>
+  <string name="manual_security_title">Wi-Fi Security</string>
+  <string name="manual_security_hint">Select Security Type</string>
+
   <string name="hmmm">Hmmm…</string>
   <string name="not_sure_device_setup_completed">We are not able to make sure whether the speaker setup has completed.</string>
   <string name="device_light_white">If the speaker light is white.</string>

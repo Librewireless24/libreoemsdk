@@ -18,19 +18,26 @@ import android.os.IBinder
 import android.os.Looper
 import android.provider.Settings
 import android.text.Html
+import android.text.InputType
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
 import android.view.View
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.lifecycleScope
 import com.cumulations.libreV2.AppUtils
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.cumulations.libreV2.AppUtils.getConnectedSSID
 import com.cumulations.libreV2.AppUtils.networkMismatchMessage
 import com.cumulations.libreV2.AppUtils.networkMismatchSsidMessage
 import com.cumulations.libreV2.activity.BluetoothLeService.LocalBinder
+import com.cumulations.libreV2.adapter.WifiListBottomSheetAdapterForSecurityType
+import com.cumulations.libreV2.adapter.WifiSecurityConfigurationItemClickInterface
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEPacket
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEPacket.BLEDataPacket
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEPacket.parseBleData
@@ -43,6 +50,7 @@ import com.cumulations.libreV2.model.WifiConnection
 import com.cumulations.libreV2.roomdatabase.LibreVoiceDatabase
 import com.cumulations.libreV2.roomdatabase.PasswordRememberDao
 import com.cumulations.libreV2.roomdatabase.PasswordRememberDataClass
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.libreAlexa.LibreApplication
 import com.libreAlexa.R
 import com.libreAlexa.constants.AppConstants
@@ -63,7 +71,8 @@ import java.util.Locale
 
 
 class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToApplicationInterface,
-    View.OnClickListener, LibreDeviceInteractionListner {
+    View.OnClickListener, LibreDeviceInteractionListner,
+    WifiSecurityConfigurationItemClickInterface {
     private var mIntentExtraScanResults = false
     private var mDeviceName: String? = null
     private var prev_Activity: String? = null
@@ -81,6 +90,11 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
     private var state = true
     private var mandateDialog: AlertDialog? = null
     private var wifiReceiver: WifiReceiver? = null
+var bottomSheetDialogForSecurity: BottomSheetDialog? = null
+    var tv_no_data: TextView? = null
+    var rv_wifi_list: RecyclerView? = null
+    var wifiListBottomSheetAdapterForSecurityType: WifiListBottomSheetAdapterForSecurityType? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = CtActivityConnectToWifiBinding.inflate(layoutInflater)
@@ -165,6 +179,10 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
         binding.ivRightArrow.setOnClickListener(this)
         binding.tvSelectedWifi.setOnClickListener(this)
         binding.ivBack.setOnClickListener(this)
+        binding.ivSecArrow.setOnClickListener(this)
+       binding.manualSsidLayout.visibility=View.GONE
+        binding.manualSecurityLayout.visibility=View.GONE
+
         binding.togglePasswordImageview.setOnClickListener {
             if (state == true) {
                 state = false
@@ -488,48 +506,142 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
     override fun onClick(view: View) {
         when (view.id) {
             R.id.et_device_name -> {}
-            R.id.btn_next -> try {
-                if (binding.etDeviceName.text.toString().isNotEmpty()) {
-                    if (binding.tvSelectedWifi.text.toString().isNotEmpty()) {
-                        if (binding.etWifiPassword.text.toString().isNotEmpty()) {
-                            if (AppUtils.isValidPassword(binding.etWifiPassword.text.toString())) {
-                                if(AppUtils.isValidWifiPassword64(binding.etWifiPassword.text.toString())) {
-                                    if(binding.tvSelectedWifi.text.toString()==AppUtils.getConnectedSSID(context = this)) {
-                                        btnNextClicked()
-                                    }else{
-                                        showNetworkMisMatchAlertDialog(networkMismatchSsidMessage(getConnectedSSID(context = this),binding.tvSelectedWifi.text.toString()), getString(R.string.continue_txt),
-                                            getString(R.string.cancel), isNetworkMisMatch=true,
-                                            isConfigureCancel=false)
-                                    }
-                                }else{
-                                    showAlertMessageRegardingSAC(getString(R.string.error), getString(R.string.password_less_64_char))
-                                }
-                            } else {
-                                showAlertMessageRegardingSAC(getString(R.string.error),getString(R.string.password_should_8_char))
-                            }
-                        } else {
-                            showToast(getString(R.string.password_empty_error))
-                        }
-                    } else {
-                        showToast(getString(R.string.please_selecte_wifi))
-                    }
-                } else {
-                    showToast(getString(R.string.device_name_empty))
-                }
-            } catch (e: Exception) {
+
+            R.id.btn_next ->
+
+            try {
+//                if (binding.etDeviceName.text.toString().isNotEmpty()) {
+//                    if (binding.tvSelectedWifi.text.toString().isNotEmpty()) {
+                       // if (binding.etWifiPassword.text.toString().isNotEmpty()) {
+                           // if (AppUtils.isValidPassword(binding.etWifiPassword.text.toString())) {
+                                //if(AppUtils.isValidWifiPassword64(binding.etWifiPassword.text.toString())) {
+                                   // if(binding.tvSelectedWifi.text.toString()==AppUtils.getConnectedSSID(context = this)) {
+                                       // btnNextClicked()
+                                        LibreLogger.d(TAG,"suma in btnNext"+binding.tvSelectedWifi.toString())
+
+                                        var mSelectedSSID = String(
+                                            WifiConnection.getInstance().getMainSSID()
+                                                .toByteArray(), StandardCharsets.UTF_8
+                                        )
+
+                                        if (mSelectedSSID == "Other Options") {
+                                            val wifiConnect = WifiConnection.getInstance()
+                                            wifiConnect.setMainSSID(
+                                                binding.tvSelectedWifi.getText().toString()
+                                            )
+                                            mSelectedSSID = String(
+                                                WifiConnection.getInstance().getMainSSID()
+                                                    .toByteArray(), StandardCharsets.UTF_8
+                                            )
+                                            val mSelectedPass = String(
+                                                binding.etWifiPassword.getText().toString().toByteArray(),
+                                                StandardCharsets.UTF_8
+                                            )
+                                            val mSelectedSecurity = String(
+                                                WifiConnection.getInstance().getMainSSIDSec()
+                                                    .toByteArray(), StandardCharsets.UTF_8
+                                            )
+                                            LibreLogger.d(
+                                                TAG, """suma in device SSID manual ssid
+ ${mSelectedSSID}pwd
+${mSelectedPass}security
+$mSelectedSecurity"""
+                                            )
+                                            btnNextClickedOther()
+                                            LibreLogger.d(TAG, "suma in other Network if   \n ")
+
+                                        }
+                                        else {
+                                            LibreLogger.d(TAG, "suma in other Network else   \n ")
+                                           btnNextClicked()
+                                        }
+//                                    }else{
+//                                        showNetworkMisMatchAlertDialog(networkMismatchSsidMessage(AppUtils.getConnectedSSID(context = this),binding.tvSelectedWifi.text.toString()),
+//                                            getString(R.string.open_settings),
+//                                            getString(R.string.cancel), isNetworkMisMatch=true)
+//                                    }
+//                                }else{
+//                                    showAlertMessageRegardingSAC(getString(R.string.error), getString(R.string.password_less_64_char))
+//                                }
+//                            } else {
+//                                showAlertMessageRegardingSAC(getString(R.string.error),getString(R.string.password_should_8_char))
+//                            }
+                        //}
+//                        else {
+//                            showToast(getString(R.string.password_empty_error))
+//                        }
+//                    } else {
+//                        showToast(getString(R.string.please_selecte_wifi))
+//                    }
+//                } else {
+//                    showToast(getString(R.string.device_name_empty))
+//                }
+            }
+            catch (e: Exception) {
                 e.printStackTrace()
             }
 
             R.id.btn_cancel -> btnCancelClicked()
-            R.id.ll_select_wifi, R.id.iv_right_arrow, R.id.tv_selected_wifi -> ivRightArrowClicked()
+             R.id.iv_right_arrow-> ivRightArrowClicked()
+
             R.id.iv_back ->
                 //mBluetoothLeService.disconnect();
                 //mBluetoothLeService.close();
                 //mBluetoothLeService.removelistener(this);
                 callBluetoothDeviceListActivity()
+            R.id.iv_sec_arrow ->
+
+                setupBottomSheetForWifiSecurityList()
+            R.id.tv_selected_wifi -> {
+                binding.tvSelectedWifi.isClickable=true
+                LibreLogger.d(TAG,"suma in selected wifi  ")
+                binding.tvSelectedWifi.isCursorVisible=true
+                binding.tvSelectedWifi.isFocusableInTouchMode=true
+                binding.tvSelectedWifi.inputType=InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE
+                binding.tvSelectedWifi.requestFocus()
+            }
         }
     }
 
+    fun setupBottomSheetForWifiSecurityList() {
+        val view: View = layoutInflater.inflate(R.layout.show_wifi_security, null)
+       tv_no_data = view.findViewById<TextView>(R.id.tv_no_data)
+        rv_wifi_list = view.findViewById<RecyclerView>(R.id.rv_wifi_list)
+        val iv_close_icon = view.findViewById<AppCompatImageView>(R.id.iv_close_icon)
+        setWifiListBottomSheetAdapterForSecurity()
+        iv_close_icon.setOnClickListener { bottomSheetDialogForSecurity!!.dismiss() }
+        bottomSheetDialogForSecurity = BottomSheetDialog(this@CTBluetoothPassCredentials)
+        bottomSheetDialogForSecurity!!.setContentView(view)
+        bottomSheetDialogForSecurity!!.setCancelable(false)
+        bottomSheetDialogForSecurity!!.show()
+    }
+
+    fun setWifiListBottomSheetAdapterForSecurity() {
+        val securityList: MutableList<String> = ArrayList()
+        securityList.add("OPEN/NONE")
+        securityList.add("WPA/WPA2/WPA3")
+
+//        securityList.add("NONE")
+//        securityList.add("WEP")
+//        securityList.add("WPA")
+//        securityList.add("WPA-PSK")for future keeping it
+//        securityList.add("WPA/WPA2")
+//        securityList.add("WPA2-PSK")
+//        securityList.add("WPA2-Personal")
+//        securityList.add("WPA2-Enterprise")
+//        securityList.add("WPA2/WPA3-Personal")
+//        securityList.add("WPA3-PSK")
+//        securityList.add("WPA3-Personal")
+        val linearLayoutManager = LinearLayoutManager(this@CTBluetoothPassCredentials)
+        wifiListBottomSheetAdapterForSecurityType = WifiListBottomSheetAdapterForSecurityType(
+            this@CTBluetoothPassCredentials,
+            securityList
+        )
+
+        rv_wifi_list!!.setAdapter(wifiListBottomSheetAdapterForSecurityType)
+        wifiListBottomSheetAdapterForSecurityType!!.setWifiConfigurationForSeurity(this)
+        rv_wifi_list!!.setLayoutManager(linearLayoutManager)
+    }
     /**
      * -> BLE_SAC_APP2DEV_CONNECT_WIFI
      * : |0xAB|0x01|Len| Data|0xCB|
@@ -635,6 +747,102 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
             deleteWifiPassword(binding.tvSelectedWifi.text.toString())
         }
     }
+  private fun btnNextClickedOther() {
+        val mSelectedSSID = String(WifiConnection.getInstance().getMainSSID().toByteArray(), StandardCharsets.UTF_8)
+        val mSelectedPass = String(binding.etWifiPassword.text.toString().toByteArray(), StandardCharsets.UTF_8)
+        val mSelectedSecurity = String(WifiConnection.getInstance().getMainSSIDSec().toByteArray(), StandardCharsets.UTF_8)
+        val mSelectedCountryCode = String(configurationParameters.getDeviceCountryCode(this@CTBluetoothPassCredentials).toByteArray(), StandardCharsets.UTF_8).uppercase(Locale.getDefault())
+        mDeviceName = String(binding.etDeviceName.text.toString().toByteArray(), StandardCharsets.UTF_8)
+        WifiConnection.getInstance().setMainSSIDPwd(mSelectedPass)
+        LibreLogger.d(TAG, "btnNextClicked: Security check is enabled or Not 0(Disabled)/1(Enabled) " + mSecurityCheckEnabled + "Countrycode " + mSelectedCountryCode)
+        /**
+         * SHAIK Added the 2 Sec Delay after user click on Next Button
+         */
+        lifecycleScope.launch {
+            delay(2000)
+            if (!mSecurityCheckEnabled) {
+                val data = ByteArray(mSelectedPass.length + mSelectedSSID.length + 5 + mSelectedSecurity.length + binding.etDeviceName.text!!.length + mSelectedCountryCode.length)
+                LibreLogger.d(TAG, "btnNextClicked: mSecurityCheckEnabled if $data")
+                var i = 0
+                data[i++] = mSelectedSSID.length.toByte()
+                for (b in mSelectedSSID.toByteArray()) {
+                    data[i++] = b
+                }
+                data[i++] = mSelectedPass.length.toByte()
+                for (b in mSelectedPass.toByteArray()) {
+                    data[i++] = b
+                }
+//                data[i++] = mSelectedSecurity.length.toByte()
+//                for (b in mSelectedSecurity.toByteArray()) {
+//                    data[i++] = b
+//                }
+                data[i++] = binding.etDeviceName.text!!.length.toByte()
+                for (b in binding.etDeviceName.text.toString().toByteArray()) {
+                    data[i++] = b
+                }
+                data[i++] = mSelectedCountryCode.length.toByte()
+                for (b in mSelectedCountryCode.toByteArray()) {
+                    data[i++] = b
+                }
+                LibreLogger.d(TAG, "btnNextClicked: mSecurityCheckEnabled IF writing data  $data")
+                val mBlePacketScanWIFI = BLEPacket(data, BLEUtils.BLE_SAC_APP2DEV_CONNECT_WIFI.toByte(), true)
+                BleCommunication.writeDataToBLEDevice(mBlePacketScanWIFI)
+            } else {
+                /*Code we are sending ssid password*/
+                val mConfigPacket = ConfigurationParameters.getInstance().getEncryptedDataAndKey(mSelectedSSID, mSelectedPass, mSelectedSecurity, mDeviceName, mSelectedCountryCode)
+                //ConfigurationParameters.getInstance().createSacPackets(false, mConfigPacket.getEncodedData(),mConfigPacket.getIv());
+                /*byte[] ThreeTimesOfEncodedData = new byte[mConfigPacket.getEncodedData().length * 3];
+        int i =0;
+        for(byte b : mConfigPacket.getEncodedData()) {
+            ThreeTimesOfEncodedData[i++] =  b;
+        }
+        for(byte b : mConfigPacket.getEncodedData()) {
+            ThreeTimesOfEncodedData[i++] =  b;
+        }
+        for(byte b : mConfigPacket.getEncodedData()) {
+            ThreeTimesOfEncodedData[i++] =  b;
+        }*/
+                val encodedData = mConfigPacket.encodedData //ThreeTimesOfEncodedData ;//mConfigPacket.getEncodedData();
+                val ivData = mConfigPacket.iv
+                var NumberOfPacketsToSplitted = encodedData.size / 150 // MTCU_SIZE - header just to make it as whole number
+                if (encodedData.size % 150 != 0) {
+                    NumberOfPacketsToSplitted += 1
+                }
+                var offset = 0
+                var lengthTocopy = 150
+                if (encodedData.size < 150) {
+                    lengthTocopy = encodedData.size
+                }
+                while (NumberOfPacketsToSplitted > 0) {
+                    LibreLogger.d(TAG, " KARUNAKARAN " + " NumberofPacketstoBeSplitted " + NumberOfPacketsToSplitted + " Offset " + offset + " LengthToCopy " + lengthTocopy + " EncodedData Length " + encodedData.size)
+                    NumberOfPacketsToSplitted--
+                    val offsetEncodedData = configurationParameters.getByteArrayFromOffset(offset, lengthTocopy, encodedData)
+                    val dataToSendToDevice = configurationParameters.createSacPackets(NumberOfPacketsToSplitted, offsetEncodedData, ivData)
+                    BleCommunication.writeDataToBLEDevice(dataToSendToDevice)
+                    offset += 150
+                    if (NumberOfPacketsToSplitted == 1) {
+                        lengthTocopy = encodedData.size - offset
+                    }
+                }
+            }
+        }
+        LibreLogger.d(TAG, "btnNextClicked: Before Posting credentials " + binding.etDeviceName.text.toString())
+        mDeviceName = binding.etDeviceName.text.toString()
+        setMessageProgressDialog(getString(R.string.posting_cred))
+        /**
+         * Shaik initiateJob is for,If we didn't get the response from device we are going to
+         * home screen for the re initiating the setup mode
+         */
+        lifecycleScope.launch {
+            initiateJob()
+        }
+        if (binding.rememCheckBox.isChecked) {/*storeSSIDInfoToSharedPreferences(this@CTBluetoothPassCredentials, WifiConnection.getInstance().getMainSSID(), WifiConnection.getInstance().getMainSSIDPwd())*/
+            val passwordRememberDataClass = PasswordRememberDataClass(0, WifiConnection.getInstance().getMainSSID(), WifiConnection.getInstance().getMainSSIDPwd())
+            insertDeviceSSIDPWD(passwordRememberDataClass)
+        } else if (!binding.rememCheckBox.isChecked) {
+            deleteWifiPassword(binding.tvSelectedWifi.text.toString())
+        }
+    }
 
     private fun btnCancelClicked() {
         showNetworkMisMatchAlertDialog(message = getString(R.string.do_you_want_to_cancel_the_setup),
@@ -660,6 +868,33 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
             if (resultCode == RESULT_OK) {
                 val mScanResultItem = data!!.getSerializableExtra(AppConstants.SELECTED_SSID) as ScanResultItem
                 setSsidPwd(mScanResultItem)
+               LibreLogger.d(TAG,"Adding Other N/w options RESULT_OK"+mScanResultItem.ssid)
+
+                if(mScanResultItem.ssid.equals("Other Options")){
+                    LibreLogger.d(TAG,"Adding Other N/w options RESULT_OK if "+mScanResultItem.ssid)
+                    binding.tvSelectedWifi.isTextSelectable
+                    binding.tvSelectedWifi.hint="Enter Network Name"
+                    binding.ivRememPasswordlyt.visibility=View.GONE
+                    binding.tvSelectedWifi.isEnabled=true
+                    binding.tvSelectedWifi.isClickable=true
+                    binding.manualSecurityLayout.visibility=View.VISIBLE
+                    binding.tvSecurity.visibility=View.GONE
+                    binding.passwordWifi.visibility=View.GONE
+                }
+                else{
+                    !binding.tvSelectedWifi.isTextSelectable
+                    binding.tvSelectedWifi.isEnabled=false
+                    binding.tvSelectedWifi.isClickable=false
+                    binding.ivRememPasswordlyt.visibility=View.VISIBLE
+
+                    LibreLogger.d(TAG,"Adding Other N/w options RESULT_OK else "+mScanResultItem.ssid)
+                    binding.manualSsidLayout.visibility=View.GONE
+                    binding.manualSecurityLayout.visibility=View.GONE
+                    binding.tvSecurity.visibility=View.VISIBLE
+                    binding.passwordWifi.visibility=View.VISIBLE
+
+                }
+
             }
         }else if(requestCode == AppConstants.OPEN_PHONE_WIFI_REQUEST_CODE){
                 try {
@@ -686,12 +921,22 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
 
     private fun setSsidPwd(mScanResultItem: ScanResultItem?) {
         LibreLogger.d(TAG_, "Setting setSsidPwd ${mScanResultItem.toString()}")
-        binding.tvSelectedWifi.text = mScanResultItem!!.ssid
+        if(mScanResultItem!!.ssid.equals("Other Options")){
+            binding.tvSelectedWifi.text = ""
+            binding.tvSelectedWifi.hint="Enter Network Name"
+            LibreLogger.d(TAG_, "Setting setSsidPwd if ${mScanResultItem.toString()}")
+
+        }
+        else{
+            binding.tvSelectedWifi.text = mScanResultItem!!.ssid
+            LibreLogger.d(TAG_, "Setting setSsidPwd else ${mScanResultItem.toString()}")
+
+        }
         binding.tvSecurity.text = "Security Type : " + mScanResultItem.security
         val wifiConnect = WifiConnection.getInstance()
         wifiConnect.setMainSSID(mScanResultItem.ssid)
         wifiConnect.setMainSSIDSec(mScanResultItem.security)
-        if (mScanResultItem.security == "NONE") {
+        if (mScanResultItem.security == "NONE"||mScanResultItem.security == "OPEN") {
             binding.passwordWifi.visibility = View.GONE
         } else {
             binding.passwordWifi.visibility = View.VISIBLE
@@ -870,6 +1115,41 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
             mandateDialog = builder.create()
         }
         if (!mandateDialog!!.isShowing) mandateDialog!!.show()
+
+    }
+  override fun onSecurityTypeSelected(security: Int) {
+        val securityList: MutableList<String> = java.util.ArrayList()
+        securityList.add("OPEN/NONE")
+        securityList.add("WPA/WPA2/WPA3")
+//        securityList.add("WPA")
+//        securityList.add("WPA-PSK")
+//        securityList.add("WPA/WPA2")
+//        securityList.add("WPA2-PSK")in future keeping it
+//        securityList.add("WPA2-Personal")
+//        securityList.add("WPA2-Enterprise")
+//        securityList.add("WPA2/WPA3-Personal")
+//        securityList.add("WPA3-PSK")
+//        securityList.add("WPA3-Personal")
+
+
+        if (bottomSheetDialogForSecurity != null) {
+            bottomSheetDialogForSecurity!!.dismiss()
+        }
+
+        LibreLogger.d(TAG, "suma in get the position list item \n$"+securityList.get(security))
+
+       // tvSelectedWifiSecurity.setText("Security Type :" + securityList[int])
+
+        binding.manualSecText.setText(securityList.get(security))
+        if(securityList.get(security).equals("OPEN/NONE")){
+            binding.passwordWifi.visibility=View.GONE
+          //  wifiConnect.setMainSSIDSec(mScanResultItem.security)
+
+        }
+        else{
+            binding.passwordWifi.visibility=View.VISIBLE
+
+        }
 
     }
     class WifiReceiver(private val mandateDialog: AlertDialog?, private val selectedSSid: String) : BroadcastReceiver() {

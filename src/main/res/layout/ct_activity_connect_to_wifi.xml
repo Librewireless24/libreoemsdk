@@ -115,6 +115,8 @@
                 android:layout_weight="1"
                 android:textSize="16dp"
                 tools:text="Shaik"
+                android:textColorHint="@color/grey"
+                android:textIsSelectable="true"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent" />
             <androidx.appcompat.widget.AppCompatImageView
@@ -128,6 +130,101 @@
             </LinearLayout>
         </LinearLayout>
         <View
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_marginHorizontal="16dp"
+            android:layout_height="0.8dp"/>
+
+        <RelativeLayout
+            android:id="@+id/manual_ssid_layout"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp">
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/manual_ssid_tittle"
+                android:textColor="@color/white"
+                android:layout_weight="1"
+                android:text="@string/manual_ssid_title"
+                app:fontFamily="sans-serif-medium"
+                android:textStyle="bold"
+                android:textSize="@dimen/dimen_18"
+                android:layout_marginTop="12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <EditText
+                android:layout_below="@id/manual_ssid_tittle"
+                android:id="@+id/manual_ssid_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="10dp"
+                android:maxLength="66"
+                android:hint="@string/manual_ssid_hint"
+                android:background="@color/transparent"
+                android:maxLines="1"
+                android:gravity="bottom"
+                android:singleLine="true"
+                android:textColor="@color/white"
+                android:textColorHint="@color/grey"
+                android:textSize="@dimen/dimen_16" />
+
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/manual_ssid_view"
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_marginHorizontal="16dp"
+            android:layout_height="0.8dp"/>
+
+        <RelativeLayout
+            android:id="@+id/manual_security_layout"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp">
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/manual_sec_tittle"
+                android:textColor="@color/white"
+                android:layout_weight="1"
+                android:text="@string/manual_security_title"
+                app:fontFamily="sans-serif-medium"
+                android:textStyle="bold"
+                android:textSize="@dimen/dimen_18"
+                android:layout_marginTop="12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <LinearLayout
+                android:background="?attr/selectableItemBackground"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:paddingVertical="10dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/manual_sec_tittle">
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:visibility="visible"
+                    android:id="@+id/manual_sec_text"
+                    android:layout_weight="1"
+                    android:hint="@string/manual_security_hint"
+                    app:fontFamily="sans-serif-medium"
+                    android:textSize="@dimen/dimen_16"                    android:background="@color/transparent"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/grey"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent" />
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_sec_arrow"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    app:srcCompat="@drawable/ic_orange_right_arrow"
+                    android:layout_gravity="end"
+                    android:visibility="visible"
+                    android:rotation="90"
+                    android:layout_width="?android:attr/actionBarSize"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+        </RelativeLayout>
+        <View
+            android:id="@+id/manual_sec_view"
             android:background="@color/white"
             android:layout_width="match_parent"
             android:layout_marginHorizontal="16dp"
@@ -224,7 +321,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <LinearLayout
-            android:id="@+id/RememPasswordlyt"
+            android:id="@+id/iv_RememPasswordlyt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/ssidpasslayout"
