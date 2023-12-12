@@ -233,7 +233,7 @@ class CTBluetoothHearSoundQtn : CTDeviceDiscoveryActivity(), View.OnClickListene
     }
 
     var didntReceiveFriendlyNameResponse = true
-    override fun receivedBLEDataPacket(packet: BLEDataPacket) {
+    override fun receivedBLEDataPacket(packet: BLEDataPacket, hexData: String) {
         when (packet.command) {
             BLE_SAC_APP2DEV_SCAN_WIFI -> {
                 LibreLogger.d(TAG, " DeviceName" + String(packet.getcompleteMessage()));

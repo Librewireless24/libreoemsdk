@@ -321,7 +321,7 @@ class CTBluetoothDeviceListActivity : CTDeviceDiscoveryActivity(), BLEServiceToA
         callConnectToWifiActivityPage()
     }
 
-    override fun receivedBLEDataPacket(packet: BLEDataPacket) {}
+    override fun receivedBLEDataPacket(packet: BLEDataPacket, hexData: String) {}
     override fun writeSucess(status: Int) {}
     override fun onDisconnectionSuccess(status: Int) {
         LibreApplication.betweenDisconnectedCount = 0

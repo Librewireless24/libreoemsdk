@@ -33,7 +33,7 @@ import com.cumulations.libreV2.AppUtils.networkMismatchSsidMessage
 import com.cumulations.libreV2.activity.BluetoothLeService.LocalBinder
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEPacket
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEPacket.BLEDataPacket
-import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEPacket.parseBleData
+import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEPacket.decodeBleData
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEServiceToApplicationInterface
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEUtils
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BleCommunication
@@ -269,15 +269,10 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
      * public static final int BLE_SAC_DEV2APP_WIFI_AP_NOT_FOUND = 27;
      * public static final int BLE_SAC_DEV2APP_WIFI_DISCONNECTED = 28;
      */
-    override fun receivedBLEDataPacket(packet: BLEDataPacket) {
+    override fun receivedBLEDataPacket(packet: BLEDataPacket, hexData: String) {
         when (packet.command) {
             BLEUtils.BLE_SAC_APP2DEV_FRIENDLYNAME -> if (packet.getcompleteMessage().isNotEmpty()) {
-                LibreLogger.d(TAG_BLE_SHAIk,"receivedBLEDataPacket 5 packet $packet")
-                LibreLogger.d(TAG_BLE_SHAIk,"receivedBLEDataPacket 5 packet ${packet.message}")
-                LibreLogger.d(TAG_BLE_SHAIk,"receivedBLEDataPacket 5 packet ${packet.dataLength}")
-                LibreLogger.d(TAG_BLE_SHAIk,"receivedBLEDataPacket 5 packet ${packet.getcompleteMessage()}")
                 val mDeviceNameArray = ByteArray(packet.dataLength.toInt())
-                LibreLogger.d(TAG_BLE_SHAIk,"receivedBLEDataPacket 5 mDeviceNameArray $mDeviceNameArray")
                 var i = 0
                 while (i < packet.dataLength) {
                     mDeviceNameArray[i] = packet.message[i]
@@ -290,11 +285,8 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
             /*  BLEUtils.BLE_SAC_DEV2APP_CRED_RECEIVED -> runOnUiThread { setMessageProgressDialog(getString(R.string.cred_received)) }
               BLEUtils.BLE_SAC_DEV2APP_CRED_SUCCESS -> runOnUiThread { setMessageProgressDialog(getString(R.string.cred_success)) }*/
             BLEUtils.BLE_SAC_DEV2APP_CRED_FAILURE -> runOnUiThread {
-                LibreLogger.d(TAG_,"receivedBLEDataPacket 22 ${packet.command} and ${packet
-                    .message}" +
-                        " and complete messgae ${packet.getcompleteMessage()}")
                 showAlertMessageRegardingSAC(" ", getString(R.string.credientials_invalid)) }
-            BLEUtils.BLE_SAC_DEV2APP_WIFI_CONNECTING -> runOnUiThread {
+                BLEUtils.BLE_SAC_DEV2APP_WIFI_CONNECTING -> runOnUiThread {
                 dismissDialog()
                 binding.laySsidPwdDetails.visibility = View.GONE
                 binding.laySpeakerSetupWithImage.visibility = View.VISIBLE
@@ -303,7 +295,6 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
             }
 
             BLEUtils.BLE_SAC_DEV2APP_WIFI_CONNECTED -> {
-                LibreLogger.d(TAG_BLE_SHAIk,"receivedBLEDataPacket 24 $packet")
                 lifecycleScope.launch {
                     cancelJob()
                 }
@@ -333,19 +324,39 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
             }
 
             BLEUtils.BLE_SAC_DEV2APP_WIFI_CONNECTING_FAILED -> {
+                val connectedPhoneSSID: Pair<String, String?> = AppUtils.getConnectedSSIDAndSecurityType(this)
+                val data = decodeBleData(hexData)
+                if (data != -1) {
+                    when (data) {
+                        0 -> {
+                            showAlertMessage(getString(R.string.wi_fi_connection_failed), getString(R.string.something_went_wrong))
+                        }
 
-                LibreLogger.d(TAG_BLE_SHAIk,"receivedBLEDataPacket 25 packet $packet")
-                LibreLogger.d(TAG_BLE_SHAIk,"receivedBLEDataPacket 25 packet ${packet.message}")
-                LibreLogger.d(TAG_BLE_SHAIk,"receivedBLEDataPacket 25 packet ${packet.dataLength}")
-                LibreLogger.d(TAG_BLE_SHAIk,"receivedBLEDataPacket 25 packet ${packet.getcompleteMessage()}")
-                LibreLogger.d(TAG_BLE_SHAIk,"receivedBLEDataPacket 25 parseBleData ${parseBleData(packet.message)}")
-                val mMessageInt = packet.getcompleteMessage()
+                        1 -> {
+                            showAlertMessage(getString(R.string.wi_fi_connection_failed),
+                                getString(R.string.incorrect_password_entered_for_the_selected) +
+                                        " " + connectedPhoneSSID.first)
+                        }
+
+                        2 -> {
+                            showAlertMessage(getString(R.string.wi_fi_connection_failed), getString(R.string.it_seems_that_your_device_is_currently_out_of_wi_fi_range_please_move_closer_to_a_wi_fi_hotspot_or_ensure_that_your_wi_fi_is_turned_on))
+                        }
+
+                        else -> {
+                            showAlertMessage(getString(R.string.wi_fi_connection_failed), getString(R.string.something_went_wrong))
+                        }
+                    }
+                } else {
+                    showAlertMessage(getString(R.string.wi_fi_connection_failed), getString(R.string.something_went_wrong))
+                }
+
+                /*val mMessageInt = packet.getcompleteMessage()
                 val message = mMessageInt[3].toInt()
                 if (message == 26) {
                     runOnUiThread { showAlertMessageRegardingSAC(getString(R.string.configuration_failed_hd), getString(R.string.configuration_failed_msg)) }
                 } else {
                     runOnUiThread { showAlertMessageRegardingSAC(getString(R.string.configuration_failed_hd), getString(R.string.configuration_timeout_msg)) }
-                }
+                }*/
             }
 
             BLEUtils.BLE_SAC_DEV2APP_WIFI_AP_NOT_FOUND -> runOnUiThread { setMessageProgressDialog(getString(R.string.ap_notfound)) }
@@ -390,6 +401,40 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
                     LibreLogger.d(TAG_SCAN, "KARUNAKARAN  security$security") // ;
                 }
                 mSecurityCheckEnabled = security != 0
+            }
+        }
+    }
+
+    private fun showAlertMessage(title: String, message: String) {
+        runOnUiThread {
+            if (!isFinishing) {
+                LibreLogger.d(TAG_BLE_SHAIk, "alert dialog enter")
+                val builder = AlertDialog.Builder(this@CTBluetoothPassCredentials).also {
+                    it.setMessage(message)
+                        .setTitle(title)
+                        .setCancelable(false)
+                        .setPositiveButton(getString(R.string.retry)) { dialog, id ->
+                            dialog.dismiss()
+                            dismissDialog()
+                            try {
+                                binding.laySsidPwdDetails.visibility = View.VISIBLE
+                                binding.laySpeakerSetupWithImage.visibility = View.GONE
+                            } catch (ex: Exception) {
+                                binding.laySsidPwdDetails.visibility = View.VISIBLE
+                                binding.laySpeakerSetupWithImage.visibility = View.GONE
+                                ex.printStackTrace()
+                            }
+
+                        }
+                        .setNegativeButton(getString(R.string.go_to_home)) { _, id ->
+                            intentToHome(this@CTBluetoothPassCredentials)
+                        }
+                }
+                //Creating dialog box
+                val alert = builder.create()
+                alert.show()
+            } else {
+                LibreLogger.d(TAG_BLE_SHAIk, "alert dialog else")
             }
         }
     }
@@ -877,8 +922,8 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
             val action = intent.action
             if (WifiManager.NETWORK_STATE_CHANGED_ACTION == action) {
                 // Wi-Fi state has changed
-                LibreLogger.d(TAG_, "NETWORK_STATE_CHANGED_ACTION called "+ getConnectedSSID(context))
-                LibreLogger.d(TAG_, "NETWORK_STATE_CHANGED_ACTION selectedSSid "+ selectedSSid)
+                LibreLogger.d(TAG_, "Shaik Phone Connected ssid "+ getConnectedSSID(context))
+                LibreLogger.d(TAG_, "Shaik user selectedSSid  $selectedSSid")
                 if(getConnectedSSID(context)==selectedSSid){
                     mandateDialog?.dismiss()
                 }
