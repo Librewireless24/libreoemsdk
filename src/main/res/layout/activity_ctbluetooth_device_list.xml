@@ -104,49 +104,38 @@
           android:clickable="false"
           android:orientation="vertical"
           android:visibility="gone">
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="80dp"
+                android:gravity="center"
+                android:text="@string/no_bluetooth_device_found"
+                android:textColor="@color/white"
+                android:textSize="22sp"
+                app:fontFamily="sans-serif-medium" />
 
             <androidx.appcompat.widget.AppCompatImageView
               android:id="@+id/btn_refresh"
-              android:layout_width="140dp"
-              android:layout_height="140dp"
+              android:layout_width="250dp"
+              android:layout_height="250dp"
               android:layout_gravity="center"
-              android:layout_marginBottom="20dp"
-              android:background="@drawable/bluetooth_icon"
+                android:layout_marginBottom="100dp"
+              android:background="@drawable/setup_progress1"
               android:visibility="visible" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_gravity="center"
-              android:layout_marginTop="15dp"
-              android:gravity="center"
-              android:text="@string/no_bluetooth_device_found"
-              android:textColor="@color/white"
-              android:textSize="22sp"
-              app:fontFamily="sans-serif-medium" />
+
 
             <androidx.appcompat.widget.AppCompatTextView
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_gravity="center"
-              android:layout_marginTop="15dp"
-              android:gravity="center"
-              android:text="@string/bluetooth_msg"
-              android:textColor="@color/white"
-              android:textSize="15sp"
-              app:fontFamily="sans-serif-medium" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-              android:layout_width="wrap_content"
-              android:layout_height="wrap_content"
-              android:layout_gravity="center"
-              android:layout_marginTop="15dp"
               android:gravity="center"
               android:layout_marginHorizontal="20dp"
               android:id="@+id/tvTurnOnBle"
               android:text="@string/turn_on_ble"
               android:textColor="@color/white"
-              android:textSize="15sp"
+                android:textSize="22sp"
               android:visibility="visible"
               app:fontFamily="sans-serif-medium" />
 

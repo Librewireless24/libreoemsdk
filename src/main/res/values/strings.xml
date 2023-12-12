@@ -371,9 +371,9 @@
   <string name="ghome_link">https://play.google.com/store/apps/details?id=com.google.android.apps.chromecast.app</string>
   <string name="yes_str">YES</string>
   <string name="configuration_successful">Configuration Successful!</string>
-  <string name="no_bluetooth_device_found">No Bluetooth Device Found</string>
+  <string name="no_bluetooth_device_found">No device found in Setup mode.</string>
   <string name="bluetooth_msg"> We will use of bluetooth to ease your device setup</string>
-  <string name="turn_on_ble">Please check if your device is in Setup mode and refresh </string>
+  <string name="turn_on_ble">Please make sure the speaker is in Setup mode. </string>
   <string name="splashscreen_maintext">Multiroom Audio Systems</string>
   <string name="powered_text">Powered by DDMS technology</string>
   <string name="powered_libre">Powered by Libre Wireless Technologies</string>
@@ -454,6 +454,9 @@ By clicking Confirm, Device will be removed and you will be redirected to Home. 
   <string name="password_should_8_char">Wi-Fi Password should be at least\n8 Characters</string>
   <string name="error">Error!</string>
   <string name="password_less_64_char">Wi-Fi Password should be less than 64 Characters</string>
+  <string name="manualssid_error_empty">Network Name cannot be empty</string>
+  <string name="manualsec_error_empty">Please select your Wifi SecurityType</string>
+
   <string name="network_mismatch">Network Mismatch</string>
   <string name="continue_txt">Continue</string>
   <string name="go_to_home">Go to Home</string>

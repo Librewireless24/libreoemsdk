@@ -85,6 +85,9 @@ public class LibreApplication extends Application implements
   public static String thisSACDeviceNeeds226 = "";
   public static String sacDeviceNameSetFromTheApp = "";
   public static boolean scanAlreadySent = false;
+  public static String manualSSID = "";
+  public static String manualpwd = "";
+  public static String manualsecurity = "";
 
   public static boolean mLuciThreadInitiated = false;
   public static boolean isKeyAliasGenerated = false;

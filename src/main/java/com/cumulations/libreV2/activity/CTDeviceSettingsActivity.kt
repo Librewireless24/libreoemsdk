@@ -659,12 +659,15 @@ class CTDeviceSettingsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInterac
                         alertDialogBox!!.dismiss()
                     }
                     runOnUiThread {
-                        showProgressDialog(getString(R.string.pleaseWait))
+                        showProgressDialog(getString(R.string.pleaseWait)+"looking for "+nodes.friendlyname+"  "+"In SetupMode")
                     }
                     lifecycleScope.launch(Dispatchers.IO) {
                         delay(10000)
                         removeTheDeviceFromRepo(currentDeviceIp)
-                        intentToHome(this@CTDeviceSettingsActivity)
+                        val intent=Intent(this@CTDeviceSettingsActivity, CTBluetoothDeviceListActivity::class.java)
+                        startActivity(intent)
+
+                        //intentToHome(this@CTDeviceSettingsActivity)
                     }
                 } else {
                     LibreLogger.d(TAG, "Ip address null while rebooting the device")
