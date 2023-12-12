@@ -637,13 +637,11 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
     }
 
     private fun btnCancelClicked() {
-        showNetworkMisMatchAlertDialog(networkMismatchMessage(getConnectedSSID(context = this), binding.tvSelectedWifi.text.toString()), getString(R.string.open_settings), getString(R.string.cancel),
+        showNetworkMisMatchAlertDialog(message = getString(R.string.do_you_want_to_cancel_the_setup),
+            positiveButtonString = getString(R.string.yes),
+            negativeButtonString = getString(R.string.no),
             isNetworkMisMatch=false,
             isConfigureCancel=true)
-        if (mBluetoothLeService != null) {
-            mBluetoothLeService!!.removelistener(this)
-        }
-        callBluetoothDeviceListActivity()
     }
 
 
@@ -848,6 +846,11 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
                     showNetworkMisMatchAlertDialog(networkMismatchMessage(getConnectedSSID(context = this), binding.tvSelectedWifi.text.toString()), getString(R.string.open_settings), getString(R.string.cancel),
                         isNetworkMisMatch=false,
                         isConfigureCancel=false)
+                } else if(isConfigureCancel) {
+                    if (mBluetoothLeService != null) {
+                        mBluetoothLeService!!.removelistener(this)
+                    }
+                    callBluetoothDeviceListActivity()
                 } else {
                     val intent = Intent(Settings.ACTION_WIFI_SETTINGS)
                     customStartActivityForResult(AppConstants.OPEN_PHONE_WIFI_REQUEST_CODE, intent)
@@ -856,6 +859,11 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
             if (isNetworkMisMatch) {
                 builder.setNegativeButton(negativeButtonString) { dialogInterface, i ->
                     binding.tvSelectedWifi.text=""
+                    binding.etWifiPassword.text.clear()
+                    mandateDialog!!.dismiss()
+                }
+            }else if(isConfigureCancel){
+                builder.setNegativeButton(negativeButtonString) { dialogInterface, i ->
                     mandateDialog!!.dismiss()
                 }
             }
