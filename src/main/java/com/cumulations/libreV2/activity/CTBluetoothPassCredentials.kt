@@ -4,9 +4,13 @@ import android.annotation.TargetApi
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothManager
+import android.content.BroadcastReceiver
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.ServiceConnection
+import android.net.wifi.WifiManager
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -23,12 +27,13 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
 import com.cumulations.libreV2.AppUtils
+import com.cumulations.libreV2.AppUtils.getConnectedSSID
+import com.cumulations.libreV2.AppUtils.networkMismatchMessage
 import com.cumulations.libreV2.AppUtils.networkMismatchSsidMessage
 import com.cumulations.libreV2.activity.BluetoothLeService.LocalBinder
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEPacket
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEPacket.BLEDataPacket
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEPacket.parseBleData
-
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEServiceToApplicationInterface
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEUtils
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BleCommunication
@@ -56,6 +61,7 @@ import org.json.JSONObject
 import java.nio.charset.StandardCharsets
 import java.util.Locale
 
+
 class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToApplicationInterface,
     View.OnClickListener, LibreDeviceInteractionListner {
     private var mIntentExtraScanResults = false
@@ -74,7 +80,7 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
     private var isDisconnectionHandled = false
     private var state = true
     private var mandateDialog: AlertDialog? = null
-
+    private var wifiReceiver: WifiReceiver? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = CtActivityConnectToWifiBinding.inflate(layoutInflater)
@@ -95,10 +101,16 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
         val gattServiceIntent = Intent(this, BluetoothLeService::class.java)
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE)
     }
-
+    override fun onResume() {
+        super.onResume()
+        wifiReceiver = WifiReceiver(mandateDialog,binding.tvSelectedWifi.text.toString())
+        val intentFilter = IntentFilter(WifiManager.NETWORK_STATE_CHANGED_ACTION)
+        registerReceiver(wifiReceiver, intentFilter)
+    }
     override fun onPause() {
         super.onPause()
         mBluetoothLeService = null
+        unregisterReceiver(wifiReceiver)
     }
 
     var mBluetoothAdapter: BluetoothAdapter? = null
@@ -427,32 +439,6 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
             LibreLogger.d(TAG_SCAN, "populateScanListMap exception " + e.message)
         }
     }
-
-    /*private var scanListMap: MutableMap<String, String> = TreeMap()
-    private fun populateScanListMap(scanList: String?) {
-        scanListMap.clear()
-        try {
-            val mainObj = JSONObject(scanList!!)
-            LibreLogger.d(TAG_SCAN, "populateScanListMap scanList " + scanList)
-            val scanListArray = mainObj.getJSONArray("Items")
-            for (i in 0 until scanListArray.length()) {
-                val obj = scanListArray[i] as JSONObject
-                if (obj.getString("SSID") == null || obj.getString("SSID").isEmpty()) {
-                    continue
-                }
-                scanListMap[fromHtml(obj.getString("SSID")).toString()] = fromHtml(obj.getString("Security")).toString()
-            }
-        } catch (e: JSONException) {
-            e.printStackTrace()
-            LibreLogger.d(TAG_SCAN, "populateScanListMap exception " + e.message)
-        }
-        for (str in scanListMap.keys) {
-            LibreLogger.d(TAG_SCAN, "populateScanListMap  " + str+" and ${scanListMap[str]}")
-            WifiConnection.getInstance().putWifiScanResultSecurity(str, scanListMap[str])
-
-        }
-    }*/
-
     private var constructJSonString = StringBuilder()
     private fun showAlertMessageRegardingSAC(title: String?, message: String) {
         dismissDialog()
@@ -511,9 +497,9 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
                                     if(binding.tvSelectedWifi.text.toString()==AppUtils.getConnectedSSID(context = this)) {
                                         btnNextClicked()
                                     }else{
-                                        showNetworkMisMatchAlertDialog(networkMismatchSsidMessage(AppUtils.getConnectedSSID(context = this),binding.tvSelectedWifi.text.toString()),
-                                            getString(R.string.open_settings),
-                                            getString(R.string.cancel), isNetworkMisMatch=true)
+                                        showNetworkMisMatchAlertDialog(networkMismatchSsidMessage(getConnectedSSID(context = this),binding.tvSelectedWifi.text.toString()), getString(R.string.continue_txt),
+                                            getString(R.string.cancel), isNetworkMisMatch=true,
+                                            isConfigureCancel=false)
                                     }
                                 }else{
                                     showAlertMessageRegardingSAC(getString(R.string.error), getString(R.string.password_less_64_char))
@@ -651,6 +637,9 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
     }
 
     private fun btnCancelClicked() {
+        showNetworkMisMatchAlertDialog(networkMismatchMessage(getConnectedSSID(context = this), binding.tvSelectedWifi.text.toString()), getString(R.string.open_settings), getString(R.string.cancel),
+            isNetworkMisMatch=false,
+            isConfigureCancel=true)
         if (mBluetoothLeService != null) {
             mBluetoothLeService!!.removelistener(this)
         }
@@ -676,11 +665,21 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
             }
         }else if(requestCode == AppConstants.OPEN_PHONE_WIFI_REQUEST_CODE){
                 try {
+                    val selectedSSID:String =binding.tvSelectedWifi.text.toString()
                     val connectedPhoneSSID: Pair<String, String?> = AppUtils.getConnectedSSIDAndSecurityType(this)
-                    binding.tvSelectedWifi.text = connectedPhoneSSID.first
-                    LibreLogger.d(TAG_, "Shaik customOnActivityResult setSsidPwd " + "${connectedPhoneSSID.first} and  Security" + "${connectedPhoneSSID.second}")
-                    val scanResultItem = ScanResultItem(connectedPhoneSSID.second!!,connectedPhoneSSID.first)
-                    setSsidPwd(scanResultItem)
+                    if(selectedSSID!=connectedPhoneSSID.first){
+                        showNetworkMisMatchAlertDialog(networkMismatchMessage(
+                            getConnectedSSID(context = this), binding.tvSelectedWifi.text.toString()),
+                            getString(R.string.open_settings), getString(R.string.cancel),
+                            isNetworkMisMatch=false,
+                            isConfigureCancel=false)
+                    }else {
+                        binding.tvSelectedWifi.text = connectedPhoneSSID.first
+                       /* LibreLogger.d(TAG_, "Shaik customOnActivityResult setSsidPwd " + "${connectedPhoneSSID.first} and  Security" + "${connectedPhoneSSID.second} selectedSSID $selectedSSID")*/
+                        val scanResultItem = ScanResultItem(connectedPhoneSSID.second!!, connectedPhoneSSID.first)
+                        setSsidPwd(scanResultItem)
+                        btnNextClicked()
+                    }
                   } catch (ex: Exception) {
                     LibreLogger.d(TAG_, "customOnActivityResult setSsidPwd Exception ${ex.message}")
                 }
@@ -825,31 +824,37 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
     private fun cancelJob() {
         taskJob?.cancel()
     }
-    fun showNetworkMisMatchAlertDialog(message: String,
+    private fun showNetworkMisMatchAlertDialog(message: String,
         positiveButtonString: String,
         negativeButtonString: String,
-        isNetworkMisMatch: Boolean) {
+        isNetworkMisMatch: Boolean,
+        isConfigureCancel: Boolean) {
         LibreLogger.d(TAG, "showAlertDialog and requestCode: positiveButtonString $positiveButtonString")
         if (mandateDialog != null && mandateDialog!!.isShowing) mandateDialog!!.dismiss()
         else mandateDialog = null
 
         if (mandateDialog == null) {
             val builder = AlertDialog.Builder(this)
-            builder.setTitle(getString(R.string.network_mismatch))
+            if (!isConfigureCancel) {
+                builder.setTitle(getString(R.string.network_mismatch))
+            }
             builder.setMessage(message)
             builder.setCancelable(false)
             builder.setPositiveButton(positiveButtonString) { dialogInterface, i ->
                 mandateDialog!!.dismiss()
                 if(isNetworkMisMatch){
+                    binding.laySsidPwdDetails.visibility = View.GONE
+                    binding.laySpeakerSetupWithImage.visibility = View.VISIBLE
+                    showNetworkMisMatchAlertDialog(networkMismatchMessage(getConnectedSSID(context = this), binding.tvSelectedWifi.text.toString()), getString(R.string.open_settings), getString(R.string.cancel),
+                        isNetworkMisMatch=false,
+                        isConfigureCancel=false)
+                } else {
                     val intent = Intent(Settings.ACTION_WIFI_SETTINGS)
                     customStartActivityForResult(AppConstants.OPEN_PHONE_WIFI_REQUEST_CODE, intent)
-                } else {
-                    goToConnectToMainNetwork()
                 }
             }
             if (isNetworkMisMatch) {
                 builder.setNegativeButton(negativeButtonString) { dialogInterface, i ->
-                    binding.etWifiPassword.text.clear()
                     binding.tvSelectedWifi.text=""
                     mandateDialog!!.dismiss()
                 }
@@ -858,5 +863,23 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
         }
         if (!mandateDialog!!.isShowing) mandateDialog!!.show()
 
+    }
+    class WifiReceiver(private val mandateDialog: AlertDialog?, private val selectedSSid: String) : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val action = intent.action
+            if (WifiManager.NETWORK_STATE_CHANGED_ACTION == action) {
+                // Wi-Fi state has changed
+                LibreLogger.d(TAG_, "NETWORK_STATE_CHANGED_ACTION called "+ getConnectedSSID(context))
+                LibreLogger.d(TAG_, "NETWORK_STATE_CHANGED_ACTION selectedSSid "+ selectedSSid)
+                if(getConnectedSSID(context)==selectedSSid){
+                    mandateDialog?.dismiss()
+                }
+                handleWifiStateChanged(context,mandateDialog)
+            }
+        }
+
+         private fun handleWifiStateChanged(context: Context, mandateDialog: AlertDialog?) {
+
+        }
     }
 }

@@ -81,7 +81,7 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
     AlertDialog.Builder builder;
     AlertDialog alert;
     public static final long OOPS_TIMEOUT = 45*1000; //45*1000;
-    public static final String TAG = CTConnectingToMainNetwork.class.getSimpleName();
+    public static final String TAG = "OOBESCREEN";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -421,6 +421,7 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
                         mHandler.removeMessages(Constants.WAITING_FOR_223_MB);
                         mb223TimerRunning = false;
                         if(fwInternetUpgradeMessage!=null && fwInternetUpgradeMessage.matches("[0-9]+")){
+                            progressBar.setIndeterminate(false);
                             progressBar.setProgress(Integer.parseInt(fwInternetUpgradeMessage));
                             setSetupInfoTexts(getString(R.string.updating_your_speaker),getString(R.string.updating_download_progress));
                         }
@@ -430,9 +431,11 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
                                 break;
                             case UPDATE_STARTED:
                             case UPDATE_DOWNLOAD:
+                                progressBar.setIndeterminate(true);
                                 setSetupInfoTexts(getString(R.string.updating_your_speaker),getString(R.string.mb223_update_download));
                                 break;
                             case UPDATE_IMAGE_AVAILABLE:
+                                progressBar.setIndeterminate(true);
                                 setSetupInfoTexts(getString(R.string.updating_your_speaker), getString(R.string.updating_download_successfully));
                                 break;
                             case Constants.CRC_CHECK_ERROR:
@@ -462,11 +465,12 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
                         mb223TimerRunning = false;
                         if(fwInternetUpgradeMessage!=null && fwInternetUpgradeMessage.matches("[0-9]+")){
                             setSetupInfoTexts(getString(R.string.updating_your_speaker), getString(R.string.firmware_verification_in_progress));
+                            progressBar.setIndeterminate(false);
                             progressBar.setProgress(Integer.parseInt(fwInternetUpgradeMessage));
                         } else if (fwInternetUpgradeMessage != null && fwInternetUpgradeMessage.equals(GCAST_COMPLETE)) {
+                            progressBar.setIndeterminate(true);
                             setSetupInfoTexts(getString(R.string.installing_rebooting), getString(R.string.your_device_currently_minutes));
-                            /*setSetupInfoTexts(getString(R.string.updating_your_speaker), getString(R.string.firmware_verification_in_progress));*/
-                            Log.d(TAG, "messageRecieved: " + fwInternetUpgradeMessage);
+                            LibreLogger.d(TAG, "messageRecieved: " + fwInternetUpgradeMessage);
                             mHandler.sendEmptyMessageDelayed(Constants.FW_UPGRADE_REBOOT_TIMER, 3 * 60 * 1000);
                             //suma remove later
                             // mHandler.sendEmptyMessageDelayed(Constants.FW_UPGRADE_REBOOT_TIMER, 50000);
@@ -476,6 +480,7 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
                     break;
                 case MIDCONST.REBOOT_REQUEST:
                     setSetupInfoTexts(getString(R.string.installing_rebooting),getString(R.string.your_device_currently_minutes));
+                    progressBar.setIndeterminate(true);
                     LibreLogger.d(TAG, "MB:- 66 Firmware Update Progress Start and Message: "+message);
                     break;
             }
@@ -529,11 +534,9 @@ public class CTConnectingToMainNetwork extends CTDeviceDiscoveryActivity impleme
             || subMsg.equals(getString(R.string.updating_download_progress))
             || subMsg.equals(getString(R.string.updating_download_successfully))) {
             setupProgressImage.setImageResource(R.drawable.setup_progress2);
-            progressBar.setIndeterminate(true);
         } else if (subMsg.equals(getString(R.string.firmware_verification_in_progress))
             ||subMsg.equals(getString(R.string.your_device_currently_minutes))) {
             setupProgressImage.setImageResource(R.drawable.setup_progress3);
-            progressBar.setIndeterminate(true);
         }
     }
 
