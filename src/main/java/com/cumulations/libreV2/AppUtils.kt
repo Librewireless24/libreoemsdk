@@ -444,6 +444,16 @@ object AppUtils {
                         "speaker.")
         }.toString()
     }
+    fun networkMismatchMessage(connectedSSID: String?, connectingSSID: String): String {
+        return StringBuilder().apply {
+            append("You're currently connected to ")
+                .append("'$connectedSSID'")
+                .append(" WI-fi network, but configured the device to ")
+                .append("'$connectingSSID'")
+                .append(" WI-Fi network. Please connect to ")
+                .append("'$connectingSSID' WI-fi network.")
+        }.toString()
+    }
 
 
 }
