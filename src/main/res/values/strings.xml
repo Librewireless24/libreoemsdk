@@ -340,7 +340,7 @@
   <!--OME App  strings by Shaik 04/18/2023-->
   <string name="open_spotify">Open Spotify</string>
   <string name="accept">Accept</string>
-  <string name="tos_accept">Stream the music you love using your favorite apps on your phone, tablet, or laptop to this soundbar.\n\n\nBy clicking “Accept” below, you are indicating your agreement to the <u><b><font color='#FF3351F4'>Google Terms of Service</font></b></u> and <u><b><font color='#FF3351F4'>Google Privacy Policy</font></b></u>, which govern your use of Chromecast built-in.</string>
+  <string name="tos_accept">Stream the music you love using your favorite apps on your phone, tablet, or laptop to this speaker.\n\n\nBy clicking “Accept” below, you are indicating your agreement to the <u><b><font color='#FF3351F4'>Google Terms of Service</font></b></u> and <u><b><font color='#FF3351F4'>Google Privacy Policy</font></b></u>, which govern your use of Chromecast built-in.</string>
   <string name="google_home"><u>Google Home App Deep Link Intent</u></string>
   <string name="activate_cast">Activate Cast</string>
   <string name="looking_cast_status">Looking for cast status</string>
@@ -467,6 +467,14 @@ By clicking Confirm, Device will be removed and you will be redirected to Home. 
   <string name="something_went_wrong">Something went wrong.</string>
   <string name="incorrect_password_entered_for_the_selected">"Incorrect password entered for the selected "</string>
   <string name="it_seems_that_your_device_is_currently_out_of_wi_fi_range_please_move_closer_to_a_wi_fi_hotspot_or_ensure_that_your_wi_fi_is_turned_on">It seems that your device is currently out of Wi-Fi range. Please move closer to a Wi-Fi hotspot or ensure that your Wi-Fi is turned on.</string>
+  <string name="please_grant_permission_to_setup_the_device">Please grant permission to Setup the device.</string>
+  <string name="no_personal_data_will_be_collected">No personal data will be collected.</string>
+  <string name="location_permission">Location Permission</string>
+  <string name="setup_later">Setup Later</string>
+  <string name="bluetooth_permission">Bluetooth Permission</string>
+  <string name="bluetooth_adapter">Bluetooth Adapter</string>
+  <string name="please_grant_the_required_location_permissions">Please grant the required location permissions.</string>
+  <string name="bluetooth_is_already_turned_on">Bluetooth is already turned on.</string>
   <string-array name="audio_output_array">
     <item>Stereo (S)</item>
     <item>Left Speaker (L)</item>

@@ -59,6 +59,8 @@ class CTNoDeviceFragment:Fragment(),LibreDeviceInteractionListner,View.OnClickLi
             R.id.iv_refresh,R.id.tv_refresh -> {
                 /*refreshDevices()*/
                 (activity as CTHomeTabsActivity).refreshDevices()
+               /* val bottomSheetFragment = PermissionBottomSheetFragment()
+                bottomSheetFragment.show((activity as CTHomeTabsActivity).supportFragmentManager, bottomSheetFragment.tag)*/
               /*  val intent = Intent(activity, CTDeviceSettingsActivity::class.java)
                 intent.putExtra(Constants.CURRENT_DEVICE_IP, "192.168.10.1")
                 startActivity(intent)*/

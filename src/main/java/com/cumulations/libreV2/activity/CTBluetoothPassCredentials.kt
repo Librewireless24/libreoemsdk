@@ -197,11 +197,12 @@ var bottomSheetDialogForSecurity: BottomSheetDialog? = null
         try {
             val connectedPhoneSSID: Pair<String, String?> = AppUtils.getConnectedSSIDAndSecurityType(this)
             binding.tvSelectedWifi.text = connectedPhoneSSID.first
-            LibreLogger.d(TAG_, "Shaik setSsidPwd ${connectedPhoneSSID.first} and  Security" + "${connectedPhoneSSID.second}")
+            LibreLogger.d(TAG, "Shaik setSsidPwd ${connectedPhoneSSID.first} and  Security " +
+                    "${connectedPhoneSSID.second}")
             val scanResultItem = ScanResultItem(connectedPhoneSSID.second!!,connectedPhoneSSID.first)
             setSsidPwd(scanResultItem)
         } catch (ex: Exception) {
-            LibreLogger.d(TAG_, "Shaik setSsidPwd Exception ${ex.message}")
+            LibreLogger.d(TAG, "Shaik setSsidPwd Exception ${ex.message}")
         }
     }
 
@@ -411,12 +412,12 @@ var bottomSheetDialogForSecurity: BottomSheetDialog? = null
             }
 
             BLEUtils.BLE_SAC_APP2DEV_SECURITY_CHECK -> {
-                LibreLogger.d(TAG_SCAN, "KARUNAKARAN  " + packet.dataLength)
+                LibreLogger.d(TAGSCAN, "KARUNAKARAN  " + packet.dataLength)
                 var security = 0
                 if (packet.dataLength > 0) {
                     val mMessageInt1 = packet.getcompleteMessage()
                     security = mMessageInt1[4].toInt() //Integer.parseInt(mMessageInt1[4])
-                    LibreLogger.d(TAG_SCAN, "KARUNAKARAN  security$security") // ;
+                    LibreLogger.d(TAGSCAN, "KARUNAKARAN  security$security") // ;
                 }
                 mSecurityCheckEnabled = security != 0
             }
@@ -426,7 +427,7 @@ var bottomSheetDialogForSecurity: BottomSheetDialog? = null
     private fun showAlertMessage(title: String, message: String) {
         runOnUiThread {
             if (!isFinishing) {
-                LibreLogger.d(TAG_BLE_SHAIk, "alert dialog enter")
+                LibreLogger.d(TAGBLE_SHAIk, "alert dialog enter")
                 val builder = AlertDialog.Builder(this@CTBluetoothPassCredentials).also {
                     it.setMessage(message)
                         .setTitle(title)
@@ -452,7 +453,7 @@ var bottomSheetDialogForSecurity: BottomSheetDialog? = null
                 val alert = builder.create()
                 alert.show()
             } else {
-                LibreLogger.d(TAG_BLE_SHAIk, "alert dialog else")
+                LibreLogger.d(TAGBLE_SHAIk, "alert dialog else")
             }
         }
     }
@@ -466,7 +467,7 @@ var bottomSheetDialogForSecurity: BottomSheetDialog? = null
         scanListMap.clear()
         try {
             val mainObj = JSONObject(scanList!!)
-            LibreLogger.d(TAG_SCAN, "populateScanListMap scanList " + scanList)
+            LibreLogger.d(TAGSCAN, "populateScanListMap scanList " + scanList)
             val scanListArray = mainObj.getJSONArray("Items")
 
             for (i in 0 until scanListArray.length()) {
@@ -494,12 +495,12 @@ var bottomSheetDialogForSecurity: BottomSheetDialog? = null
                 val security = securityAndRssi.first
                 val rssi = securityAndRssi.second
 
-                LibreLogger.d(TAG_SCAN, "populateScanListMap  $ssid and $security and $rssi")
+                LibreLogger.d(TAGSCAN, "populateScanListMap  $ssid and $security and $rssi")
                 WifiConnection.getInstance().putWifiScanResultSecurity(ssid, security, rssi)
             }
         } catch (e: JSONException) {
             e.printStackTrace()
-            LibreLogger.d(TAG_SCAN, "populateScanListMap exception " + e.message)
+            LibreLogger.d(TAGSCAN, "populateScanListMap exception " + e.message)
         }
     }
     private var constructJSonString = StringBuilder()
@@ -541,7 +542,9 @@ var bottomSheetDialogForSecurity: BottomSheetDialog? = null
             isDisconnectionHandled = true
 
             runOnUiThread {
-                showAlertDialog(getString(R.string.somethingWentWrong_tryAgain), getString(R.string.ok), 0, isDeviceLost =true)
+                showAlertDialog(getString(R.string.somethingWentWrong_tryAgain), getString(R
+                    .string.ok), 0, isDeviceLost =true, isLocationPermission =false,
+                    isLocationPermissionRotational=false)
             }
         }
 
@@ -745,7 +748,7 @@ $mSelectedSecurity"""
             delay(2000)
             if (!mSecurityCheckEnabled) {
                 val data = ByteArray(mSelectedPass.length + mSelectedSSID.length + 5 + mSelectedSecurity.length + binding.etDeviceName.text!!.length + mSelectedCountryCode.length)
-                LibreLogger.d(TAG_, "btnNextClicked: mSecurityCheckEnabled if $data")
+                LibreLogger.d(TAG, "btnNextClicked: mSecurityCheckEnabled if $data")
                 var i = 0
                 data[i++] = mSelectedSSID.length.toByte()
                 for (b in mSelectedSSID.toByteArray()) {
@@ -797,7 +800,8 @@ $mSelectedSecurity"""
                     lengthTocopy = encodedData.size
                 }
                 while (NumberOfPacketsToSplitted > 0) {
-                    LibreLogger.d(TAG_, " KARUNAKARAN " + " NumberofPacketstoBeSplitted " + NumberOfPacketsToSplitted + " Offset " + offset + " LengthToCopy " + lengthTocopy + " EncodedData Length " + encodedData.size)
+                    LibreLogger.d(TAG, " KARUNAKARAN " + " NumberofPacketstoBeSplitted " +
+                            NumberOfPacketsToSplitted + " Offset " + offset + " LengthToCopy " + lengthTocopy + " EncodedData Length " + encodedData.size)
                     NumberOfPacketsToSplitted--
                     val offsetEncodedData = configurationParameters.getByteArrayFromOffset(offset, lengthTocopy, encodedData)
                     val dataToSendToDevice = configurationParameters.createSacPackets(NumberOfPacketsToSplitted, offsetEncodedData, ivData)
@@ -942,7 +946,7 @@ $mSelectedSecurity"""
 
     override fun customOnActivityResult(data: Intent?, requestCode: Int, resultCode: Int) {
         super.customOnActivityResult(data, requestCode, resultCode)
-        LibreLogger.d(TAG_, "Shaik customOnActivityResult requestCode $requestCode")
+        LibreLogger.d(TAG, "Shaik customOnActivityResult requestCode $requestCode")
         if (requestCode == AppConstants.GET_SELECTED_SSID_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 val mScanResultItem = data!!.getSerializableExtra(AppConstants.SELECTED_SSID) as ScanResultItem
@@ -997,28 +1001,29 @@ $mSelectedSecurity"""
                             isConfigureCancel=false)
                     }else {
                         binding.tvSelectedWifi.text = connectedPhoneSSID.first
-                       /* LibreLogger.d(TAG_, "Shaik customOnActivityResult setSsidPwd " + "${connectedPhoneSSID.first} and  Security" + "${connectedPhoneSSID.second} selectedSSID $selectedSSID")*/
+                       /* LibreLogger.d(TAG, "Shaik customOnActivityResult setSsidPwd " +
+                       "${connectedPhoneSSID.first} and  Security" + "${connectedPhoneSSID.second} selectedSSID $selectedSSID")*/
                         val scanResultItem = ScanResultItem(connectedPhoneSSID.second!!, connectedPhoneSSID.first)
                         setSsidPwd(scanResultItem)
                         btnNextClicked()
                     }
                   } catch (ex: Exception) {
-                    LibreLogger.d(TAG_, "customOnActivityResult setSsidPwd Exception ${ex.message}")
+                    LibreLogger.d(TAG, "customOnActivityResult setSsidPwd Exception ${ex.message}")
                 }
         }
     }
 
     private fun setSsidPwd(mScanResultItem: ScanResultItem?) {
-        LibreLogger.d(TAG_, "Setting setSsidPwd ${mScanResultItem.toString()}")
+        LibreLogger.d(TAG, "Setting setSsidPwd ${mScanResultItem.toString()}")
         if(mScanResultItem!!.ssid.equals("Other Options")){
             binding.tvSelectedWifi.text = ""
             binding.tvSelectedWifi.hint="Enter Network Name"
-            LibreLogger.d(TAG_, "Setting setSsidPwd if ${mScanResultItem.toString()}")
+            LibreLogger.d(TAG, "Setting setSsidPwd if ${mScanResultItem.toString()}")
 
         }
         else{
             binding.tvSelectedWifi.text = mScanResultItem!!.ssid
-            LibreLogger.d(TAG_, "Setting setSsidPwd else ${mScanResultItem.toString()}")
+            LibreLogger.d(TAG, "Setting setSsidPwd else ${mScanResultItem.toString()}")
 
         }
         binding.tvSecurity.text = "Security Type : " + mScanResultItem.security
@@ -1033,7 +1038,7 @@ $mSelectedSecurity"""
         passphrase = getPWDWithDeviceSSID(mScanResultItem.ssid)
         if (passphrase != null) {
             binding.etWifiPassword.setText(passphrase)
-            LibreLogger.d(TAG_, "Setting passphrase $passphrase  and length ${passphrase!!.length}")
+            LibreLogger.d(TAG, "Setting passphrase $passphrase  and length ${passphrase!!.length}")
             binding.rememCheckBox.isChecked = passphrase!!.isNotEmpty()
         } else {
             lifecycleScope.launch {
@@ -1089,9 +1094,8 @@ $mSelectedSecurity"""
 
     companion object {
         const val TAG = "==CTBluetoothPass"
-        const val TAG_SCAN = "TAG_SCAN"
-        const val TAG_ = "Mansoor"
-        const val TAG_BLE_SHAIk = "TAG_BLE_SHAIk"
+        const val TAGSCAN = "TAGSCAN"
+        const val TAGBLE_SHAIk = "TAGBLE_SHAIk"
         fun fromHtml(html: String?): Spanned {
             return if (html == null) {
                 // return an empty spannable if the html is null
@@ -1248,8 +1252,8 @@ $mSelectedSecurity"""
             val action = intent.action
             if (WifiManager.NETWORK_STATE_CHANGED_ACTION == action) {
                 // Wi-Fi state has changed
-                LibreLogger.d(TAG_, "Shaik Phone Connected ssid "+ getConnectedSSID(context))
-                LibreLogger.d(TAG_, "Shaik user selectedSSid  $selectedSSid")
+                LibreLogger.d(TAG, "Shaik Phone Connected ssid "+ getConnectedSSID(context))
+                LibreLogger.d(TAG, "Shaik user selectedSSid  $selectedSSid")
                 if(getConnectedSSID(context)==selectedSSid){
                     mandateDialog?.dismiss()
                 }

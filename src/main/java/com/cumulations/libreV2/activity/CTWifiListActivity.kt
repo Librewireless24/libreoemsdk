@@ -310,7 +310,7 @@ class CTWifiListActivity : CTDeviceDiscoveryActivity(), BLEServiceToApplicationI
                 val ssid = fromHtml(obj.getString("SSID")).toString()
                 val security = fromHtml(obj.getString("Security")).toString()
                 val rssi = obj.getInt("rssi")
-                LibreLogger.d(CTBluetoothPassCredentials.TAG_SCAN, "populateScanListMap before " + "Map $ssid and $security and $rssi")
+                LibreLogger.d(TAG, "populateScanListMap before " + "Map $ssid and $security and$rssi")
                 scanListMap[ssid] = Pair(security, rssi)
             }
 
@@ -323,7 +323,7 @@ class CTWifiListActivity : CTDeviceDiscoveryActivity(), BLEServiceToApplicationI
                 val security = securityAndRssi.first
                 val rssi = securityAndRssi.second
 
-                LibreLogger.d(CTBluetoothPassCredentials.TAG_SCAN, "populateScanListMap  $ssid and $security and $rssi")
+                LibreLogger.d(TAG, "populateScanListMap  $ssid and $security and $rssi")
                 WifiConnection.getInstance().putWifiScanResultSecurity(ssid, security, rssi)
             }
         } catch (e: JSONException) {

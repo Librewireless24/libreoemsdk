@@ -95,4 +95,13 @@
             app:itemTextColor="@color/bottom_nav_item"
             app:menu="@menu/bottom_navigation_main" />
     </FrameLayout>
+    <RelativeLayout
+      android:id="@+id/lay_PermissionBottom"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+    <include
+      android:id="@+id/lay_PermissionBottomSheet"
+      layout="@layout/fragment_permission_bottom_sheet">
+    </include>
+    </RelativeLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

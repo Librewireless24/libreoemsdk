@@ -37,7 +37,7 @@ class CTWifiListAdapter(val context: Context, var scanResultList: MutableList<Sc
         RecyclerView.ViewHolder(itemBinding.root) {
 
         fun bindScanResultItem(scanResultItem: ScanResultItem?, position: Int) {
-            LibreLogger.d(CTBluetoothPassCredentials.TAG_SCAN, "bindScanResultItem  " + scanResultItem?.ssid)
+            LibreLogger.d(TAG, "bindScanResultItem  " + scanResultItem?.ssid)
             itemBinding.tvSsidName.text = scanResultItem?.ssid
             itemBinding.tvSsidSecurity.text = scanResultItem?.security?.uppercase(Locale.getDefault())
             if(scanResultItem!!.ssid==AppUtils.getConnectedSSID(context)){
