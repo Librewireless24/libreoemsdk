@@ -264,7 +264,9 @@ class CTBluetoothHearSoundQtn : CTDeviceDiscoveryActivity(), View.OnClickListene
             isDisconnectionHandled = true
 
             runOnUiThread {
-                showAlertDialog(getString(R.string.somethingWentWrong_tryAgain), getString(R.string.ok), 0, isDeviceLost =true)
+                showAlertDialog(getString(R.string.somethingWentWrong_tryAgain), getString(R
+                    .string.ok), 0, isDeviceLost =true, isLocationPermission =false,
+                    isLocationPermissionRotational=false)
             }
         }
     }

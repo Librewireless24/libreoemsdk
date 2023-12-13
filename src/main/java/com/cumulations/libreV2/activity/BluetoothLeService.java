@@ -2,7 +2,6 @@ package com.cumulations.libreV2.activity;
 
 import static android.bluetooth.BluetoothGattDescriptor.ENABLE_INDICATION_VALUE;
 import static android.bluetooth.BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE;
-import static com.cumulations.libreV2.activity.CTBluetoothPassCredentials.TAG_BLE_SHAIk;
 import static com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEGattAttributes.MTU_SIZE;
 import static com.libreAlexa.LibreApplication.betweenDisconnectedCount;
 import static com.libreAlexa.LibreApplication.disconnectedCount;

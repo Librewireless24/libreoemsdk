@@ -122,10 +122,10 @@ class CastToSActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionListn
                 isWebViewOpen = true
             }
         }
-        tosString.setSpan(clickableTermsSpan, 173, 196, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        tosString.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, R.color.blue)), 173, 196, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        tosString.setSpan(clickablePrivacySpan, 201, 222, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        tosString.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, R.color.blue)), 201, 222, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        tosString.setSpan(clickableTermsSpan, 172, 196, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        tosString.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, R.color.blue)), 172, 196, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        tosString.setSpan(clickablePrivacySpan, 200, 222, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        tosString.setSpan(ForegroundColorSpan(ContextCompat.getColor(this, R.color.blue)), 200, 222, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         binding.txtCastTos.text = tosString
         binding.txtCastTos.movementMethod = LinkMovementMethod.getInstance()
         binding.btnAccept.setOnClickListener {

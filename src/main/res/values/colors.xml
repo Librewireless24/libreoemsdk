@@ -49,6 +49,7 @@
     <color name="spotify_color">#1DB954</color>
     <color name="issue_report_card_color">#6F7787</color>
     <color name="loader_grey">#DDDDDD</color>
+  <color name="bottom_sheet">#555555</color>
 
 
 </resources>

@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cumulations.libreV2.AppUtils
+import com.cumulations.libreV2.PermissionBottomSheetFragment
 import com.cumulations.libreV2.activity.CTDeviceDiscoveryActivity
 import com.cumulations.libreV2.activity.CTHomeTabsActivity
 import com.cumulations.libreV2.adapter.CTDeviceListAdapter
@@ -71,7 +72,6 @@ class CTActiveDevicesFragment:Fragment(),LibreDeviceInteractionListner,Tunneling
             (activity as CTHomeTabsActivity).openFragment(CTNoDeviceFragment::class.java.simpleName, animate = true)
             return
         }
-
         deviceListAdapter = CTDeviceListAdapter(requireActivity())
         binding.rvDeviceList.layoutManager = LinearLayoutManager(activity)
         binding.rvDeviceList.adapter = deviceListAdapter

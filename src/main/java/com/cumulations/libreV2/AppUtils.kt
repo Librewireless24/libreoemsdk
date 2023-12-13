@@ -23,7 +23,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
-import com.cumulations.libreV2.activity.CTBluetoothPassCredentials.Companion.TAG_
 import com.cumulations.libreV2.activity.CTWifiListActivity
 import com.cumulations.libreV2.model.SceneObject
 import com.libreAlexa.LibreApplication
@@ -38,7 +37,6 @@ import com.libreAlexa.luci.LUCIControl
 import com.libreAlexa.util.LibreLogger
 import org.json.JSONArray
 import org.json.JSONObject
-import java.io.InputStream
 import java.io.Serializable
 import java.util.regex.Pattern
 
@@ -113,7 +111,7 @@ object AppUtils {
                 LibreLogger.d(TAG, "getConnectedSSIDAndSecurityType network list empty")
             }
         } catch (ex: Exception) {
-            LibreLogger.d(TAG_, "getConnectedSSIDAndSecurityType:Exception ${ex.message}")
+            LibreLogger.d(TAG, "getConnectedSSIDAndSecurityType:Exception ${ex.message}")
         }
         return Pair(connectedSSID, securityType)
 

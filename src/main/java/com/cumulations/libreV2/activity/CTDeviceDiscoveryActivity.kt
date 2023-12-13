@@ -7,6 +7,7 @@ import android.app.Activity
 import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.*
+import android.content.pm.PackageManager
 import android.database.sqlite.SQLiteException
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
@@ -30,7 +31,6 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatSeekBar
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -122,9 +122,11 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
         const val TAG_DEVICE_REMOVED = "TAG_DEVICE_REMOVED"
         var isKeyStored = false
         var isBTPermissionAsked = false
+        val TAG_ = "SHAIKM"
     }
 
     private var libreDeviceInteractionListner: LibreDeviceInteractionListner? = null
+    private var locationPermissionCallback: LocationPermissionCallback? = null
     var upnpProcessor: UpnpProcessorImpl? = null
     private var localNetworkStateReceiver: LocalNetworkStateReceiver? = null
     private val progressDialog by lazy { CustomProgressDialog(this) }
@@ -359,6 +361,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
         initDMRForegroundService()
         parentView = window.decorView.rootView
         proceedToHome()
+
     }
 
     private fun initDMRForegroundService() {
@@ -388,6 +391,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !AppUtils.isPermissionGranted(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
             requestLocationPermission()
         } else {
+            locationPermissionCallback?.onPermissionGranted()
             if (mandateDialog != null && mandateDialog!!.isShowing) mandateDialog!!.dismiss()
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
@@ -427,13 +431,16 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
             /**
              * Shaik Added the snackBar above to BottomSheet
              */
-            val snackBar = Snackbar.make(parentView!!, R.string.permission_location_rationale, Snackbar.LENGTH_INDEFINITE)
+            showAlertDialog(getString(R.string.permission_location_rationale), getString(R.string.ok),
+                LOCATION_PERM_SETTINGS_REQUEST_CODE, isDeviceLost = false, isLocationPermission
+                =true,  isLocationPermissionRotational=false)
+           /* val snackBar = Snackbar.make(parentView!!, R.string.permission_location_rationale, Snackbar.LENGTH_INDEFINITE)
             snackBar.setAction(R.string.ok) {
                 AppUtils.requestPermission(this@CTDeviceDiscoveryActivity, Manifest.permission.ACCESS_FINE_LOCATION, LOCATION_PERMISSION_REQUEST_CODE)
             }
             snackBar.anchorView = findViewById(R.id.bottom_navigation)
             snackBar.setActionTextColor(ContextCompat.getColor(this@CTDeviceDiscoveryActivity, R.color.brand_orange))
-            snackBar.show()
+            snackBar.show()*/
         } else {
             if (!sharedPreferenceHelper.isFirstTimeAskingPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
                 sharedPreferenceHelper.firstTimeAskedPermission(Manifest.permission.ACCESS_FINE_LOCATION, true)
@@ -443,7 +450,8 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
             } else {
                 // showAlertForLocationPermissionRequired()
                 showAlertDialog(getString(R.string.enableLocationPermit), getString(R.string
-                    .action_settings),  LOCATION_PERM_SETTINGS_REQUEST_CODE, isDeviceLost = false)
+                    .action_settings), LOCATION_PERM_SETTINGS_REQUEST_CODE, isDeviceLost = false,
+                    isLocationPermission =false,  isLocationPermissionRotational=true)
             }
 
         }
@@ -1799,15 +1807,21 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                 showToast(message.errorMessage)
             }
         }
+    fun registerLocationPermissionCallback(callback: LocationPermissionCallback) {
+        locationPermissionCallback = callback
+    }
 
+    fun unregisterLocationPermissionCallback() {
+        locationPermissionCallback = null
+    }
 
-        fun registerForDeviceEvents(libreListner: LibreDeviceInteractionListner) {
-            this.libreDeviceInteractionListner = libreListner
-        }
+    fun registerForDeviceEvents(libreListner: LibreDeviceInteractionListner) {
+        this.libreDeviceInteractionListner = libreListner
+    }
 
-        fun unRegisterForDeviceEvents() {
-            this.libreDeviceInteractionListner = null
-        }
+    fun unRegisterForDeviceEvents() {
+        this.libreDeviceInteractionListner = null
+    }
 
         fun intentToHome(context: Context) {
             //  LibreLogger.d(TAG,TAG_DEVICE_REMOVED, "intentToHome:- ${context::class.java.simpleName}")
@@ -2153,14 +2167,20 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
         override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
             super.onRequestPermissionsResult(requestCode, permissions, grantResults)
             when (requestCode) {
-                LOCATION_PERMISSION_REQUEST_CODE -> checkLocationPermission()
+                LOCATION_PERMISSION_REQUEST_CODE -> {
+                    if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                        LibreLogger.d(TAG_, "Permission 22 $grantResults")
+                    }else {
+                        LibreLogger.d(TAG_, "Permission 21 $grantResults")
+                    }
+                    locationPermissionCallback?.onPermissionDenied()
+                    checkLocationPermission()}
                 MICROPHONE_PERMISSION_REQUEST_CODE -> checkMicrophonePermission()
                 READ_STORAGE_REQUEST_CODE -> checkReadStoragePermission()
             }
         }
 
         fun setMessageProgressDialog(message: String) {
-            //suma remove
             if(!((this)).isFinishing()) {
                 showProgressDialog(message)
             }
@@ -2228,21 +2248,15 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
         }
 
         private fun showAlertForFirmwareUpgrade(mNode: LSSDPNodes, fwUpgradeData: FwUpgradeData) {
-            LibreLogger.d(TAG, "handleGCastMessage:showAlertForFirmwareUpgrade  ${
-                mNode.friendlyname
-            } progress: " + "${fwUpgradeData.getmProgressValue()}")
             //  if (!sacDeviceNameSetFromTheApp.equals("", ignoreCase = true)) return
-            LibreLogger.d(TAG, "handleGCastMessage:showAlertForFirmwareUpgrade 1 " + "$sacDeviceNameSetFromTheApp")
             val builder = AlertDialog.Builder(this@CTDeviceDiscoveryActivity)
-            // set title
             builder.setTitle("Firmware Upgrade")
             builder.setMessage(mNode.friendlyname + ": New update available. Firmware is upgrading with new update").setCancelable(false).setPositiveButton("OK") { dialog, id ->
                 dialog.dismiss()
                 fwUpdateAlertDialog = null
                 BusProvider.getInstance().post(fwUpgradeData)
             }
-            // create alertDialog1 dialog
-            LibreLogger.d(TAG, "handleGCastMessage:showAlertForFirmwareUpgrade  2")
+
             if (fwUpdateAlertDialog == null) fwUpdateAlertDialog = builder.create()
             if (!fwUpdateAlertDialog?.isShowing!!) fwUpdateAlertDialog!!.show()
         }
@@ -2256,7 +2270,6 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
         }
 
         fun showProgressDialog(message: String) {
-            LibreLogger.d(TAG, "showProgressDialog: called: $message")
             progressDialog.start(message)
         }
 
@@ -2380,7 +2393,8 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                     //showAlertForRecordPermissionRequired()
                     //   if (mandateDialog != null && mandateDialog!!.isShowing) mandateDialog!!.dismiss()
                     showAlertDialog(getString(R.string.enableRecordPermit), getString(R.string
-                        .action_settings),  MICROPHONE_PERM_SETTINGS_REQUEST_CODE,isDeviceLost =false)
+                        .action_settings), MICROPHONE_PERM_SETTINGS_REQUEST_CODE, isDeviceLost
+                    =false, isLocationPermission =false, isLocationPermissionRotational=false)
                 }
 
             }
@@ -2422,8 +2436,10 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
         fun showAlertDialog(message: String,
             positiveButtonString: String,
             requestCode: Int,
-            isDeviceLost: Boolean) {
-            LibreLogger.d(TAG, "showAlertDialog and requestCode: $requestCode")
+            isDeviceLost: Boolean,
+            isLocationPermission: Boolean,
+            isLocationPermissionRotational: Boolean) {
+            LibreLogger.d(TAG_, "showAlertDialog and requestCode: $requestCode")
             if (mandateDialog != null && mandateDialog!!.isShowing) mandateDialog!!.dismiss()
             else mandateDialog = null
 
@@ -2431,6 +2447,8 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                 val builder = AlertDialog.Builder(this)
                 if(isDeviceLost) {
                     builder.setTitle(getString(R.string.device_connection_los))
+                }else if(isLocationPermission){
+                    builder.setTitle(getString(R.string.permission_required))
                 }
                 builder.setMessage(message)
                 builder.setCancelable(false)
@@ -2438,7 +2456,15 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                     mandateDialog!!.dismiss()
                     if(isDeviceLost) {
                         intentToHome(this)
+                    }else if (isLocationPermission){
+                        AppUtils.requestPermission(this@CTDeviceDiscoveryActivity, Manifest.permission.ACCESS_FINE_LOCATION, LOCATION_PERMISSION_REQUEST_CODE)
+                    } else if(isLocationPermissionRotational){
+                         val packageName = packageName
+                      val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                      intent.data = Uri.fromParts("package", packageName, null)
+                      customStartActivityForResult(LOCATION_PERM_SETTINGS_REQUEST_CODE,intent)
                     } else {
+                        LibreLogger.d(TAG_, "showAlertDialog else")
                         customStartActivityForResult(requestCode, Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
                             .setData(Uri.fromParts("package", packageName, null))
                             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -2503,8 +2529,13 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
             }
 
             if (requestCode == LOCATION_PERM_SETTINGS_REQUEST_CODE || requestCode == LOCATION_SETTINGS_REQUEST_CODE) {
-                //  Log.d(TAG, "came back from wifi list location")
-                checkLocationPermission()
+                if(resultCode==RESULT_CANCELED) {
+                    Log.d(TAG_, "Permission 30  $resultCode")
+                    checkLocationPermission()
+                }else{
+                    Log.d(TAG_, "Permission 31  $resultCode")
+                    if (mandateDialog != null && mandateDialog!!.isShowing) mandateDialog!!.dismiss()
+                }
             }
 
             if (requestCode == MICROPHONE_PERM_SETTINGS_REQUEST_CODE) {
