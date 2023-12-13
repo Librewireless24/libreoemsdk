@@ -42,11 +42,25 @@
     android:layout_height="56dp"
     android:paddingHorizontal="20dp"
     android:layout_marginTop="80dp"
+      android:gravity="center"
     android:layout_below="@+id/lay_backHead"
     android:background="@android:color/transparent"
     tools:text="@string/has_been_successfully_setup"
     android:textColor="@color/white"
     android:textSize="@dimen/dimen_18" />
+
+  <androidx.appcompat.widget.AppCompatTextView
+      android:id="@+id/chrome_cast_text_enabled"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:paddingHorizontal="20dp"
+      android:visibility="visible"
+      android:gravity="center"
+      android:layout_below="@+id/txt_setupDevice"
+      android:background="@android:color/transparent"
+      android:text="@string/chromecast_setup_enable_text"
+      android:textColor="@color/grey"
+      android:textSize="@dimen/dimen_18" />
 
   <androidx.appcompat.widget.AppCompatButton
     android:id="@+id/btn_goHome"
@@ -56,6 +70,7 @@
     android:layout_marginHorizontal="100dp"
     android:background="@drawable/ic_rectangle"
     android:gravity="center"
+      android:layout_marginTop="30dp"
     android:text="@string/go_to_home"
     android:textAllCaps="false"
     android:textColor="@color/brand_orange"

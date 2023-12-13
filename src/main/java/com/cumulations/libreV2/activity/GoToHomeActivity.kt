@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
 import android.window.OnBackInvokedDispatcher
 import androidx.activity.OnBackPressedCallback
 import com.cumulations.libreV2.activity.oem.OpenGHomeAppActivity
@@ -21,10 +22,29 @@ class GoToHomeActivity : CTDeviceDiscoveryActivity() {
     private val speakerName by lazy {
         intent.getStringExtra(Constants.DEVICE_NAME)
     }
+    private val from by lazy {
+        intent.getStringExtra(Constants.FROM_ACTIVITY)
+    }
+    private val tosStatus by lazy {
+        intent.getStringExtra(Constants.DEVICE_TOS_STATUS)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityGoToHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
+      //  LibreLogger.d(TAG,"suma in device TOS STATUS"+tosStatus)
+
+        if(tosStatus!=null&&tosStatus.equals("not_activated")){
+            binding.chromeCastTextEnabled.visibility= View.VISIBLE
+            LibreLogger.d(TAG,"suma in device TOS STATUS if"+tosStatus)
+        }
+        else{
+            binding.chromeCastTextEnabled.visibility = View.GONE
+            LibreLogger.d(TAG,"suma in device TOS STATUS else"+tosStatus)
+
+        }
+
         if (Build.VERSION.SDK_INT >= 33) {
             //Android 13 and Above
             onBackInvokedDispatcher.registerOnBackInvokedCallback(OnBackInvokedDispatcher.PRIORITY_DEFAULT) {

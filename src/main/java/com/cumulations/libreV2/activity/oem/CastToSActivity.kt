@@ -15,6 +15,8 @@ import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.cumulations.libreV2.activity.CTDeviceDiscoveryActivity
+import com.cumulations.libreV2.activity.CTDeviceSettingsActivity
+import com.cumulations.libreV2.activity.GoToHomeActivity
 import com.cumulations.libreV2.model.SceneObject
 import com.cumulations.libreV2.roomdatabase.CastLiteUUIDDataClass
 import com.cumulations.libreV2.roomdatabase.LibreVoiceDatabase
@@ -146,9 +148,34 @@ class CastToSActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionListn
                 initiateJob()
             }
         }
+
         binding.btnSkip.setOnClickListener {
-            handleBackPress()
+
+            LibreLogger.d(TAG,"suma in cast to sac activity\n"+from)
+
+            if(from!=null&&from.equals("CTDeviceSettingsActivity")){
+                val newIntent = Intent(this@CastToSActivity, CTDeviceSettingsActivity::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                newIntent.putExtra(Constants.FROM_ACTIVITY, OpenGHomeAppActivity::class.java.simpleName)
+                newIntent.putExtra(Constants.CURRENT_DEVICE_IP, currentIpAddress)
+                newIntent.putExtra(Constants.DEVICE_NAME, speakerName)
+                startActivity(newIntent)
+                finish()
+            }
+            if(from!=null&&from.equals("CTConnectingToMainNetwork")||from!=null&&from.equals("SetUpDeviceActivity")/*&&deviceTOSStatus.equals("not_activated")*/) {
+                val newIntent = Intent(
+                    this@CastToSActivity,
+                    GoToHomeActivity::class.java
+                ).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                newIntent.putExtra(Constants.FROM_ACTIVITY, CastToSActivity::class.java.simpleName)
+                newIntent.putExtra(Constants.CURRENT_DEVICE_IP, currentIpAddress)
+                newIntent.putExtra(Constants.DEVICE_NAME, speakerName)
+                newIntent.putExtra(Constants.DEVICE_TOS_STATUS, deviceTOSStatus)
+                startActivity(newIntent)
+                finish()
+            }
+
         }
+
         binding.imgClose.setOnClickListener {
             binding.webView.visibility = View.GONE
             binding.parentLayout.visibility = View.VISIBLE

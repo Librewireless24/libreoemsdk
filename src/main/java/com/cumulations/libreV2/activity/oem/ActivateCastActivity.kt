@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import com.cumulations.libreV2.activity.CTDeviceDiscoveryActivity
 import com.cumulations.libreV2.activity.CTDeviceSettingsActivity
+import com.cumulations.libreV2.activity.GoToHomeActivity
 import com.cumulations.libreV2.roomdatabase.CastLiteUUIDDataClass
 import com.cumulations.libreV2.roomdatabase.LibreVoiceDatabase
 import com.libreAlexa.R
@@ -201,10 +202,13 @@ class ActivateCastActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteraction
     override fun messageRecieved(nettyData: NettyData?) {
         binding.layLoader.visibility = View.GONE
         val packet = LUCIPacket(nettyData!!.getMessage())
-        val remoteDeviceIp = nettyData.getRemotedeviceIp()/*  LibreLogger.d(TAG, "messageReceived: " + remoteDeviceIp + ", command is " + packet.command + "msg" + " is\n" + String(packet.payload))*/
+        val remoteDeviceIp = nettyData.getRemotedeviceIp()
+        /*  LibreLogger.d(TAG, "messageReceived: " + remoteDeviceIp + ", command is " + packet.command + "msg" + " is\n" + String(packet.payload))*/
+
         if (packet.command == MIDCONST.CAST_ACCEPT_STATUS || packet.command == MIDCONST.CAST_ACCEPT_STATUS_572) {
             val message = String(packet.getpayload())
             val root = JSONObject(message)
+            LibreLogger.d(TAG,"SUMA in ActivateCastActivity on BackPressed messageReceived\n"+message)
             if (root.getString("id") == "status") {
                 if (root.getString("status") == LUCIMESSAGES.SUCCESS) {
                     deviceTOSStatus = root.getString("tos")
@@ -245,6 +249,44 @@ class ActivateCastActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteraction
     override fun onStop() {
         super.onStop()
         unRegisterForDeviceEvents()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        LibreLogger.d(TAG,"SUMA in ActivateCastActivity on BackPressed msgRecieved"+from)
+        try {
+            if (from.equals("CastToSActivity")) {
+                val newIntent = Intent(
+                    this@ActivateCastActivity,
+                    GoToHomeActivity::class.java
+                ).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                newIntent.putExtra(
+                    Constants.FROM_ACTIVITY,
+                    ActivateCastActivity::class.java.simpleName
+                )
+                newIntent.putExtra(Constants.CURRENT_DEVICE_IP, currentIpAddress)
+                newIntent.putExtra(Constants.DEVICE_NAME, speakerName)
+                startActivity(newIntent)
+                finish()
+            }
+            if (from.equals("CTDeviceSettingsActivity")) {
+                val newIntent = Intent(
+                    this@ActivateCastActivity,
+                    CTDeviceSettingsActivity::class.java
+                ).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                newIntent.putExtra(
+                    Constants.FROM_ACTIVITY,
+                    ActivateCastActivity::class.java.simpleName
+                )
+                newIntent.putExtra(Constants.CURRENT_DEVICE_IP, currentIpAddress)
+                newIntent.putExtra(Constants.DEVICE_NAME, speakerName)
+                startActivity(newIntent)
+                finish()
+            }
+        }
+        catch (e:Exception){
+            e.printStackTrace()
+        }
     }
 
     private fun fetchUUIDFromDB(speakerIpAddress: String) {

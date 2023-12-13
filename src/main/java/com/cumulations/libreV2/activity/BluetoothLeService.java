@@ -2,7 +2,6 @@ package com.cumulations.libreV2.activity;
 
 import static android.bluetooth.BluetoothGattDescriptor.ENABLE_INDICATION_VALUE;
 import static android.bluetooth.BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE;
-import static com.cumulations.libreV2.activity.CTBluetoothPassCredentials.TAG_;
 import static com.cumulations.libreV2.activity.CTBluetoothPassCredentials.TAG_BLE_SHAIk;
 import static com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEGattAttributes.MTU_SIZE;
 import static com.libreAlexa.LibreApplication.betweenDisconnectedCount;
@@ -31,6 +30,7 @@ import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEGattAttributes;
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEPacket;
+import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEPacket.BLEDataPacket;
 import com.cumulations.libreV2.com.cumulations.libreV2.BLE.BLEServiceToApplicationInterface;
 import com.libreAlexa.LibreApplication;
 import com.libreAlexa.util.LibreLogger;
@@ -80,10 +80,10 @@ public class BluetoothLeService extends Service {
 
     }
 
-    public void fireOnBLEreceivedBLEDataPacket(BLEPacket.BLEDataPacket packet) {
-        LibreLogger.d(TAG, "fire On BLE Data Packet"+packet.getCommand());
+    public void fireOnBLEreceivedBLEDataPacket(BLEDataPacket packet, String hexData) {
+        LibreLogger.d(TAG, "fire On BLE Data Packet"+packet.getCommand()+" hexData "+hexData);
         for (BLEServiceToApplicationInterface mListener : mBLEServiceInterfaceListenerList) {
-            mListener.receivedBLEDataPacket(packet);
+            mListener.receivedBLEDataPacket(packet,hexData);
         }
 
     }
@@ -234,13 +234,12 @@ public class BluetoothLeService extends Service {
 
             try {
                 byte[] value = data;
-                LibreLogger.d(TAG_BLE_SHAIk, "Received BLE data "+value);
                 BLEPacket mPacket = new BLEPacket();
                 BLEPacket.BLEDataPacket mDataPacket = mPacket.createBlePacketFromMessage(value);
                 LibreLogger.d(TAG, "Received BLE data" + "Value received:  " + value.length +
                         " String Received msg " + bytesToHex(value) +
                         " BLE Command received " + mDataPacket.getCommand());
-                fireOnBLEreceivedBLEDataPacket(mDataPacket);
+                fireOnBLEreceivedBLEDataPacket(mDataPacket,bytesToHex(value));
             } catch (Exception e) {
                 e.printStackTrace();
                 LibreLogger.d(TAG,"Exception: "+e.getMessage());
@@ -249,7 +248,6 @@ public class BluetoothLeService extends Service {
     };
 
      static String bytesToHex(byte[] hashInBytes) {
-         LibreLogger.d(TAG_BLE_SHAIk, "Received BLE hashInBytes "+hashInBytes);
         StringBuilder sb = new StringBuilder();
         for (byte b : hashInBytes) {
             // System.out.println(String.format("%02x", b));

@@ -223,7 +223,8 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                                      "CTConnectingToMainNetwork $isForgetNetworkCalled")
                             if(!isForgetNetworkCalled) {
                                 alertDialogForDeviceNotAvailable(LSSDPNodeDB.getInstance().getTheNodeBasedOnTheIpAddress(removedLibreDevice.getmIpAddress()))
-                            }else{
+                            }
+                            else{
                                 isForgetNetworkCalled=false
                             }
                         } else {
@@ -2031,7 +2032,22 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                     LUCIControl.luciSocketMap.remove(mNode.ip)
                     LibreApplication.securecertExchangeSucessDevices.clear()
                     LUCIControl.handshake.clear()
-                    intentToHome(this)
+                    if(!localClassName.isEmpty()) {
+                        if (localClassName.contains("CTSplashScreenActivity") || localClassName.contains(
+                                "CTHomeTabsActivity"
+                            ) || localClassName.contains("CTDeviceSettingsActivity"))
+                        {
+                            intentToHome(this)
+                        }
+                        else {
+                            alertDialog1!!.dismiss()
+                        }
+                    }
+                    else{
+                        //this print will not come just added for crash handling
+                        alertDialog1!!.dismiss()
+                    }
+
                 }
                 if (alertDialog1 == null) alertDialog1 = alertDialogBuilder.create()
                 alertDialog1!!.show()

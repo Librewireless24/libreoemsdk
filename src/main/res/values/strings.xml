@@ -461,8 +461,14 @@ By clicking Confirm, Device will be removed and you will be redirected to Home. 
   <string name="continue_txt">Continue</string>
   <string name="go_to_home">Go to Home</string>
   <string name="has_been_successfully_setup">has been successfully setup.</string>
+  <string name="chromecast_setup_enable_text">Please note that chromecast is not enabled,If you wish to enable later, you can find this option in speaker settings.</string>
+
   <string name="do_you_want_to_cancel_the_setup">Do you want to cancel the setup?</string>
   <string name="no">No</string>
+  <string name="wi_fi_connection_failed">WI-Fi connection failed</string>
+  <string name="something_went_wrong">Something went wrong.</string>
+  <string name="incorrect_password_entered_for_the_selected">"Incorrect password entered for the selected "</string>
+  <string name="it_seems_that_your_device_is_currently_out_of_wi_fi_range_please_move_closer_to_a_wi_fi_hotspot_or_ensure_that_your_wi_fi_is_turned_on">It seems that your device is currently out of Wi-Fi range. Please move closer to a Wi-Fi hotspot or ensure that your Wi-Fi is turned on.</string>
   <string-array name="audio_output_array">
     <item>Stereo (S)</item>
     <item>Left Speaker (L)</item>

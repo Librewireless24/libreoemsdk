@@ -321,7 +321,7 @@ class CTBluetoothDeviceListActivity : CTDeviceDiscoveryActivity(), BLEServiceToA
         callConnectToWifiActivityPage()
     }
 
-    override fun receivedBLEDataPacket(packet: BLEDataPacket) {}
+    override fun receivedBLEDataPacket(packet: BLEDataPacket, hexData: String) {}
     override fun writeSucess(status: Int) {}
     override fun onDisconnectionSuccess(status: Int) {
         LibreApplication.betweenDisconnectedCount = 0
@@ -432,7 +432,8 @@ class CTBluetoothDeviceListActivity : CTDeviceDiscoveryActivity(), BLEServiceToA
             if (alertDialog != null && alertDialog!!.isShowing) alertDialog?.dismiss()
             handler.removeCallbacks(showWifiConfigurationScreen)
             startScan()
-        } else {
+        }
+        else {
             if (!sharedPreference.isFirstTimeAskingPermission(BLUETOOTH_SCAN)) {
                 sharedPreferenceHelper.firstTimeAskedPermission(BLUETOOTH_SCAN, true)
                 showAlertDialog(getString(R.string.permission_required), getString(R.string.ok), getString(R.string.cancel), 0)

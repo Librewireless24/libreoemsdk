@@ -46,7 +46,6 @@ import org.json.JSONObject
 import retrofit.Callback
 import retrofit.RetrofitError
 import retrofit.client.Response
-import java.util.TreeMap
 
 
 class CTWifiListActivity : CTDeviceDiscoveryActivity(), BLEServiceToApplicationInterface {
@@ -265,7 +264,7 @@ class CTWifiListActivity : CTDeviceDiscoveryActivity(), BLEServiceToApplicationI
         }
     }
 
-    override fun receivedBLEDataPacket(packet: BLEPacket.BLEDataPacket?) {
+    override fun receivedBLEDataPacket(packet: BLEPacket.BLEDataPacket?, hexData: String) {
 
         when (packet!!.command) {
             BLEUtils.BLE_SAC_DEV2APP_WIFI_AP_NOT_FOUND -> runOnUiThread { setMessageProgressDialog(getString(R.string.ap_notfound)) }

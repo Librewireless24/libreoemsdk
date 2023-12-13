@@ -6,6 +6,7 @@ import android.view.View
 import androidx.lifecycle.lifecycleScope
 import com.cumulations.libreV2.activity.CTAmazonInfoActivity
 import com.cumulations.libreV2.activity.CTDeviceDiscoveryActivity
+import com.cumulations.libreV2.activity.CTDeviceSettingsActivity
 import com.cumulations.libreV2.roomdatabase.CastLiteUUIDDataClass
 import com.cumulations.libreV2.roomdatabase.LibreVoiceDatabase
 import com.libreAlexa.R
@@ -28,6 +29,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.json.JSONObject
+import java.lang.Exception
 import java.util.UUID
 
 /**
@@ -206,6 +208,20 @@ class SetUpDeviceActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionL
                 binding.layLoader.visibility = View.GONE
             }
         }
+    }
+
+
+    override fun onBackPressed()
+    {
+        super.onBackPressed()
+        try {
+
+            intentToHome(this)
+        }
+        catch (e:Exception){
+            e.printStackTrace()
+        }
+
     }
 
     private fun cancelJob() {
