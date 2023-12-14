@@ -930,7 +930,7 @@ $mSelectedSecurity"""
         val mSelectedCountryCode = String(configurationParameters.getDeviceCountryCode(this@CTBluetoothPassCredentials).toByteArray(), StandardCharsets.UTF_8).uppercase(Locale.getDefault())
         mDeviceName = String(binding.etDeviceName.text.toString().toByteArray(), StandardCharsets.UTF_8)
         WifiConnection.getInstance().setMainSSIDPwd(mSelectedPass)
-        LibreLogger.d(TAG, "btnNextClicked: Security check is enabled or Not 0(Disabled)/1(Enabled) " + mSecurityCheckEnabled + "Countrycode " + mSelectedCountryCode)
+        LibreLogger.d(TAG, "btnNextClicked: Security check mSelectedSSID\n " + mSelectedSSID + "Password " + mSelectedPass+"security\n"+mSelectedSecurity+"countryCode"+mSelectedCountryCode)
         /**
          * SHAIK Added the 2 Sec Delay after user click on Next Button
          */
@@ -948,10 +948,11 @@ $mSelectedSecurity"""
                 for (b in mSelectedPass.toByteArray()) {
                     data[i++] = b
                 }
-//                data[i++] = mSelectedSecurity.length.toByte()
-//                for (b in mSelectedSecurity.toByteArray()) {
-//                    data[i++] = b
-//                }
+                data[i++] = mSelectedSecurity.length.toByte()
+                for (b in mSelectedSecurity.toByteArray()) {
+                    data[i++] = b
+                }
+
                 data[i++] = binding.etDeviceName.text!!.length.toByte()
                 for (b in binding.etDeviceName.text.toString().toByteArray()) {
                     data[i++] = b
@@ -960,7 +961,7 @@ $mSelectedSecurity"""
                 for (b in mSelectedCountryCode.toByteArray()) {
                     data[i++] = b
                 }
-                LibreLogger.d(TAG, "btnNextClicked: mSecurityCheckEnabled IF writing data  $data")
+                LibreLogger.d(TAG, "btnNextClicked: mSecurityCheckEnabled IF writing data  ${data.toString()}")
                 val mBlePacketScanWIFI = BLEPacket(data, BLEUtils.BLE_SAC_APP2DEV_CONNECT_WIFI.toByte(), true)
                 BleCommunication.writeDataToBLEDevice(mBlePacketScanWIFI)
             } else {
