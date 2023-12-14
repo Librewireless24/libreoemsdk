@@ -686,10 +686,24 @@ $mSelectedSecurity"""
                                                         )
 
                                                     }
-                                                } else {
-                                                    LibreLogger.d(TAG,"BTN NEXT CALL case VALID ONE"+binding.etWifiPassword.text.length)
-                                                    //call btnnextclicked method
-                                                         btnNextClicked()
+                                                }
+                                                    else {
+
+                                                        LibreLogger.d(TAG,"BTN NEXT CALL case VALID ONE"+binding.etWifiPassword.text.length)
+                                                        //call btnnextclicked method for none security SSID
+
+                                                        if(binding.tvSelectedWifi.text.toString()==AppUtils.getConnectedSSID(context = this)) {
+                                                            btnNextClicked()
+                                                            LibreLogger.d(TAG,"BTN NEXT CALL case VALID THREE\n"+binding.tvSelectedWifi.text.toString()+"getconnectessid\n"+getConnectedSSIDName(this))
+
+                                                        }
+                                                        else{
+                                                            LibreLogger.d(TAG,"BTN NEXT CALL case VALID FOUR\n"+binding.tvSelectedWifi.text.toString()+"getconnectessid\n"+getConnectedSSIDName(this))
+
+                                                            showNetworkMisMatchAlertDialog(networkMismatchSsidMessage(getConnectedSSID(context = this),binding.tvSelectedWifi.text.toString()), getString(R.string.continue_txt),
+                                                                getString(R.string.cancel), isNetworkMisMatch=true,
+                                                                isConfigureCancel=false)
+                                                        }
 
                                                 }
                                             }
