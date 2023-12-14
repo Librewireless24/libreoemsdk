@@ -477,6 +477,7 @@ By clicking Confirm, Device will be removed and you will be redirected to Home. 
   <string name="bluetooth_adapter">Bluetooth Adapter</string>
   <string name="please_grant_the_required_location_permissions">Please grant the required location permissions.</string>
   <string name="bluetooth_is_already_turned_on">Bluetooth is already turned on.</string>
+  <string name="app_version">App Version</string>
   <string-array name="audio_output_array">
     <item>Stereo (S)</item>
     <item>Left Speaker (L)</item>
