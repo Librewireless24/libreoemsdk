@@ -62,7 +62,7 @@
         android:layout_marginBottom="539dp"
         android:textColor="@color/white"
         android:gravity="center"
-        android:text="@string/something_wrong"
+        android:text="@string/alert"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Widget.ActionBar.Title" />
 
     <TextView
@@ -81,7 +81,7 @@
         android:layout_marginBottom="408dp"
         android:textColor="@color/white"
         android:gravity="center"
-        android:text="@string/something_wrong_msg"
+        android:text="@string/retry_text"
         android:textAppearance="@android:style/TextAppearance.DeviceDefault.Large"
         android:textSize="@dimen/medium_text" />
 

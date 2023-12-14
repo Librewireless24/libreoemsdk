@@ -307,8 +307,11 @@
   <string name="play_tone">Play Tone</string>
   <string name="play_tone_request">Requesting to Play Tone</string>
   <string name="something_wrong">Something is wrong</string>
+  <string name="alert">Alert!</string>
 
   <string name="something_wrong_msg">If you are not hearing the sound , you may be attempting to setup the wrong device</string>
+  <string name="retry_text">If you are not hearing the tone, you may \n be attempting to set up the wrong \n device.Please make sure you are setting \n up the correct device</string>
+
   <string name="did_u_hear_sound">Did you hear the sound ?</string>
   <string name="yes">Yes</string>
   <string name="retry_hearsound">Retry</string>
