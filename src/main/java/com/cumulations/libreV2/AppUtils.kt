@@ -421,7 +421,7 @@ object AppUtils {
     }
 
     fun isValidPassword(password: String): Boolean {
-        return password.length >= 8
+        return password.length < 8
     }
 
     fun isValidWifiPassword64(password: String?): Boolean {
