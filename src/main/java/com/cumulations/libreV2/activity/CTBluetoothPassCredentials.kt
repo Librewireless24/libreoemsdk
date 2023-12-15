@@ -597,13 +597,24 @@ var bottomSheetDialogForSecurity: BottomSheetDialog? = null
 ${mSelectedPass}security
 $mSelectedSecurity"""
                                             )
-                                            LibreLogger.d(TAG,"suma actual other n/w ssid  \n"+binding.tvSelectedWifi.text+"manual sec\n"+LibreApplication.manualsecurity+"pwd\n"+binding.etWifiPassword.text)
+                                            LibreLogger.d(TAG,"suma in other Network  n/w ssid  \n"+binding.tvSelectedWifi.text+"phone ssid\n"+getConnectedSSIDName(this))
                                             if(!binding.tvSelectedWifi.text.isEmpty()){
                                               if(!mSelectedSecurity.equals("WPA-PSK")){
 
                                                    if(LibreApplication.manualsecurity.equals("OPEN/NONE")&&binding.etWifiPassword.text.isEmpty()){
-                                                       btnNextClickedOther()
-                                                       LibreLogger.d(TAG, "suma in other Network AllValidation Done  \n ")
+                                                       if(binding.tvSelectedWifi.text.toString()==AppUtils.getConnectedSSID(context = this)) {
+                                                           btnNextClickedOther()
+                                                           LibreLogger.d(TAG,"BTN NEXT CALL case VALID TWO\n"+binding.tvSelectedWifi.text.toString()+"getconnectessid\n"+getConnectedSSIDName(this))
+
+                                                       }
+                                                       else{
+                                                           LibreLogger.d(TAG,"BTN NEXT CALL case VALID THREE MISMATCH\n"+binding.tvSelectedWifi.text.toString()+"getconnectessid\n"+getConnectedSSIDName(this))
+
+                                                           showNetworkMisMatchAlertDialog(networkMismatchSsidMessage(getConnectedSSID(context = this),binding.tvSelectedWifi.text.toString()), getString(R.string.continue_txt),
+                                                               getString(R.string.cancel), isNetworkMisMatch=true,
+                                                               isConfigureCancel=false)
+                                                       }
+                                                       LibreLogger.d(TAG, "suma in other Network AllValidation Done  \n "+LibreApplication.manualsecurity+"ssidtext"+binding.tvSelectedWifi.text+"phone ssid\n"+getConnectedSSIDName(this))
 
                                                    }
                                                   else{
@@ -614,8 +625,17 @@ $mSelectedSecurity"""
                                                           )
                                                       }
                                                        else{
+                                                          if(binding.tvSelectedWifi.text.toString()==AppUtils.getConnectedSSID(context = this)) {
+                                                              btnNextClickedOther()
+                                                              LibreLogger.d(TAG,"BTN NEXT CALL case VALID TWO\n"+binding.tvSelectedWifi.text.toString()+"getconnectessid\n"+getConnectedSSIDName(this))
+
+                                                          }
+                                                          else{
+                                                              showNetworkMisMatchAlertDialog(networkMismatchSsidMessage(getConnectedSSID(context = this),binding.tvSelectedWifi.text.toString()), getString(R.string.continue_txt),
+                                                                  getString(R.string.cancel), isNetworkMisMatch=true,
+                                                                  isConfigureCancel=false)
+                                                          }
                                                           LibreLogger.d(TAG, "suma in other Network AllValidation Done else  \n ")
-                                                          btnNextClickedOther()
                                                       }
                                                    }
 
@@ -636,7 +656,7 @@ $mSelectedSecurity"""
                                         }
                                         else {
                                            //common Wifi List Fetch SSID Configuration flow
-//suma thursday code
+
                                             if (binding.etDeviceName.text.toString().isNotEmpty()) {
                                                 if (binding.tvSelectedWifi.text.toString().isNotEmpty()) {
 
@@ -717,38 +737,6 @@ $mSelectedSecurity"""
 
                                             }
 
-                                        //
-                                        //                                            if (binding.etDeviceName.text.toString().isNotEmpty()) {
-//                                                if (binding.tvSelectedWifi.text.toString().isNotEmpty()) {
-//                                                    if (!binding.passwordWifi.isVisible&&binding.etWifiPassword.text.isEmpty()) {
-//                                                        if (!binding.passwordWifi.isVisible&&AppUtils.isValidPassword(binding.etWifiPassword.text.toString())) {
-//                                                            if(!binding.passwordWifi.isVisible&&AppUtils.isValidWifiPassword64(binding.etWifiPassword.text.toString())) {
-//                                                                if(binding.tvSelectedWifi.text.toString()==AppUtils.getConnectedSSID(context = this)) {
-//                                                                   // btnNextClicked()
-//                                                                }
-//                                                                else{
-//                                                                    showNetworkMisMatchAlertDialog(networkMismatchSsidMessage(getConnectedSSID(context = this),binding.tvSelectedWifi.text.toString()), getString(R.string.continue_txt),
-//                                                                        getString(R.string.cancel), isNetworkMisMatch=true,
-//                                                                        isConfigureCancel=false)
-//                                                                }
-//                                                            }
-//                                                            else{
-//                                                                showAlertMessageRegardingSAC(getString(R.string.error), getString(R.string.password_less_64_char))
-//                                                            }
-//                                                        } else {
-//                                                            showAlertMessageRegardingSAC(getString(R.string.error),getString(R.string.password_should_8_char))
-//                                                        }
-//                                                    } else {
-//                                                        showToast(getString(R.string.password_empty_error))
-//                                                    }
-//                                                }
-//                                                else {
-//                                                    showToast(getString(R.string.please_selecte_wifi))
-//                                                }
-//                                            }
-//                                            else {
-//                                                showToast(getString(R.string.device_name_empty))
-//                                            }
                                         }
             }
             catch (e: Exception) {
