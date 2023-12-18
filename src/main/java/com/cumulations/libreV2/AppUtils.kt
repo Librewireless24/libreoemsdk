@@ -149,10 +149,17 @@ object AppUtils {
     }
 
     fun isLocationServiceEnabled(context: Context): Boolean {
-        val locationManager = context.applicationContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        return locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+        val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            locationManager.isLocationEnabled
+        } else {
+            // For devices prior to Android 10, use a combination of providers
+            locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+                    locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+        }
+       /* val locationManager = context.applicationContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        return locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)*/
     }
-
     fun getWifiIp(context: Context): String {
         val wifiMan = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
         val wifiInf = wifiMan.connectionInfo

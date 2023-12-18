@@ -361,7 +361,6 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
         initDMRForegroundService()
         parentView = window.decorView.rootView
         proceedToHome()
-
     }
 
     private fun initDMRForegroundService() {
@@ -389,8 +388,10 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
 
     fun checkLocationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !AppUtils.isPermissionGranted(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            LibreLogger.d(TAG_, "checkLocationPermission if")
             requestLocationPermission()
         } else {
+            LibreLogger.d(TAG_,"checkLocationPermission else")
             locationPermissionCallback?.onPermissionGranted()
             if (mandateDialog != null && mandateDialog!!.isShowing) mandateDialog!!.dismiss()
 
@@ -400,9 +401,11 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
             }
 
             if (AppUtils.isLocationServiceEnabled(this)) {
+                LibreLogger.d(TAG_,"checkLocationPermission yes")
                 onReceiveSSID = getConnectedSSIDName(this)
             } else {
                 if (isWifiON) {
+                    LibreLogger.d(TAG_,"checkLocationPermission no")
                     showLocationMustBeEnabledDialog()
                 }
             }
@@ -477,6 +480,10 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
             }
             builder.setNegativeButton(R.string.cancel) { dialogInterface, i ->
                 mandateDialog!!.dismiss()
+                //If user denies the phone GPS location, have to educate to user for now if user
+                // clicks popup is coming, we can do modren way alos like automaticlaly trigger
+                // popup
+                locationPermissionCallback?.onPermissionDenied()
                 //                    killApp();
             }
             mandateDialog = builder.create()
@@ -502,6 +509,8 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
         val client = LocationServices.getSettingsClient(this)
         val task = client.checkLocationSettings(builder.build())
         task.addOnSuccessListener(this) {
+            LibreLogger.d(TAG_, "displayLocationSettingsRequest success")
+            locationPermissionCallback?.onGPSGranted()
             // All location settings are satisfied. The client can initialize
             // location requests here.
             // ...
@@ -512,6 +521,8 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                 // Location settings are not satisfied, but this can be fixed
                 // by showing the user a dialog.
                 try {
+                    locationPermissionCallback?.onGPSGranted()
+                    LibreLogger.d(TAG_, "displayLocationSettingsRequest Failure")
                     // Show the dialog by calling startResolutionForResult(),
                     // and check the result in onActivityResult().
                     e.startResolutionForResult(this@CTDeviceDiscoveryActivity, LOCATION_SETTINGS_REQUEST_CODE)
@@ -2170,11 +2181,13 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                 LOCATION_PERMISSION_REQUEST_CODE -> {
                     if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                         LibreLogger.d(TAG_, "Permission 22 $grantResults")
+                        locationPermissionCallback?.onPermissionGranted()
                     }else {
                         LibreLogger.d(TAG_, "Permission 21 $grantResults")
+                        locationPermissionCallback?.onPermissionDenied()
+                        checkLocationPermission()
                     }
-                    locationPermissionCallback?.onPermissionDenied()
-                    checkLocationPermission()}
+                }
                 MICROPHONE_PERMISSION_REQUEST_CODE -> checkMicrophonePermission()
                 READ_STORAGE_REQUEST_CODE -> checkReadStoragePermission()
             }

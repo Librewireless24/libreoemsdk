@@ -3,9 +3,12 @@ package com.cumulations.libreV2.activity
 import android.Manifest
 import android.app.AlertDialog
 import android.bluetooth.BluetoothAdapter
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.LocationManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -54,6 +57,7 @@ class CTHomeTabsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionLi
     private var alertDialog: AlertDialog? = null
     private var isLocationGranted: Boolean? = null
     private var isBTTurnedOn: Boolean? = null
+    private var isGPSOn: Boolean? = null
     private lateinit var sharedPreference: SharedPreferenceHelper
     private val mTaskHandlerForSendingMSearch = Handler(Looper.getMainLooper())
     private val mMyTaskRunnableForMSearch = Runnable {
@@ -122,11 +126,17 @@ class CTHomeTabsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionLi
 
             tabSelected != CTDeviceSetupInfoFragment::class.java.simpleName -> binding.bottomNavigation.selectedItemId = R.id.action_discover
         }
+        // checkLocationPermission(3)
+    }
+
+    private fun showBottomSheet() {
         isLocationGranted = AppUtils.isPermissionGranted(this, Manifest.permission.ACCESS_FINE_LOCATION)
         isBTTurnedOn = BLEUtils.checkBluetooth(this@CTHomeTabsActivity)
-        LibreLogger.d(TAG_, "Permissions isLocationGranted $isLocationGranted")
-        LibreLogger.d(TAG_, "Permissions isBTTurnedOn $isBTTurnedOn")
-        LibreLogger.d(TAG_, "Permissions checkPermissionsGranted " + checkPermissionsGranted())
+        isGPSOn = AppUtils.isLocationServiceEnabled(this@CTHomeTabsActivity)
+        LibreLogger.d(TAG_, "isLocationGranted:- $isLocationGranted")
+        LibreLogger.d(TAG_, "isBTTurnedOn:- $isBTTurnedOn")
+        LibreLogger.d(TAG_, "isNearByDevices Granted:- " + checkPermissionsGranted())
+        LibreLogger.d(TAG_, "isGpsOn:- $isGPSOn")
 
         /**
          * ===IF Condition====
@@ -134,28 +144,60 @@ class CTHomeTabsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionLi
          * ===ELSE Condition====
          * If Phone BT is turned on disable the click and grey out
          */
-        if (isLocationGranted!! && isBTTurnedOn!! && checkPermissionsGranted()) {
-            binding.layPermissionBottom.visibility = View.GONE
-        } else {
-            LibreLogger.d(TAG_, "Permissions if")
-            binding.layPermissionBottom.visibility = View.VISIBLE
-            if (isBTTurnedOn == true) {
-                LibreLogger.d(TAG_, "Permissions else onstart")
-                binding.layPermissionBottomSheet.layBluetooth.isClickable = false
-                binding.layPermissionBottomSheet.layBluetooth.isEnabled = false
-                binding.layPermissionBottomSheet.layBluetooth.alpha = 0.5.toFloat()
-                binding.layPermissionBottomSheet.imgBtToggle.setImageDrawable(getDrawable(R.drawable.check_orange))
-            } else if (isLocationGranted!! && checkPermissionsGranted()) {
-                binding.layPermissionBottomSheet.layLocation.isClickable = false
-                binding.layPermissionBottomSheet.layLocation.isEnabled = false
-                binding.layPermissionBottomSheet.layLocation.alpha = 0.5.toFloat()
-                binding.layPermissionBottomSheet.imgLocToggle.setImageDrawable(getDrawable(R.drawable.check_orange))
-                LibreLogger.d(TAG_, "Permissions else")
+        val currentAPIVersion = Build.VERSION.SDK_INT
+        if (currentAPIVersion >= 31) {
+            if (isLocationGranted!! && isBTTurnedOn!! && checkPermissionsGranted() && isGPSOn == true) {
+                LibreLogger.d(TAG_, "Android above 12 all granted")
+                binding.layPermissionBottom.visibility = View.GONE
             } else {
-                LibreLogger.d(TAG_, "Permissions last else")
+                binding.layPermissionBottom.visibility = View.VISIBLE
+                if (isBTTurnedOn == true) {
+                    LibreLogger.d(TAG_, "Android above 12 BT granted")
+                    binding.layPermissionBottomSheet.layBluetooth.isClickable = false
+                    binding.layPermissionBottomSheet.layBluetooth.isEnabled = false
+                    binding.layPermissionBottomSheet.layBluetooth.alpha = 0.5.toFloat()
+                    binding.layPermissionBottomSheet.imgBtToggle.setImageDrawable(getDrawable(R.drawable.check_orange))
+                } else if (isLocationGranted!! && checkPermissionsGranted() && isGPSOn == true) {
+                    LibreLogger.d(TAG_, "Android above 12 GPS,AppLocation, NearByDevices granted")
+                    binding.layPermissionBottomSheet.layLocation.isClickable = false
+                    binding.layPermissionBottomSheet.layLocation.isEnabled = false
+                    binding.layPermissionBottomSheet.layLocation.alpha = 0.5.toFloat()
+                    binding.layPermissionBottomSheet.imgLocToggle.setImageDrawable(getDrawable(R.drawable.check_orange))
+                } else {
+                    LibreLogger.d(TAG_, "Android above 12 anyone Permission Missed " +
+                            "App Location:- $isLocationGranted" +
+                            "NearByDevices:- ${checkPermissionsGranted()}" +
+                            "PhoneGps:- $isGPSOn" +
+                            "isBTTurnedOn:- $isBTTurnedOn")
+                }
+            }
+        } else {
+            if (isLocationGranted!! && isBTTurnedOn!! && isGPSOn == true) {
+                LibreLogger.d(TAG_, "Android below 12 all granted")
+                binding.layPermissionBottom.visibility = View.GONE
+            } else {
+                if (isBTTurnedOn == true) {
+                    LibreLogger.d(TAG_, "Android below 12 BT granted")
+                    binding.layPermissionBottomSheet.layBluetooth.isClickable = false
+                    binding.layPermissionBottomSheet.layBluetooth.isEnabled = false
+                    binding.layPermissionBottomSheet.layBluetooth.alpha = 0.5.toFloat()
+                    binding.layPermissionBottomSheet.imgBtToggle.setImageDrawable(getDrawable(R.drawable.check_orange))
+                } else if (isLocationGranted!! && isGPSOn == true) {
+                    LibreLogger.d(TAG_, "Android below 12 GPS,AppLocation granted")
+                    binding.layPermissionBottomSheet.layLocation.isClickable = false
+                    binding.layPermissionBottomSheet.layLocation.isEnabled = false
+                    binding.layPermissionBottomSheet.layLocation.alpha = 0.5.toFloat()
+                    binding.layPermissionBottomSheet.imgLocToggle.setImageDrawable(getDrawable(R.drawable.check_orange))
+                } else {
+                    //showLocationMustBeEnabledDialog()
+                    LibreLogger.d(TAG_, "below below 12 anyone Permission Missed " +
+                            "App Location:- $isLocationGranted" +
+                            "NearByDevices:- ${checkPermissionsGranted()}" +
+                            "PhoneGps:- $isGPSOn" +
+                            "isBTTurnedOn:- $isBTTurnedOn")
+                }
             }
         }
-        // checkLocationPermission(3)
     }
 
     fun toggleStopAllButtonVisibility() {
@@ -165,7 +207,6 @@ class CTHomeTabsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionLi
             binding.ivStopAll.visibility = View.GONE
         }
     }
-
     private fun setListeners() {
         var fragmentToLoad: Fragment? = null
         binding.bottomNavigation.setOnNavigationItemSelectedListener {
@@ -235,15 +276,30 @@ class CTHomeTabsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionLi
             checkLocationPermission()
         }
         binding.layPermissionBottomSheet.layBluetooth.setOnClickListener {
-            if (isLocationGranted == true && checkPermissionsGranted()) {
-                if (!BLEUtils.checkBluetooth(this@CTHomeTabsActivity)) {
-                    val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
-                    customStartActivityForResult(AppConstants.BT_ENABLED_REQUEST_CODE, enableBtIntent)
+            isLocationGranted = AppUtils.isPermissionGranted(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            val currentAPIVersion = Build.VERSION.SDK_INT
+            if (currentAPIVersion >= 31) {
+                if (isLocationGranted == true && checkPermissionsGranted()) {
+                    if (!BLEUtils.checkBluetooth(this@CTHomeTabsActivity)) {
+                        val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+                        customStartActivityForResult(AppConstants.BT_ENABLED_REQUEST_CODE, enableBtIntent)
+                    } else {
+                        showToast(getString(R.string.bluetooth_is_already_turned_on))
+                    }
                 } else {
-                    showToast(getString(R.string.bluetooth_is_already_turned_on))
+                    showToast(getString(R.string.please_grant_the_required_location_permissions))
                 }
             } else {
-                showToast(getString(R.string.please_grant_the_required_location_permissions))
+                if (isLocationGranted == true) {
+                    if (!BLEUtils.checkBluetooth(this@CTHomeTabsActivity)) {
+                        val enableBtIntent = Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE)
+                        customStartActivityForResult(AppConstants.BT_ENABLED_REQUEST_CODE, enableBtIntent)
+                    } else {
+                        showToast(getString(R.string.bluetooth_is_already_turned_on))
+                    }
+                } else {
+                    showToast(getString(R.string.please_grant_the_required_location_permissions))
+                }
             }
         }
 
@@ -432,26 +488,44 @@ class CTHomeTabsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionLi
     }
 
     override fun onPermissionGranted() {
-        if (!checkPermissionsGranted()) {
-            checkPermissions()
+        isGPSOn= AppUtils.isLocationServiceEnabled(this@CTHomeTabsActivity)
+        val currentAPIVersion = Build.VERSION.SDK_INT
+        if (currentAPIVersion >= 31) {
+            if (!checkPermissionsGranted()) {
+                LibreLogger.d(TAG_, "onPermissionGranted Android above 12 NearBydDevices not granted")
+                checkPermissions()
+            }
         } else {
-            if (BLEUtils.checkBluetooth(this@CTHomeTabsActivity)) {
+            isLocationGranted = AppUtils.isPermissionGranted(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            if(isGPSOn==true && checkPermissionsGranted() && isLocationGranted==true){
+                LibreLogger.d(TAG_, "onPermissionGranted Android below GPS and NearByDevice granted")
+                binding.layPermissionBottom.visibility=View.GONE
+                binding.layPermissionBottomSheet.imgLocToggle.setImageDrawable(getDrawable(R.drawable.check_orange))
+            }/*else if (BLEUtils.checkBluetooth(this@CTHomeTabsActivity)) {
+                LibreLogger.d(TAG_, "onPermissionGranted Android below 12 BT granted")
                 binding.layPermissionBottom.visibility = View.VISIBLE
                 binding.layPermissionBottomSheet.imgBtToggle.setImageDrawable(getDrawable(R.drawable.check_orange))
-            } else {
-                binding.layPermissionBottom.visibility = View.VISIBLE
-                binding.layPermissionBottomSheet.imgLocToggle.setImageDrawable(getDrawable(R.drawable.check_orange))
-            }
+            }*//* else{
+               // checkPermissions()
+                showLocationMustBeEnabledDialog()
+                LibreLogger.d(TAG_, "onPermissionGranted Android below 12 GPS,LOC,NFC not granted")
+            }*/
         }
     }
 
     override fun onPermissionDenied() {
+        LibreLogger.d(TAG_, "onPermissionDenied called")
         binding.layPermissionBottom.visibility = View.VISIBLE
         binding.layPermissionBottomSheet.imgLocToggle.setImageDrawable(getDrawable(R.drawable.img_toggle))
     }
 
+    override fun onGPSGranted() {
+        LibreLogger.d(TAG_, "onGPSGranted called")
+    }
+
     override fun onResume() {
         super.onResume()
+        showBottomSheet()
         registerLocationPermissionCallback(this@CTHomeTabsActivity)
     }
 
@@ -477,46 +551,82 @@ class CTHomeTabsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionLi
                 if (isLocationGranted!! && checkPermissionsGranted()) {
                     binding.layPermissionBottom.visibility = View.GONE
                 } else {
-                    LibreLogger.d(TAG_, "Permissions 6  BT_ENABLED_REQUEST_CODE RESULT_OK  ")
-                    binding.layPermissionBottom.visibility = View.VISIBLE
-                    binding.layPermissionBottomSheet.imgBtToggle.setImageDrawable(getDrawable(R.drawable.check_orange))
+                    val currentAPIVersion = Build.VERSION.SDK_INT
+                    if (currentAPIVersion >= 31) {
+                        binding.layPermissionBottom.visibility = View.VISIBLE
+                        binding.layPermissionBottomSheet.imgBtToggle.setImageDrawable(getDrawable(R.drawable.check_orange))
+                    } else {
+                        LibreLogger.d(TAG_, "customOnActivityResult below 12")
+                        binding.layPermissionBottom.visibility = View.GONE
+                       /* binding.layPermissionBottom.visibility = View.VISIBLE
+                        binding.layPermissionBottomSheet.imgBtToggle.setImageDrawable(getDrawable(R.drawable.check_orange))*/
+                    }
                 }
 
             } else {
-                LibreLogger.d(TAG_, "Permissions 7 BT_ENABLED_REQUEST_CODE NOT RESULT_OK")
+                LibreLogger.d(TAG_, "customOnActivityResult inside BT_ENABLED_REQUEST_CODE else " +
+                        "condition")
             }
         } else {
             if (isLocationGranted == false) {
-                LibreLogger.d(TAG_, "Permissions 8 RequestCode are not handled")
+                LibreLogger.d(TAG_, "customOnActivityResult BT_ENABLED_REQUEST_CODE outside if " +
+                        "condition")
             } else {
                 checkPermissions()
-                LibreLogger.d(TAG_, "Permissions 88 RequestCode are not handled")
+                LibreLogger.d(TAG_, "customOnActivityResult BT_ENABLED_REQUEST_CODE outside else " +
+                        "condition")
             }
         }
     }
 
     private fun checkPermissions() {
-        if (!checkPermissionsGranted()) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.BLUETOOTH_SCAN)) {
-                /**
-                 * Request the Permission with Rationale with educating the user
-                 */
-                LibreLogger.d(TAG_, "Permissions 9 RequestCode are not handled")
-                showAlertDialog(getString(R.string.permission_required), getString(R.string.ok), getString(R.string.cancel), 0)
+        val currentAPIVersion = Build.VERSION.SDK_INT
+        if (currentAPIVersion >= 31) {
+            if (!checkPermissionsGranted()) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.BLUETOOTH_SCAN)) {
+                    /**
+                     * Request the Permission with Rationale with educating the user
+                     */
+                    LibreLogger.d(TAG_, "checkPermissions above 12 LOC show Rationale ")
+                    showAlertDialog(getString(R.string.permission_required), getString(R.string.ok), getString(R.string.cancel), 0)
+                } else {
+                    /**
+                     *  Request the permission directly, without explanation first time launch
+                     */
+                    LibreLogger.d(TAG_, "checkPermissions above 12 LOC explain to user ")
+                    requestPermissionLauncher.launch(CTBluetoothDeviceListActivity.permissions)
+                }
             } else {
                 /**
-                 *  Request the permission directly, without explanation first time launch
+                 *  Permission is already granted, proceed with your logic
                  */
-                LibreLogger.d(TAG_, "Permissions 10 RequestCode are not handled")
-                requestPermissionLauncher.launch(CTBluetoothDeviceListActivity.permissions)
-            }
-        } else {
-            /**
-             *  Permission is already granted, proceed with your logic
-             */
-            LibreLogger.d(TAG_, "Permissions 11 RequestCode are not handled")
-            if (alertDialog != null && alertDialog!!.isShowing) alertDialog?.dismiss()
+                LibreLogger.d(TAG_, "checkPermissions above 12 LOC granted ")
+                if (alertDialog != null && alertDialog!!.isShowing) alertDialog?.dismiss()
 
+            }
+        }else{
+            if (isLocationGranted!! && isBTTurnedOn!! && isGPSOn==true){
+                LibreLogger.d(TAG_, "checkPermissions below 12 BT&LOC not granted ")
+                binding.layPermissionBottom.visibility = View.GONE
+            }else{
+               /* if (isBTTurnedOn == true) {
+                    LibreLogger.d(TAG_, "checkPermissions below 12 BT not granted ")
+                    binding.layPermissionBottomSheet.layBluetooth.isClickable = false
+                    binding.layPermissionBottomSheet.layBluetooth.isEnabled = false
+                    binding.layPermissionBottomSheet.layBluetooth.alpha = 0.5.toFloat()
+                    binding.layPermissionBottomSheet.imgBtToggle.setImageDrawable(getDrawable(R.drawable.check_orange))
+                }else*/
+                if(isGPSOn==true && isLocationGranted!!) {
+                    LibreLogger.d(TAG_, "checkPermissions below 12 LOC  and GPS not granted ")
+                    binding.layPermissionBottomSheet.layLocation.isClickable = false
+                    binding.layPermissionBottomSheet.layLocation.isEnabled = false
+                    binding.layPermissionBottomSheet.layLocation.alpha = 0.5.toFloat()
+                    binding.layPermissionBottomSheet.imgLocToggle.setImageDrawable(getDrawable(R.drawable.check_orange))
+                }else{
+                    showLocationMustBeEnabledDialog()
+                    LibreLogger.d(TAG_, "checkPermissions below 12 some permissions is missing ")
+                }
+            }
         }
     }
 
@@ -537,32 +647,36 @@ class CTHomeTabsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionLi
             allGranted = allGranted && isGranted
         }
         if (allGranted) {
-            LibreLogger.d(TAG_, "Permissions 12 ")
             /**
              * If BT already turned on and enabled location no need to show the
              * location UI
              */
             if (allGranted && isBTTurnedOn == true) {
-                LibreLogger.d(TAG_, "Permissions 122 ")
+                LibreLogger.d(TAG_, "requestPermissionLauncher above 12 NearByDevices & BT granted ")
                 binding.layPermissionBottom.visibility = View.GONE
-            } else {
-                LibreLogger.d(TAG_, "Permissions 123 ")
+            } else if(isGPSOn==true){
+                LibreLogger.d(TAG_, "requestPermissionLauncher above 12 GPS granted ")
                 isLocationGranted = true
                 binding.layPermissionBottomSheet.layLocation.alpha = 0.5.toFloat()
                 binding.layPermissionBottom.visibility = View.VISIBLE
                 binding.layPermissionBottomSheet.imgLocToggle.setImageDrawable(getDrawable(R.drawable.check_orange))
                 if (alertDialog != null && alertDialog!!.isShowing) alertDialog?.dismiss()
+            }else{
+                LibreLogger.d(TAG_, "requestPermissionLauncher above 12 GPS not granted ")
+                showLocationMustBeEnabledDialog()
             }
         } else {
             if (!sharedPreference.isFirstTimeAskingPermission(Manifest.permission.BLUETOOTH_SCAN)) {
                 sharedPreferenceHelper.firstTimeAskedPermission(Manifest.permission.BLUETOOTH_SCAN, true)
-                LibreLogger.d(TAG_, "Permissions 13 ")
+                LibreLogger.d(TAG_, "requestPermissionLauncher above 12 nearByDevices not  1st " +
+                        "time ")
                 showAlertDialog(getString(R.string.permission_required), getString(R.string.ok), getString(R.string.cancel), 0)
             } else {
                 /**
                  * This will take care of user didn't give NFC permission
                  */
-                LibreLogger.d(TAG_, "Permissions 14 ")
+                LibreLogger.d(TAG_, "requestPermissionLauncher above 12 nearByDevices not granted" +
+                        "2nd time")
                 showAlertDialog(getString(R.string.permission_denied), getString(R.string.open_settings), getString(R.string.cancel), 100)
             }
 
@@ -585,10 +699,10 @@ class CTHomeTabsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionLi
             builder.setPositiveButton(positiveButtonString) { dialogInterface, i ->
                 alertDialog!!.dismiss()
                 if (requestCode == 0) {
-                    LibreLogger.d(TAG_, "Permissions 15 RequestCode are not handled")
+                    LibreLogger.d(TAG_, "showAlertDialog requestCode 0 ")
                     requestPermissionLauncher.launch(CTBluetoothDeviceListActivity.permissions)
                 } else {
-                    LibreLogger.d(TAG_, "Permissions 16 RequestCode are not handled")
+                    LibreLogger.d(TAG_, "showAlertDialog requestCode open AppSettings ")
                     /**
                      * Open App Settings if user don't allow the permission
                      */
