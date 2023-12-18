@@ -514,7 +514,7 @@ class CTDeviceSettingsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInterac
                     LibreLogger.d(TAG, "AudioPresetValue Received Data is - $audioMessage")
                 }
 
-                MIDCONST.CAST_ACCEPT_STATUS, MIDCONST.CAST_ACCEPT_STATUS_572 -> {
+                MIDCONST.CAST_ACCEPT_STATUS_572 -> {
                     val message = String(packet.getpayload())
                     if (message.isNotEmpty()) {
                         val root = JSONObject(message)
@@ -537,15 +537,35 @@ class CTDeviceSettingsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInterac
                 }
 
                 MIDCONST.UPDATE_TIMEZONE_DUMMY,
-                MIDCONST.UPDATE_TIMEZONE, -> {
+                MIDCONST.UPDATE_TIMEZONE -> {
                     val message = String(packet.getpayload())
                     try {
                         if (message.isNotEmpty()) {
                             binding.txtTimeZone.text = message
                         } else {
-                            binding.txtTimeZone.text = "Time Zone Not Available"
+                            binding.txtTimeZone.text = getString(R.string.time_zone_not_available)
                         }
                     } catch (ex: Exception) {
+                        ex.printStackTrace()
+                    }
+                }
+
+                MIDCONST.DEVICE_SERIAL_NUMBER ->{
+                    val message = String(packet.getpayload())
+                    try {
+                        if (message.isNotEmpty()) {
+                            val jsonObject = JSONObject(message)
+                            if(jsonObject.has("serialnumber")) {
+                                val deviceSerialNumber = jsonObject.getJSONObject("serialnumber").getString("device_serialnumber")
+                                binding.txtSerialNumber.text = deviceSerialNumber
+                            }else{
+                                binding.txtSerialNumber.text= getString(R.string.device_serial_number_available)
+                            }
+                        } else {
+                            binding.txtSerialNumber.text= getString(R.string.device_serial_number_available)
+                        }
+                    } catch (ex: Exception) {
+                        LibreLogger.d(TAG, "Serial Number Exception ${ex.message}")
                         ex.printStackTrace()
                     }
                 }
@@ -563,11 +583,13 @@ class CTDeviceSettingsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInterac
         val alexaRefreshTokenPacket = LUCIPacket(LUCIMESSAGES.READ_ALEXA_REFRESH_TOKEN_MSG.toByteArray(), LUCIMESSAGES.READ_ALEXA_REFRESH_TOKEN_MSG.length.toShort(), MIDCONST.MID_ENV_READ.toShort(), LSSDPCONST.LUCI_GET.toByte())
         val readSpeechVolumePacket = LUCIPacket(LUCIMESSAGES.READ_SPEECH_VOLUME.toByteArray(), LUCIMESSAGES.READ_SPEECH_VOLUME.length.toShort(), MIDCONST.MID_ENV_READ.toShort(), LSSDPCONST.LUCI_GET.toByte())
         val timeZone = LUCIPacket(null, 0.toShort(), MIDCONST.UPDATE_TIMEZONE.toShort(), LSSDPCONST.LUCI_GET.toByte())
+        val deviceSerialNumber = LUCIPacket(null, 0.toShort(), MIDCONST.DEVICE_SERIAL_NUMBER.toShort(), LSSDPCONST.LUCI_GET.toByte())
 
         luciPackets.add(ddmsSSIDLUCIPacket)
         luciPackets.add(ddmsPwdLUCIPacket)
         luciPackets.add(readSpeechVolumePacket)
         luciPackets.add(timeZone)
+        luciPackets.add(deviceSerialNumber)
         if (currentDeviceNode != null) {
             if (currentDeviceNode?.getmDeviceCap()?.getmSource()?.isAlexaAvsSource!!) {
                 luciPackets.add(currentLocaleLUCIPacket)

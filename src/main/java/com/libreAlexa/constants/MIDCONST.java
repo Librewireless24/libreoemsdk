@@ -104,5 +104,6 @@ public class MIDCONST {
     public static final int UPDATE_TIMEZONE = 573;
     public static final int UPDATE_TIMEZONE_DUMMY = 93;
     public static final int ISSUE_REPORT = 651;
+    public static final int DEVICE_SERIAL_NUMBER = 92;
 
 }
