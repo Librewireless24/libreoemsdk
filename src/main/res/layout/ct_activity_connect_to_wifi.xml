@@ -1,0 +1,466 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
+<RelativeLayout
+  android:id="@+id/lay_ssid_pwd_details"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbarLayout"
+        android:background="@color/appbar_bg_riva"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="?android:attr/actionBarSize"
+                    android:layout_marginRight="?android:attr/actionBarSize"
+                    android:textSize="20sp"
+                    android:textColor="@color/white"
+                    android:text="@string/app_name"
+                    android:textAllCaps="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_back"
+                    android:padding="16dp"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    app:srcCompat="@drawable/ic_arrow_back_white"
+                    android:layout_width="?android:attr/actionBarSize"
+                    android:layout_height="?android:attr/actionBarSize" />
+            </RelativeLayout>
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:layout_below="@+id/appbarLayout"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+        <ScrollView
+          android:id="@+id/scroller"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:background="@android:color/transparent">
+            <LinearLayout
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+                android:orientation="vertical">
+
+        <androidx.appcompat.widget.AppCompatTextView
+          android:layout_marginTop="16dp"
+          android:paddingTop="16dp"
+          android:paddingBottom="16dp"
+          android:gravity="center"
+          android:textSize="@dimen/dimen_16"
+          app:fontFamily="sans-serif-light"
+          android:layout_marginHorizontal="16dp"
+          android:text="@string/connect_device_to_wifi"
+          android:textColor="@color/riva_subtext_color"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content" />
+
+        <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="106dp"
+          android:layout_marginHorizontal="16dp"
+          android:hint="@string/device_name">
+
+            <androidx.appcompat.widget.AppCompatTextView
+              android:id="@+id/til_full_name"
+              android:textColor="@color/white"
+              android:layout_weight="1"
+              android:hint="@string/device_name"
+              app:fontFamily="sans-serif-medium"
+              android:layout_marginTop="12dp"
+              android:layout_width="wrap_content"
+              android:textStyle="bold"
+              android:textSize="@dimen/dimen_18"
+              android:layout_height="wrap_content" />
+            <RelativeLayout
+              android:layout_below="@id/til_full_name"
+              android:layout_width="match_parent"
+              android:layout_height="50dp"
+              android:layout_marginTop="6dp"
+              android:background="@drawable/app_btn_selector">
+                <EditText
+                  android:id="@+id/et_device_name"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:background="@color/transparent"
+                  tools:text="LibreVoice"
+                  android:padding="12dp"
+                  android:gravity="center|start"
+                  android:singleLine="true"
+                  android:textColor="@color/white"
+                  android:inputType="textPersonName|textCapWords"
+                  android:textColorHint="@color/riva_subtext_color"
+                  android:textSize="@dimen/dimen_16"
+                  android:paddingTop="8dp"
+                  android:paddingBottom="8dp" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+
+
+      <!--  <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_full_name"
+            android:layout_marginHorizontal="16dp"
+            android:theme="@style/AppTextInputLayoutTheme"
+            android:hint="@string/device_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_device_name"
+                android:textSize="16sp"
+                tools:text="LibreVoice"
+                android:textColor="@color/white"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/gradient_underline_edittext_bg"
+                android:inputType="textPersonName|textCapWords"
+                android:singleLine="true" />
+        </com.google.android.material.textfield.TextInputLayout>-->
+
+
+        <LinearLayout
+            android:id="@+id/ll_select_wifi"
+            android:background="?attr/selectableItemBackground"
+            android:orientation="vertical"
+            android:layout_marginHorizontal="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <androidx.appcompat.widget.AppCompatTextView
+                android:textColor="@color/white"
+                android:layout_weight="1"
+                android:text="@string/select_wifi"
+                app:fontFamily="sans-serif-medium"
+                android:layout_marginVertical="12dp"
+                android:layout_width="wrap_content"
+                android:textStyle="bold"
+                android:textSize="@dimen/dimen_18"
+                android:layout_height="wrap_content" />
+            <LinearLayout
+              android:background="?attr/selectableItemBackground"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:paddingVertical="10dp"
+              android:layout_height="wrap_content">
+            <androidx.appcompat.widget.AppCompatTextView
+                android:visibility="visible"
+                android:id="@+id/tv_selected_wifi"
+                android:textColor="@color/white"
+                android:layout_weight="1"
+                android:textSize="16dp"
+                tools:text="Shaik"
+                android:textColorHint="@color/grey"
+                android:textIsSelectable="true"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_right_arrow"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:srcCompat="@drawable/riva_right_arrow"
+                android:layout_gravity="end"
+                android:visibility="visible"
+                android:layout_width="?android:attr/actionBarSize"
+                android:layout_height="match_parent" />
+            </LinearLayout>
+        </LinearLayout>
+        <View
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_marginHorizontal="16dp"
+            android:layout_height="0.8dp"/>
+
+        <RelativeLayout
+            android:id="@+id/manual_ssid_layout"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp">
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/manual_ssid_tittle"
+                android:textColor="@color/white"
+                android:layout_weight="1"
+                android:text="@string/manual_ssid_title"
+                app:fontFamily="sans-serif-medium"
+                android:textStyle="bold"
+                android:textSize="@dimen/dimen_18"
+                android:layout_marginTop="12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <EditText
+                android:layout_below="@id/manual_ssid_tittle"
+                android:id="@+id/manual_ssid_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="10dp"
+                android:maxLength="66"
+                android:hint="@string/manual_ssid_hint"
+                android:background="@color/transparent"
+                android:maxLines="1"
+                android:gravity="bottom"
+                android:singleLine="true"
+                android:textColor="@color/white"
+                android:textColorHint="@color/grey"
+                android:textSize="@dimen/dimen_16" />
+
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/manual_ssid_view"
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_marginHorizontal="16dp"
+            android:layout_height="0.8dp"/>
+
+        <RelativeLayout
+            android:id="@+id/manual_security_layout"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="16dp">
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/manual_sec_tittle"
+                android:textColor="@color/white"
+                android:layout_weight="1"
+                android:text="@string/manual_security_title"
+                app:fontFamily="sans-serif-medium"
+                android:textStyle="bold"
+                android:textSize="@dimen/dimen_18"
+                android:layout_marginTop="12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <LinearLayout
+                android:background="?attr/selectableItemBackground"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:paddingVertical="10dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/manual_sec_tittle">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/manual_sec_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/transparent"
+                    android:hint="@string/manual_security_hint"
+                    android:textColor="@color/white"
+                    android:textColorHint="@color/grey"
+                    android:textSize="@dimen/dimen_16"
+                    android:visibility="visible"
+                    app:fontFamily="sans-serif-medium" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_sec_arrow"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    app:srcCompat="@drawable/riva_right_arrow"
+                    android:layout_gravity="end"
+                    android:visibility="visible"
+                    android:rotation="90"
+                    android:layout_width="?android:attr/actionBarSize"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+        </RelativeLayout>
+        <View
+            android:id="@+id/manual_sec_view"
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_marginHorizontal="16dp"
+            android:layout_height="0.8dp"/>
+        <RelativeLayout
+          android:id="@+id/password_wifi"
+          android:layout_width="match_parent"
+          android:layout_height="106dp"
+          android:layout_marginHorizontal="16dp"
+          android:layout_marginTop="16dp">
+
+            <androidx.appcompat.widget.AppCompatTextView
+              android:id="@+id/txt_WifiTitle"
+              android:textColor="@color/white"
+              android:layout_weight="1"
+              android:text="@string/wifi_pwd"
+              app:fontFamily="sans-serif-medium"
+              android:layout_marginTop="12dp"
+              android:layout_width="wrap_content"
+              android:textStyle="bold"
+              android:textSize="@dimen/dimen_18"
+              android:layout_height="wrap_content" />
+        <RelativeLayout
+          android:layout_below="@id/txt_WifiTitle"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="16dp"
+          android:background="@drawable/app_btn_selector">
+            <EditText
+              android:id="@+id/et_wifi_password"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:hint="@string/password_hint"
+              android:maxLength="66"
+              android:paddingHorizontal="12dp"
+              android:background="@color/transparent"
+              android:maxLines="1"
+              tools:text="21342rt3"
+              android:gravity="center|start"
+              android:layout_toLeftOf="@+id/toggle_password_imageview"
+              android:singleLine="true"
+              android:textColor="@color/white"
+              android:textColorHint="@color/grey"
+              android:inputType="textPassword"
+              android:textSize="@dimen/dimen_16" />
+
+            <ImageView
+              android:id="@+id/toggle_password_imageview"
+              android:layout_width="60dp"
+              android:layout_height="50dp"
+              android:layout_alignParentEnd="true"
+              android:padding="8dp"
+              android:layout_alignParentBottom="true"
+              android:background="@android:color/transparent"
+              android:src="@drawable/ic_password_invisible" />
+        </RelativeLayout>
+        </RelativeLayout>
+        <View
+          android:background="@color/white"
+          android:layout_width="match_parent"
+          android:layout_marginHorizontal="16dp"
+          android:visibility="gone"
+          android:layout_height="0.8dp"/>
+       <!-- <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginHorizontal="16dp"
+            app:hintAnimationEnabled="true"
+            app:hintEnabled="true"
+            app:endIconTint="@color/white"
+            android:textColorHint="@color/white"
+            app:passwordToggleDrawable="@drawable/custom_password_toggle"
+            app:endIconMode="password_toggle"
+            android:id="@+id/password_wifi">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_wifi_password"
+                tools:text="Libre@123"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/wifi_pwd"
+                android:textColorHint="@color/grey_400"
+                android:imeOptions="actionDone"
+                android:drawableEnd="@drawable/custom_password_toggle"
+                android:inputType="textPassword"
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>-->
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_security"
+            android:textColor="@color/white"
+            android:paddingVertical="10dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="14dp"
+            android:gravity="center_vertical"
+            tools:text="Security Type : "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <LinearLayout
+            android:id="@+id/iv_RememPasswordlyt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ssidpasslayout"
+            android:layout_marginTop="15dp"
+            android:gravity="center"
+            android:visibility="visible"
+            android:layout_marginLeft="16dp">
+
+            <CheckBox
+                android:id="@+id/rememCheckBox"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:padding="6dp"
+                android:button="@drawable/checkbox_white_drawable"
+                />
+
+            <TextView
+                android:id="@+id/rememWifipassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="7dp"
+                android:text="Remember Password"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/white"
+                android:textSize="14sp"/>
+
+            <ImageView
+                android:id="@+id/questBtn"
+                android:layout_width="40dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="6dp"
+                android:clickable="true"
+                android:padding="2dp"
+                android:visibility="gone"
+                android:src="@mipmap/ic_cast_white_24dp_2x"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_marginTop="32dp"
+            android:orientation="vertical"
+            android:layout_marginHorizontal="40dp"
+            android:layout_width="match_parent"
+            android:gravity="center_horizontal"
+            android:layout_height="wrap_content">
+            <androidx.appcompat.widget.AppCompatButton
+              android:id="@+id/btn_next"
+              android:layout_width="230dp"
+              android:layout_height="50dp"
+              android:layout_weight="1"
+              android:background="@drawable/riva_button_bg"
+              android:text="@string/next"
+              android:textAllCaps="true"
+              android:textSize="16sp" />
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/btn_cancel"
+                android:enabled="false"
+                android:textSize="16sp"
+                android:text="@string/cancel"
+                android:background="@drawable/riva_button_bg"
+                android:textColor="@color/riva_text_color"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_marginTop="12dp"
+                android:layout_width="230dp"
+                android:layout_height="50dp" />
+
+        </LinearLayout>
+        </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+</RelativeLayout>
+    <RelativeLayout
+      android:id="@+id/lay_SpeakerSetupWithImage"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:visibility="gone">
+        <include
+          android:id="@+id/lay_SpeakerSetup"
+          layout="@layout/setup_speaker">
+        </include>
+    </RelativeLayout>
+</RelativeLayout>

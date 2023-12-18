@@ -1,0 +1,89 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  android:orientation="vertical"
+  xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/black">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize"
+            android:layout_alignStart="@+id/appbarLayout"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_marginLeft="?android:attr/actionBarSize"
+                  android:layout_marginRight="?android:attr/actionBarSize"
+                  android:layout_centerInParent="true"
+                  android:text="@string/setup_name"
+                  android:textAllCaps="true"
+                  android:textColor="@color/white"
+                  android:textSize="20sp" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_back"
+                    android:layout_width="?android:attr/actionBarSize"
+                    android:layout_height="?android:attr/actionBarSize"
+                    android:background="?android:attr/selectableItemBackgroundBorderless"
+                    android:padding="16dp"
+                    app:srcCompat="@drawable/ic_arrow_back_white" />
+
+            </RelativeLayout>
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <RelativeLayout
+        android:layout_below="@id/appbarLayout"
+        android:layout_width="match_parent"
+
+        android:layout_height="match_parent">
+
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="3dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginTop="60dp"
+            android:textColor="@color/riva_subtext_color"
+            android:gravity="center"
+            android:text="@string/did_u_hear_sound"
+            android:textSize="@dimen/medium_text" />
+
+        <Button
+            android:id="@+id/btnYes"
+            android:layout_width="143dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/riva_button_bg"
+            android:layout_below="@+id/textView2"
+            android:textColor="@color/riva_text_color"
+            android:layout_marginTop="60dp"
+            android:text="@string/yes" />
+
+        <Button
+            android:id="@+id/btnRetry"
+            android:layout_below="@+id/btnYes"
+            android:layout_marginTop="30dp"
+            android:textColor="@color/riva_text_color"
+            android:layout_width="143dp"
+            android:layout_centerHorizontal="true"
+            android:layout_height="wrap_content"
+            android:background="@drawable/riva_button_bg"
+            android:text="@string/retry_hearsound" />
+
+    </RelativeLayout>
+</RelativeLayout>

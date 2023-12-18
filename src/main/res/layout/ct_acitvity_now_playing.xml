@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_blurred_album_art"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:visibility="gone"
+            android:scaleType="centerCrop" />
+    </FrameLayout>
+
+    <LinearLayout
+      android:id="@+id/lay_Play"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#3f000000"
+            app:contentInsetEnd="0dp"
+            app:contentInsetLeft="0dp"
+            app:contentInsetRight="0dp"
+            app:contentInsetStart="0dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:gravity="center_vertical"
+                    android:paddingRight="8dp">
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/iv_back"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:padding="16dp"
+                        app:srcCompat="@drawable/ic_arrow_back_white" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tv_device_name"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:layout_marginRight="8dp"
+                        android:layout_weight="1"
+                        android:gravity="center_horizontal"
+                        android:ellipsize="marquee"
+                        android:marqueeRepeatLimit="marquee_forever"
+                        android:scrollHorizontally="true"
+                        android:singleLine="true"
+                        tools:text="RivaFestival21f36a"
+                        android:textColor="@color/white"
+                        android:textSize="22sp" />
+
+                    <androidx.appcompat.widget.AppCompatImageButton
+                        android:id="@+id/iv_alexa_account"
+                        android:layout_width="36dp"
+                        android:layout_height="36dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:padding="5dp"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/alexa_account" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/iv_volume_down"
+                        android:layout_width="48dp"
+                        android:layout_height="40dp"
+                        android:padding="12dp"
+                        app:srcCompat="@drawable/riva_volume_low" />
+
+                    <androidx.appcompat.widget.AppCompatSeekBar
+                        android:id="@+id/seek_bar_volume"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:max="100"
+                        android:maxHeight="3dp"
+                        android:paddingLeft="10dp"
+                        android:paddingTop="5dp"
+                        android:paddingRight="10dp"
+                        android:paddingBottom="5dp"
+                        tools:progress="30" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="48dp"
+                        android:layout_height="40dp"
+                        android:padding="12dp"
+                        app:srcCompat="@drawable/riva_volume_up" />
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.appcompat.widget.Toolbar>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="10dp"
+            android:visibility="visible"
+            tools:visibility="visible">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_source_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:scaleType="centerInside"
+                android:visibility="visible"
+                tools:visibility="visible"
+                tools:src="@mipmap/riva_deezer_icon"
+                 />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_source_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                tools:text="Sources"
+                tools:visibility="gone" />
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/iv_album_art"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:src="@mipmap/album_art"
+            android:visibility="visible" />
+
+        <RelativeLayout
+          android:id="@+id/mshuffleFavRepeat"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="6dp"
+          android:layout_marginHorizontal="16dp">
+
+            <androidx.appcompat.widget.AppCompatTextView
+              android:id="@+id/tv_current_duration"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:padding="5dp"
+              android:textColor="@color/riva_text_color"
+              app:fontFamily="sans-serif-medium"
+              tools:text="01:41" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+              android:id="@+id/tv_total_duration"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_alignParentEnd="true"
+              android:padding="5dp"
+              android:textColor="@color/riva_text_color"
+              app:fontFamily="sans-serif-medium"
+              tools:text="04:37" />
+
+        </RelativeLayout>
+
+
+        <androidx.appcompat.widget.AppCompatSeekBar
+          android:id="@+id/seek_bar_song"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="15dp"
+          android:layout_marginHorizontal="16dp"
+          android:paddingTop="2dp"
+          android:paddingBottom="2dp"
+          android:paddingStart="5dp"
+          android:paddingEnd="0dp"
+          android:max="100"
+          android:thumb="@drawable/riva_thumb_drawable"
+          android:maxHeight="3dp"/>
+
+        <androidx.appcompat.widget.AppCompatTextView
+          android:id="@+id/tv_track_name"
+          android:textStyle="bold"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginTop="10dp"
+          android:layout_marginBottom="2dp"
+          android:layout_gravity="center_horizontal"
+          android:layout_marginHorizontal="16dp"
+          android:ellipsize="marquee"
+          android:marqueeRepeatLimit="marquee_forever"
+          android:scrollHorizontally="true"
+          android:singleLine="true"
+          android:textColor="@color/riva_text_color"
+          android:textSize="15sp"
+          tools:text="Track Name" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+          android:id="@+id/tv_albumName"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginBottom="15dp"
+          android:layout_gravity="center_horizontal"
+          android:layout_marginHorizontal="16dp"
+          android:ellipsize="marquee"
+          android:marqueeRepeatLimit="marquee_forever"
+          android:scrollHorizontally="true"
+          android:singleLine="true"
+          android:textColor="@color/riva_text_color"
+          android:textSize="15sp"
+          android:visibility="visible"
+          app:fontFamily="sans-serif-light"
+          tools:text="Album Name" />
+
+        <LinearLayout
+          android:id="@+id/lay_PlayControls"
+          android:layout_width="match_parent"
+          android:layout_height="60dp"
+          android:visibility="invisible"
+          android:gravity="center"
+          android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatImageView
+              android:id="@+id/media_btn_skip_prev"
+              android:layout_width="36dp"
+              android:layout_height="36dp"
+              android:layout_weight="1"
+              android:padding="6dp"
+              android:background="@android:color/transparent"
+              android:src="@drawable/spotify_15_prev_orange"
+              android:visibility="gone" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+              android:id="@+id/iv_shuffle"
+              android:layout_width="36dp"
+              android:layout_height="36dp"
+              android:layout_weight="1"
+              android:padding="6dp"
+              android:visibility="visible"
+              app:srcCompat="@drawable/riva_shuffle_enabled" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+              android:id="@+id/iv_previous"
+              android:layout_width="36dp"
+              android:layout_height="36dp"
+              android:layout_weight="1"
+              android:padding="6dp"
+              app:srcCompat="@drawable/riva_prev_enabled" />
+            <com.cumulations.libreV2.ProgressButtonImageView
+              android:id="@+id/iv_playPause"
+              android:layout_width="50dp"
+              android:layout_height="match_parent"
+              android:layout_marginLeft="5dp"
+              android:layout_marginRight="5dp"
+              android:padding="16dp"
+              android:background="?attr/selectableItemBackground"
+              app:enabled="true"
+              app:loading="false"
+              app:imageButtonStyle="@null" />
+           <!-- <androidx.appcompat.widget.AppCompatImageView
+              android:id="@+id/iv_playPause"
+              android:layout_width="36dp"
+              android:layout_height="36dp"
+              android:layout_weight="1"
+              android:padding="6dp"
+              android:visibility="visible"
+              app:srcCompat="@drawable/play_white" />-->
+
+            <androidx.appcompat.widget.AppCompatImageView
+              android:id="@+id/iv_next"
+              android:layout_width="36dp"
+              android:layout_height="36dp"
+              android:layout_weight="1"
+              android:padding="6dp"
+              app:srcCompat="@drawable/riva_next_enabled" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+              android:id="@+id/iv_repeat"
+              android:layout_width="36dp"
+              android:layout_height="36dp"
+              android:layout_weight="1"
+              android:padding="6dp"
+              app:srcCompat="@drawable/riva_repeat_enabled" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+              android:id="@+id/media_btn_skip_next"
+              android:layout_width="36dp"
+              android:layout_height="36dp"
+              android:layout_weight="1"
+              android:padding="6dp"
+              android:background="@android:color/transparent"
+              android:src="@drawable/spotify_15_next_orange"
+              android:visibility="gone" />
+
+        </LinearLayout>
+
+        <LinearLayout
+          android:id="@+id/ilMusic"
+          android:layout_width="match_parent"
+          android:visibility="gone"
+          android:layout_height="wrap_content">
+            <include
+              android:layout_width="match_parent"
+              android:layout_height="60dp"
+              layout="@layout/ct_alexa_widget" />
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <ProgressBar
+        android:id="@+id/loader"
+        android:layout_width="?attr/actionBarSize"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+</FrameLayout>

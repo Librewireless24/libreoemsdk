@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  android:layout_width="match_parent"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:orientation="vertical"
+  android:id="@+id/tv_bledevice_layout"
+  android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/riva_btn_enabled_round"
+        android:layout_marginVertical="10dp"
+        android:layout_marginHorizontal="10dp"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_bledevice_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginTop="16dp"
+            android:paddingLeft="16dp"
+            android:layout_toLeftOf="@+id/img_arrow"
+            android:layout_marginBottom="16dp"
+            tools:text="BLE Device Name"
+            android:textColor="@color/riva_text_color"
+            android:textSize="@dimen/medium_text" />
+        <ImageView
+          android:id="@+id/img_arrow"
+          android:layout_width="50dp"
+          android:layout_height="wrap_content"
+          android:layout_alignParentRight="true"
+          android:layout_centerVertical="true"
+          android:src="@drawable/riva_right_arrow">
+
+        </ImageView>
+
+        <Button
+            android:id="@+id/btnPlayTone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:visibility="gone"
+            android:text="@string/play_tone" />
+    </RelativeLayout>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tv_bledevice_rssi"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:paddingLeft="16dp"
+        android:layout_marginTop="8dp"
+        android:textSize="@dimen/small_text"
+        android:gravity="center"
+        android:visibility="gone"
+        android:text="@string/bt_setup_instructions_on"
+        android:textColor="@color/white" />
+
+</LinearLayout>

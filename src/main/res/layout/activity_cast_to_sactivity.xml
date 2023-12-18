@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent"
+  tools:context="com.cumulations.libreV2.activity.oem.CastToSActivity">
+  <RelativeLayout
+    android:id="@+id/parent_Layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="visible">
+
+
+    <androidx.appcompat.widget.AppCompatImageView
+      android:id="@+id/imageView"
+      android:layout_width="wrap_content"
+      android:layout_height="100dp"
+      android:layout_marginTop="40dp"
+      android:visibility="visible"
+      android:layout_centerHorizontal="true"
+      android:src="@drawable/chromecast_built_in_logo" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+      android:id="@+id/txt_cast_tos"
+      android:layout_below="@+id/imageView"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="30dp"
+      android:layout_marginHorizontal="20dp"
+      tools:text="@string/tos_accept"
+      android:textSize="18sp"
+      android:textColor="@color/white" />
+    <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginHorizontal="20dp"
+      android:layout_alignParentBottom="true"
+      android:orientation="horizontal">
+      <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_skip"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginBottom="20dp"
+        android:text="@string/skip"
+        android:textAllCaps="false"
+        android:layout_weight="5"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/riva_button_bg"
+        android:textColor="@color/riva_text_color" />
+      <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_accept"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginBottom="20dp"
+        android:textAllCaps="false"
+        android:layout_weight="5"
+        android:text="@string/accept"
+        android:layout_marginStart="20dp"
+        android:background="@drawable/riva_button_bg"
+        android:textColor="@color/riva_text_color" />
+
+    </LinearLayout>
+  </RelativeLayout>
+  <androidx.appcompat.widget.Toolbar
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:gravity="right"
+    android:layout_height="?attr/actionBarSize"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    android:visibility="gone"
+    android:background="@color/web_view_bg_night_theme">
+    <androidx.appcompat.widget.AppCompatImageView
+      android:id="@+id/img_close"
+      android:layout_width="?attr/actionBarSize"
+      android:layout_height="?attr/actionBarSize"
+      android:background="?attr/selectableItemBackgroundBorderless"
+      android:padding="16dp"
+      android:layout_gravity="right"
+      app:srcCompat="@drawable/icon_x_mark" />
+  </androidx.appcompat.widget.Toolbar>
+
+  <WebView
+    android:id="@+id/web_View"
+    app:layout_constraintStart_toStartOf="parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparent"
+    android:layout_marginTop="50dp"
+    android:visibility="gone">
+  </WebView>
+  <RelativeLayout
+    android:id="@+id/lay_Loader"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_loader"
+    android:visibility="gone">
+    <androidx.appcompat.widget.AppCompatTextView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:layout_marginHorizontal="30dp"
+      android:text="@string/pleaseWait"
+      android:textSize="24sp"
+      android:layout_marginTop="280dp"
+      android:gravity="center_horizontal"
+      android:textColor="@color/white"
+      android:background="@color/transparent" />
+
+    <ProgressBar
+      android:id="@+id/progress_bar"
+      android:layout_width="100dp"
+      android:layout_marginTop="10dp"
+      android:layout_height="100dp"
+      android:layout_centerInParent="true"
+      android:indeterminateTint="@color/riva_app_text_color_enabled"
+      android:background="@color/transparent">
+    </ProgressBar>
+  </RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

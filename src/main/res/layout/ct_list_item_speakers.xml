@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cv_speaker"
+    app:cardElevation="2dp"
+   android:background="@color/screen_bg"
+   app:cardUseCompatPadding="true"
+    app:cardBackgroundColor="@color/screen_bg"
+    android:foreground="?attr/selectableItemBackground"
+    app:cardCornerRadius="5dp">
+
+    <LinearLayout
+        android:id="@+id/ll_speaker"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:background="@color/riva_device_list_top"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_device"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="?attr/actionBarSize"
+                android:padding="16dp"
+                app:srcCompat="@drawable/riva_device_icon" />
+
+            <!--Fix for marquee text jumping-->
+            <RelativeLayout
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tv_device_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="marquee"
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true"
+                    android:textColor="@color/riva_text_color"
+                    android:textSize="16sp"
+                    app:fontFamily="sans-serif-medium"
+                    tools:text="Speaker 1" />
+            </RelativeLayout>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_battery_status"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:scaleType="fitCenter"
+                android:visibility="gone"
+                app:srcCompat="@drawable/riva_battery_medium_charging" />
+
+               <!-- <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_aux_bt"
+                android:layout_width="wrap_content"
+                android:scaleType="fitCenter"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_aux_in" />-->
+            <androidx.appcompat.widget.AppCompatImageView
+              android:id="@+id/iv_device_cast"
+              android:layout_width="40dp"
+              android:visibility="gone"
+              android:layout_height="match_parent"
+              app:srcCompat="@drawable/chrome_cast_enabled" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_device_settings"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                app:srcCompat="@drawable/riva_settings" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_device_arrow"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                app:srcCompat="@drawable/riva_right_arrow" />
+        </LinearLayout>
+
+        <include
+          android:id="@+id/il_musicPlayingWidget"
+         layout="@layout/music_playing_widget"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:background="@color/riva_device_list_top"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_volume_mute"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="?attr/actionBarSize"
+                android:padding="16dp"
+                app:srcCompat="@drawable/riva_volume_low" />
+
+            <androidx.appcompat.widget.AppCompatSeekBar
+                android:id="@+id/seek_bar_volume"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="100"
+                android:maxHeight="3dp"
+                android:paddingLeft="10dp"
+                android:paddingTop="5dp"
+                android:paddingRight="10dp"
+                android:paddingBottom="5dp" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/iv_volume_up"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="?attr/actionBarSize"
+                android:padding="16dp"
+                app:srcCompat="@drawable/riva_volume_up" />
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

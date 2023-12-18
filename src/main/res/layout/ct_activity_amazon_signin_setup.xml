@@ -1,0 +1,127 @@
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/appbar_bg_riva">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:contentInsetLeft="0dp"
+            app:contentInsetStart="0dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                  android:textStyle="bold"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_marginLeft="?attr/actionBarSize"
+                  android:layout_marginRight="?attr/actionBarSize"
+                  android:layout_centerInParent="true"
+                  android:text="@string/amazon_login_caps"
+                  android:textAllCaps="false"
+                  android:textColor="@color/white"
+                  android:textSize="20sp" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/iv_back"
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="?attr/actionBarSize"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:padding="16dp"
+                    app:srcCompat="@drawable/ic_arrow_back_white" />
+            </RelativeLayout>
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:paddingBottom="?attr/actionBarSize"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginRight="16dp"
+            android:gravity="center"
+            android:text="@string/login_with_amazon_msg"
+            android:textColor="@color/white" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_signin_amazon"
+            style="@style/OrangeAppButtonStyle"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginHorizontal="60dp"
+            android:layout_marginTop="24dp"
+            android:enabled="true"
+            android:textAllCaps="false"
+            android:text="@string/sign_in_with_amazon"
+            android:textColor="@color/white"
+          android:gravity="center"
+            android:textSize="14sp" />
+
+        <androidx.appcompat.widget.AppCompatButton
+          android:id="@+id/btn_signin_later"
+          style="@style/GreyAppButtonStyle"
+          android:layout_width="match_parent"
+          android:layout_marginHorizontal="60dp"
+          android:layout_height="40dp"
+          android:layout_marginTop="16dp"
+          android:layout_marginBottom="16dp"
+          android:gravity="center"
+          android:enabled="true"
+          android:text="@string/signin_later"
+          android:textAllCaps="false"
+          android:textColor="@color/app_btn_textcolor_selector"
+          android:textSize="14sp"
+             />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:scaleType="fitCenter"
+            android:layout_marginTop="24dp"
+            android:paddingTop="8dp"
+            android:paddingLeft="24dp"
+            app:srcCompat="@drawable/device_setup_success"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="28dp"
+            android:layout_marginRight="16dp"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:text="@string/congrats"
+            android:textColor="@color/white" />
+        <androidx.appcompat.widget.AppCompatTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:gravity="center"
+            android:layout_marginTop="5dp"
+            android:textSize="16sp"
+            android:text="@string/device_setup_successfull"
+            android:textColor="@color/app_text_color_disabled" />
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
