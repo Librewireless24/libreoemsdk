@@ -181,7 +181,7 @@ class SetUpDeviceActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionL
         val remoteDeviceIp = nettyData!!.getRemotedeviceIp()
         val packet = LUCIPacket(nettyData.getMessage())
         LibreLogger.d(TAG, "messageReceived: " + remoteDeviceIp + ", command is " + packet.command + "msg" + " is\n" + String(packet.payload))
-        if (packet.command == MIDCONST.CAST_ACCEPT_STATUS || packet.command == MIDCONST.CAST_ACCEPT_STATUS_572) {
+        if (packet.command == MIDCONST.CAST_ACCEPT_STATUS_572) {
             binding.layLoader.visibility = View.GONE
             val message = String(packet.getpayload())
             if(message.isNotEmpty()) {
@@ -195,6 +195,7 @@ class SetUpDeviceActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionL
             if (tosStatus == "activated") {
                 binding.btnSetupChromecast.text = getString(R.string.cast_enabled)
                 binding.btnSetupChromecast.isEnabled = false
+
             } else {
                 binding.btnSetupChromecast.text = getString(R.string.setup_chromecast)
                 binding.btnSetupChromecast.isEnabled = true

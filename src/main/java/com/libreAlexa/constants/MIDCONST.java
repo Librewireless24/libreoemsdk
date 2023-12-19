@@ -98,6 +98,8 @@ public class MIDCONST {
 
    //Device Team ask us to use 572 but they are returning the data in the MB#92
     public static final int CAST_ACCEPT_STATUS_572 = 572;
+    //for now removed cast setup  msg dependency on 92,listening only 572: reason behind crash
+
     public static final int CAST_ACCEPT_STATUS = 92;
     public static final int TEST_561 = 561;
     public static final int FORGET_NETWORK = 142;

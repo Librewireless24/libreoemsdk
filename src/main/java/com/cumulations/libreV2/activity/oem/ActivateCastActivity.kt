@@ -205,31 +205,36 @@ class ActivateCastActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteraction
         val remoteDeviceIp = nettyData.getRemotedeviceIp()
         /*  LibreLogger.d(TAG, "messageReceived: " + remoteDeviceIp + ", command is " + packet.command + "msg" + " is\n" + String(packet.payload))*/
 
-        if (packet.command == MIDCONST.CAST_ACCEPT_STATUS || packet.command == MIDCONST.CAST_ACCEPT_STATUS_572) {
+        if (packet.command == MIDCONST.CAST_ACCEPT_STATUS_572) {
             val message = String(packet.getpayload())
-            val root = JSONObject(message)
-            LibreLogger.d(TAG,"SUMA in ActivateCastActivity on BackPressed messageReceived\n"+message)
-            if (root.getString("id") == "status") {
-                if (root.getString("status") == LUCIMESSAGES.SUCCESS) {
-                    deviceTOSStatus = root.getString("tos")
-                    val crashReport = root.getBoolean("crash_report")
-                    binding.btnSendCrashReports.isChecked = crashReport
-                    if (deviceTOSStatus != "activated") {
-                        binding.txtSendDevice.alpha = .5F
-                        binding.txtGoogleAccountControls.alpha = .5F
-                        binding.txtSetUpVoice.alpha = .5F
-                        binding.txtActivateCast.text = getString(R.string.activate_cast)
-                        binding.imgRightArrow.isClickable = true
-                        binding.imgRightArrow.visibility = View.VISIBLE
-                        binding.btnSendCrashReports.isClickable = false
+            if(!message.isEmpty()) {
+                val root = JSONObject(message)
+                LibreLogger.d(
+                    TAG,
+                    "SUMA in ActivateCastActivity on BackPressed messageReceived\n" + message
+                )
+                if (root.getString("id") == "status") {
+                    if (root.getString("status") == LUCIMESSAGES.SUCCESS) {
+                        deviceTOSStatus = root.getString("tos")
+                        val crashReport = root.getBoolean("crash_report")
+                        binding.btnSendCrashReports.isChecked = crashReport
+                        if (deviceTOSStatus != "activated") {
+                            binding.txtSendDevice.alpha = .5F
+                            binding.txtGoogleAccountControls.alpha = .5F
+                            binding.txtSetUpVoice.alpha = .5F
+                            binding.txtActivateCast.text = getString(R.string.activate_cast)
+                            binding.imgRightArrow.isClickable = true
+                            binding.imgRightArrow.visibility = View.VISIBLE
+                            binding.btnSendCrashReports.isClickable = false
+                        } else {
+                            binding.txtActivateCast.text = getString(R.string.cast_enabled)
+                            binding.imgRightArrow.isClickable = false
+                            binding.imgRightArrow.visibility = View.GONE
+                            binding.btnSendCrashReports.isClickable = true
+                        }
                     } else {
-                        binding.txtActivateCast.text = getString(R.string.cast_enabled)
-                        binding.imgRightArrow.isClickable = false
-                        binding.imgRightArrow.visibility = View.GONE
-                        binding.btnSendCrashReports.isClickable = true
+                        gotoHome()
                     }
-                } else {
-                    gotoHome()
                 }
             }
         }

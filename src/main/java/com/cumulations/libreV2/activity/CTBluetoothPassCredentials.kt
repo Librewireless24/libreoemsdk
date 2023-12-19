@@ -92,7 +92,7 @@ class CTBluetoothPassCredentials : CTDeviceDiscoveryActivity(), BLEServiceToAppl
     private var state = true
     private var mandateDialog: AlertDialog? = null
     private var wifiReceiver: WifiReceiver? = null
-var bottomSheetDialogForSecurity: BottomSheetDialog? = null
+    var bottomSheetDialogForSecurity: BottomSheetDialog? = null
     var tv_no_data: TextView? = null
     var rv_wifi_list: RecyclerView? = null
     var wifiListBottomSheetAdapterForSecurityType: WifiListBottomSheetAdapterForSecurityType? = null
@@ -117,12 +117,14 @@ var bottomSheetDialogForSecurity: BottomSheetDialog? = null
         val gattServiceIntent = Intent(this, BluetoothLeService::class.java)
         bindService(gattServiceIntent, mServiceConnection, BIND_AUTO_CREATE)
     }
+
     override fun onResume() {
         super.onResume()
-        wifiReceiver = WifiReceiver(mandateDialog,binding.tvSelectedWifi.text.toString())
+        wifiReceiver = WifiReceiver(mandateDialog, binding.tvSelectedWifi.text.toString())
         val intentFilter = IntentFilter(WifiManager.NETWORK_STATE_CHANGED_ACTION)
         registerReceiver(wifiReceiver, intentFilter)
     }
+
     override fun onPause() {
         super.onPause()
         mBluetoothLeService = null
@@ -182,8 +184,8 @@ var bottomSheetDialogForSecurity: BottomSheetDialog? = null
         binding.tvSelectedWifi.setOnClickListener(this)
         binding.ivBack.setOnClickListener(this)
         binding.ivSecArrow.setOnClickListener(this)
-       binding.manualSsidLayout.visibility=View.GONE
-        binding.manualSecurityLayout.visibility=View.GONE
+        binding.manualSsidLayout.visibility = View.GONE
+        binding.manualSecurityLayout.visibility = View.GONE
 
         binding.togglePasswordImageview.setOnClickListener {
             if (state == true) {
@@ -201,14 +203,14 @@ var bottomSheetDialogForSecurity: BottomSheetDialog? = null
             binding.tvSelectedWifi.text = connectedPhoneSSID.first
             LibreLogger.d(TAG, "Shaik setSsidPwd ${connectedPhoneSSID.first} and  Security " +
                     "${connectedPhoneSSID.second}")
-            val scanResultItem = ScanResultItem(connectedPhoneSSID.second!!,connectedPhoneSSID.first)
+            val scanResultItem = ScanResultItem(connectedPhoneSSID.second!!, connectedPhoneSSID.first)
             setSsidPwd(scanResultItem)
         } catch (ex: Exception) {
             //suma thursday
-            binding.tvSecurity.text = "Security Type : " +"NONE"
+            binding.tvSecurity.text = "Security Type : " + "NONE"
 
-            binding.passwordWifi.visibility=View.GONE
-            binding.ivRememPasswordlyt.visibility=View.GONE
+            binding.passwordWifi.visibility = View.GONE
+            binding.ivRememPasswordlyt.visibility = View.GONE
             LibreLogger.d(TAG_, "Shaik setSsidPwd Exception ${ex.message}")
         }
     }
@@ -227,7 +229,7 @@ var bottomSheetDialogForSecurity: BottomSheetDialog? = null
                     val data = ByteArray(0)
                     val mBlePacketScanWIFI = BLEPacket(data, BLEUtils.BLE_SAC_APP2DEV_FRIENDLYNAME.toByte(), true)
                     BleCommunication.writeDataToBLEDevice(value, mBlePacketScanWIFI)
-                     LibreLogger.d("SUMA_SCAN", "******** SUMA GET THE BLE PACKET INFO FriendlyNameBLEPASS")
+                    LibreLogger.d("SUMA_SCAN", "******** SUMA GET THE BLE PACKET INFO FriendlyNameBLEPASS")
 
                     //  getFriendlyNameThroBLE();
                 }, timeout.toLong())
@@ -265,7 +267,7 @@ var bottomSheetDialogForSecurity: BottomSheetDialog? = null
                     }, (timeout + 1000).toLong())
 
                     LibreApplication.scanAlreadySent = true;
-                  //  showProgressDialog(getString(R.string.get_scan_results))
+                    //  showProgressDialog(getString(R.string.get_scan_results))
 
                     handler.postDelayed({
                         val data = ByteArray(0)
@@ -311,8 +313,10 @@ var bottomSheetDialogForSecurity: BottomSheetDialog? = null
             /*  BLEUtils.BLE_SAC_DEV2APP_CRED_RECEIVED -> runOnUiThread { setMessageProgressDialog(getString(R.string.cred_received)) }
               BLEUtils.BLE_SAC_DEV2APP_CRED_SUCCESS -> runOnUiThread { setMessageProgressDialog(getString(R.string.cred_success)) }*/
             BLEUtils.BLE_SAC_DEV2APP_CRED_FAILURE -> runOnUiThread {
-                showAlertMessageRegardingSAC(" ", getString(R.string.credientials_invalid)) }
-                BLEUtils.BLE_SAC_DEV2APP_WIFI_CONNECTING -> runOnUiThread {
+                showAlertMessageRegardingSAC(" ", getString(R.string.credientials_invalid))
+            }
+
+            BLEUtils.BLE_SAC_DEV2APP_WIFI_CONNECTING -> runOnUiThread {
                 dismissDialog()
                 binding.laySsidPwdDetails.visibility = View.GONE
                 binding.laySpeakerSetupWithImage.visibility = View.VISIBLE
@@ -330,7 +334,7 @@ var bottomSheetDialogForSecurity: BottomSheetDialog? = null
                     binding.laySpeakerSetupWithImage.visibility = View.VISIBLE
                     try {
                         val connectedSSID = AppUtils.getConnectedSSID(this)
-                        val message = getString(R.string.connected) +" " +connectedSSID +" " +getString(R.string.successfully)
+                        val message = getString(R.string.connected) + " " + connectedSSID + " " + getString(R.string.successfully)
                         //setMessageProgressDialog(message)
                         binding.laySpeakerSetup.tvSetupInfo.text = message
                     } catch (ex: Exception) {
@@ -390,7 +394,7 @@ var bottomSheetDialogForSecurity: BottomSheetDialog? = null
             BLEUtils.BLE_SAC_DEV2APP_STARTED -> {}
             BLEUtils.BLE_SAC_DEV2APP_SCAN_LIST_START -> {
                 constructJSonString = StringBuilder()
-              //  scanListLength = String(packet.message).toInt()
+                //  scanListLength = String(packet.message).toInt()
             }
 
             BLEUtils.BLE_SAC_DEV2APP_SCAN_LIST_DATA -> {
@@ -510,6 +514,7 @@ var bottomSheetDialogForSecurity: BottomSheetDialog? = null
             LibreLogger.d(TAGSCAN, "populateScanListMap exception " + e.message)
         }
     }
+
     private var constructJSonString = StringBuilder()
     private fun showAlertMessageRegardingSAC(title: String?, message: String) {
         dismissDialog()
@@ -550,8 +555,8 @@ var bottomSheetDialogForSecurity: BottomSheetDialog? = null
 
             runOnUiThread {
                 showAlertDialog(getString(R.string.somethingWentWrong_tryAgain), getString(R
-                    .string.ok), 0, isDeviceLost =true, isLocationPermission =false,
-                    isLocationPermissionRotational=false)
+                    .string.ok), 0, isDeviceLost = true, isLocationPermission = false,
+                    isLocationPermissionRotational = false)
             }
         }
 
@@ -564,202 +569,189 @@ var bottomSheetDialogForSecurity: BottomSheetDialog? = null
 
             R.id.btn_next ->
 
-            try {
-                var mSelectedSSID = String(
-                    WifiConnection.getInstance().getMainSSID()
-                        .toByteArray(), StandardCharsets.UTF_8
-                )
+                try {
+                    var mSelectedSSID = String(
+                        WifiConnection.getInstance().getMainSSID()
+                            .toByteArray(), StandardCharsets.UTF_8
+                    )
 
-                                        if (LibreApplication.manualSSID!=null&&LibreApplication.manualSSID == "Other Options")
-                                        {
-                                            /*Other Network Flow*/
-                                            LibreLogger.d(TAG,"suma in btnNext getting my SSID name inside\n"+mSelectedSSID)
+                    if (LibreApplication.manualSSID != null && LibreApplication.manualSSID == "Other Options") {
+                        /*Other Network Flow*/
+                        LibreLogger.d(TAG, "suma in btnNext getting my SSID name inside\n" + mSelectedSSID)
 
-                                            val wifiConnect = WifiConnection.getInstance()
-                                            wifiConnect.setMainSSID(
-                                                binding.tvSelectedWifi.getText().toString()
-                                            )
-                                            mSelectedSSID = String(
-                                                WifiConnection.getInstance().getMainSSID()
-                                                    .toByteArray(), StandardCharsets.UTF_8
-                                            )
-                                            val mSelectedPass = String(
-                                                binding.etWifiPassword.getText().toString().toByteArray(),
-                                                StandardCharsets.UTF_8
-                                            )
-                                            val mSelectedSecurity = String(
-                                                WifiConnection.getInstance().getMainSSIDSec()
-                                                    .toByteArray(), StandardCharsets.UTF_8
-                                            )
-                                            LibreLogger.d(
-                                                TAG, """suma in device SSID manual ssid
+                        val wifiConnect = WifiConnection.getInstance()
+                        wifiConnect.setMainSSID(
+                            binding.tvSelectedWifi.getText().toString()
+                        )
+                        mSelectedSSID = String(
+                            WifiConnection.getInstance().getMainSSID()
+                                .toByteArray(), StandardCharsets.UTF_8
+                        )
+                        val mSelectedPass = String(
+                            binding.etWifiPassword.getText().toString().toByteArray(),
+                            StandardCharsets.UTF_8
+                        )
+                        val mSelectedSecurity = String(
+                            WifiConnection.getInstance().getMainSSIDSec()
+                                .toByteArray(), StandardCharsets.UTF_8
+                        )
+                        LibreLogger.d(
+                            TAG, """suma in device SSID manual ssid
  ${mSelectedSSID}pwd
 ${mSelectedPass}security
 $mSelectedSecurity"""
-                                            )
-                                            LibreLogger.d(TAG,"suma in other Network  n/w ssid  \n"+binding.tvSelectedWifi.text+"phone ssid\n"+getConnectedSSIDName(this))
-                                            if(!binding.tvSelectedWifi.text.isEmpty()){
-                                              if(!mSelectedSecurity.equals("WPA-PSK")){
+                        )
+                        LibreLogger.d(TAG, "suma in other Network  n/w ssid  \n" + binding.tvSelectedWifi.text + "phone ssid\n" + getConnectedSSIDName(this))
+                        if (!binding.tvSelectedWifi.text.isEmpty()) {
+                            if (!mSelectedSecurity.equals("WPA-PSK")) {
 
-                                                   if(LibreApplication.manualsecurity.equals("OPEN/NONE")&&binding.etWifiPassword.text.isEmpty()){
-                                                       if(binding.tvSelectedWifi.text.toString()==AppUtils.getConnectedSSID(context = this)) {
-                                                           btnNextClickedOther()
-                                                           LibreLogger.d(TAG,"BTN NEXT CALL case VALID TWO\n"+binding.tvSelectedWifi.text.toString()+"getconnectessid\n"+getConnectedSSIDName(this))
+                                if (LibreApplication.manualsecurity.equals("OPEN/NONE") && binding.etWifiPassword.text.isEmpty()) {
+                                    if (binding.tvSelectedWifi.text.toString() == AppUtils.getConnectedSSID(context = this)) {
+                                        btnNextClickedOther()
+                                        LibreLogger.d(TAG, "BTN NEXT CALL case VALID TWO\n" + binding.tvSelectedWifi.text.toString() + "getconnectessid\n" + getConnectedSSIDName(this))
 
-                                                       }
-                                                       else{
-                                                           LibreLogger.d(TAG,"BTN NEXT CALL case VALID THREE MISMATCH\n"+binding.tvSelectedWifi.text.toString()+"getconnectessid\n"+getConnectedSSIDName(this))
+                                    } else {
+                                        LibreLogger.d(TAG, "BTN NEXT CALL case VALID THREE MISMATCH\n" + binding.tvSelectedWifi.text.toString() + "getconnectessid\n" + getConnectedSSIDName(this))
 
-                                                           showNetworkMisMatchAlertDialog(networkMismatchSsidMessage(getConnectedSSID(context = this),binding.tvSelectedWifi.text.toString()), getString(R.string.continue_txt),
-                                                               getString(R.string.cancel), isNetworkMisMatch=true,
-                                                               isConfigureCancel=false)
-                                                       }
-                                                       LibreLogger.d(TAG, "suma in other Network AllValidation Done  \n "+LibreApplication.manualsecurity+"ssidtext"+binding.tvSelectedWifi.text+"phone ssid\n"+getConnectedSSIDName(this))
+                                        showNetworkMisMatchAlertDialog(networkMismatchSsidMessage(getConnectedSSID(context = this), binding.tvSelectedWifi.text.toString()), getString(R.string.continue_txt),
+                                            getString(R.string.cancel), isNetworkMisMatch = true,
+                                            isConfigureCancel = false)
+                                    }
+                                    LibreLogger.d(TAG, "suma in other Network AllValidation Done  \n " + LibreApplication.manualsecurity + "ssidtext" + binding.tvSelectedWifi.text + "phone ssid\n" + getConnectedSSIDName(this))
 
-                                                   }
-                                                  else{
-                                                      if(binding.etWifiPassword.text.isEmpty()) {
-                                                          showAlertMessageRegardingSAC(
-                                                              getString(R.string.error),
-                                                              getString(R.string.password_empty_error)
-                                                          )
-                                                      }
-                                                       else{
-                                                          if(binding.tvSelectedWifi.text.toString()==AppUtils.getConnectedSSID(context = this)) {
-                                                              btnNextClickedOther()
-                                                              LibreLogger.d(TAG,"BTN NEXT CALL case VALID TWO\n"+binding.tvSelectedWifi.text.toString()+"getconnectessid\n"+getConnectedSSIDName(this))
+                                } else {
+                                    if (binding.etWifiPassword.text.isEmpty()) {
+                                        showAlertMessageRegardingSAC(
+                                            getString(R.string.error),
+                                            getString(R.string.password_empty_error)
+                                        )
+                                    } else {
+                                        if (binding.tvSelectedWifi.text.toString() == AppUtils.getConnectedSSID(context = this)) {
+                                            btnNextClickedOther()
+                                            LibreLogger.d(TAG, "BTN NEXT CALL case VALID TWO\n" + binding.tvSelectedWifi.text.toString() + "getconnectessid\n" + getConnectedSSIDName(this))
 
-                                                          }
-                                                          else{
-                                                              showNetworkMisMatchAlertDialog(networkMismatchSsidMessage(getConnectedSSID(context = this),binding.tvSelectedWifi.text.toString()), getString(R.string.continue_txt),
-                                                                  getString(R.string.cancel), isNetworkMisMatch=true,
-                                                                  isConfigureCancel=false)
-                                                          }
-                                                          LibreLogger.d(TAG, "suma in other Network AllValidation Done else  \n ")
-                                                      }
-                                                   }
+                                        } else {
+                                            showNetworkMisMatchAlertDialog(networkMismatchSsidMessage(getConnectedSSID(context = this), binding.tvSelectedWifi.text.toString()), getString(R.string.continue_txt),
+                                                getString(R.string.cancel), isNetworkMisMatch = true,
+                                                isConfigureCancel = false)
+                                        }
+                                        LibreLogger.d(TAG, "suma in other Network AllValidation Done else  \n ")
+                                    }
+                                }
 
-                                              }
-                                                else{
-                                                  showAlertMessageRegardingSAC(getString(R.string.error), getString(R.string.manualsec_error_empty))
+                            } else {
+                                showAlertMessageRegardingSAC(getString(R.string.error), getString(R.string.manualsec_error_empty))
 
-                                              }
+                            }
 
-                                            }
-                                            else{
-                                    showAlertMessageRegardingSAC(getString(R.string.error), getString(R.string.manualssid_error_empty))
+                        } else {
+                            showAlertMessageRegardingSAC(getString(R.string.error), getString(R.string.manualssid_error_empty))
 
-                                            }
+                        }
 
-                                            LibreLogger.d(TAG, "suma in other Network if   \n ")
+                        LibreLogger.d(TAG, "suma in other Network if   \n ")
+
+                    } else {
+                        //common Wifi List Fetch SSID Configuration flow
+
+                        if (binding.etDeviceName.text.toString().isNotEmpty()) {
+                            if (binding.tvSelectedWifi.text.toString().isNotEmpty()) {
+
+                                if (binding.passwordWifi.isVisible) {
+                                    if (binding.etWifiPassword.getText()
+                                            .toString().length < 8 || binding.etWifiPassword.getText()
+                                            .toString().length > 64
+                                    ) {
+                                        if (binding.etWifiPassword.getText().isEmpty()) {
+                                            showToast(getString(R.string.password_empty_error))
 
                                         }
-                                        else {
-                                           //common Wifi List Fetch SSID Configuration flow
+                                        if (binding.etWifiPassword.text.length < 8) {
+                                            showToast(getString(R.string.password_should_8_char))
 
-                                            if (binding.etDeviceName.text.toString().isNotEmpty()) {
-                                                if (binding.tvSelectedWifi.text.toString().isNotEmpty()) {
-
-                                                    if (binding.passwordWifi.isVisible) {
-                                                    if (binding.etWifiPassword.getText()
-                                                            .toString().length < 8 || binding.etWifiPassword.getText()
-                                                            .toString().length > 64
-                                                    ) {
-                                                        if(binding.etWifiPassword.getText().isEmpty()){
-                                                            showToast(getString(R.string.password_empty_error))
-
-                                                        }
-                                                        if(binding.etWifiPassword.text.length<8){
-                                                            showToast(getString(R.string.password_should_8_char))
-
-
-                                                        }
-                                                        if(binding.etWifiPassword.text.length>64){
-                                                            showToast(getString(R.string.password_less_64_char))
-
-                                                        }
-
-                                                        LibreLogger.d(
-                                                            TAG,
-                                                            "suma in common ssid not valid " + binding.etWifiPassword.getText()
-                                                                .toString().length
-                                                        )
-                                                        LibreLogger.d(TAG,"BTN NEXT CALL case NOT VALID")
-
-                                                    }
-                                                    else {
-                                  //all validation  passed
-                                                        if(binding.tvSelectedWifi.text.toString()==AppUtils.getConnectedSSID(context = this)) {
-                                                             btnNextClicked()
-                                                            LibreLogger.d(TAG,"BTN NEXT CALL case VALID TWO\n"+binding.tvSelectedWifi.text.toString()+"getconnectessid\n"+getConnectedSSIDName(this))
-
-                                                        }
-                                                        else{
-                                                            showNetworkMisMatchAlertDialog(networkMismatchSsidMessage(getConnectedSSID(context = this),binding.tvSelectedWifi.text.toString()), getString(R.string.continue_txt),
-                                                                getString(R.string.cancel), isNetworkMisMatch=true,
-                                                                isConfigureCancel=false)
-                                                        }
-                                                        LibreLogger.d(
-                                                            TAG,
-                                                            "suma in common ssid is valid " + binding.etWifiPassword.getText()
-                                                                .toString().length
-                                                        )
-
-                                                    }
-                                                }
-                                                    else {
-
-                                                        LibreLogger.d(TAG,"BTN NEXT CALL case VALID ONE"+binding.etWifiPassword.text.length)
-                                                        //call btnnextclicked method for none security SSID
-
-                                                        if(binding.tvSelectedWifi.text.toString()==AppUtils.getConnectedSSID(context = this)) {
-                                                            btnNextClicked()
-                                                            LibreLogger.d(TAG,"BTN NEXT CALL case VALID THREE\n"+binding.tvSelectedWifi.text.toString()+"getconnectessid\n"+getConnectedSSIDName(this))
-
-                                                        }
-                                                        else{
-                                                            LibreLogger.d(TAG,"BTN NEXT CALL case VALID FOUR\n"+binding.tvSelectedWifi.text.toString()+"getconnectessid\n"+getConnectedSSIDName(this))
-
-                                                            showNetworkMisMatchAlertDialog(networkMismatchSsidMessage(getConnectedSSID(context = this),binding.tvSelectedWifi.text.toString()), getString(R.string.continue_txt),
-                                                                getString(R.string.cancel), isNetworkMisMatch=true,
-                                                                isConfigureCancel=false)
-                                                        }
-
-                                                }
-                                            }
-                                            else {
-                                                    showToast(getString(R.string.please_selecte_wifi))
-
-                                                }
-                                            }
-                                            else {
-                                                showToast(getString(R.string.device_name_empty))
-
-                                            }
 
                                         }
-            }
-            catch (e: Exception) {
-                e.printStackTrace()
-            }
+                                        if (binding.etWifiPassword.text.length > 64) {
+                                            showToast(getString(R.string.password_less_64_char))
+
+                                        }
+
+                                        LibreLogger.d(
+                                            TAG,
+                                            "suma in common ssid not valid " + binding.etWifiPassword.getText()
+                                                .toString().length
+                                        )
+                                        LibreLogger.d(TAG, "BTN NEXT CALL case NOT VALID")
+
+                                    } else {
+                                        //all validation  passed
+                                        if (binding.tvSelectedWifi.text.toString() == AppUtils.getConnectedSSID(context = this)) {
+                                            btnNextClicked()
+                                            LibreLogger.d(TAG, "BTN NEXT CALL case VALID TWO\n" + binding.tvSelectedWifi.text.toString() + "getconnectessid\n" + getConnectedSSIDName(this))
+
+                                        } else {
+                                            showNetworkMisMatchAlertDialog(networkMismatchSsidMessage(getConnectedSSID(context = this), binding.tvSelectedWifi.text.toString()), getString(R.string.continue_txt),
+                                                getString(R.string.cancel), isNetworkMisMatch = true,
+                                                isConfigureCancel = false)
+                                        }
+                                        LibreLogger.d(
+                                            TAG,
+                                            "suma in common ssid is valid " + binding.etWifiPassword.getText()
+                                                .toString().length
+                                        )
+
+                                    }
+                                } else {
+
+                                    LibreLogger.d(TAG, "BTN NEXT CALL case VALID ONE" + binding.etWifiPassword.text.length)
+                                    //call btnnextclicked method for none security SSID
+
+                                    if (binding.tvSelectedWifi.text.toString() == AppUtils.getConnectedSSID(context = this)) {
+                                        btnNextClicked()
+                                        LibreLogger.d(TAG, "BTN NEXT CALL case VALID THREE\n" + binding.tvSelectedWifi.text.toString() + "getconnectessid\n" + getConnectedSSIDName(this))
+
+                                    } else {
+                                        LibreLogger.d(TAG, "BTN NEXT CALL case VALID FOUR\n" + binding.tvSelectedWifi.text.toString() + "getconnectessid\n" + getConnectedSSIDName(this))
+
+                                        showNetworkMisMatchAlertDialog(networkMismatchSsidMessage(getConnectedSSID(context = this), binding.tvSelectedWifi.text.toString()), getString(R.string.continue_txt),
+                                            getString(R.string.cancel), isNetworkMisMatch = true,
+                                            isConfigureCancel = false)
+                                    }
+
+                                }
+                            } else {
+                                showToast(getString(R.string.please_selecte_wifi))
+
+                            }
+                        } else {
+                            showToast(getString(R.string.device_name_empty))
+
+                        }
+
+                    }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
 
             R.id.btn_cancel -> btnCancelClicked()
-             R.id.iv_right_arrow-> ivRightArrowClicked()
+            R.id.iv_right_arrow -> ivRightArrowClicked()
 
             R.id.iv_back ->
                 //mBluetoothLeService.disconnect();
                 //mBluetoothLeService.close();
                 //mBluetoothLeService.removelistener(this);
                 callBluetoothDeviceListActivity()
+
             R.id.iv_sec_arrow ->
 
                 setupBottomSheetForWifiSecurityList()
+
             R.id.tv_selected_wifi -> {
-                binding.tvSelectedWifi.isClickable=true
-                LibreLogger.d(TAG,"suma in selected wifi  ")
-                binding.tvSelectedWifi.isCursorVisible=true
-                binding.tvSelectedWifi.isFocusableInTouchMode=true
-                binding.tvSelectedWifi.inputType=InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE
+                binding.tvSelectedWifi.isClickable = true
+                LibreLogger.d(TAG, "suma in selected wifi  ")
+                binding.tvSelectedWifi.isCursorVisible = true
+                binding.tvSelectedWifi.isFocusableInTouchMode = true
+                binding.tvSelectedWifi.inputType = InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE
                 binding.tvSelectedWifi.requestFocus()
             }
         }
@@ -767,7 +759,7 @@ $mSelectedSecurity"""
 
     fun setupBottomSheetForWifiSecurityList() {
         val view: View = layoutInflater.inflate(R.layout.show_wifi_security, null)
-       tv_no_data = view.findViewById<TextView>(R.id.tv_no_data)
+        tv_no_data = view.findViewById<TextView>(R.id.tv_no_data)
         rv_wifi_list = view.findViewById<RecyclerView>(R.id.rv_wifi_list)
         val iv_close_icon = view.findViewById<AppCompatImageView>(R.id.iv_close_icon)
         setWifiListBottomSheetAdapterForSecurity()
@@ -805,6 +797,7 @@ $mSelectedSecurity"""
         wifiListBottomSheetAdapterForSecurityType!!.setWifiConfigurationForSeurity(this)
         rv_wifi_list!!.setLayoutManager(linearLayoutManager)
     }
+
     /**
      * -> BLE_SAC_APP2DEV_CONNECT_WIFI
      * : |0xAB|0x01|Len| Data|0xCB|
@@ -911,14 +904,15 @@ $mSelectedSecurity"""
             deleteWifiPassword(binding.tvSelectedWifi.text.toString())
         }
     }
-  private fun btnNextClickedOther() {
+
+    private fun btnNextClickedOther() {
         val mSelectedSSID = String(WifiConnection.getInstance().getMainSSID().toByteArray(), StandardCharsets.UTF_8)
         val mSelectedPass = String(binding.etWifiPassword.text.toString().toByteArray(), StandardCharsets.UTF_8)
         val mSelectedSecurity = String(WifiConnection.getInstance().getMainSSIDSec().toByteArray(), StandardCharsets.UTF_8)
         val mSelectedCountryCode = String(configurationParameters.getDeviceCountryCode(this@CTBluetoothPassCredentials).toByteArray(), StandardCharsets.UTF_8).uppercase(Locale.getDefault())
         mDeviceName = String(binding.etDeviceName.text.toString().toByteArray(), StandardCharsets.UTF_8)
         WifiConnection.getInstance().setMainSSIDPwd(mSelectedPass)
-        LibreLogger.d(TAG, "btnNextClicked: Security check mSelectedSSID\n " + mSelectedSSID + "Password " + mSelectedPass+"security\n"+mSelectedSecurity+"countryCode"+mSelectedCountryCode)
+        LibreLogger.d(TAG, "btnNextClicked: Security check mSelectedSSID\n " + mSelectedSSID + "Password " + mSelectedPass + "security\n" + mSelectedSecurity + "countryCode" + mSelectedCountryCode)
         /**
          * SHAIK Added the 2 Sec Delay after user click on Next Button
          */
@@ -1013,8 +1007,8 @@ $mSelectedSecurity"""
         showNetworkMisMatchAlertDialog(message = getString(R.string.do_you_want_to_cancel_the_setup),
             positiveButtonString = getString(R.string.yes),
             negativeButtonString = getString(R.string.no),
-            isNetworkMisMatch=false,
-            isConfigureCancel=true)
+            isNetworkMisMatch = false,
+            isConfigureCancel = true)
     }
 
 
@@ -1033,80 +1027,79 @@ $mSelectedSecurity"""
             if (resultCode == RESULT_OK) {
                 val mScanResultItem = data!!.getSerializableExtra(AppConstants.SELECTED_SSID) as ScanResultItem
                 setSsidPwd(mScanResultItem)
-               LibreLogger.d(TAG,"Adding Other N/w options RESULT_OK"+mScanResultItem.ssid)
+                LibreLogger.d(TAG, "Adding Other N/w options RESULT_OK" + mScanResultItem.ssid)
 
-                if(mScanResultItem.ssid.equals("Other Options")){
-                    LibreLogger.d(TAG,"Adding Other N/w options RESULT_OK if "+mScanResultItem.ssid)
+                if (mScanResultItem.ssid.equals("Other Options")) {
+                    LibreLogger.d(TAG, "Adding Other N/w options RESULT_OK if " + mScanResultItem.ssid)
                     binding.tvSelectedWifi.isTextSelectable
-                    binding.tvSelectedWifi.hint="Enter Network Name"
-                    binding.ivRememPasswordlyt.visibility=View.GONE
-                    binding.tvSelectedWifi.isEnabled=true
-                    binding.tvSelectedWifi.isClickable=true
-                    binding.manualSecurityLayout.visibility=View.VISIBLE
-                    binding.tvSecurity.visibility=View.GONE
+                    binding.tvSelectedWifi.hint = "Enter Network Name"
+                    binding.ivRememPasswordlyt.visibility = View.GONE
+                    binding.tvSelectedWifi.isEnabled = true
+                    binding.tvSelectedWifi.isClickable = true
+                    binding.manualSecurityLayout.visibility = View.VISIBLE
+                    binding.tvSecurity.visibility = View.GONE
                     binding.manualSecText.setText("")
-                    binding.passwordWifi.visibility=View.GONE
+                    binding.passwordWifi.visibility = View.GONE
 
                     val wifiConnect = WifiConnection.getInstance()
                     wifiConnect.setMainSSID(mScanResultItem.ssid)
-                    LibreApplication.manualSSID="Other Options"
-                }
-                else{
+                    LibreApplication.manualSSID = "Other Options"
+                } else {
 
                     val wifiConnect = WifiConnection.getInstance()
                     wifiConnect.setMainSSID(mScanResultItem.ssid)
                     !binding.tvSelectedWifi.isTextSelectable
-                    binding.tvSelectedWifi.isEnabled=false
-                    binding.tvSelectedWifi.isClickable=false
+                    binding.tvSelectedWifi.isEnabled = false
+                    binding.tvSelectedWifi.isClickable = false
 
-                  // thursday suma addition
+                    // thursday suma addition
                     // binding.ivRememPasswordlyt.visibility=View.VISIBLE
 
-                    LibreLogger.d(TAG,"Adding Other N/w options RESULT_OK else "+mScanResultItem.ssid)
-                    binding.manualSsidLayout.visibility=View.GONE
-                    binding.manualSecurityLayout.visibility=View.GONE
-                    LibreApplication.manualSSID=""
-                   LibreApplication.manualsecurity=""
-                    binding.tvSecurity.visibility=View.VISIBLE
-                  // thursday suma addition
-                // binding.passwordWifi.visibility=View.VISIBLE
+                    LibreLogger.d(TAG, "Adding Other N/w options RESULT_OK else " + mScanResultItem.ssid)
+                    binding.manualSsidLayout.visibility = View.GONE
+                    binding.manualSecurityLayout.visibility = View.GONE
+                    LibreApplication.manualSSID = ""
+                    LibreApplication.manualsecurity = ""
+                    binding.tvSecurity.visibility = View.VISIBLE
+                    // thursday suma addition
+                    // binding.passwordWifi.visibility=View.VISIBLE
 
                 }
 
             }
-        }else if(requestCode == AppConstants.OPEN_PHONE_WIFI_REQUEST_CODE){
-                try {
-                    val selectedSSID:String =binding.tvSelectedWifi.text.toString()
-                    val connectedPhoneSSID: Pair<String, String?> = AppUtils.getConnectedSSIDAndSecurityType(this)
-                    if(selectedSSID!=connectedPhoneSSID.first){
-                        showNetworkMisMatchAlertDialog(networkMismatchMessage(
-                            getConnectedSSID(context = this), binding.tvSelectedWifi.text.toString()),
-                            getString(R.string.open_settings), getString(R.string.cancel),
-                            isNetworkMisMatch=false,
-                            isConfigureCancel=false)
-                    }else {
-                        binding.tvSelectedWifi.text = connectedPhoneSSID.first
-                       /* LibreLogger.d(TAG, "Shaik customOnActivityResult setSsidPwd " +
-                       "${connectedPhoneSSID.first} and  Security" + "${connectedPhoneSSID.second} selectedSSID $selectedSSID")*/
-                        val scanResultItem = ScanResultItem(connectedPhoneSSID.second!!, connectedPhoneSSID.first)
-                        setSsidPwd(scanResultItem)
-                        btnNextClicked()
-                    }
-                  } catch (ex: Exception) {
-                    LibreLogger.d(TAG, "customOnActivityResult setSsidPwd Exception ${ex.message}")
+        } else if (requestCode == AppConstants.OPEN_PHONE_WIFI_REQUEST_CODE) {
+            try {
+                val selectedSSID: String = binding.tvSelectedWifi.text.toString()
+                val connectedPhoneSSID: Pair<String, String?> = AppUtils.getConnectedSSIDAndSecurityType(this)
+                if (selectedSSID != connectedPhoneSSID.first) {
+                    showNetworkMisMatchAlertDialog(networkMismatchMessage(
+                        getConnectedSSID(context = this), binding.tvSelectedWifi.text.toString()),
+                        getString(R.string.open_settings), getString(R.string.cancel),
+                        isNetworkMisMatch = false,
+                        isConfigureCancel = false)
+                } else {
+                    binding.tvSelectedWifi.text = connectedPhoneSSID.first
+//                        LibreLogger.d(TAG, "Shaik customOnActivityResult setSsidPwd " +
+//                       "${connectedPhoneSSID.first} and  Security" + "${connectedPhoneSSID.second} selectedSSID $selectedSSID")
+                    val scanResultItem = ScanResultItem(connectedPhoneSSID.second!!, connectedPhoneSSID.first)
+                    setSsidPwd(scanResultItem)
+                    btnNextClicked()
                 }
+            } catch (ex: Exception) {
+
+                LibreLogger.d(TAG, "customOnActivityResult setSsidPwd Exception ${ex.message}")
+            }
         }
     }
 
     private fun setSsidPwd(mScanResultItem: ScanResultItem?) {
         LibreLogger.d(TAG_, "Setting setSsidPwd ${mScanResultItem.toString()}")
-        if(mScanResultItem!!.ssid.equals("Other Options")){
+        if (mScanResultItem!!.ssid.equals("Other Options")) {
             binding.tvSelectedWifi.text = ""
-            binding.tvSelectedWifi.hint="Enter Network Name"
+            binding.tvSelectedWifi.hint = "Enter Network Name"
             LibreLogger.d(TAG_, "Setting setSsidPwd if ${mScanResultItem.toString()}")
 
-        }
-        else{
+        } else {
             binding.tvSelectedWifi.text = mScanResultItem!!.ssid
             LibreLogger.d(TAG_, "Setting setSsidPwd else ${mScanResultItem.toString()}")
 
@@ -1116,19 +1109,18 @@ $mSelectedSecurity"""
         wifiConnect.setMainSSID(mScanResultItem.ssid)
         wifiConnect.setMainSSIDSec(mScanResultItem.security)
 
-        if (mScanResultItem.security == "NONE"||mScanResultItem.security == "OPEN") {
+        if (mScanResultItem.security == "NONE" || mScanResultItem.security == "OPEN") {
             binding.passwordWifi.visibility = View.GONE
             binding.etWifiPassword.text.clear()
-            LibreLogger.d(TAG_, "Setting ScanResult Item if \n"+mScanResultItem.security)
+            LibreLogger.d(TAG_, "Setting ScanResult Item if \n" + mScanResultItem.security)
             //thursday suma addition
-             binding.ivRememPasswordlyt.visibility = View.GONE
-        }
-        else {
+            binding.ivRememPasswordlyt.visibility = View.GONE
+        } else {
             binding.passwordWifi.visibility = View.VISIBLE
             //thursday suma addition
             binding.ivRememPasswordlyt.visibility = View.VISIBLE
 
-            LibreLogger.d(TAG_, "Setting ScanResult Item else \n"+mScanResultItem.security)
+            LibreLogger.d(TAG_, "Setting ScanResult Item else \n" + mScanResultItem.security)
 
         }
 
@@ -1218,7 +1210,7 @@ $mSelectedSecurity"""
                 }
             }
             passphrase
-        }else {
+        } else {
             passphrase
         }
     }
@@ -1257,6 +1249,7 @@ $mSelectedSecurity"""
     private fun cancelJob() {
         taskJob?.cancel()
     }
+
     private fun showNetworkMisMatchAlertDialog(message: String,
         positiveButtonString: String,
         negativeButtonString: String,
@@ -1275,13 +1268,13 @@ $mSelectedSecurity"""
             builder.setCancelable(false)
             builder.setPositiveButton(positiveButtonString) { dialogInterface, i ->
                 mandateDialog!!.dismiss()
-                if(isNetworkMisMatch){
+                if (isNetworkMisMatch) {
                     binding.laySsidPwdDetails.visibility = View.GONE
                     binding.laySpeakerSetupWithImage.visibility = View.VISIBLE
                     showNetworkMisMatchAlertDialog(networkMismatchMessage(getConnectedSSID(context = this), binding.tvSelectedWifi.text.toString()), getString(R.string.open_settings), getString(R.string.cancel),
-                        isNetworkMisMatch=false,
-                        isConfigureCancel=false)
-                } else if(isConfigureCancel) {
+                        isNetworkMisMatch = false,
+                        isConfigureCancel = false)
+                } else if (isConfigureCancel) {
                     if (mBluetoothLeService != null) {
                         mBluetoothLeService!!.removelistener(this)
                     }
@@ -1299,7 +1292,7 @@ $mSelectedSecurity"""
 
                     mandateDialog!!.dismiss()
                 }
-            }else if(isConfigureCancel){
+            } else if (isConfigureCancel) {
                 builder.setNegativeButton(negativeButtonString) { dialogInterface, i ->
                     mandateDialog!!.dismiss()
                 }
@@ -1309,7 +1302,8 @@ $mSelectedSecurity"""
         if (!mandateDialog!!.isShowing) mandateDialog!!.show()
 
     }
-  override fun onSecurityTypeSelected(security: Int) {
+
+    override fun onSecurityTypeSelected(security: Int) {
         val securityList: MutableList<String> = java.util.ArrayList()
         securityList.add("OPEN/NONE")
         securityList.add("WPA/WPA2/WPA3")
@@ -1328,39 +1322,41 @@ $mSelectedSecurity"""
             bottomSheetDialogForSecurity!!.dismiss()
         }
 
-        LibreLogger.d(TAG, "suma in get the position list item \n$"+securityList.get(security))
-      val wifiConnect = WifiConnection.getInstance()
-      wifiConnect.setMainSSIDSec(securityList.get(security))
+        LibreLogger.d(TAG, "suma in get the position list item \n$" + securityList.get(security))
+        val wifiConnect = WifiConnection.getInstance()
+        wifiConnect.setMainSSIDSec(securityList.get(security))
 
-        LibreApplication.manualsecurity=securityList.get(security)
+        LibreApplication.manualsecurity = securityList.get(security)
 
         binding.manualSecText.setText(securityList.get(security))
-        if(securityList.get(security).equals("OPEN/NONE")){
-            binding.passwordWifi.visibility=View.GONE
-          //  wifiConnect.setMainSSIDSec(mScanResultItem.security)
+        if (securityList.get(security).equals("OPEN/NONE")) {
+            binding.passwordWifi.visibility = View.GONE
+            //  wifiConnect.setMainSSIDSec(mScanResultItem.security)
 
-        }
-        else{
-            binding.passwordWifi.visibility=View.VISIBLE
+        } else {
+            binding.passwordWifi.visibility = View.VISIBLE
 
         }
 
     }
-    class WifiReceiver(private val mandateDialog: AlertDialog?, private val selectedSSid: String) : BroadcastReceiver() {
+
+    class WifiReceiver(private val mandateDialog: AlertDialog?, private val selectedSSid: String) :
+        BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             val action = intent.action
             if (WifiManager.NETWORK_STATE_CHANGED_ACTION == action) {
                 // Wi-Fi state has changed
-                LibreLogger.d(TAG, "Shaik Phone Connected ssid "+ getConnectedSSID(context))
+                LibreLogger.d(TAG, "Shaik Phone Connected ssid " + getConnectedSSID(context))
                 LibreLogger.d(TAG, "Shaik user selectedSSid  $selectedSSid")
-                if(getConnectedSSID(context)==selectedSSid){
+                if (getConnectedSSID(context) == selectedSSid) {
                     mandateDialog?.dismiss()
                 }
-                handleWifiStateChanged(context,mandateDialog)
+                handleWifiStateChanged(context, mandateDialog)
+
             }
         }
 
-         private fun handleWifiStateChanged(context: Context, mandateDialog: AlertDialog?) {
+        private fun handleWifiStateChanged(context: Context, mandateDialog: AlertDialog?) {
 
         }
     }

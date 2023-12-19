@@ -597,7 +597,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
     }
 
     fun getConnectedSSIDName(mContext: Context): String {
-        return AppUtils.getConnectedSSID(mContext)!!
+        return AppUtils.getConnectedSSID(mContext)
     }
 
     override fun onPause() {
@@ -650,7 +650,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
 
         playPauseView?.setOnClickListener(object : View.OnClickListener {
             override fun onClick(view: View) {
-                if (musicSceneObject.currentSource == AUX_SOURCE/*|| musicSceneObject?.currentSource == EXTERNAL_SOURCE*/ || musicSceneObject.currentSource == VTUNER_SOURCE || musicSceneObject.currentSource == TUNEIN_SOURCE /*|| musicSceneObject.currentSource == BT_SOURCE*/ && ((mNodeWeGotForControl?.getgCastVerision() == null && (mNodeWeGotForControl?.bT_CONTROLLER == CURRENTLY_NOTPLAYING || mNodeWeGotForControl?.bT_CONTROLLER == SceneObject.CURRENTLY_PLAYING)) || (mNodeWeGotForControl.getgCastVerision() != null && mNodeWeGotForControl.bT_CONTROLLER < SceneObject.CURRENTLY_PAUSED))) {
+                if (musicSceneObject.currentSource == AUX_SOURCE/*|| musicSceneObject?.currentSource == EXTERNAL_SOURCE*/ || musicSceneObject.currentSource == VTUNER_SOURCE || musicSceneObject.currentSource == TUNEIN_SOURCE /*|| musicSceneObject.currentSource == BT_SOURCE*/ && ((mNodeWeGotForControl?.getgCastVerision() == null && (mNodeWeGotForControl?.bT_CONTROLLER == CURRENTLY_NOTPLAYING || mNodeWeGotForControl?.bT_CONTROLLER == CURRENTLY_PLAYING)) || (mNodeWeGotForControl.getgCastVerision() != null && mNodeWeGotForControl.bT_CONTROLLER < CURRENTLY_PAUSED))) {
                     val error = LibreError("", resources.getString(R.string.PLAY_PAUSE_NOT_ALLOWED), 1)
                     BusProvider.getInstance().post(error)
                     return
@@ -722,7 +722,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                 return@setOnClickListener
             }
 
-            if (!musicSceneObject.trackName.isNullOrEmpty() || !musicSceneObject.album_art.isNullOrEmpty() || musicSceneObject.playstatus == SceneObject.CURRENTLY_PLAYING) {
+            if (!musicSceneObject.trackName.isNullOrEmpty() || !musicSceneObject.album_art.isNullOrEmpty() || musicSceneObject.playstatus == CURRENTLY_PLAYING) {
                 startActivity(Intent(this, CTNowPlayingActivity::class.java).apply {
                     putExtra(CURRENT_DEVICE_IP, musicPlayerIp)
                 })
@@ -1626,7 +1626,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
 
                 MIDCONST.MID_CURRENT_SOURCE.toInt() -> {/*this MB to get current sources*/
                     try {
-                         LibreLogger.d(TAG, "Recieved the current source as  " + sceneObject?.currentSource)
+                         LibreLogger.d(TAG, "Recieved the current source as  " + sceneObject.currentSource)
                         val mSource = Integer.parseInt(msg)
                         if (sceneObject != null) {
                             sceneObject.currentSource = mSource
@@ -2072,12 +2072,12 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                     alertDialog1!!.dismiss()
                     removeTheDeviceFromRepo(mNode.ip)
                     LUCIControl.luciSocketMap.remove(mNode.ip)
-                    LibreApplication.securecertExchangeSucessDevices.clear()
+                    securecertExchangeSucessDevices.clear()
                     LUCIControl.handshake.clear()
                     if(!localClassName.isEmpty()) {
                         if (localClassName.contains("CTSplashScreenActivity") || localClassName.contains(
                                 "CTHomeTabsActivity"
-                            ) || localClassName.contains("CTDeviceSettingsActivity"))
+                            ) || localClassName.contains("CTDeviceSettingsActivity")||localClassName.contains("CTMediaSourcesActivity"))
                         {
                             intentToHome(this)
                         }
@@ -2119,7 +2119,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                     BusProvider.getInstance().unregister(busEventListener)
                 }
 
-                if (ScanThread.getInstance().nettyServer.mServerChannel != null && ScanThread.getInstance().nettyServer.mServerChannel.isBound()) {
+                if (ScanThread.getInstance().nettyServer.mServerChannel != null && ScanThread.getInstance().nettyServer.mServerChannel.isBound) {
                     ScanThread.getInstance().nettyServer.mServerChannel.unbind()
                     val serverClose: ChannelFuture = ScanThread.getInstance().nettyServer.mServerChannel.close()
                     serverClose.awaitUninterruptibly()
@@ -2137,7 +2137,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                 ScanningHandler.getInstance().clearSceneObjectsFromCentralRepo()
 
             LUCIControl.luciSocketMap.clear()
-            LibreApplication.securecertExchangeSucessDevices.clear()
+            securecertExchangeSucessDevices.clear()
                 LUCIControl.handshake.clear()
 
                 LUCIControl.channelHandlerContextMap.clear()
@@ -2211,7 +2211,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
         }
 
         fun setMessageProgressDialog(message: String) {
-            if(!((this)).isFinishing()) {
+            if(!((this)).isFinishing) {
                 showProgressDialog(message)
             }
         }
@@ -2485,6 +2485,9 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                 builder.setPositiveButton(positiveButtonString) { dialogInterface, i ->
                     mandateDialog!!.dismiss()
                     if(isDeviceLost) {
+//                        val intent=Intent(this@CTDeviceDiscoveryActivity, CTBluetoothDeviceListActivity::class.java)
+//                        startActivity(intent)
+
                         intentToHome(this)
                     }else if (isLocationPermission){
                         AppUtils.requestPermission(this@CTDeviceDiscoveryActivity, Manifest.permission.ACCESS_FINE_LOCATION, LOCATION_PERMISSION_REQUEST_CODE)
@@ -2509,7 +2512,7 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
                 }*/
                 mandateDialog = builder.create()
             }
-            if(!((this)).isFinishing()) {
+            if(!((this)).isFinishing) {
                 if (!mandateDialog!!.isShowing) mandateDialog!!.show()
             }
 
