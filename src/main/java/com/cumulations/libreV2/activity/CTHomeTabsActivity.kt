@@ -492,24 +492,24 @@ class CTHomeTabsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionLi
         val currentAPIVersion = Build.VERSION.SDK_INT
         if (currentAPIVersion >= 31) {
             if (!checkPermissionsGranted()) {
-                LibreLogger.d(TAG_, "onPermissionGranted Android above 12 NearBydDevices not " +
-                        "granted")
+                LibreLogger.d(TAG_, "onPermissionGranted Android above 12 NearBydDevices not granted")
                 checkPermissions()
             }
         } else {
             isLocationGranted = AppUtils.isPermissionGranted(this, Manifest.permission.ACCESS_FINE_LOCATION)
-            if (BLEUtils.checkBluetooth(this@CTHomeTabsActivity) && isLocationGranted==true) {
-                LibreLogger.d(TAG_, "onPermissionGranted Android below 12 GPS and BT not granted")
+            if(isGPSOn==true && checkPermissionsGranted() && isLocationGranted==true){
+                LibreLogger.d(TAG_, "onPermissionGranted Android below GPS and NearByDevice granted")
                 binding.layPermissionBottom.visibility=View.GONE
-              /*  binding.layPermissionBottom.visibility=View.GONE
-                binding.layPermissionBottom.visibility = View.VISIBLE
-                binding.layPermissionBottomSheet.imgBtToggle.setImageDrawable(getDrawable(R.drawable.check_orange))*/
-            } else {
-                LibreLogger.d(TAG_, "onPermissionGranted Android below all granted")
-                binding.layPermissionBottom.visibility=View.GONE
-                binding.layPermissionBottom.visibility = View.VISIBLE
                 binding.layPermissionBottomSheet.imgLocToggle.setImageDrawable(getDrawable(R.drawable.check_orange))
-            }
+            }/*else if (BLEUtils.checkBluetooth(this@CTHomeTabsActivity)) {
+                LibreLogger.d(TAG_, "onPermissionGranted Android below 12 BT granted")
+                binding.layPermissionBottom.visibility = View.VISIBLE
+                binding.layPermissionBottomSheet.imgBtToggle.setImageDrawable(getDrawable(R.drawable.check_orange))
+            }*//* else{
+               // checkPermissions()
+                showLocationMustBeEnabledDialog()
+                LibreLogger.d(TAG_, "onPermissionGranted Android below 12 GPS,LOC,NFC not granted")
+            }*/
         }
     }
 
@@ -519,9 +519,12 @@ class CTHomeTabsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionLi
         binding.layPermissionBottomSheet.imgLocToggle.setImageDrawable(getDrawable(R.drawable.img_toggle))
     }
 
+    override fun onGPSGranted() {
+        LibreLogger.d(TAG_, "onGPSGranted called")
+    }
+
     override fun onResume() {
         super.onResume()
-        LibreLogger.d(TAG_, "onResume called")
         showBottomSheet()
         registerLocationPermissionCallback(this@CTHomeTabsActivity)
     }
@@ -602,22 +605,26 @@ class CTHomeTabsActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionLi
 
             }
         }else{
-            if (isLocationGranted!! && isBTTurnedOn!!){
+            if (isLocationGranted!! && isBTTurnedOn!! && isGPSOn==true){
                 LibreLogger.d(TAG_, "checkPermissions below 12 BT&LOC not granted ")
                 binding.layPermissionBottom.visibility = View.GONE
             }else{
-                if (isBTTurnedOn == true) {
+               /* if (isBTTurnedOn == true) {
                     LibreLogger.d(TAG_, "checkPermissions below 12 BT not granted ")
                     binding.layPermissionBottomSheet.layBluetooth.isClickable = false
                     binding.layPermissionBottomSheet.layBluetooth.isEnabled = false
                     binding.layPermissionBottomSheet.layBluetooth.alpha = 0.5.toFloat()
                     binding.layPermissionBottomSheet.imgBtToggle.setImageDrawable(getDrawable(R.drawable.check_orange))
-                }else if(isLocationGranted!!) {
-                    LibreLogger.d(TAG_, "checkPermissions below 12 LOC not granted ")
+                }else*/
+                if(isGPSOn==true && isLocationGranted!!) {
+                    LibreLogger.d(TAG_, "checkPermissions below 12 LOC  and GPS not granted ")
                     binding.layPermissionBottomSheet.layLocation.isClickable = false
                     binding.layPermissionBottomSheet.layLocation.isEnabled = false
                     binding.layPermissionBottomSheet.layLocation.alpha = 0.5.toFloat()
                     binding.layPermissionBottomSheet.imgLocToggle.setImageDrawable(getDrawable(R.drawable.check_orange))
+                }else{
+                    showLocationMustBeEnabledDialog()
+                    LibreLogger.d(TAG_, "checkPermissions below 12 some permissions is missing ")
                 }
             }
         }

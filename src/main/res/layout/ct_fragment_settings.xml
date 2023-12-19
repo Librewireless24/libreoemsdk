@@ -32,7 +32,7 @@
         <androidx.appcompat.widget.AppCompatTextView
           android:id="@+id/tv_sdk_version"
           android:textSize="16sp"
-          android:text="1.4(1.13)"
+          android:text="1.4(1.14)"
           android:textColor="@color/riva_subtext_color"
           android:layout_width="wrap_content"
           android:layout_height="wrap_content" />
