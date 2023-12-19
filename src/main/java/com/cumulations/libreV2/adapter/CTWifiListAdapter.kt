@@ -90,7 +90,6 @@ class CTWifiListAdapter(val context: Context, var scanResultList: MutableList<Sc
                 itemBinding.imgWifiRangeIcon.visibility = View.VISIBLE
             }
 
-
             itemBinding.llSsid.setOnClickListener {
                 if (context is CTWifiListActivity) context.goBackToConnectWifiScreen(scanResultItem!!)
 

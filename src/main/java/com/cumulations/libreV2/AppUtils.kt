@@ -459,6 +459,10 @@ object AppUtils {
                 .append("'$connectingSSID' WI-fi network.")
         }.toString()
     }
-
-
+    fun appendAlbumArtistName(albumName: String?, artistName: String): String {
+        return StringBuilder().apply {
+            append(albumName)
+            .append(",$artistName")
+        }.toString()
+    }
 }

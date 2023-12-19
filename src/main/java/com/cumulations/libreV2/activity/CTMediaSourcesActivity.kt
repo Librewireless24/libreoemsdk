@@ -184,7 +184,7 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
         })
 
         binding.ilMusicPlayingWidget.flMusicPlayWidget.setOnClickListener {
-            if (binding.ilMusicPlayingWidget.tvTrackName.text?.toString()?.contains(getString(R.string.app_name))!! || binding.ilMusicPlayingWidget.tvTrackName.text?.toString()?.contains(getString(R.string.login_to_enable_cmds))!! || binding.ilMusicPlayingWidget.ivPlayPause.visibility == View.GONE) {
+            if (binding.ilMusicPlayingWidget.tvTrackName.text?.toString()?.contains(getString(R.string.app_name))!! || binding.ilMusicPlayingWidget.tvTrackName.text?.toString()?.contains(getString(R.string.login_to_enable_cmds))!!) {
                 return@setOnClickListener
             }
 
@@ -894,7 +894,7 @@ class CTMediaSourcesActivity : CTDeviceDiscoveryActivity(),LibreDeviceInteractio
             }
 
         }else{
-            LibreLogger.d(TAG, "==SHAIKMessage ELSE condition " + remotedeviceIp + "\tcurrentIP is " + currentIpAddress)
+            LibreLogger.d(TAG, "==SHAIKMessage ELSE condition $remotedeviceIp\tcurrentIP is $currentIpAddress")
         }
     }
 

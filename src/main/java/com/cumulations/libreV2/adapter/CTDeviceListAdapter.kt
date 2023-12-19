@@ -341,7 +341,7 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
             itemBinding.ilMusicPlayingWidget.flMusicPlayWidget.setOnClickListener {
                 if (itemBinding.ilMusicPlayingWidget.tvTrackName.text?.toString()
                         ?.contains(context.getString(R.string.app_name))!! || itemBinding.ilMusicPlayingWidget.tvTrackName.text?.toString()
-                        ?.contains(context.getString(R.string.login_to_enable_cmds))!! || itemBinding.ilMusicPlayingWidget.ivPlayPause.visibility == View.GONE) {
+                        ?.contains(context.getString(R.string.login_to_enable_cmds))!!) {
                     return@setOnClickListener
                 }
 
@@ -791,14 +791,30 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
         private fun setAlbumArtistName(sceneObject: SceneObject, tvAlbumName: AppCompatTextView) {
             LibreLogger.d(TAG,"setCurrentTrackName trackName:- ${sceneObject.trackName}  and sourceName:- ${sceneObject.currentSource} ")
             if (sceneObject.currentSource != NO_SOURCE || sceneObject.currentSource != AUX_SOURCE) {
-                if (!sceneObject.album_name.isNullOrEmpty() && !sceneObject.album_name?.equals("NULL", ignoreCase = true)!! && !sceneObject.album_name?.equals(tvAlbumName.text?.toString())!!) {
+                if (!sceneObject.album_name.isNullOrEmpty() &&
+                    !sceneObject.album_name.equals("NULL", ignoreCase = true) &&
+                    !sceneObject.album_name.equals(tvAlbumName.text?.toString(), ignoreCase = true)) {
+                    if (!sceneObject.artist_name.isNullOrEmpty() &&
+                        !sceneObject.artist_name.equals("NULL", ignoreCase = true) &&
+                        !sceneObject.artist_name.equals(tvAlbumName.text?.toString(), ignoreCase = true)) {
+                        tvAlbumName.text = "${sceneObject.album_name}, ${sceneObject.artist_name}"
+                    } else {
+                        tvAlbumName.text = sceneObject.album_name
+                    }
+                }
+                tvAlbumName.post {
+                    tvAlbumName.isSelected = true
+                }
+
+               /* if (!sceneObject.album_name.isNullOrEmpty()
+                    && !sceneObject.album_name?.equals("NULL", ignoreCase = true)!!
+                    && !sceneObject.album_name?.equals(tvAlbumName.text?.toString())!!) {
                     tvAlbumName.text = sceneObject.album_name
-
                 }
-
-                if (!sceneObject.artist_name.isNullOrEmpty() && !sceneObject.artist_name?.equals("NULL", ignoreCase = true)!!) {
+                if (!sceneObject.artist_name.isNullOrEmpty()
+                    && !sceneObject.artist_name?.equals("NULL", ignoreCase = true)!!) {
                     tvAlbumName.text = "${tvAlbumName.text}, ${sceneObject.artist_name}"
-                }
+                }*/
                 tvAlbumName.post {
                     tvAlbumName.isSelected = true
                 }
@@ -998,7 +1014,7 @@ class CTDeviceListAdapter(val context: Context) : RecyclerView.Adapter<CTDeviceL
                     DEEZER_SOURCE -> itemBinding.ivCurrentSource.setImageResource(R.mipmap.deezer_logo)
                     TIDAL_SOURCE -> itemBinding.ivCurrentSource.setImageResource(R.mipmap.tidal_white_logo)
                     FAVOURITES_SOURCE -> itemBinding.ivCurrentSource.setImageResource(R.mipmap.ic_remote_favorite)
-                    GCAST_SOURCE -> itemBinding.ivCurrentSource.setImageResource(R.drawable.chrome_cast_enabled)
+                    GCAST_SOURCE -> itemBinding.ivCurrentSource.setImageResource(R.mipmap.ic_cast_white_24dp_2x)
                     EXTERNAL_SOURCE -> itemBinding.ivCurrentSource.setImageResource(R.drawable.ic_aux_in)
                     ROON -> itemBinding.ivCurrentSource.setImageResource(R.drawable.roon)
                     OPTICAL_SOURCE -> itemBinding.ivCurrentSource.visibility = View.GONE

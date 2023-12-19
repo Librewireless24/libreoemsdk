@@ -251,7 +251,7 @@ class CTDeviceBrowserActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteract
         })
 
         binding.idMusicWidget.flMusicPlayWidget.setOnClickListener {
-            if (binding.idMusicWidget.tvTrackName.text?.toString()?.contains(getString(R.string.app_name))!! || binding.idMusicWidget.tvTrackName.text?.toString()?.contains(getString(R.string.login_to_enable_cmds))!! || binding.idMusicWidget.ivPlayPause.visibility == View.GONE) {
+            if (binding.idMusicWidget.tvTrackName.text?.toString()?.contains(getString(R.string.app_name))!! || binding.idMusicWidget.tvTrackName.text?.toString()?.contains(getString(R.string.login_to_enable_cmds))!!) {
                 return@setOnClickListener
             }
 
@@ -549,6 +549,7 @@ class CTDeviceBrowserActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteract
 
                     //Intent intent = new Intent(RemoteSourcesList.this, ActiveScenesListActivity.class);
                     LibreLogger.d("==BACK==","parseJsonAndReflectInUI 3")
+                    isUSBBackPressed=true
                     val intent = Intent(this@CTDeviceBrowserActivity, CTNowPlayingActivity::class.java)
                     intent.putExtra(Constants.CURRENT_DEVICE_IP, currentIpaddress)
                     startActivity(intent)
@@ -776,6 +777,7 @@ class CTDeviceBrowserActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteract
 
                     //Intent intent = new Intent(RemoteSourcesList.this, ActiveScenesListActivity.class);
                     LibreLogger.d("==BACK==","parseJsonAndReflectInUIUSB 3")
+                    isUSBBackPressed=true
                     val intent = Intent(this@CTDeviceBrowserActivity, CTNowPlayingActivity::class.java)
                     intent.putExtra(Constants.CURRENT_DEVICE_IP, currentIpaddress)
                     startActivity(intent)

@@ -1194,17 +1194,34 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
     fun setCurrentAlbumArtistName(currentSceneObject: SceneObject, currentAlbumName: AppCompatTextView) {
         LibreLogger.d(TAG, "setAlbumArtistName :- ${currentSceneObject.album_name}  and sourceName:- ${currentSceneObject.artist_name} ")
         if (currentSceneObject.currentSource != NO_SOURCE || currentSceneObject.currentSource != AUX_SOURCE) {
-            if (!currentSceneObject.album_name.isNullOrEmpty() && !currentSceneObject.album_name?.equals("NULL", ignoreCase = true)!! && !currentSceneObject.album_name?.equals(currentAlbumName.text?.toString())!!) {
-                currentAlbumName.text = currentSceneObject.album_name
-
-            }
-
-            if (!currentSceneObject.artist_name.isNullOrEmpty() && !currentSceneObject.artist_name?.equals("NULL", ignoreCase = true)!!) {
-                currentAlbumName.text = "${currentAlbumName.text}, ${currentSceneObject.artist_name}"
+            if (!currentSceneObject.album_name.isNullOrEmpty() &&
+                !currentSceneObject.album_name.equals("NULL", ignoreCase = true) &&
+                !currentSceneObject.album_name.equals(currentAlbumName.text?.toString(), ignoreCase = true)) {
+                if (!currentSceneObject.artist_name.isNullOrEmpty() &&
+                    !currentSceneObject.artist_name.equals("NULL", ignoreCase = true) &&
+                    !currentSceneObject.artist_name.equals(currentAlbumName.text?.toString(), ignoreCase = true)) {
+                    currentAlbumName.text = "${currentSceneObject.album_name}, ${currentSceneObject.artist_name}"
+                } else {
+                    currentAlbumName.text = currentSceneObject.album_name
+                }
             }
             currentAlbumName.post {
                 currentAlbumName.isSelected = true
             }
+
+           /* if (!currentSceneObject.album_name.isNullOrEmpty()
+                && !currentSceneObject.album_name?.equals("NULL", ignoreCase = true)!!
+                && !currentSceneObject.album_name?.equals(currentAlbumName.text?.toString())!!) {
+                currentAlbumName.text = currentSceneObject.album_name
+
+            }
+            if (!currentSceneObject.artist_name.isNullOrEmpty()
+                && !currentSceneObject.artist_name?.equals("NULL", ignoreCase = true)!!) {
+                currentAlbumName.text = "${currentAlbumName.text}, ${currentSceneObject.artist_name}"
+            }
+            currentAlbumName.post {
+                currentAlbumName.isSelected = true
+            }*/
         } else {
             if (currentSceneObject.currentSource == AUX_SOURCE
                 || currentSceneObject.currentSource == EXTERNAL_SOURCE

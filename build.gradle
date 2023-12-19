@@ -11,7 +11,7 @@ android {
         minSdkVersion 21
         targetSdkVersion 33
         versionCode 1
-        versionName "1.0(1.3)+(1.5+)"
+        versionName "1.0(1.4)+Suma +Mansoor(1.0)"
         multiDexEnabled true
         vectorDrawables.useSupportLibrary = true
         /*For now blur only*/

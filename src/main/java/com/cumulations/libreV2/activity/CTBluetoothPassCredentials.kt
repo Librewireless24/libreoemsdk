@@ -495,7 +495,7 @@ var bottomSheetDialogForSecurity: BottomSheetDialog? = null
             // Add "Other Options" SSID with dummy security and RSSI
             val otherOptionsSSID = "Other Options"
             val otherOptionsSecurity = "WPA-PSK"
-            val otherOptionsRssi = 200
+            val otherOptionsRssi = 255
             scanListMap[otherOptionsSSID] = Pair(otherOptionsSecurity, otherOptionsRssi)
 
             for ((ssid, securityAndRssi) in scanListMap) {

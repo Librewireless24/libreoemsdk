@@ -72,6 +72,7 @@ class CTWifiListActivity : CTDeviceDiscoveryActivity(), BLEServiceToApplicationI
         setListeners()
         intentExtra
         val gattCharacteristic_Libre = LibreApplication().btGattCharacteristic
+        LibreLogger.d(TAG,"onCreate called")
         wifiListAdapter?.notifyDataSetChanged()
         initBluetoothAdapterAndListener()
         runOnUiThread {
@@ -86,7 +87,7 @@ class CTWifiListActivity : CTDeviceDiscoveryActivity(), BLEServiceToApplicationI
             }, (timeout + 1500).toLong())
             handler!!.postDelayed(runnable, 9000)
         }
-        getScanResultsFromDevice()
+        getScanResultsFromDevice(isRefresh=false)
     }
 
     private val intentExtra: Unit
@@ -170,7 +171,7 @@ class CTWifiListActivity : CTDeviceDiscoveryActivity(), BLEServiceToApplicationI
         super.onStart()
     }
 
-    private fun getScanResultsFromDevice() {
+    private fun getScanResultsFromDevice(isRefresh: Boolean) {
         val ssid = getConnectedSSIDName(this)
         if (!mConfiguringThroughBLE) {
             if (!(ssid.contains(Constants.SA_SSID_RIVAA_CONCERT) || ssid.contains(Constants.SA_SSID_RIVAA_STADIUM) || ssid.contains(".d"))) {
@@ -180,15 +181,19 @@ class CTWifiListActivity : CTDeviceDiscoveryActivity(), BLEServiceToApplicationI
         }
         if (WifiConnection.getInstance().savedScanResults.isEmpty()) {
             if (intent?.getStringExtra(AppConstants.DEVICE_IP) != null) {
-                binding.rvWifiList.visibility = View.GONE
-                binding.tvNoData.visibility = View.VISIBLE
+                if (isRefresh) {
+                    binding.rvWifiList.visibility = View.GONE
+                    binding.tvNoData.visibility = View.VISIBLE
+                } else {
+                    binding.tvNoData.visibility = View.GONE
+                    showProgressDialog(getString(R.string.get_scan_results))
+                }
             }
         } else {
             runOnUiThread {
                 binding.rvWifiList.visibility = View.VISIBLE
                 binding.tvNoData.visibility = View.GONE
                 filteredScanResults = WifiConnection.getInstance().savedScanResults as ArrayList<ScanResultItem>?
-
                 wifiListAdapter?.updateList(filteredScanResults)
             }
         }
@@ -317,7 +322,7 @@ class CTWifiListActivity : CTDeviceDiscoveryActivity(), BLEServiceToApplicationI
             // Add "Other Options" SSID with dummy security and RSSI
             val otherOptionsSSID = "Other Options"
             val otherOptionsSecurity = "WPA-PSK"
-            val otherOptionsRssi = 200
+            val otherOptionsRssi = 255
             scanListMap[otherOptionsSSID] = Pair(otherOptionsSecurity, otherOptionsRssi)
             for ((ssid, securityAndRssi) in scanListMap) {
                 val security = securityAndRssi.first
@@ -330,7 +335,7 @@ class CTWifiListActivity : CTDeviceDiscoveryActivity(), BLEServiceToApplicationI
             e.printStackTrace()
             LibreLogger.d(TAG, "populateScanListMap Exception " + e.message)
         }
-        getScanResultsFromDevice()
+        getScanResultsFromDevice(isRefresh=true)
     }
 
 

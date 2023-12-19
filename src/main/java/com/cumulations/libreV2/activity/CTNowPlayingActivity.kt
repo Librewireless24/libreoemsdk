@@ -198,7 +198,6 @@ class CTNowPlayingActivity : CTDeviceDiscoveryActivity(), View.OnClickListener,
             //Android 12 and below
             onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    //exitOnBackPressed()
                     LibreLogger.d(TAG,"isUSBBackPressed $isUSBBackPressed")
                     if(isUSBBackPressed) {
                         isUSBBackPressed=false
@@ -1206,17 +1205,22 @@ class CTNowPlayingActivity : CTDeviceDiscoveryActivity(), View.OnClickListener,
             }
         }
 
-        LibreLogger.d(TAG, "" + currentSceneObject!!.album_name)
-        if (!currentSceneObject?.album_name.isNullOrEmpty() && !currentSceneObject?.album_name?.equals("NULL", ignoreCase = true)!! && !currentSceneObject?.album_name?.equals(binding.tvAlbumName.text?.toString())!!) {
-            binding.tvAlbumName.text = currentSceneObject?.album_name
-            binding.tvAlbumName.post {
-                binding.tvAlbumName.isSelected = true
-            }
-        }
-        if (!currentSceneObject?.artist_name.isNullOrEmpty() && !currentSceneObject?.artist_name?.equals("NULL", ignoreCase = true)!!) {
-            binding.tvAlbumName.text = "${binding.tvAlbumName.text}, ${currentSceneObject?.artist_name}"
-            binding.tvAlbumName.post {
-                binding.tvAlbumName.isSelected = true
+        if (!currentSceneObject?.album_name.isNullOrEmpty() &&
+            !currentSceneObject?.album_name.equals("NULL", ignoreCase = true) &&
+            !currentSceneObject?.album_name.equals(binding.tvAlbumName.text?.toString(), ignoreCase = true)) {
+            if (!currentSceneObject?.artist_name.isNullOrEmpty() &&
+                !currentSceneObject?.artist_name.equals("NULL", ignoreCase = true) &&
+                !currentSceneObject?.artist_name.equals(binding.tvAlbumName.text?.toString(), ignoreCase = true)
+            ) {
+                binding.tvAlbumName.text = "${currentSceneObject?.album_name}, ${currentSceneObject?.artist_name}"
+                binding.tvAlbumName.post {
+                    binding.tvAlbumName.isSelected = true
+                }
+            } else {
+                binding.tvAlbumName.text = currentSceneObject?.album_name
+                binding.tvAlbumName.post {
+                    binding.tvAlbumName.isSelected = true
+                }
             }
         }
         if (currentSceneObject!!.currentSource == SPOTIFY_SOURCE) {
