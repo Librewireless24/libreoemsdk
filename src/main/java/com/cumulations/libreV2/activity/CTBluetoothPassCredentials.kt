@@ -1084,15 +1084,17 @@ $mSelectedSecurity"""
                             getString(R.string.open_settings), getString(R.string.cancel),
                             isNetworkMisMatch=false,
                             isConfigureCancel=false)
-                    }else {
+                    }
+                    else {
                         binding.tvSelectedWifi.text = connectedPhoneSSID.first
-                       /* LibreLogger.d(TAG, "Shaik customOnActivityResult setSsidPwd " +
-                       "${connectedPhoneSSID.first} and  Security" + "${connectedPhoneSSID.second} selectedSSID $selectedSSID")*/
+//                        LibreLogger.d(TAG, "Shaik customOnActivityResult setSsidPwd " +
+//                       "${connectedPhoneSSID.first} and  Security" + "${connectedPhoneSSID.second} selectedSSID $selectedSSID")
                         val scanResultItem = ScanResultItem(connectedPhoneSSID.second!!, connectedPhoneSSID.first)
                         setSsidPwd(scanResultItem)
                         btnNextClicked()
                     }
                   } catch (ex: Exception) {
+
                     LibreLogger.d(TAG, "customOnActivityResult setSsidPwd Exception ${ex.message}")
                 }
         }
@@ -1357,6 +1359,7 @@ $mSelectedSecurity"""
                     mandateDialog?.dismiss()
                 }
                 handleWifiStateChanged(context,mandateDialog)
+
             }
         }
 

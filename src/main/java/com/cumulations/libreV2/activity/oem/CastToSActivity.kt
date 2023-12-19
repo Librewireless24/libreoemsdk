@@ -31,7 +31,6 @@ import com.libreAlexa.constants.LUCIMESSAGES.ID
 import com.libreAlexa.constants.LUCIMESSAGES.REQUEST_TYPE
 import com.libreAlexa.constants.LUCIMESSAGES.SUCCESS
 import com.libreAlexa.constants.LUCIMESSAGES.USER_IP
-import com.libreAlexa.constants.MIDCONST.CAST_ACCEPT_STATUS
 import com.libreAlexa.constants.MIDCONST.CAST_ACCEPT_STATUS_572
 import com.libreAlexa.constants.MIDCONST.TOS_ACCEPT_REQUEST
 import com.libreAlexa.databinding.ActivityCastToSactivityBinding
@@ -240,7 +239,7 @@ class CastToSActivity : CTDeviceDiscoveryActivity(), LibreDeviceInteractionListn
         val packet = LUCIPacket(nettyData.getMessage())
        /* LibreLogger.d(TAG_SCREEN, "messageRecieved: " + remoteDeviceIp + ", command is " + packet
             .command + "msg is\n" + String(packet.payload))*/
-        if (packet.command == CAST_ACCEPT_STATUS || packet.command == CAST_ACCEPT_STATUS_572) {
+        if ( packet.command == CAST_ACCEPT_STATUS_572) {
             val message = String(packet.getpayload())
             val root = JSONObject(message)
             var id: String? = null

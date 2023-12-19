@@ -443,12 +443,13 @@ object AppUtils {
         return StringBuilder().apply {
             append("Your phone is currently connected to ")
                 .append("'$connectedSSID'")
-                .append(" WI-Fi network, but you are trying to configure the device to ")
+                .append(" Wi-Fi network, but trying to configure the device to ")
                 .append("'$connectingSSID'")
-                .append(" WI-Fi network. Make sure to be on the same network to discover the " +
-                        "speaker.")
+                .append(" Wi-Fi network. Make sure to be on the same network for discovering the " +
+                        "device.")
         }.toString()
     }
+
     fun networkMismatchMessage(connectedSSID: String?, connectingSSID: String): String {
         return StringBuilder().apply {
             append("You're currently connected to ")

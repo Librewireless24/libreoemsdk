@@ -158,7 +158,7 @@ class HelpImproveChromeCastActivity : CTDeviceDiscoveryActivity(), LibreDeviceIn
         val remoteDeviceIp = nettyData!!.getRemotedeviceIp()
         val packet = LUCIPacket(nettyData.getMessage())/* LibreLogger.d(TAG_NETWORK, "messageRecieved:Help " + remoteDeviceIp + ", command is " +
                 packet.command + "msg is\n" + String(packet.payload))*/
-        if (packet.command == MIDCONST.CAST_ACCEPT_STATUS || packet.command == MIDCONST.CAST_ACCEPT_STATUS_572) {
+        if (packet.command == MIDCONST.CAST_ACCEPT_STATUS_572) {
             val message = String(packet.getpayload())
             val root = JSONObject(message)
             val status = root.getString("status")
