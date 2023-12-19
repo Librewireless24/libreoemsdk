@@ -1076,68 +1076,48 @@ open class CTDeviceDiscoveryActivity : UpnpListenerActivity(), AudioRecordCallba
             /*Album Art For All other Sources Except */
             if (!currentSceneObject.album_art.isNullOrEmpty() && currentSceneObject.album_art.equals("coverart.jpg", ignoreCase = true)) {
                 val albumUrl = "http://" + currentSceneObject.ipAddress + "/" + "coverart.jpg"
-                /**
-                 * Commented Because we don't required this logic as we using GLide and
-                 * Cross checked with screen on and Off and song change also
-                 */
-                /* If Track Name is Different just Invalidate the Path And if we are resuming the Screen(Screen OFF and Screen ON) , it will not re-download it */
 
-                /*  if (currentSceneObject.trackName != null && !currentTrackName.equals(currentSceneObject.trackName, ignoreCase = true)) {
-                      if (currentSceneObject == null) {
-                          return
-                      }
-                      // currentTrackName = sceneObject.trackName!!
-  //                        if (sceneObject.album_name != null) {
-  //                            currentAlbumnName = sceneObject.album_name!!
-  //                        }
-  //                        currentArtistName = sceneObject.artist_name!!
-                      LibreLogger.d("==Albumart==", " 1 ${currentSceneObject.currentSource} and ip ${currentSceneObject.ipAddress}")
-                      AlbumArtURL = currentSceneObject.album_art!!
-
-                      val mInvalidated = mInvalidateTheAlbumArt(currentSceneObject, albumUrl)
-                      LibreLogger.d(TAG, "Invalidated the URL $albumUrl Status $mInvalidated")
-                  }*/
+                /*  If Track Name is Different just Invalidate the Path And if we are resuming the Screen(Screen OFF and Screen ON) , it will not re-download it */
+                if (currentSceneObject.trackName != null && !currentTrackName.equals(currentSceneObject.trackName, ignoreCase = true)) {
+                    if (currentSceneObject == null) {
+                        return
+                    }
+                    AlbumArtURL = currentSceneObject.album_art!!
+                    val mInvalidated = mInvalidateTheAlbumArt(currentSceneObject, albumUrl)
+                    LibreLogger.d(TAG, "Invalidated the URL $albumUrl Status $mInvalidated")
+                }
                 val mInvalidated = mInvalidateTheAlbumArt(currentSceneObject, albumUrl)
                 LibreLogger.d(TAG, "Invalidated the URL $albumUrl Status $mInvalidated")
-                LibreLogger.d("==Albumart==333", "  $albumUrl")
-                Glide.with(this).load(albumUrl).diskCacheStrategy(DiskCacheStrategy.ALL).centerCrop()
-                    .placeholder(R.mipmap.album_art).into(currentIvAlbumArt)
-
+                PicassoTrustCertificates.getInstance(this)
+                    .load(albumUrl)
+                    .error(R.mipmap.album_art).placeholder(R.mipmap.album_art)
+                    .into(currentIvAlbumArt)
             } else {
                 when {
                     !currentSceneObject.album_art.isNullOrEmpty() && !currentSceneObject.album_art.equals("null", ignoreCase = true) -> {
-                        /*  if (currentSceneObject.trackName != null && !currentTrackName.equals(currentSceneObject.trackName, ignoreCase = true)) {
+                        if (currentSceneObject.trackName != null && !currentTrackName.equals(currentSceneObject.trackName, ignoreCase = true)) {
                             if (currentSceneObject == null) {
                                 return
                             }
-                            // currentTrackName = sceneObject.trackName!!
-                            *//*if (sceneObject.album_name != null) {
-                            currentAlbumnName = sceneObject.album_name!!
-                        }*//*
-                            // currentArtistName = sceneObject.artist_name!!
-
                             val mInvalidated = mInvalidateTheAlbumArt(currentSceneObject, currentSceneObject.album_art)
-                            LibreLogger.d("==Albumart==", " 3 ${currentSceneObject.currentSource} and" + " ip ${currentSceneObject.ipAddress}")
                             AlbumArtURL = currentSceneObject.album_art!!
-                            LibreLogger.d(TAG, "Invalidated the URL $currentSceneObject.album_art " + "Status: $mInvalidated")
-
-
-                        }*/
-                        LibreLogger.d("==Albumart==", " 4 ${currentSceneObject.currentSource} and" + " ip ${currentSceneObject.ipAddress}")
-
-                        Glide.with(this).load(currentSceneObject.album_art).diskCacheStrategy(DiskCacheStrategy.ALL).centerCrop().placeholder(R.mipmap.album_art).into(currentIvAlbumArt)
-
-
+                            LibreLogger.d(TAG, "Invalidated the URL $currentSceneObject.album_art Status: $mInvalidated")
+                        }
+                        PicassoTrustCertificates.getInstance(this)
+                            .load(currentSceneObject.album_art)
+                            .placeholder(R.mipmap.album_art)
+                            /*.memoryPolicy(MemoryPolicy.NO_CACHE).networkPolicy(NetworkPolicy.NO_CACHE)*/
+                            .error(R.mipmap.album_art)
+                            .into(currentIvAlbumArt)
                     }
 
                     else -> {
-                        LibreLogger.d("==Albumart==", " 5 ${currentSceneObject.currentSource} and ip " + "${currentSceneObject.ipAddress}")
                         currentIvAlbumArt.setImageResource(R.mipmap.album_art)
                     }
                 }
             }
 
-        } else  {
+        } else {
             LibreLogger.d("==Albumart==", " 5.5 ${currentSceneObject.currentSource} and ip ${currentSceneObject.ipAddress}")
         }
     }

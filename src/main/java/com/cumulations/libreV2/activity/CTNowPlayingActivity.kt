@@ -1580,7 +1580,7 @@ class CTNowPlayingActivity : CTDeviceDiscoveryActivity(), View.OnClickListener,
                 disableViews(currentSceneObject!!.currentSource, getString(R.string.aux_playing),12)
             }
             ROON ->{
-                imgResId = R.drawable.roon_nowplaying
+                imgResId = R.drawable.roon
             }
             OPTICAL_SOURCE -> imgResId = 0
             TUNNELING_WIFI_SOURCE -> imgResId = 0
